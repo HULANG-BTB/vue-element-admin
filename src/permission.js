@@ -17,41 +17,41 @@ router.beforeEach(async (to, from, next) => {
   // set page title
   document.title = getPageTitle(to.meta.title)
 
-  // determine whether the user has logged in
-  const hasToken = getToken()
-
-  if (hasToken) {
-    if (to.path === '/login') {
-      // if is logged in, redirect to the home page
-      next({ path: '/' })
-      NProgress.done()
-    } else {
-      const hasGetUserInfo = store.getters.name
-      if (hasGetUserInfo) {
-        next()
+  // 白名单 直接跳转
+  if (whiteList.indexOf(to.path) !== -1) {
+    next()
+  } else {
+    const hasToken = getToken()
+    // 已经登录 有Token 检查角色
+    if (hasToken) {
+      if (to.path === '/login') {
+        next({ path: '/' })
+        NProgress.done()
       } else {
-        try {
-          // get user info
-          await store.dispatch('user/getInfo')
-
+        const hasRoles = store.getters.roles && store.getters.roles.length > 0
+        // 有角色 直接跳转
+        if (hasRoles) {
           next()
-        } catch (error) {
-          // remove token and go to login page to re-login
-          await store.dispatch('user/resetToken')
-          Message.error(error || 'Has Error')
-          next(`/login?redirect=${to.path}`)
-          NProgress.done()
+        } else {
+          try {
+            // 没有角色 获取角色信息
+            const { roles } = await store.dispatch('user/getInfo')
+            // 获取动态路由
+            const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+            // 添加动态路由
+            router.options.routes = store.getters.permission_routes
+            router.addRoutes(accessRoutes)
+            next({ ...to, replace: true })
+          } catch (error) {
+            await store.dispatch('user/resetToken')
+            Message.error(error || 'Has Error')
+            next(`/login?redirect=${to.path}`)
+            NProgress.done()
+          }
         }
       }
-    }
-  } else {
-    /* has no token*/
-
-    if (whiteList.indexOf(to.path) !== -1) {
-      // in the free login whitelist, go directly
-      next()
     } else {
-      // other pages that do not have permission to access are redirected to the login page.
+      // 没有Token 跳转登录页
       next(`/login?redirect=${to.path}`)
       NProgress.done()
     }
