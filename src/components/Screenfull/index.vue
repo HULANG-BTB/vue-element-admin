@@ -9,20 +9,20 @@ import screenfull from 'screenfull'
 
 export default {
   name: 'Screenfull',
-  data() {
+  data () {
     return {
       isFullscreen: false
     }
   },
-  mounted() {
+  mounted () {
     this.init()
   },
-  beforeDestroy() {
+  beforeDestroy () {
     this.destroy()
   },
   methods: {
-    click() {
-      if (!screenfull.enabled) {
+    click () {
+      if (!screenfull.isEnabled) {
         this.$message({
           message: 'you browser can not work',
           type: 'warning'
@@ -31,15 +31,15 @@ export default {
       }
       screenfull.toggle()
     },
-    change() {
+    change () {
       this.isFullscreen = screenfull.isFullscreen
     },
-    init() {
+    init () {
       if (screenfull.enabled) {
         screenfull.on('change', this.change)
       }
     },
-    destroy() {
+    destroy () {
       if (screenfull.enabled) {
         screenfull.off('change', this.change)
       }
@@ -52,7 +52,7 @@ export default {
 .screenfull-svg {
   display: inline-block;
   cursor: pointer;
-  fill: #5a5e66;;
+  fill: #5a5e66;
   width: 20px;
   height: 20px;
   vertical-align: 10px;

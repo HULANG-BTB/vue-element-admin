@@ -10,7 +10,7 @@
 export default {
   name: 'AppMain',
   computed: {
-    key() {
+    key () {
       return this.$route.path
     }
   }
@@ -25,8 +25,8 @@ export default {
   position: relative;
   overflow: hidden;
 }
-.fixed-header+.app-main {
-  padding-top: 50px;
+.fixed-header + .app-main {
+  padding-top: 84px;
 }
 </style>
 

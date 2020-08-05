@@ -1,23 +1,14 @@
 module.exports = {
-
+  // 模板标题
   title: 'Vue Admin Template',
 
-  /**
-   * @type {boolean} true | false
-   * @description Whether fix the header
-   */
-  fixedHeader: false,
+  // 固定头部
+  fixedHeader: true,
 
-  /**
-   * @type {boolean} true | false
-   * @description Whether show the logo in sidebar
-   */
-  sidebarLogo: false,
+  // 是否显示侧边栏Logo
+  sidebarLogo: true,
 
-  /**
-  * @type {boolean} true | false
-  * @description Whether need tagsView
-  */
+  // 是否显示标签栏
   tagsView: true
 
 }
