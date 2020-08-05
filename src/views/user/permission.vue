@@ -1,22 +1,55 @@
 <template>
   <div class="app-container">
-    <el-button type="primary" @click="handleAdd">New Permission</el-button>
-    <el-button :disabled="deleteBatchDisable" type="danger" @click="handleDeleteBatch">Delete Batch</el-button>
+    <el-form
+      :model="query"
+      :inline="true"
+      class="demo-form-inline"
+      @keyup.enter.native="handleSearch"
+    >
+      <el-form-item label="搜索权限：">
+        <el-input v-model="query.keyword" placeholder="请输入权限名称或路径" clearable />
+      </el-form-item>
+      <el-form-item label>
+        <el-button icon="el-icon-search" @click="handleSearch">搜索</el-button>
+      </el-form-item>
+      <el-form-item label>
+        <el-button type="primary" @click="handleAdd">创建权限</el-button>
+      </el-form-item>
+      <el-form-item label>
+        <el-button :disabled="deleteBatchDisable" type="danger" @click="handleDeleteBatch">批量删除</el-button>
+      </el-form-item>
+      <el-form-item label>
+        <el-button type="success" @click="getTableData">重载数据</el-button>
+      </el-form-item>
+    </el-form>
+
+    <el-pagination
+      background
+      layout="prev, pager, next, sizes, total, jumper"
+      :total="query.total"
+      :current-page="query.page"
+      :page-sizes="[10, 20, 50, 100, 500, 1000]"
+      :page-size="query.limit"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
 
     <el-table
-      :data="permissionList"
+      v-loading.body="loading"
+      :data="permissionTableData"
+      class="permissions-table"
       style="width: 100%; margin-top:30px;"
       border
       @selection-change="handleOnSelectChange"
     >
       <el-table-column type="selection" align="center" width="55" />
-      <el-table-column align="center" label="Permission id" width="120">
+      <el-table-column align="center" label="权限ID" width="280">
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
-      <el-table-column align="center" label="Permission Name" width="220">
+      <el-table-column align="left" label="权限名称" width="220">
         <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
-      <el-table-column align="center" label="Request Method" width="220">
+      <el-table-column align="center" label="请求方式" width="220">
         <template slot-scope="scope">
           <el-button
             :style="requestMethodStyle(scope.row.method)"
@@ -25,13 +58,13 @@
           >{{ scope.row.method }}</el-button>
         </template>
       </el-table-column>
-      <el-table-column align="header-center" label="Request Url">
+      <el-table-column align="header-center" label="请求路径">
         <template slot-scope="scope">{{ scope.row.url }}</template>
       </el-table-column>
-      <el-table-column align="center" label="Operations" width="220">
+      <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleEdit(scope)">Edit</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope)">Delete</el-button>
+          <el-button type="primary" size="mini" @click="handleEdit(scope)">编辑</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(scope)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -40,10 +73,15 @@
       :visible.sync="dialogVisible"
       :title="dialogType==='edit'?'Edit Permission':'New Permission'"
     >
-      <el-form :model="permission" label-width="120px" label-position="left">
+      <el-form
+        v-loading="dialogLoading"
+        :model="permission"
+        label-width="120px"
+        label-position="left"
+      >
         <el-form-item label="父级权限">
           <el-select
-            v-model="permission.pid"
+            v-model="permission.parentId"
             size="medium"
             filterable
             style="width: 100%"
@@ -96,11 +134,11 @@
 
 <script>
 import { deepClone } from '@/utils'
-import { getPermissionList, addPermission, updatePermission, deletePermission } from '@/api/permission'
+import { savePermission, updatePermission, removePermission, removePermissionBatch, getPermissionListByPage, getPermissionList } from '@/api/permission'
 
 const defaultPermission = {
   id: null,
-  pid: 0,
+  parentId: '0',
   name: '',
   url: '',
   method: 'ALL'
@@ -109,8 +147,11 @@ const defaultPermission = {
 export default {
   data () {
     return {
+      permissionTableData: [],
       permissionList: [],
       selectedList: [],
+      loading: false,
+      dialogLoading: false,
       dialogVisible: false,
       dialogType: 'new',
       permission: {},
@@ -120,16 +161,23 @@ export default {
         'PUT',
         'DELETE',
         'ALL'
-      ]
+      ],
+      query: {
+        page: 1,
+        limit: 10,
+        total: 0,
+        keyword: ''
+      }
     }
   },
   computed: {
     permissionSelectList () {
       const selectList = deepClone(this.permissionList)
       const defaultItem = { ...defaultPermission }
-      defaultItem.id = 0
+      defaultItem.id = '0'
       defaultItem.name = 'root'
-      defaultItem.url = ''
+      defaultItem.url = '/'
+      defaultItem.parentId = '0'
       selectList.unshift(defaultItem)
       return selectList
     },
@@ -139,13 +187,32 @@ export default {
     }
   },
   created () {
-    this.getPermissionList()
+    this.getTableData()
   },
   methods: {
-    async getPermissionList () {
-      const res = await getPermissionList()
-      this.permissionList = res.data
+    // 获取表格数据
+    async getTableData () {
+      this.loading = true
+      const res = await getPermissionListByPage(this.query)
+      this.permissionTableData = res.data.items
+      this.query.total = res.data.total
+      this.query.limit = res.data.limit
+      this.query.page = res.data.page
+      this.selectedList = []
+      this.loading = false
     },
+
+    // 获取全部数据 增加界面和修改使用
+    async getPermissionList (reload) {
+      if (this.permissionList.length !== 0 && !reload) {
+        return
+      }
+      this.dialogLoading = true
+      const { data } = await getPermissionList()
+      this.permissionList = data
+      this.dialogLoading = false
+    },
+
     // 计算请求方式样式
     requestMethodStyle (method) {
       let bgcolor = ''
@@ -172,11 +239,17 @@ export default {
       }
     },
 
+    handleSearch () {
+      this.query.page = 1
+      this.getTableData()
+    },
+
     // 点击添加
     handleAdd () {
       this.dialogVisible = true
       this.dialogType = 'new'
       this.permission = deepClone(defaultPermission)
+      this.getPermissionList()
     },
 
     // 点击编辑
@@ -184,6 +257,7 @@ export default {
       this.dialogVisible = true
       this.dialogType = 'edit'
       this.permission = deepClone(scope.row)
+      this.getPermissionList()
     },
 
     // 点击删除
@@ -194,47 +268,50 @@ export default {
         type: 'warning'
       })
         .then(async () => {
-          deletePermission(row.id).then(res => {
-            this.permissionList.splice($index, 1)
+          removePermission(row.id).then(res => {
             this.$message({
               type: 'success',
               message: 'Delete succed!'
             })
+          }).catch(err => {
+            this.$message({
+              type: 'error',
+              message: 'Delete failed!'
+            })
+            console.error(err)
           })
-        })
-        .catch(err => {
-          this.$message({
-            type: 'error',
-            message: 'Delete failed!'
-          })
-          console.error(err)
         })
     },
 
     // 提交数据
     async confirmPermission () {
       const isEdit = this.dialogType === 'edit'
+      let successFlag = false
       if (isEdit) {
-        await updatePermission(this.permission)
+        await updatePermission(this.permission).then(res => {
+          successFlag = true
+        })
       } else {
-        await addPermission(this.permission).then(res => {
-          this.permissionList.push(this.permission)
+        await savePermission(this.permission).then(res => {
+          successFlag = true
         })
       }
-      const { method, name, url } = this.permission
       this.dialogVisible = false
-      this.$notify({
-        title: 'Success',
-        dangerouslyUseHTMLString: true,
-        message: `
+      if (successFlag) {
+        const { method, name, url } = this.permission
+        this.$notify({
+          title: 'Success',
+          dangerouslyUseHTMLString: true,
+          message: `
             <div>Method: ${method}</div>
             <div>Name: ${name}</div>
             <div>Url: ${url}</div>
           `,
-        type: 'success'
-      })
-      // 更新数据列表
-      await this.getPermissionList()
+          type: 'success'
+        })
+        this.getTableData()
+        this.getPermissionList(true)
+      }
     },
 
     // 批量删除
@@ -245,18 +322,32 @@ export default {
         type: 'warning'
       })
         .then(async () => {
-          // deleteRole(row.id).then(res => {
-          //   this.rolesList.splice($index, 1)
-          //   this.$message({
-          //     type: 'success',
-          //     message: 'Delete succed!'
-          //   })
-          // })
+          removePermissionBatch(this.selectedList).then(res => {
+            this.$message({
+              type: 'success',
+              message: 'Delete succed!'
+            })
+            this.getTableData()
+            this.getPermissionList(true)
+          })
         })
     },
 
+    // 批量选择改变
     handleOnSelectChange (selection) {
       this.selectedList = selection
+    },
+
+    // 每页数目改变
+    handleSizeChange (val) {
+      this.query.limit = val
+      this.getTableData()
+    },
+
+    // 当前页码改变
+    handleCurrentChange (val) {
+      this.query.page = val
+      this.getTableData()
     }
   }
 }

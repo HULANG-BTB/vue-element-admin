@@ -9,6 +9,22 @@ export function getRoleList () {
   })
 }
 
+export function getRoleListByUserId (id) {
+  return request({
+    url: BASE_URL + '/role/listByUserId',
+    method: 'get',
+    params: { id }
+  })
+}
+
+export function getRoleListByPage (query) {
+  return request({
+    url: BASE_URL + '/role/listByPage',
+    method: 'get',
+    params: query
+  })
+}
+
 export function updateRole (role) {
   return request({
     url: BASE_URL + '/role/update',
@@ -21,6 +37,14 @@ export function deleteRole (id) {
   return request({
     url: `${BASE_URL}/role/remove/${id}`,
     method: 'delete'
+  })
+}
+
+export function deleteRoleBatch (data) {
+  return request({
+    url: `${BASE_URL}/role/removeBatch`,
+    method: 'delete',
+    data: data
   })
 }
 

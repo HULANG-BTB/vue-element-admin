@@ -1,10 +1,42 @@
 <template>
   <div class="app-container">
-    <el-button type="primary" @click="handleAddRole">New Role</el-button>
-    <el-button :disabled="deleteBatchDisable" type="danger" @click="handleDeleteBatch">Delete Batch</el-button>
+    <el-form
+      :model="query"
+      :inline="true"
+      class="demo-form-inline"
+      @keyup.enter.native="handleSearch"
+    >
+      <el-form-item label="搜索角色：">
+        <el-input v-model="query.keyword" placeholder="请输入角色名或角色Key" clearable />
+      </el-form-item>
+      <el-form-item label>
+        <el-button icon="el-icon-search" @click="handleSearch">搜索</el-button>
+      </el-form-item>
+      <el-form-item label>
+        <el-button type="primary" @click="handleAdd">创建角色</el-button>
+      </el-form-item>
+      <el-form-item label>
+        <el-button :disabled="deleteBatchDisable" type="danger" @click="handleDeleteBatch">批量删除</el-button>
+      </el-form-item>
+      <el-form-item label>
+        <el-button type="success" @click="getTableData">重载数据</el-button>
+      </el-form-item>
+    </el-form>
+
+    <el-pagination
+      background
+      layout="prev, pager, next, sizes, total, jumper"
+      :total="query.total"
+      :current-page="query.page"
+      :page-sizes="[10, 20, 50, 100, 500, 1000]"
+      :page-size="query.limit"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
 
     <el-table
-      :data="rolesList"
+      v-loading.body="loading"
+      :data="roleTableData"
       style="width: 100%;margin-top:30px;"
       border
       @selection-change="handleOnSelectChange"
@@ -28,7 +60,7 @@
     </el-table>
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Role':'New Role'">
-      <el-form :model="role" label-width="80px" label-position="left">
+      <el-form v-loading="dialogLoading" :model="role" label-width="80px" label-position="left">
         <el-form-item label="Key">
           <el-input v-model="role.role" placeholder="Role Name" />
         </el-form-item>
@@ -76,15 +108,15 @@
 
 <script>
 import { deepClone } from '@/utils'
-import { addRole, getRoleList, updateRole, deleteRole } from '@/api/role'
-import { getPermissionTreeList } from '@/api/permission'
+import { addRole, getRoleListByPage, updateRole, deleteRole, deleteRoleBatch } from '@/api/role'
+import { getPermissionListByTree, getPermissionByRid } from '@/api/permission'
 
 const defaultRole = {
   id: '',
   role: '',
   name: '',
   description: '',
-  permissions: null
+  permissions: []
 }
 
 export default {
@@ -92,14 +124,22 @@ export default {
     return {
       role: Object.assign({}, defaultRole),
       routes: [],
-      rolesList: [],
+      roleTableData: [],
       permissionList: [],
       selectedList: [],
+      loading: true,
+      dialogLoading: false,
       dialogVisible: false,
       dialogType: 'new',
       defaultProps: {
         children: 'children',
         label: 'name'
+      },
+      query: {
+        page: 1,
+        limit: 10,
+        total: 0,
+        keyword: ''
       }
     }
   },
@@ -111,21 +151,26 @@ export default {
 
   created () {
     // Mock: get all routes and roles list from server
-    this.getRoleList()
+    this.getTableData()
     this.getPermissionList()
   },
   methods: {
 
     // 获取角色列表
-    async getRoleList () {
-      const res = await getRoleList()
-      this.rolesList = res.data
+    async getTableData () {
+      this.loading = true
+      const res = await getRoleListByPage(this.query)
+      this.roleTableData = res.data.items
+      this.query.total = res.data.total
+      this.query.limit = res.data.limit
+      this.query.page = res.data.page
       this.selectedList = []
+      this.loading = false
     },
 
     // 获取权限列表
     async getPermissionList () {
-      const res = await getPermissionTreeList()
+      const res = await getPermissionListByTree()
       this.permissionList = res.data
     },
 
@@ -140,6 +185,8 @@ export default {
         bgcolor = '#fca130'
       } else if (method === 'DELETE') {
         bgcolor = '#f93e3e'
+      } else if (method === 'ALL') {
+        bgcolor = '#cc26bf'
       } else {
         bgcolor = 'none'
       }
@@ -153,7 +200,12 @@ export default {
       }
     },
 
-    handleAddRole () {
+    handleSearch () {
+      this.query.page = 1
+      this.getTableData()
+    },
+
+    handleAdd () {
       this.role = Object.assign({}, defaultRole)
       if (this.$refs.tree) {
         this.$refs.tree.setCheckedNodes([])
@@ -161,10 +213,14 @@ export default {
       this.dialogType = 'new'
       this.dialogVisible = true
     },
-    handleEdit (scope) {
+    async handleEdit (scope) {
       this.dialogType = 'edit'
       this.dialogVisible = true
+      this.dialogLoading = true
       this.role = deepClone(scope.row)
+      const { data } = await getPermissionByRid(scope.row.id)
+      this.$refs.tree.setCheckedNodes(data)
+      this.dialogLoading = false
     },
     handleDelete ({ $index, row }) {
       this.$confirm('Confirm to remove the role?', 'Warning', {
@@ -174,7 +230,7 @@ export default {
       })
         .then(async () => {
           deleteRole(row.id).then(res => {
-            this.rolesList.splice($index, 1)
+            this.roleTableData.splice($index, 1)
             this.$message({
               type: 'success',
               message: 'Delete succed!'
@@ -195,49 +251,66 @@ export default {
 
       const checkedNodes = this.$refs.tree.getCheckedNodes(true)
       this.role.permissions = checkedNodes
+      let successFlag = false
       if (isEdit) {
-        await updateRole(this.role)
+        await updateRole(this.role).then(res => {
+          successFlag = true
+        })
       } else {
         await addRole(this.role).then(res => {
-          this.rolesList.push(this.role)
+          successFlag = true
         })
       }
-      const { description, role, name } = this.role
-      this.dialogVisible = false
-      this.$notify({
-        title: 'Success',
-        dangerouslyUseHTMLString: true,
-        message: `
+      if (successFlag) {
+        const { description, role, name } = this.role
+        this.dialogVisible = false
+        this.$notify({
+          title: 'Success',
+          dangerouslyUseHTMLString: true,
+          message: `
             <div>Role Key: ${role}</div>
             <div>Role Name: ${name}</div>
             <div>Description: ${description}</div>
           `,
-        type: 'success'
-      })
-      // 更新数据列表
-      await this.getRoleList()
+          type: 'success'
+        })
+        // 更新数据列表
+        await this.getTableData()
+      }
     },
 
     // 批量删除
-    handleDeleteBatch () {
+    async handleDeleteBatch () {
       this.$confirm('Confirm to remove the role?', 'Warning', {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
         type: 'warning'
       })
         .then(async () => {
-          // deleteRole(row.id).then(res => {
-          //   this.rolesList.splice($index, 1)
-          //   this.$message({
-          //     type: 'success',
-          //     message: 'Delete succed!'
-          //   })
-          // })
+          deleteRoleBatch(this.selectedList).then(res => {
+            this.$message({
+              type: 'success',
+              message: 'Delete succed!'
+            })
+            this.getTableData()
+          })
         })
     },
 
     handleOnSelectChange (selection) {
       this.selectedList = selection
+    },
+
+    // 每页数目改变
+    handleSizeChange (val) {
+      this.query.limit = val
+      this.getTableData()
+    },
+
+    // 当前页码改变
+    handleCurrentChange (val) {
+      this.query.page = val
+      this.getTableData()
     }
   }
 }

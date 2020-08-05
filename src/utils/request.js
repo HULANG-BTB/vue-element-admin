@@ -3,6 +3,7 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import NProgress from 'nprogress'
 
 // create an axios instance
 const service = axios.create({
@@ -15,7 +16,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-
+    NProgress.start()
     if (store.getters.token) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
@@ -25,6 +26,7 @@ service.interceptors.request.use(
     return config
   },
   error => {
+    NProgress.done()
     // do something with request error
     console.log(error) // for debug
     return Promise.reject(error)
@@ -45,7 +47,7 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-
+    NProgress.done()
     // 注释放弃了原本封装中的一切请求结果判断的逻辑 后期如需要使用可以自行概念加
     // if the custom code is not 20000, it is judged as an error.
     // if (res.code !== 20000) {
@@ -75,6 +77,7 @@ service.interceptors.response.use(
     return res
   },
   error => {
+    NProgress.done()
     console.log('err' + error) // for debug
     Message({
       message: error.message,
