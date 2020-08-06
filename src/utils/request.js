@@ -4,6 +4,7 @@ import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import NProgress from 'nprogress'
+import Config from '@/settings'
 
 // create an axios instance
 const service = axios.create({
@@ -21,7 +22,7 @@ service.interceptors.request.use(
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      config.headers['Authenticate'] = getToken()
+      config.headers[Config.auth.header] = getToken()
     }
     return config
   },
