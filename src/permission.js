@@ -26,7 +26,7 @@ router.beforeEach(async (to, from, next) => {
     if (hasToken) {
       if (to.path === '/login') {
         next({ path: '/' })
-        NProgress.done()
+        // NProgress.done()
       } else {
         const hasRoles = store.getters.roles && store.getters.roles.length > 0
         // 有角色 直接跳转
@@ -46,14 +46,14 @@ router.beforeEach(async (to, from, next) => {
             await store.dispatch('user/resetToken')
             Message.error(error || 'Has Error')
             next(`/login?redirect=${to.path}`)
-            NProgress.done()
+            // NProgress.done()
           }
         }
       }
     } else {
       // 没有Token 跳转登录页
       next(`/login?redirect=${to.path}`)
-      NProgress.done()
+      // NProgress.done()
     }
   }
 })

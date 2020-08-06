@@ -9,8 +9,8 @@ import dynamicRoutes from './modules'
 
 Vue.use(Router)
 
-export const constantRoutes = Object.assign([], staticRoutes)
-export const asyncRoutes = Object.assign([], dynamicRoutes)
+export const constantRoutes = [...staticRoutes]
+export const asyncRoutes = [...dynamicRoutes]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support

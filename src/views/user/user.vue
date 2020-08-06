@@ -7,19 +7,24 @@
       @keyup.enter.native="handleSearch"
     >
       <el-form-item label="搜索用户：">
-        <el-input v-model="query.keyword" placeholder="请输入用户ID或用户名" clearable />
+        <el-input v-model="query.keyword" placeholder="请输入用户ID或用户名" clearable size="small" />
       </el-form-item>
       <el-form-item label>
-        <el-button icon="el-icon-search" @click="handleSearch">搜索</el-button>
+        <el-button icon="el-icon-search" size="small" @click="handleSearch">搜索</el-button>
       </el-form-item>
       <el-form-item label>
-        <el-button type="primary" @click="handleAdd">创建用户</el-button>
+        <el-button type="primary" size="small" @click="handleAdd">创建用户</el-button>
       </el-form-item>
       <el-form-item label>
-        <el-button :disabled="deleteBatchDisable" type="danger" @click="handleDeleteBatch">批量删除</el-button>
+        <el-button
+          :disabled="deleteBatchDisable"
+          type="danger"
+          size="small"
+          @click="handleDeleteBatch"
+        >批量删除</el-button>
       </el-form-item>
       <el-form-item label>
-        <el-button type="success" @click="getTableData">重载数据</el-button>
+        <el-button type="success" size="small" @click="getTableData">重载数据</el-button>
       </el-form-item>
     </el-form>
 
@@ -42,13 +47,13 @@
       @selection-change="handleOnSelectChange"
     >
       <el-table-column type="selection" align="center" width="55" />
-      <el-table-column align="left" label="User Id" width="280">
+      <el-table-column align="left" label="用户Id" width="280">
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
-      <el-table-column align="center" label="User Name" width="220">
+      <el-table-column align="center" label="用户名" width="220">
         <template slot-scope="scope">{{ scope.row.username }}</template>
       </el-table-column>
-      <el-table-column align="header-center" label="User Nick">
+      <el-table-column align="header-center" label="昵称">
         <template slot-scope="scope">{{ scope.row.nickname }}</template>
       </el-table-column>
       <el-table-column align="center" label="Operations" width="260">
@@ -60,7 +65,7 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit User':'New User'">
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑用户':'新建用户'">
       <el-form v-loading="dialogLoading" :model="user" label-width="80px" label-position="left">
         <el-form-item label="用户名">
           <el-input v-model="user.username" placeholder="User Name" />

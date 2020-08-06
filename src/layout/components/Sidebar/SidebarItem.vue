@@ -50,14 +50,14 @@ export default {
       default: ''
     }
   },
-  data() {
+  data () {
     // To fix https://github.com/PanJiaChen/vue-admin-template/issues/237
     // TODO: refactor with render function
     this.onlyOneChild = null
     return {}
   },
   methods: {
-    hasOneShowingChild(children = [], parent) {
+    hasOneShowingChild (children = [], parent) {
       const showingChildren = children.filter(item => {
         if (item.hidden) {
           return false
@@ -81,7 +81,7 @@ export default {
 
       return false
     },
-    resolvePath(routePath) {
+    resolvePath (routePath) {
       if (isExternal(routePath)) {
         return routePath
       }

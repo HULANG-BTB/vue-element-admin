@@ -7,19 +7,24 @@
       @keyup.enter.native="handleSearch"
     >
       <el-form-item label="搜索权限：">
-        <el-input v-model="query.keyword" placeholder="请输入权限名称或路径" clearable />
+        <el-input v-model="query.keyword" placeholder="请输入权限名称或路径" clearable size="small" />
       </el-form-item>
       <el-form-item label>
-        <el-button icon="el-icon-search" @click="handleSearch">搜索</el-button>
+        <el-button icon="el-icon-search" size="small" @click="handleSearch">搜索</el-button>
       </el-form-item>
       <el-form-item label>
-        <el-button type="primary" @click="handleAdd">创建权限</el-button>
+        <el-button type="primary" size="small" @click="handleAdd">创建权限</el-button>
       </el-form-item>
       <el-form-item label>
-        <el-button :disabled="deleteBatchDisable" type="danger" @click="handleDeleteBatch">批量删除</el-button>
+        <el-button
+          :disabled="deleteBatchDisable"
+          type="danger"
+          size="small"
+          @click="handleDeleteBatch"
+        >批量删除</el-button>
       </el-form-item>
       <el-form-item label>
-        <el-button type="success" @click="getTableData">重载数据</el-button>
+        <el-button type="success" size="small" @click="getTableData">重载数据</el-button>
       </el-form-item>
     </el-form>
 
@@ -69,10 +74,7 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog
-      :visible.sync="dialogVisible"
-      :title="dialogType==='edit'?'Edit Permission':'New Permission'"
-    >
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑权限':'新建权限'">
       <el-form
         v-loading="dialogLoading"
         :model="permission"
@@ -138,7 +140,7 @@ import { savePermission, updatePermission, removePermission, removePermissionBat
 
 const defaultPermission = {
   id: null,
-  parentId: '0',
+  parentId: 0,
   name: '',
   url: '',
   method: 'ALL'
@@ -174,10 +176,10 @@ export default {
     permissionSelectList () {
       const selectList = deepClone(this.permissionList)
       const defaultItem = { ...defaultPermission }
-      defaultItem.id = '0'
-      defaultItem.name = 'root'
+      defaultItem.id = 0
+      defaultItem.name = '顶级权限'
       defaultItem.url = '/'
-      defaultItem.parentId = '0'
+      defaultItem.parentId = 0
       selectList.unshift(defaultItem)
       return selectList
     },

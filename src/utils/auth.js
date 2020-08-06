@@ -13,7 +13,6 @@ export function setToken (token, remember) {
   } else {
     return Cookies.set(TokenKey, token)
   }
-
 }
 
 export function removeToken () {

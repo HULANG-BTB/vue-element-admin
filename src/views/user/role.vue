@@ -7,19 +7,24 @@
       @keyup.enter.native="handleSearch"
     >
       <el-form-item label="搜索角色：">
-        <el-input v-model="query.keyword" placeholder="请输入角色名或角色Key" clearable />
+        <el-input v-model="query.keyword" placeholder="请输入角色名或角色Key" clearable size="small" />
       </el-form-item>
       <el-form-item label>
-        <el-button icon="el-icon-search" @click="handleSearch">搜索</el-button>
+        <el-button icon="el-icon-search" size="small" @click="handleSearch">搜索</el-button>
       </el-form-item>
       <el-form-item label>
-        <el-button type="primary" @click="handleAdd">创建角色</el-button>
+        <el-button type="primary" size="small" @click="handleAdd">创建角色</el-button>
       </el-form-item>
       <el-form-item label>
-        <el-button :disabled="deleteBatchDisable" type="danger" @click="handleDeleteBatch">批量删除</el-button>
+        <el-button
+          :disabled="deleteBatchDisable"
+          type="danger"
+          size="small"
+          @click="handleDeleteBatch"
+        >批量删除</el-button>
       </el-form-item>
       <el-form-item label>
-        <el-button type="success" @click="getTableData">重载数据</el-button>
+        <el-button type="success" size="small" @click="getTableData">重载数据</el-button>
       </el-form-item>
     </el-form>
 
@@ -42,16 +47,16 @@
       @selection-change="handleOnSelectChange"
     >
       <el-table-column type="selection" align="center" width="55" />
-      <el-table-column align="left" label="Role Key" width="220">
+      <el-table-column align="left" label="角色Key" width="220">
         <template slot-scope="scope">{{ scope.row.role }}</template>
       </el-table-column>
-      <el-table-column align="center" label="Role Name" width="220">
+      <el-table-column align="center" label="角色名称" width="220">
         <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
-      <el-table-column align="header-center" label="Description">
+      <el-table-column align="header-center" label="描述">
         <template slot-scope="scope">{{ scope.row.description }}</template>
       </el-table-column>
-      <el-table-column align="center" label="Operations" width="220">
+      <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleEdit(scope)">Edit</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope)">Delete</el-button>
@@ -59,7 +64,7 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Role':'New Role'">
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑角色':'新建角色'">
       <el-form v-loading="dialogLoading" :model="role" label-width="80px" label-position="left">
         <el-form-item label="Key">
           <el-input v-model="role.role" placeholder="Role Name" />

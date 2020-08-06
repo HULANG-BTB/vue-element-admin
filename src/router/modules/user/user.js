@@ -8,7 +8,7 @@ export default [
     redirect: '/user/user',
     name: 'User',
     meta: {
-      title: 'User',
+      title: '用户管理',
       icon: 'user'
     },
     children: [
@@ -16,14 +16,14 @@ export default [
         path: 'user',
         component: () => import('@/views/user/user'),
         name: 'PageUser',
-        meta: { title: 'User' }
+        meta: { title: '用户管理' }
       },
       {
         path: 'role',
         component: () => import('@/views/user/role'),
         name: 'PageRole',
         meta: {
-          title: 'Role',
+          title: '角色管理',
           roles: ['role_manager', 'admin']
         }
       },
@@ -32,7 +32,7 @@ export default [
         component: () => import('@/views/user/permission'),
         name: 'PagePermissions',
         meta: {
-          title: 'Permissions',
+          title: '权限管理',
           roles: ['permission_manager', 'admin']
         }
       }
