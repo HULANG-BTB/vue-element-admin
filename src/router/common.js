@@ -31,9 +31,9 @@ export default [
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
-      name: 'Dashboard',
+      name: '控制台',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+      meta: { title: '控制台', icon: 'dashboard', affix: true }
     }]
   }
 ]
