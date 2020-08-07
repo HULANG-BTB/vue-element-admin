@@ -1,7 +1,5 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://localhost:8001'
-
 export function login (data) {
   return request({
     url: '/user/login',
@@ -27,14 +25,14 @@ export function logout () {
 
 export function getUserList () {
   return request({
-    url: BASE_URL + '/user/list',
+    url: '/user/list',
     method: 'get'
   })
 }
 
 export function getUserListByPage (query) {
   return request({
-    url: BASE_URL + '/user/listByPage',
+    url: '/user/listByPage',
     method: 'get',
     params: query
   })
@@ -42,7 +40,7 @@ export function getUserListByPage (query) {
 
 export function updateUser (user) {
   return request({
-    url: BASE_URL + '/user/update',
+    url: '/user/update',
     method: 'put',
     data: user
   })
@@ -50,14 +48,14 @@ export function updateUser (user) {
 
 export function deleteUser (id) {
   return request({
-    url: `${BASE_URL}/user/remove/${id}`,
+    url: `/user/remove/${id}`,
     method: 'delete'
   })
 }
 
 export function deleteUserBatch (data) {
   return request({
-    url: `${BASE_URL}/user/removeBatch`,
+    url: `/user/removeBatch`,
     method: 'delete',
     data: data
   })
@@ -65,7 +63,7 @@ export function deleteUserBatch (data) {
 
 export function addUser (data) {
   return request({
-    url: `${BASE_URL}/user/save`,
+    url: `/user/save`,
     method: 'post',
     data
   })
@@ -73,7 +71,7 @@ export function addUser (data) {
 
 export function resetPassword (data) {
   return request({
-    url: BASE_URL + '/user/resetPassword',
+    url: '/user/resetPassword',
     method: 'put',
     data: data
   })
