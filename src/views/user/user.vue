@@ -7,13 +7,26 @@
       @keyup.enter.native="handleSearch"
     >
       <el-form-item label="搜索用户：">
-        <el-input v-model="query.keyword" placeholder="请输入用户ID或用户名" clearable size="small" />
+        <el-input
+          v-model="query.keyword"
+          placeholder="请输入用户ID或用户名"
+          clearable
+          size="small"
+        />
       </el-form-item>
       <el-form-item label>
-        <el-button icon="el-icon-search" size="small" @click="handleSearch">搜索</el-button>
+        <el-button
+          icon="el-icon-search"
+          size="small"
+          @click="handleSearch"
+        >搜索</el-button>
       </el-form-item>
       <el-form-item label>
-        <el-button type="primary" size="small" @click="handleAdd">创建用户</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="handleAdd"
+        >创建用户</el-button>
       </el-form-item>
       <el-form-item label>
         <el-button
@@ -24,7 +37,11 @@
         >批量删除</el-button>
       </el-form-item>
       <el-form-item label>
-        <el-button type="success" size="small" @click="getTableData">重载数据</el-button>
+        <el-button
+          type="success"
+          size="small"
+          @click="getTableData"
+        >重载数据</el-button>
       </el-form-item>
     </el-form>
 
@@ -42,36 +59,81 @@
     <el-table
       v-loading.body="loading"
       :data="userTableData"
-      style="width: 100%;margin-top:30px;"
+      style="width: 100%; margin-top: 30px;"
       border
       @selection-change="handleOnSelectChange"
     >
-      <el-table-column type="selection" align="center" width="55" />
-      <el-table-column align="left" label="用户Id" width="280">
+      <el-table-column
+        type="selection"
+        align="center"
+        width="55"
+      />
+      <el-table-column
+        align="left"
+        label="用户Id"
+        width="280"
+      >
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
-      <el-table-column align="center" label="用户名" width="220">
+      <el-table-column
+        align="center"
+        label="用户名"
+        width="220"
+      >
         <template slot-scope="scope">{{ scope.row.username }}</template>
       </el-table-column>
-      <el-table-column align="header-center" label="昵称">
+      <el-table-column
+        align="header-center"
+        label="昵称"
+      >
         <template slot-scope="scope">{{ scope.row.nickname }}</template>
       </el-table-column>
-      <el-table-column align="center" label="Operations" width="260">
+      <el-table-column
+        align="center"
+        label="Operations"
+        width="260"
+      >
         <template slot-scope="scope">
-          <el-button type="success" size="mini" @click="handleReset(scope)">重置密码</el-button>
-          <el-button type="primary" size="mini" @click="handleEdit(scope)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope)">删除</el-button>
+          <el-button
+            type="success"
+            size="mini"
+            @click="handleReset(scope)"
+          >重置密码</el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleEdit(scope)"
+          >编辑</el-button>
+          <el-button
+            type="danger"
+            size="mini"
+            @click="handleDelete(scope)"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑用户':'新建用户'">
-      <el-form v-loading="dialogLoading" :model="user" label-width="80px" label-position="left">
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :title="dialogType === 'edit' ? '编辑用户' : '新建用户'"
+    >
+      <el-form
+        v-loading="dialogLoading"
+        :model="user"
+        label-width="80px"
+        label-position="left"
+      >
         <el-form-item label="用户名">
-          <el-input v-model="user.username" placeholder="User Name" />
+          <el-input
+            v-model="user.username"
+            placeholder="User Name"
+          />
         </el-form-item>
         <el-form-item label="昵称">
-          <el-input v-model="user.nickname" placeholder="Nick Name" />
+          <el-input
+            v-model="user.nickname"
+            placeholder="Nick Name"
+          />
         </el-form-item>
         <el-form-item label="Role">
           <el-select
@@ -80,7 +142,7 @@
             value-key="id"
             placeholder="Please select"
             size="medium"
-            style="width: 100%"
+            style="width: 100%;"
           >
             <el-option
               v-for="(item, index) in roleList"
@@ -91,31 +153,65 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <div style="text-align:right;">
-        <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
-        <el-button type="primary" @click="confirmUser">Confirm</el-button>
+      <div style="text-align: right;">
+        <el-button
+          type="danger"
+          @click="dialogVisible = false"
+        >Cancel</el-button>
+        <el-button
+          type="primary"
+          @click="confirmUser"
+        >Confirm</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="resetPasswordDialogVisible" title="重置密码">
-      <el-form :model="user" label-width="80px" label-position="left">
+    <el-dialog
+      :visible.sync="resetPasswordDialogVisible"
+      title="重置密码"
+    >
+      <el-form
+        :model="user"
+        label-width="80px"
+        label-position="left"
+      >
         <el-form-item label="密码">
-          <el-input v-model="user.password" type="password" placeholder="请输入新密码" />
+          <el-input
+            v-model="user.password"
+            type="password"
+            placeholder="请输入新密码"
+          />
         </el-form-item>
         <el-form-item label="重复密码">
-          <el-input v-model="user.repassword" type="password" placeholder="请再次输入新密码" />
+          <el-input
+            v-model="user.repassword"
+            type="password"
+            placeholder="请再次输入新密码"
+          />
         </el-form-item>
       </el-form>
-      <div style="text-align:right;">
-        <el-button type="danger" @click="resetPasswordDialogVisible=false">Cancel</el-button>
-        <el-button type="primary" @click="confirmPasswordReset">Confirm</el-button>
+      <div style="text-align: right;">
+        <el-button
+          type="danger"
+          @click="resetPasswordDialogVisible = false"
+        >Cancel</el-button>
+        <el-button
+          type="primary"
+          @click="confirmPasswordReset"
+        >Confirm</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getUserListByPage, addUser, updateUser, deleteUser, deleteUserBatch, resetPassword } from '@/api/user'
+import {
+  getUserListByPage,
+  addUser,
+  updateUser,
+  deleteUser,
+  deleteUserBatch,
+  resetPassword
+} from '@/api/user'
 import { getRoleList, getRoleListByUserId } from '@/api/role'
 
 const defaultUser = {
@@ -169,7 +265,6 @@ export default {
     this.getRoleList()
   },
   methods: {
-
     // 获取用户列表
     async getTableData () {
       this.loading = true
@@ -221,27 +316,27 @@ export default {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
         type: 'warning'
-      })
-        .then(async () => {
-          deleteUser(row.id).then(res => {
+      }).then(async () => {
+        deleteUser(row.id)
+          .then((res) => {
             this.$message({
               type: 'success',
               message: 'Delete succed!'
             })
             this.getTableData()
           })
-            .catch(err => {
-              this.$message({
-                type: 'error',
-                message: 'Delete failed!'
-              })
-              console.error(err)
+          .catch((err) => {
+            this.$message({
+              type: 'error',
+              message: 'Delete failed!'
             })
-        })
+            console.error(err)
+          })
+      })
     },
 
     async confirmPasswordReset () {
-      await resetPassword(this.user).then(res => {
+      await resetPassword(this.user).then((res) => {
         const { id, username } = this.user
         this.$notify({
           title: 'Success',
@@ -260,11 +355,11 @@ export default {
       const isEdit = this.dialogType === 'edit'
       let successFlag = false
       if (isEdit) {
-        await updateUser(this.user).then(res => {
+        await updateUser(this.user).then((res) => {
           successFlag = true
         })
       } else {
-        await addUser(this.user).then(res => {
+        await addUser(this.user).then((res) => {
           successFlag = true
         })
       }
@@ -291,16 +386,15 @@ export default {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
         type: 'warning'
-      })
-        .then(async () => {
-          deleteUserBatch(this.selectedList).then(res => {
-            this.$message({
-              type: 'success',
-              message: 'Delete succed!'
-            })
-            this.getTableData()
+      }).then(async () => {
+        deleteUserBatch(this.selectedList).then((res) => {
+          this.$message({
+            type: 'success',
+            message: 'Delete succed!'
           })
+          this.getTableData()
         })
+      })
     },
 
     handleOnSelectChange (selection) {
