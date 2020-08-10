@@ -71,18 +71,9 @@ export default [
             meta: {
               title: '新增区划'
             }
-          },
-          {
-            path: 'edit',
-            name: '更新区划信息',
-            component: () => import('@/views/base-data/region/region_edit'),
-            hidden: true,
-            meta: {
-              title: '更新区划'
-            }
           }
         ]
-	    }
+      }
     ]
   }
 ]
