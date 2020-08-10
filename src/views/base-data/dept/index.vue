@@ -3,10 +3,10 @@
     <el-form :inline="true" :model="queryData">
       <el-form-item label="部门名称：">
         <el-input
+          v-model="queryData.fFindeptName"
           placeholder="部门名称"
           size="small"
           style="width:200px"
-          v-model="queryData.fFindeptName"
         />
       </el-form-item>
 
@@ -32,10 +32,10 @@
         </el-form-item>
         <el-form-item label="区划编码" prop="fRgnCode">
           <el-cascader
+            v-model="saveData.fRgnCode"
             :options="cascader.data"
             :props="cascader.props"
             :show-all-levels="false"
-            v-model="saveData.fRgnCode"
           />
         </el-form-item>
         <el-form-item label="联系人" prop="fLinkman">
