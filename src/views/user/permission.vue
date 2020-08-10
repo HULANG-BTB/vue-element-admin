@@ -48,7 +48,7 @@
       @selection-change="handleOnSelectChange"
     >
       <el-table-column type="selection" align="center" width="55" />
-      <el-table-column align="center" label="权限ID" width="280">
+      <el-table-column align="center" label="权限ID" width="80">
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
       <el-table-column align="left" label="权限名称" width="220">
@@ -65,6 +65,12 @@
       </el-table-column>
       <el-table-column align="header-center" label="请求路径">
         <template slot-scope="scope">{{ scope.row.url }}</template>
+      </el-table-column>
+      <el-table-column align="center" label="最后修改" width="170">
+        <template slot-scope="scope">{{ parseTime(scope.row.updateTime) }}</template>
+      </el-table-column>
+      <el-table-column align="header-center" label="操作人">
+        <template slot-scope="scope">{{ scope.row.operator }}</template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
@@ -128,7 +134,7 @@
       </el-form>
       <div style="text-align:right;">
         <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
-        <el-button type="primary" @click="confirmPermission">Confirm</el-button>
+        <el-button type="primary" :loading="confirmLoading" @click="confirmPermission">Confirm</el-button>
       </div>
     </el-dialog>
   </div>
@@ -137,6 +143,7 @@
 <script>
 import { deepClone } from '@/utils'
 import { savePermission, updatePermission, removePermission, removePermissionBatch, getPermissionListByPage, getPermissionList } from '@/api/permission'
+import { parseTime } from '@/utils/index'
 
 const defaultPermission = {
   id: null,
@@ -153,6 +160,7 @@ export default {
       permissionList: [],
       selectedList: [],
       loading: false,
+      confirmLoading: false,
       dialogLoading: false,
       dialogVisible: false,
       dialogType: 'new',
@@ -288,6 +296,7 @@ export default {
     // 提交数据
     async confirmPermission () {
       const isEdit = this.dialogType === 'edit'
+      this.confirmLoading = true
       let successFlag = false
       if (isEdit) {
         await updatePermission(this.permission).then(res => {
@@ -298,6 +307,7 @@ export default {
           successFlag = true
         })
       }
+      this.confirmLoading = false
       this.dialogVisible = false
       if (successFlag) {
         const { method, name, url } = this.permission
@@ -350,6 +360,11 @@ export default {
     handleCurrentChange (val) {
       this.query.page = val
       this.getTableData()
+    },
+
+    // 格式化时间
+    parseTime (time) {
+      return parseTime(time)
     }
   }
 }

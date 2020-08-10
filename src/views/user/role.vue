@@ -53,13 +53,19 @@
       <el-table-column align="center" label="角色名称" width="220">
         <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
+      <el-table-column align="center" label="最后修改" width="170">
+        <template slot-scope="scope">{{ parseTime(scope.row.updateTime) }}</template>
+      </el-table-column>
+      <el-table-column align="header-center" label="操作人">
+        <template slot-scope="scope">{{ scope.row.operator }}</template>
+      </el-table-column>
       <el-table-column align="header-center" label="描述">
         <template slot-scope="scope">{{ scope.row.description }}</template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleEdit(scope)">Edit</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope)">Delete</el-button>
+          <el-button type="primary" size="mini" @click="handleEdit(scope)">编辑</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(scope)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -67,10 +73,10 @@
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑角色':'新建角色'">
       <el-form v-loading="dialogLoading" :model="role" label-width="80px" label-position="left">
         <el-form-item label="Key">
-          <el-input v-model="role.role" placeholder="Role Name" />
+          <el-input v-model="role.role" placeholder="角色 Key" />
         </el-form-item>
         <el-form-item label="名称">
-          <el-input v-model="role.name" placeholder="Role Name" />
+          <el-input v-model="role.name" placeholder="角色名称" />
         </el-form-item>
         <el-form-item label="描述">
           <el-input
@@ -105,7 +111,7 @@
       </el-form>
       <div style="text-align:right;">
         <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
-        <el-button type="primary" @click="confirmRole">Confirm</el-button>
+        <el-button type="primary" :loading="confirmLoading" @click="confirmRole">Confirm</el-button>
       </div>
     </el-dialog>
   </div>
@@ -115,6 +121,7 @@
 import { deepClone } from '@/utils'
 import { addRole, getRoleListByPage, updateRole, deleteRole, deleteRoleBatch } from '@/api/role'
 import { getPermissionListByTree, getPermissionByRid } from '@/api/permission'
+import { parseTime } from '@/utils/index'
 
 const defaultRole = {
   id: '',
@@ -133,6 +140,7 @@ export default {
       permissionList: [],
       selectedList: [],
       loading: true,
+      confirmLoading: false,
       dialogLoading: false,
       dialogVisible: false,
       dialogType: 'new',
@@ -253,7 +261,7 @@ export default {
 
     async confirmRole () {
       const isEdit = this.dialogType === 'edit'
-
+      this.confirmLoading = true
       const checkedNodes = this.$refs.tree.getCheckedNodes(true)
       this.role.permissions = checkedNodes
       let successFlag = false
@@ -266,6 +274,7 @@ export default {
           successFlag = true
         })
       }
+      this.confirmLoading = false
       if (successFlag) {
         const { description, role, name } = this.role
         this.dialogVisible = false
@@ -316,6 +325,11 @@ export default {
     handleCurrentChange (val) {
       this.query.page = val
       this.getTableData()
+    },
+
+    // 格式化时间
+    parseTime (time) {
+      return parseTime(time)
     }
   }
 }
