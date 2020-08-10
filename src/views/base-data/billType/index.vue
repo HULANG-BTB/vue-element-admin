@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: 2020-07-31 14:47:07
- * @lastTime: 2020-08-10 15:26:48
+ * @lastTime: 2020-08-10 17:42:19
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -18,6 +18,7 @@
         :table-column-data="tableColumnData"
         :total="total"
         @requestTableData="requestTableData"
+        @pageParamChange="pageParamChange"
         @tableHeadButtonClick="tableHeadButtonClick"
         @tableButtonClick="tableButtonClick"
       />
@@ -278,7 +279,7 @@ export default {
         showTitle: '票据种类',
         expand: true,
         key: 'id',
-        treeProp: {
+        treeProps: {
           children: 'children',
           label: 'name'
         },
@@ -324,7 +325,8 @@ export default {
       total: 0,
       page: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        id: ''
       },
       defaultPage: {
         pageNum: 1,
@@ -368,7 +370,6 @@ export default {
       // 表格列配置
       tableColumnData: {
         select: false,
-        expand: true,
         column: [
           {
             prop: 'code',
@@ -483,11 +484,12 @@ export default {
       const checkedKeys = this.$refs.tree.getCheckedKeys(true)
       return checkedKeys
     },
-    treeNodeSearch (id) {
-      if (id.id === 0) {
+    treeNodeSearch (idObject) {
+      if (idObject.id === 0) {
         this.requestTableData(this.defaultPage)
       } else {
-        const param = { ...this.defaultPage, ...id }
+        this.page.id = idObject.id
+        const param = { ...this.defaultPage, ...idObject }
         this.requestTableData(param)
       }
     },
@@ -661,6 +663,9 @@ export default {
       this.getLeftTree()
       const param = this.page
       this.requestTableData(param)
+    },
+    pageParamChange (pageParam) {
+      this.page = pageParam
     }
   }
 }

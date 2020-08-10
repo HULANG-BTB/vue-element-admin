@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-09 23:45:21
+ * @lastTime: 2020-08-10 17:37:29
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -82,10 +82,12 @@ export default {
     },
     pageNumChange (num) {
       this.pageParam.pageNum = num
+      this.$emit('pageParamChange', this.pageParam)
       this.requestTableData(this.pageParam)
     },
     pageSizeChange (size) {
       this.pageParam.pageSize = size
+      this.$emit('pageParamChange', this.pageParam)
       this.requestTableData(this.pageParam)
     },
     tableButtonClick (name, row) {
