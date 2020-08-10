@@ -82,7 +82,6 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click.native="save" >提交</el-button>
-      <el-button type="primary" @click.native="goBack" >返回</el-button>
     </div>
   </div>
 
@@ -171,7 +170,7 @@
                   regionApi.addRegion(this.regionForm).then(res => {
                       if(res.success){
                           this.$message.success("添加成功")
-                          this.goBack();
+                        this.regionForm = {};
                       }else if(res.message){
                           this.$message.error(res.message)
                       }else{
@@ -183,14 +182,14 @@
               }
             })
           },
-          goBack(){
+          /*goBack(){
             this.$router.push({
               path:'/base-data/region/list',
               query:{
                 parentId:this.parentId
               }
             })
-          },
+          },*/
           levelChange(val){//树级次
             if(val == 3){
                 this.regionForm.assortment = false;
