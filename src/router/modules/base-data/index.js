@@ -48,7 +48,7 @@ export default [
           title: '项目票据关系管理'
         }
       },
-	  {
+	    {
         path: 'region',
         name: 'region',
         component: () => import('@/views/base-data/region/index'),
@@ -82,7 +82,7 @@ export default [
             }
           }
         ]
-	  }
+	    }
     ]
   }
 ]
