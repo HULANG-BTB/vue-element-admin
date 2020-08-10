@@ -69,9 +69,9 @@
         width="55"
       />
       <el-table-column
-        align="left"
+        align="center"
         label="用户Id"
-        width="280"
+        width="80"
       >
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
@@ -87,6 +87,12 @@
         label="昵称"
       >
         <template slot-scope="scope">{{ scope.row.nickname }}</template>
+      </el-table-column>
+      <el-table-column align="center" label="最后修改" width="170">
+        <template slot-scope="scope">{{ parseTime(scope.row.updateTime) }}</template>
+      </el-table-column>
+      <el-table-column align="header-center" label="操作人">
+        <template slot-scope="scope">{{ scope.row.operator }}</template>
       </el-table-column>
       <el-table-column
         align="center"
@@ -160,6 +166,7 @@
         >Cancel</el-button>
         <el-button
           type="primary"
+          :loading="confirmLoading"
           @click="confirmUser"
         >Confirm</el-button>
       </div>
@@ -196,6 +203,7 @@
         >Cancel</el-button>
         <el-button
           type="primary"
+          :loading="confirmLoading"
           @click="confirmPasswordReset"
         >Confirm</el-button>
       </div>
@@ -213,6 +221,7 @@ import {
   resetPassword
 } from '@/api/user'
 import { getRoleList, getRoleListByUserId } from '@/api/role'
+import { parseTime } from '@/utils/index'
 
 const defaultUser = {
   id: '',
@@ -238,6 +247,7 @@ export default {
       roleList: [],
       selectedList: [],
       loading: true,
+      confirmLoading: false,
       dialogLoading: false,
       dialogVisible: false,
       resetPasswordDialogVisible: false,
@@ -336,6 +346,7 @@ export default {
     },
 
     async confirmPasswordReset () {
+      this.confirmLoading = true
       await resetPassword(this.user).then((res) => {
         const { id, username } = this.user
         this.$notify({
@@ -348,12 +359,14 @@ export default {
           type: 'success'
         })
       })
+      this.confirmLoading = false
       this.resetPasswordDialogVisible = false
     },
 
     async confirmUser () {
       const isEdit = this.dialogType === 'edit'
       let successFlag = false
+      this.confirmLoading = true
       if (isEdit) {
         await updateUser(this.user).then((res) => {
           successFlag = true
@@ -363,6 +376,7 @@ export default {
           successFlag = true
         })
       }
+      this.confirmLoading = false
       if (successFlag) {
         const { id, username } = this.user
         this.dialogVisible = false
@@ -411,6 +425,11 @@ export default {
     handleCurrentChange (val) {
       this.query.page = val
       this.getTableData()
+    },
+
+    // 格式化时间
+    parseTime (time) {
+      return parseTime(time)
     }
   }
 }
