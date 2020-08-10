@@ -342,7 +342,6 @@ export default {
     // 提交保存，修改数据
     submitData () {
       return new Promise(function (resolve, reject) {
-        var req = new XMLHttpRequest()
         // 发送请求
         // 请求成功
         if (true) {
@@ -356,7 +355,7 @@ export default {
     // 表格数据格式化
     isEnable (row, column, cellValue, index) {
       console.log(cellValue)
-      if (cellValue == true) {
+      if (cellValue === true) {
         return '启用'
       } else {
         return '禁用'
