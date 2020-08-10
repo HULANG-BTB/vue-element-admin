@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: 2020-07-31 14:47:07
- * @lastTime: 2020-08-09 23:51:00
+ * @lastTime: 2020-08-10 15:26:48
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -92,7 +92,7 @@
           </el-col>
           <el-col :span="11" class="rightCol">
             <el-form-item label="是否分类" prop="checkSort">
-              <el-select v-model="billType.checkSort">
+              <el-select v-model="billType.checkSort" placeholder="选择分类或者种类">
                 <el-option
                   v-for="item in formOptions.checkSortOptions"
                   :key="item.value"
@@ -112,7 +112,7 @@
           </el-col>
           <el-col :span="11" class="rightCol">
             <el-form-item label="票据性质" prop="natureCode">
-              <el-select v-model="billType.natureCode">
+              <el-select v-model="billType.natureCode" placeholder="选择票据性质">
                 <el-option
                   v-for="item in formOptions.natureCodeOptions"
                   :key="item.value"
@@ -126,7 +126,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="票据用途" prop="billNature">
-              <el-select v-model="billType.billNature">
+              <el-select v-model="billType.billNature" placeholder="选择票据用途">
                 <el-option
                   v-for="item in formOptions.billNatureOptions"
                   :key="item.value"
@@ -144,7 +144,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item v-if="billType.checkSort===0" label="父级票据分类" prop="pid">
-              <el-select v-model="billType.pid">
+              <el-select v-model="billType.pid" placeholder="选择票据分类">
                 <el-option
                   v-for="item in formOptions.billSortOptions"
                   :key="item.id"
@@ -299,6 +299,9 @@ export default {
         name: [
           { required: true, message: '请输入票据名称', trigger: 'blur' }
         ],
+        code: [
+          { required: true, message: '请输入票据编码', trigger: 'blur' }
+        ],
         billNature: [
           { required: true, message: '请选择票据用途', trigger: 'change' }
         ],
@@ -340,8 +343,14 @@ export default {
           type: 'input'
         },
         {
-          label: '票据性质',
+          label: '票据用途',
           prop: 'billNature',
+          type: 'select',
+          options: []
+        },
+        {
+          label: '是否分类',
+          prop: 'checkSort',
           type: 'select',
           options: []
         }
@@ -382,6 +391,10 @@ export default {
           {
             prop: 'checkSort',
             label: '是否分类'
+          },
+          {
+            prop: 'memoryCode',
+            label: '助记码'
           },
           {
             prop: 'billNature',
@@ -527,7 +540,6 @@ export default {
         this.billType.date[0] = row.effDate
         this.billType.date[1] = row.expDate
         this.billType.checkQuota === 1 ? this.billType.checkQuota = true : this.billType.checkQuota = false
-        console.log('编辑')
       }
 
       function deleteBillType () {
@@ -584,7 +596,6 @@ export default {
             } else if (form.checkQuota === false) {
               form.checkQuota = 0
             }
-            console.log(form)
             if (this.addDialog === true) {
               add(form).then(response => {
                 this.freshTreeAndTable()
@@ -612,7 +623,6 @@ export default {
       }
     },
     tableHeadButtonClick (button) {
-      console.log(button)
       const btnDo = {
         '添加': () => add.call(this)
       }
@@ -622,7 +632,6 @@ export default {
       function add () {
         this.addDialog = true
         this.addDialogVisible = true
-        console.log('添加')
       }
     },
     dialogOpen () {
@@ -645,7 +654,8 @@ export default {
     },
     init () {
       this.freshTreeAndTable()
-      this.searchFormData[2].options = this.formOptions.natureCodeOptions
+      this.searchFormData[2].options = this.formOptions.billNatureOptions
+      this.searchFormData[3].options = this.formOptions.checkSortOptions
     },
     freshTreeAndTable () {
       this.getLeftTree()
@@ -667,7 +677,10 @@ export default {
 }
 .formClass{
   .el-row{
-    margin-left:5%
+    margin-left:5%;
+    .el-select{
+      width: 100%;
+    }
   }
   .rightCol{
     margin-left: 10px;

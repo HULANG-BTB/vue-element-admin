@@ -1,13 +1,13 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-09 23:45:14
+ * @lastTime: 2020-08-10 15:31:53
  * @LastEditors: Raiz
  * @Description:
 -->
 <template>
   <div>
-    <el-form ref="searchForm" :inline="true" :model="searchForm" size="mini" style="margin-left:10px;">
+    <el-form ref="searchForm" :inline="true" :model="searchForm" size="mini" class="headForm">
       <el-form-item
         v-for="item in searchFormData"
         :key="item.label"
@@ -43,7 +43,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitClick">查询</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="submitClick" />
       </el-form-item>
     </el-form>
   </div>
@@ -73,3 +73,11 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.headForm{
+  margin-left:10px;
+  .el-select{
+    width: 100%;
+  }
+}
+</style>

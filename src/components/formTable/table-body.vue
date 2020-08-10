@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-10 12:46:39
+ * @lastTime: 2020-08-10 15:13:06
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -20,7 +20,7 @@
         :height="tableHeight"
         :empty-text="tableColumnData.emptyText || '暂无数据'"
         size="small"
-        style="width:900px;"
+        style="width:92%;"
         highlight-current-row
         @selection-change="tableSelectionChange"
       >

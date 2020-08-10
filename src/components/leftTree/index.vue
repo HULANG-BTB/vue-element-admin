@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-09 23:45:37
+ * @lastTime: 2020-08-10 15:38:44
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -11,7 +11,7 @@
     <div v-if="leftSideData.showSearch ? leftSideData.showSearch:false">
       <el-input
         v-model.trim="searchParam"
-        placeholder="杜索"
+        placeholder="搜索"
         class="searchInput"
       >
         <el-button slot="append" icon="el-icon-search" @click="submitSearch" />
