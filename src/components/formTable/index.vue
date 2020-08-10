@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-10 17:37:29
+ * @lastTime: 2020-08-10 20:10:36
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -62,6 +62,10 @@ export default {
       pageParam: {
         pageNum: 1,
         pageSize: 10
+      },
+      defaultPage: {
+        pageNum: 1,
+        pageSize: 10
       }
     }
   },
@@ -70,7 +74,8 @@ export default {
       this.$emit('requestTableData', param)
     },
     searchTableData (searchParam) {
-      const param = { ...searchParam, ...this.pageParam }
+
+      const param = { ...searchParam, ...this.defaultPage }
       this.requestTableData(param)
     },
     tableHeadButtonClick (name) {
