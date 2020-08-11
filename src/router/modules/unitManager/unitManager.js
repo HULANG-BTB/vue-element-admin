@@ -5,7 +5,7 @@ import Layout from '@/layout'
 const unitManager = {
   path: '/unitManager',
   component: Layout,
-  name: 'unitManager',
+  redirect: '/unitManager/unitManager',
   meta: { title: '单位管理', icon: 'table' },
   children: [
     {
