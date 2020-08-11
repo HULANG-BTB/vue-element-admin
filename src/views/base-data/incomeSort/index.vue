@@ -393,12 +393,10 @@ export default {
         const data = response.data
         this.total = data.total
         this.tableData.bodyData = data.list
-        console.log('tableCloum', data.list)
       })
     },
     getLeftTree () {
       getIncomeTree().then(response => {
-        console.log('data', response.data.list)
         response.data.list.forEach(tree => {
           tree.name = tree.code + ' ' + tree.name
           if (tree.incomeSortDTOList.length > 0) {
@@ -414,7 +412,6 @@ export default {
             incomeSortDTOList: response.data.list
           }
         ]
-        console.log('treeRoot', treeRoot)
         this.leftSideData.showTreeData = treeRoot
       })
     },
@@ -571,7 +568,6 @@ export default {
       this.$refs['form'].resetFields()
     },
     updateDialogOpen () {
-      console.log('updateDialogOpen')
     },
     updateDialogClose () {
       this.incomeSort = {}
