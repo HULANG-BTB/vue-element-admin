@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-10 20:10:36
+ * @lastTime: 2020-08-11 14:01:34
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -19,6 +19,7 @@
       @tableSelectionChange="tableSelectionChange"
       @pageNumChange="pageNumChange"
       @pageSizeChange="pageSizeChange"
+      @tableTagClick="tableTagClick"
       @tableButtonClick="tableButtonClick"
     /></div>
 </template>
@@ -74,7 +75,6 @@ export default {
       this.$emit('requestTableData', param)
     },
     searchTableData (searchParam) {
-
       const param = { ...searchParam, ...this.defaultPage }
       this.requestTableData(param)
     },
@@ -97,6 +97,9 @@ export default {
     },
     tableButtonClick (name, row) {
       this.$emit('tableButtonClick', name, row)
+    },
+    tableTagClick (name, row) {
+      this.$emit('tableTagClick', name, row)
     }
   }
 }

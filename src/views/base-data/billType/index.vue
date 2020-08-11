@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: 2020-07-31 14:47:07
- * @lastTime: 2020-08-10 17:42:19
+ * @lastTime: 2020-08-11 14:03:14
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -325,9 +325,9 @@ export default {
       total: 0,
       page: {
         pageNum: 1,
-        pageSize: 10,
-        id: ''
+        pageSize: 10
       },
+      nodeId: 0,
       defaultPage: {
         pageNum: 1,
         pageSize: 10
@@ -380,16 +380,6 @@ export default {
             label: '票据名称'
           },
           {
-            prop: 'effDate',
-            label: '生效日期',
-            width: 150
-          },
-          {
-            prop: 'expDate',
-            label: '失效日期',
-            width: 150
-          },
-          {
             prop: 'checkSort',
             label: '是否分类'
           },
@@ -406,6 +396,16 @@ export default {
             prop: 'natureCode',
             label: '票据性质',
             width: 80
+          },
+          {
+            prop: 'effDate',
+            label: '生效日期',
+            width: 150
+          },
+          {
+            prop: 'expDate',
+            label: '失效日期',
+            width: 150
           }
         ],
         operation: [
@@ -484,25 +484,28 @@ export default {
       const checkedKeys = this.$refs.tree.getCheckedKeys(true)
       return checkedKeys
     },
-    treeNodeSearch (idObject) {
-      if (idObject.id === 0) {
+    treeNodeSearch (object) {
+      this.nodeId = object.id
+      if (object.id === 0) {
         this.requestTableData(this.defaultPage)
       } else {
-        this.page.id = idObject.id
-        const param = { ...this.defaultPage, ...idObject }
+        const param = { ...this.defaultPage, ...{ id: object.id }}
         this.requestTableData(param)
       }
     },
     requestTableData (param) {
+      if (this.nodeId !== 0) {
+        param.id = this.nodeId
+      }
       queryByCondition(param).then(response => {
-        const data = response.query
+        const data = response.data
         this.total = data.total
         this.tableData.bodyData = data.list
       })
     },
     getLeftTree () {
       queryBillTypeTree().then(response => {
-        response.query.forEach(tree => {
+        response.data.forEach(tree => {
           tree.name = tree.code + ' ' + tree.name
           if (tree.children.length > 0) {
             tree.children.forEach(child => {
@@ -514,7 +517,7 @@ export default {
           {
             id: 0,
             name: '所有',
-            children: response.query
+            children: response.data
           }
         ]
         this.leftSideData.showTreeData = treeRoot
@@ -644,10 +647,10 @@ export default {
     },
     addDialogOpen () {
       queryAllBillSort().then(response => {
-        response.query.forEach(element => {
+        response.data.forEach(element => {
           element.name = element.code + ' ' + element.name
         })
-        this.formOptions.billSortOptions = response.query
+        this.formOptions.billSortOptions = response.data
       })
     },
     addDialogClose () {
