@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: 2020-07-31 14:47:07
- * @lastTime: 2020-08-11 15:13:19
+ * @lastTime: 2020-08-11 16:21:06
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -129,7 +129,7 @@
           </el-col>
           <el-col :span="11" class="rightCol">
             <el-form-item label="是否底级" prop="leaf">
-              <el-select v-model="incomeSort.checkLeaf">
+              <el-select v-model="incomeSort.leaf">
                 <el-option
                   v-for="item in formOptions.checkLeaf"
                   :key="item.value"
