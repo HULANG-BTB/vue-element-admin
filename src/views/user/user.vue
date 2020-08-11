@@ -429,7 +429,7 @@ export default {
 
     // 格式化时间
     parseTime (time) {
-      return parseTime(time)
+      return parseTime(new Date())
     }
   }
 }

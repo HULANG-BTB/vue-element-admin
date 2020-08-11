@@ -5,7 +5,7 @@ import Layout from '@/layout'
 const projectManager = {
   path: '/projectManager',
   component: Layout,
-  name: 'projectManager',
+  redirect: '/projectManager/projectManager',
   meta: { title: '项目管理', icon: 'form' },
   children: [
     {
