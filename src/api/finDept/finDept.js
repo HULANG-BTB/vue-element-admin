@@ -19,8 +19,8 @@ export function queryFinDept (data) {
 
 export function queryRngCode () {
   return request({
-    url: baseUrl + 'list',
-    method: 'post'
+    url: '/region/category',
+    method: 'get'
   })
 }
 
