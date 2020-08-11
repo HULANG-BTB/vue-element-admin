@@ -9,35 +9,41 @@
       <el-form-item label="搜索权限：">
         <el-input v-model="query.keyword" placeholder="请输入权限名称或路径" clearable size="small" />
       </el-form-item>
-      <el-form-item label>
-        <el-button icon="el-icon-search" size="small" @click="handleSearch">搜索</el-button>
+      <el-form-item>
+        <el-button icon="el-icon-search" type="primary" size="small" @click="handleSearch">搜索</el-button>
       </el-form-item>
-      <el-form-item label>
-        <el-button type="primary" size="small" @click="handleAdd">创建权限</el-button>
-      </el-form-item>
-      <el-form-item label>
-        <el-button
-          :disabled="deleteBatchDisable"
-          type="danger"
-          size="small"
-          @click="handleDeleteBatch"
-        >批量删除</el-button>
-      </el-form-item>
-      <el-form-item label>
-        <el-button type="success" size="small" @click="getTableData">重载数据</el-button>
+      <el-form-item>
+        <el-button icon="el-icon-refresh" type="default" size="small" @click="query.keyword = ''">重置</el-button>
       </el-form-item>
     </el-form>
 
-    <el-pagination
-      background
-      layout="prev, pager, next, sizes, total, jumper"
-      :total="query.total"
-      :current-page="query.page"
-      :page-sizes="[10, 20, 50, 100, 500, 1000]"
-      :page-size="query.limit"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+    <el-row :gutter="10">
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="small"
+          @click="handleAdd"
+        >新增角色</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          size="small"
+          :disabled="deleteBatchDisable"
+          @click="handleDeleteBatch"
+        >批量删除</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="success"
+          icon="el-icon-refresh"
+          size="small"
+          @click="getTableData"
+        >重载数据</el-button>
+      </el-col>
+    </el-row>
 
     <el-table
       v-loading.body="loading"
@@ -79,6 +85,18 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <el-pagination
+      background
+      layout="prev, pager, next, sizes, total, jumper"
+      style="margin-top:20px;float:right;margin-right:20px;"
+      :total="query.total"
+      :current-page="query.page"
+      :page-sizes="[10, 20, 50, 100, 500, 1000]"
+      :page-size="query.limit"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑权限':'新建权限'">
       <el-form
@@ -283,6 +301,7 @@ export default {
               type: 'success',
               message: 'Delete succed!'
             })
+            this.getTableData()
           }).catch(err => {
             this.$message({
               type: 'error',

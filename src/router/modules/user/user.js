@@ -16,7 +16,7 @@ export default [
         path: 'user',
         component: () => import('@/views/user/user'),
         name: 'PageUser',
-        meta: { title: '用户管理' }
+        meta: { title: '用户管理', icon: 'el-icon-user' }
       },
       {
         path: 'role',
@@ -24,6 +24,7 @@ export default [
         name: 'PageRole',
         meta: {
           title: '角色管理',
+          icon: 'el-icon-wallet',
           roles: ['role_manager', 'admin']
         }
       },
@@ -33,6 +34,7 @@ export default [
         name: 'PagePermissions',
         meta: {
           title: '权限管理',
+          icon: 'el-icon-link',
           roles: ['permission_manager', 'admin']
         }
       }
