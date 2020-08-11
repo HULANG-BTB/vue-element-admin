@@ -239,19 +239,10 @@ export default {
         showCheckBox: false,
         showTreeData: []
       },
-      billNatureOptions: [
-        {
-          value: '通用票据',
-          label: '通用票据'
-        },
-        {
-          value: '专用票据',
-          label: '专用票据'
-        }
-      ],
+
       rules: {
         name: [
-          { required: true, message: '请输入票据名称', trigger: 'blur' }
+          { required: true, message: '请输入收入名称', trigger: 'blur' }
         ],
         leaf: [
           { required: true, message: '请选择是否是底级', trigger: 'change' }
