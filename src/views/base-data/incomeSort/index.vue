@@ -181,11 +181,11 @@ export default {
         checkLeaf: [
           {
             label: '非底级',
-            value: 0
+            value: false
           },
           {
             label: '底级',
-            value: 1
+            value: true
           }
         ],
         parentIncomeSorts: [],
@@ -260,18 +260,18 @@ export default {
       },
       total: 0,
       page: {
-        page: 1,
-        size: 10
+        pageNum: 1,
+        pageSize: 10
       },
       defaultPage: {
-        page: 1,
-        size: 10
+        pageNum: 1,
+        pageSize: 10
       },
       showTree: false,
       searchFormData: [
         {
           label: '类别编码',
-          prop: 'memoryCode',
+          prop: 'code',
           type: 'input'
         },
         {
