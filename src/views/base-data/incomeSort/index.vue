@@ -129,7 +129,7 @@
           </el-col>
           <el-col :span="11" class="rightCol">
             <el-form-item label="是否底级" prop="leaf">
-              <el-select v-model="incomeSort.checkLeaf">
+              <el-select v-model="incomeSort.leaf">
                 <el-option
                   v-for="item in formOptions.checkLeaf"
                   :key="item.value"
@@ -181,11 +181,11 @@
           checkLeaf:[
             {
               label: '非底级',
-              value: 0
+              value:  false
             },
             {
               label: '底级',
-              value: 1
+              value: true
             }
           ],
           parentIncomeSorts:[],
@@ -403,6 +403,7 @@
           const data = response.data
           this.total = data.total
           this.tableData.bodyData = data.list
+          console.log("data",data.list)
         })
       },
       getLeftTree () {
@@ -527,6 +528,7 @@
         function confirm () {
           this.$refs['updateForm'].validate((valid) => {
             if (valid) {
+              console.log("this.income",this.incomeSort)
               const form = { ...this.incomeSort }
               if (this.updateDialog === true) {
                 console.log("update",form)
