@@ -260,18 +260,18 @@
         },
         total: 0,
         page: {
-          page: 1,
-          size: 10
+          pageNum: 1,
+          pageSize: 10
         },
         defaultPage: {
-          page: 1,
-          size: 10
+          pageNum: 1,
+          pageSize: 10
         },
         showTree: false,
         searchFormData: [
           {
             label: '类别编码',
-            prop: 'memoryCode',
+            prop: 'code',
             type: 'input'
           },
           {
@@ -403,7 +403,6 @@
           const data = response.data
           this.total = data.total
           this.tableData.bodyData = data.list
-          console.log("tableCloum",data.list)
         })
       },
       getLeftTree () {
