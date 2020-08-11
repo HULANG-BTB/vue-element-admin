@@ -107,121 +107,6 @@ export default {
       // 级联框数据配置
       cascader: {
         data: [
-          {
-            id: 1,
-            code: '000000',
-            name: '中央',
-            parentId: 0,
-            assortment: false,
-            children: null
-          },
-          {
-            id: 2,
-            code: '36',
-            name: '江西省',
-            parentId: 0,
-            assortment: true,
-            children: [
-              {
-                id: 3,
-                code: '360000',
-                name: '江西省本级',
-                parentId: 2,
-                assortment: false,
-                children: []
-              },
-              {
-                id: 4,
-                code: '360100',
-                name: '南昌市',
-                parentId: 2,
-                assortment: true,
-                children: [
-                  {
-                    id: 5,
-                    code: '360101',
-                    name: '南昌市本级',
-                    parentId: 4,
-                    assortment: false,
-                    children: null
-                  },
-                  {
-                    id: 6,
-                    code: '360102',
-                    name: '南昌市东湖区',
-                    parentId: 4,
-                    assortment: false,
-                    children: null
-                  },
-                  {
-                    id: 7,
-                    code: '360103',
-                    name: '南昌市西湖区',
-                    parentId: 4,
-                    assortment: false,
-                    children: null
-                  },
-                  {
-                    id: 8,
-                    code: '360104',
-                    name: '南昌市青云谱区',
-                    parentId: 4,
-                    assortment: false,
-                    children: null
-                  },
-                  {
-                    id: 9,
-                    code: '360105',
-                    name: '南昌市湾里区',
-                    parentId: 4,
-                    assortment: false,
-                    children: null
-                  },
-                  {
-                    id: 10,
-                    code: '360111',
-                    name: '南昌市青山湖区',
-                    parentId: 4,
-                    assortment: false,
-                    children: null
-                  },
-                  {
-                    id: 11,
-                    code: '360112',
-                    name: '南昌市新建区',
-                    parentId: 4,
-                    assortment: false,
-                    children: null
-                  },
-                  {
-                    id: 12,
-                    code: '360113',
-                    name: '南昌市南昌县',
-                    parentId: 4,
-                    assortment: false,
-                    children: null
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id: 13,
-            code: '41',
-            name: '河南省',
-            parentId: 0,
-            assortment: true,
-            children: [
-              {
-                id: 14,
-                code: '410001',
-                name: '河南省本级',
-                parentId: 13,
-                assortment: false,
-                children: []
-              }
-            ]
-          }
         ],
         props: {
           value: 'code',
@@ -299,7 +184,7 @@ export default {
   },
   mounted () {
     this.query()
-    // this.getRngCode()
+    this.getRngCode()
   },
   methods: {
     // msg弹框
@@ -400,7 +285,7 @@ export default {
     },
     getRngCode () {
       queryRngCode().then((response) => {
-        // this.cascader.data = response.query.data
+        this.cascader.data = response.data
       })
     },
     clearSearchForm () {
