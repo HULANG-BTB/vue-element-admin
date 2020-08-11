@@ -2,7 +2,7 @@
  * @Author: Raiz
  * @Date: 2019-08-01 08:46:23
  * @LastEditors: Raiz
- * @lastTime: 2020-08-09 23:45:52
+ * @lastTime: 2020-08-10 14:48:39
  * @description: 按钮组件
  -->
 <template>
@@ -52,7 +52,6 @@ export default {
   },
   methods: {
     click (item) {
-      console.log(item)
       const el = this.$refs[item.name].$el
       this.$emit('click', item, el)
     },

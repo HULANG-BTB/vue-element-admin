@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-09 23:45:21
+ * @lastTime: 2020-08-11 14:01:34
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -19,6 +19,7 @@
       @tableSelectionChange="tableSelectionChange"
       @pageNumChange="pageNumChange"
       @pageSizeChange="pageSizeChange"
+      @tableTagClick="tableTagClick"
       @tableButtonClick="tableButtonClick"
     /></div>
 </template>
@@ -62,6 +63,10 @@ export default {
       pageParam: {
         pageNum: 1,
         pageSize: 10
+      },
+      defaultPage: {
+        pageNum: 1,
+        pageSize: 10
       }
     }
   },
@@ -70,7 +75,7 @@ export default {
       this.$emit('requestTableData', param)
     },
     searchTableData (searchParam) {
-      const param = { ...searchParam, ...this.pageParam }
+      const param = { ...searchParam, ...this.defaultPage }
       this.requestTableData(param)
     },
     tableHeadButtonClick (name) {
@@ -82,14 +87,19 @@ export default {
     },
     pageNumChange (num) {
       this.pageParam.pageNum = num
+      this.$emit('pageParamChange', this.pageParam)
       this.requestTableData(this.pageParam)
     },
     pageSizeChange (size) {
       this.pageParam.pageSize = size
+      this.$emit('pageParamChange', this.pageParam)
       this.requestTableData(this.pageParam)
     },
     tableButtonClick (name, row) {
       this.$emit('tableButtonClick', name, row)
+    },
+    tableTagClick (name, row) {
+      this.$emit('tableTagClick', name, row)
     }
   }
 }

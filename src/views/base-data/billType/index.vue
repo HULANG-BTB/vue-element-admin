@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: 2020-07-31 14:47:07
- * @lastTime: 2020-08-09 23:51:00
+ * @lastTime: 2020-08-11 14:03:14
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -18,6 +18,7 @@
         :table-column-data="tableColumnData"
         :total="total"
         @requestTableData="requestTableData"
+        @pageParamChange="pageParamChange"
         @tableHeadButtonClick="tableHeadButtonClick"
         @tableButtonClick="tableButtonClick"
       />
@@ -92,7 +93,7 @@
           </el-col>
           <el-col :span="11" class="rightCol">
             <el-form-item label="是否分类" prop="checkSort">
-              <el-select v-model="billType.checkSort">
+              <el-select v-model="billType.checkSort" placeholder="选择分类或者种类">
                 <el-option
                   v-for="item in formOptions.checkSortOptions"
                   :key="item.value"
@@ -112,7 +113,7 @@
           </el-col>
           <el-col :span="11" class="rightCol">
             <el-form-item label="票据性质" prop="natureCode">
-              <el-select v-model="billType.natureCode">
+              <el-select v-model="billType.natureCode" placeholder="选择票据性质">
                 <el-option
                   v-for="item in formOptions.natureCodeOptions"
                   :key="item.value"
@@ -126,7 +127,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="票据用途" prop="billNature">
-              <el-select v-model="billType.billNature">
+              <el-select v-model="billType.billNature" placeholder="选择票据用途">
                 <el-option
                   v-for="item in formOptions.billNatureOptions"
                   :key="item.value"
@@ -144,7 +145,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item v-if="billType.checkSort===0" label="父级票据分类" prop="pid">
-              <el-select v-model="billType.pid">
+              <el-select v-model="billType.pid" placeholder="选择票据分类">
                 <el-option
                   v-for="item in formOptions.billSortOptions"
                   :key="item.id"
@@ -278,7 +279,7 @@ export default {
         showTitle: '票据种类',
         expand: true,
         key: 'id',
-        treeProp: {
+        treeProps: {
           children: 'children',
           label: 'name'
         },
@@ -298,6 +299,9 @@ export default {
       rules: {
         name: [
           { required: true, message: '请输入票据名称', trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: '请输入票据编码', trigger: 'blur' }
         ],
         billNature: [
           { required: true, message: '请选择票据用途', trigger: 'change' }
@@ -323,6 +327,7 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
+      nodeId: 0,
       defaultPage: {
         pageNum: 1,
         pageSize: 10
@@ -340,8 +345,14 @@ export default {
           type: 'input'
         },
         {
-          label: '票据性质',
+          label: '票据用途',
           prop: 'billNature',
+          type: 'select',
+          options: []
+        },
+        {
+          label: '是否分类',
+          prop: 'checkSort',
           type: 'select',
           options: []
         }
@@ -359,7 +370,6 @@ export default {
       // 表格列配置
       tableColumnData: {
         select: false,
-        expand: true,
         column: [
           {
             prop: 'code',
@@ -370,18 +380,12 @@ export default {
             label: '票据名称'
           },
           {
-            prop: 'effDate',
-            label: '生效日期',
-            width: 150
-          },
-          {
-            prop: 'expDate',
-            label: '失效日期',
-            width: 150
-          },
-          {
             prop: 'checkSort',
             label: '是否分类'
+          },
+          {
+            prop: 'memoryCode',
+            label: '助记码'
           },
           {
             prop: 'billNature',
@@ -392,6 +396,16 @@ export default {
             prop: 'natureCode',
             label: '票据性质',
             width: 80
+          },
+          {
+            prop: 'effDate',
+            label: '生效日期',
+            width: 150
+          },
+          {
+            prop: 'expDate',
+            label: '失效日期',
+            width: 150
           }
         ],
         operation: [
@@ -470,24 +484,28 @@ export default {
       const checkedKeys = this.$refs.tree.getCheckedKeys(true)
       return checkedKeys
     },
-    treeNodeSearch (id) {
-      if (id.id === 0) {
+    treeNodeSearch (object) {
+      this.nodeId = object.id
+      if (object.id === 0) {
         this.requestTableData(this.defaultPage)
       } else {
-        const param = { ...this.defaultPage, ...id }
+        const param = { ...this.defaultPage, ...{ id: object.id }}
         this.requestTableData(param)
       }
     },
     requestTableData (param) {
+      if (this.nodeId !== 0) {
+        param.id = this.nodeId
+      }
       queryByCondition(param).then(response => {
-        const data = response.query
+        const data = response.data
         this.total = data.total
         this.tableData.bodyData = data.list
       })
     },
     getLeftTree () {
       queryBillTypeTree().then(response => {
-        response.query.forEach(tree => {
+        response.data.forEach(tree => {
           tree.name = tree.code + ' ' + tree.name
           if (tree.children.length > 0) {
             tree.children.forEach(child => {
@@ -499,7 +517,7 @@ export default {
           {
             id: 0,
             name: '所有',
-            children: response.query
+            children: response.data
           }
         ]
         this.leftSideData.showTreeData = treeRoot
@@ -527,7 +545,6 @@ export default {
         this.billType.date[0] = row.effDate
         this.billType.date[1] = row.expDate
         this.billType.checkQuota === 1 ? this.billType.checkQuota = true : this.billType.checkQuota = false
-        console.log('编辑')
       }
 
       function deleteBillType () {
@@ -584,7 +601,6 @@ export default {
             } else if (form.checkQuota === false) {
               form.checkQuota = 0
             }
-            console.log(form)
             if (this.addDialog === true) {
               add(form).then(response => {
                 this.freshTreeAndTable()
@@ -612,7 +628,6 @@ export default {
       }
     },
     tableHeadButtonClick (button) {
-      console.log(button)
       const btnDo = {
         '添加': () => add.call(this)
       }
@@ -622,7 +637,6 @@ export default {
       function add () {
         this.addDialog = true
         this.addDialogVisible = true
-        console.log('添加')
       }
     },
     dialogOpen () {
@@ -633,10 +647,10 @@ export default {
     },
     addDialogOpen () {
       queryAllBillSort().then(response => {
-        response.query.forEach(element => {
+        response.data.forEach(element => {
           element.name = element.code + ' ' + element.name
         })
-        this.formOptions.billSortOptions = response.query
+        this.formOptions.billSortOptions = response.data
       })
     },
     addDialogClose () {
@@ -645,12 +659,16 @@ export default {
     },
     init () {
       this.freshTreeAndTable()
-      this.searchFormData[2].options = this.formOptions.natureCodeOptions
+      this.searchFormData[2].options = this.formOptions.billNatureOptions
+      this.searchFormData[3].options = this.formOptions.checkSortOptions
     },
     freshTreeAndTable () {
       this.getLeftTree()
       const param = this.page
       this.requestTableData(param)
+    },
+    pageParamChange (pageParam) {
+      this.page = pageParam
     }
   }
 }
@@ -667,7 +685,10 @@ export default {
 }
 .formClass{
   .el-row{
-    margin-left:5%
+    margin-left:5%;
+    .el-select{
+      width: 100%;
+    }
   }
   .rightCol{
     margin-left: 10px;

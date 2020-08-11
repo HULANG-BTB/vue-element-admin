@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-09 23:45:37
+ * @lastTime: 2020-08-11 14:02:00
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -11,7 +11,7 @@
     <div v-if="leftSideData.showSearch ? leftSideData.showSearch:false">
       <el-input
         v-model.trim="searchParam"
-        placeholder="杜索"
+        placeholder="搜索"
         class="searchInput"
       >
         <el-button slot="append" icon="el-icon-search" @click="submitSearch" />
@@ -65,10 +65,7 @@ export default {
       this.searchParam = ''
     },
     nodeClick (object, node) {
-      const param = {
-        id: object.id
-      }
-      this.$emit('treeNodeSearch', param)
+      this.$emit('treeNodeSearch', object)
     }
   }
 }
@@ -81,10 +78,10 @@ export default {
   font-size: 20px;
 }
 .leftSide {
- width: 320px;
- margin-left:20px;
- margin-top:20px;
- border-right: 1px solid #cfd7e5;
+  width: 320px;
+  margin-left:20px;
+  margin-top:20px;
+  border-right: 1px solid #cfd7e5;
 }
 .leftTree{
   margin-top: 10px;

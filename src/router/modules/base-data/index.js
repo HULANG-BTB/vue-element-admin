@@ -1,7 +1,7 @@
 /*
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-10 12:21:02
+ * @lastTime: 2020-08-10 20:03:36
  * @LastEditors: Raiz
  * @Description:
  */
@@ -15,7 +15,7 @@ export default [
     name: 'base-data',
     meta: {
       title: '基础信息',
-      icon: 'user'
+      icon: 'el-icon-document'
     },
     children: [
       {

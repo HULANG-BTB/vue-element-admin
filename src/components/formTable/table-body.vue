@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-10 12:46:39
+ * @lastTime: 2020-08-11 14:01:16
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -20,7 +20,7 @@
         :height="tableHeight"
         :empty-text="tableColumnData.emptyText || '暂无数据'"
         size="small"
-        style="width:900px;"
+        :style="tableWidth"
         highlight-current-row
         @selection-change="tableSelectionChange"
       >
@@ -124,6 +124,7 @@ export default {
         pageSize: 10
       },
       maxHeight: 800,
+      tableWidth: { width: window.innerWidth - 410 + 'px' },
       windowHeight: { height: window.innerHeight - 150 + 'px' },
       tableHeight: window.innerHeight - 240,
       resizable: false
@@ -153,7 +154,8 @@ export default {
     tableReData (prop, row) {
       return this.tableColumnData.reData.newData[prop][row[prop]]
     },
-    tableTagClick (prop, row) {
+    tableTagClick (name, row) {
+      this.$emit('tableTagClick', name, row)
     },
     handleCurrentChange (index) {
       this.$emit('pageNumChange', index)
