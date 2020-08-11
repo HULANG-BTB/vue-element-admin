@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function getUserListByPage (data) {
+export function getProjectListByPage (data) {
   return request({
     url: '/item/listbypage',
     method: 'post',
@@ -8,7 +8,7 @@ export function getUserListByPage (data) {
   })
 }
 
-export function addUser (data) {
+export function addProject (data) {
   return request({
     url: `/item/save`,
     method: 'post',
@@ -16,7 +16,7 @@ export function addUser (data) {
   })
 }
 
-export function updateUser (user) {
+export function updateProject (user) {
   return request({
     url: '/item/update',
     method: 'post',
@@ -24,7 +24,7 @@ export function updateUser (user) {
   })
 }
 
-export function deleteUser (data) {
+export function deleteProject (data) {
   return request({
     url: `/item/delete`,
     method: 'post',
@@ -32,7 +32,7 @@ export function deleteUser (data) {
   })
 }
 
-export function deleteUserBatch (data) {
+export function deleteProjectBatch (data) {
   return request({
     url: `/item/batchDelete`,
     method: 'post',
