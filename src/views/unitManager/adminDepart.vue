@@ -1,18 +1,18 @@
 <template>
   <div class="app-container">
     <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
-      <el-form-item label="部门编码" prop="deptCode">
+      <el-form-item label="部门编码" prop="keyword">
         <el-input
-          v-model="queryParams.deptCode"
+          v-model="queryParams.keyword"
           placeholder="请输入部门编码"
           clearable
           style="width: 140px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="部门名称" prop="useType">
+      <el-form-item label="部门名称" prop="keyword">
         <el-input
-          v-model="queryParams.useType"
+          v-model="queryParams.keyword"
           placeholder="请输入部门名称"
           clearable
           style="width: 140px"
@@ -20,9 +20,9 @@
         />
       </el-form-item>
       <el-form-item label="是否启用">
-        <el-select v-model="queryParams.isEnable" placeholder="请选择部门状态" style="width: 150px">
-          <el-option label="启用" value="doing" />
-          <el-option label="停用" value="success" />
+        <el-select v-model="queryParams.isenable" placeholder="请选择部门状态" style="width: 150px">
+          <el-option label="启用" value="启用" />
+          <el-option label="停用" value="停用" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -43,34 +43,11 @@
       <el-col :span="1.5">
         <el-button
           type="danger"
+          :disabled="deleteBatchDisable"
           icon="el-icon-delete"
           size="small"
           @click="handleMultDelete"
         >批量删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <!-- <el-button
-          type="warning"
-          icon="el-icon-check"
-          size="small"
-        >导入</el-button> -->
-        <el-upload
-          ref="upload"
-          class="upload-demo"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :file-list="fileList"
-        >
-          <el-button slot="trigger" size="small" type="warning" icon="el-icon-check" @click="submitUpload">导入</el-button>
-        </el-upload>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-message"
-          size="small"
-        >导出</el-button>
       </el-col>
     </el-row>
 
@@ -81,20 +58,24 @@
       <el-table-column align="center" label="联系人" prop="linkMan" />
       <el-table-column align="center" label="联系电话" prop="linkTel" />
       <el-table-column align="center" label="经办人" prop="operator" />
-      <el-table-column align="center" label="经办日期" prop="updateTime" />
-      <el-table-column align="center" label="是否启用" prop="isEnable">
+      <el-table-column align="center" label="经办日期" prop="updateTime">
+        <template slot-scope="scope">
+          {{ parseTime(scope.row.updateTime) }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="是否启用" prop="isenable">
         <template slot-scope="scope">
           <el-tag
-            :type="scope.row.isEnable ? 'success' : 'info'"
+            :type="scope.row.isenable ? 'success' : 'info'"
             disable-transitions
-          >{{ scope.row.isEnable ? '启用' : '停用' }}
+          >{{ scope.row.isenable ? '启用' : '停用' }}
           </el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">修改</el-button>
-          <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope)">删除</el-button>
+          <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -118,27 +99,25 @@
         <el-form-item label="部门编码" :label-width="formLabelWidth" prop="deptCode">
           <el-input v-model="project.deptCode" placeholder="部门编码" />
         </el-form-item>
-        <el-form-item label="部门名称" :label-width="formLabelWidth">
+        <el-form-item label="部门名称" :label-width="formLabelWidth" prop="deptName">
           <el-input v-model="project.deptName" placeholder="部门名称" />
         </el-form-item>
-        <el-form-item label="联系人" :label-width="formLabelWidth" prop="deptName">
+        <el-form-item label="联系人" :label-width="formLabelWidth">
           <el-input v-model="project.linkMan" placeholder="联系人" />
         </el-form-item>
         <el-form-item label="联系电话" :label-width="formLabelWidth">
-          <!-- <el-input v-model="project.linkTel" placeholder="失效日期" /> -->
           <el-input v-model="project.linkTel" placeholder="联系电话" />
         </el-form-item>
-        <el-form-item label="经办人" :label-width="formLabelWidth" prop="mnen">
+        <el-form-item label="经办人" :label-width="formLabelWidth" prop="operator">
           <el-input v-model="project.operator" placeholder="经办人" />
         </el-form-item>
-        <el-form-item label="经办日期" :label-width="formLabelWidth">
+        <el-form-item label="经办日期" :label-width="formLabelWidth" prop="updateTime">
           <el-date-picker v-model="project.updateTime" type="date" placeholder="选择日期" style="width: 100%;" />
         </el-form-item>
-        <el-form-item label="是否启用" :label-width="formLabelWidth" prop="incomeSortCode">
-          <!-- <el-input v-model="project.incomeSortCode" placeholder="收入类别" /> -->
-          <el-select v-model="project.isEnable" placeholder="选择是否启用">
-            <el-option label="直缴" value="直缴" />
-            <el-option label="汇缴" value="汇缴" />
+        <el-form-item label="是否启用" :label-width="formLabelWidth" prop="isenable">
+          <el-select v-model="project.isenable" placeholder="选择是否启用">
+            <el-option label="启用" value="true" />
+            <el-option label="停用" value="false" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -151,15 +130,24 @@
 </template>
 
 <script>
-// import { listRole, addRole, updateRole } from '@/api/projectManager'
+import { getDapartListByPage, addDapart, updateDapart, deleteDapart, deleteDapartBatch } from '@/api/unitManager'
+import { parseTime } from '@/utils/index'
 
 const defaultUser = {
-  isEnable: '',
+  isenable: null,
   deptCode: '',
   deptName: '',
   linkMan: '',
   linkTel: '',
-  operator: ''
+  operator: '',
+  updateTime: '',
+  note: '无',
+  rgnId: '123',
+  logicDelete: false,
+  addr: '福建省福清市',
+  alterCode: 'asoiaoscn',
+  operatorId: 1231651651,
+  version: 1
 }
 
 export default {
@@ -167,59 +155,37 @@ export default {
     return {
     //   loading: true,
       queryParams: { // 查询参数
+        // deptCode: '',
+        // deptName: '',
+        // isEnable: '',
+        keyword: '',
+        page: 1,
+        limit: 10
+        // total: 0
+      },
+      projectList: [],
+      project: {
+        id: 1,
         deptCode: '',
         deptName: '',
-        isEnable: '',
-        page: 1,
-        limit: 10,
-        total: 0
+        linkMan: '',
+        linkTel: '',
+        operator: '',
+        updateTime: '',
+        createTime: '',
+        isenable: null,
+        note: '无',
+        rgnId: '123',
+        logicDelete: false,
+        addr: '福建省福清市',
+        alterCode: 'asoiaoscn',
+        operatorId: 1231651651,
+        version: 1
       },
-      projectList: [
-        {
-          isEnable: 1,
-          deptCode: '1',
-          deptName: '江西省财政厅',
-          linkMan: '张珊',
-          linkTel: '15224700207',
-          operator: '系统管理员',
-          updateTime: '2020-02-01'
-        },
-        {
-          isEnable: 1,
-          deptCode: '2',
-          deptName: '江西省财政厅',
-          linkMan: '张珊',
-          linkTel: '15224700207',
-          operator: '系统管理员',
-          updateTime: '2020-02-01'
-        },
-        {
-          isEnable: 1,
-          deptCode: '3',
-          deptName: '江西省财政厅',
-          linkMan: '张珊',
-          linkTel: '15224700207',
-          operator: '系统管理员',
-          updateTime: '2020-02-01'
-        },
-        {
-          isEnable: 1,
-          deptCode: '4',
-          deptName: '江西省财政厅',
-          linkMan: '张珊',
-          linkTel: '15224700207',
-          operator: '系统管理员',
-          updateTime: '2020-02-01'
-        }
-      ],
-      project: {},
       dialogVisible: false,
       dialogType: 'new',
       formLabelWidth: '100px',
-      // multiple: true, // 非多个禁用
-      // pagesize: 5,
-      // currpage: 1,
-      fileList: [],
+      selectedList: [],
       rules: {
         deptCode: [
           { required: true, message: '部门编码不能为空', trigger: 'blur' }
@@ -227,31 +193,48 @@ export default {
         deptName: [
           { required: true, message: '部门名称不能为空', trigger: 'blur' }
         ],
-        mnen: [
-          { required: true, message: '助记码不能为空', trigger: 'blur' }
-        ],
-        incomeSortCode: [
-          { required: true, message: '收入类别不能为空', trigger: 'blur' }
-        ],
         operator: [
-          { required: true, message: '资金性质不能为空', trigger: 'blur' }
+          { required: true, message: '经办人不能为空', trigger: 'blur' }
+        ],
+        operatorId: [
+          { required: true, message: '经办人ID不能为空', trigger: 'blur' }
+        ],
+        updateTime: [
+          { required: true, message: '经办日期不能为空', trigger: 'blur' }
+        ],
+        version: [
+          { required: true, message: '版本不能为空', trigger: 'blur' }
+        ],
+        createTime: [
+          { required: true, message: '创建时间不能为空', trigger: 'blur' }
+        ],
+        isenable: [
+          { required: true, message: '状态不能为空', trigger: 'blur' }
         ]
       }
+    }
+  },
+  computed: {
+    deleteBatchDisable () {
+      return this.selectedList.length === 0
     }
   },
   created () {
     this.getTableData()
   },
   methods: {
+    parseTime (time, format) {
+      return parseTime(time, '{y}-{m}-{d}')
+    },
     // 获取资源列表
     async getTableData () {
       // this.loading = true
-      // const res = await listRole(this.queryParams)
-      // this.projectList = res.data.items
-      // this.queryParams.total = res.data.total
-      // this.queryParams.limit = res.data.limit
-      // this.queryParams.page = res.data.page
-      // this.selectedList = []
+      const res = await getDapartListByPage(this.queryParams)
+      this.projectList = res.data.items
+      this.queryParams.total = res.data.total
+      this.queryParams.limit = res.data.limit
+      this.queryParams.page = res.data.page
+      this.selectedList = []
       // this.loading = false
     },
     // 搜索
@@ -270,28 +253,10 @@ export default {
       // this.resetForm('queryParams')
       this.queryParams = {}
     },
-    // 上传下载
-    submitUpload () {
-      this.$refs.upload.submit()
-    },
-    handleRemove (file, fileList) {
-      console.log(file, fileList)
-    },
-    handlePreview (file) {
-      console.log(file)
-    },
-    // 多选框选中数据
-    handleSelectionChange (selection) {
-      this.selectedList = selection
-      // this.ids = selection.map(item => item.deptName)
-      // console.log(this.ids)
-      // this.single = selection.length !== 1
-      // this.multiple = !selection.length
-    },
     // 新增按钮
     handleAdd () {
-      this.user = Object.assign({}, defaultUser)
-      this.dialogType !== 'edit'
+      this.project = Object.assign({}, defaultUser)
+      this.dialogType = 'new'
       this.dialogVisible = true
     },
     // 编辑按钮
@@ -299,32 +264,34 @@ export default {
       this.dialogVisible = true
       this.dialogType = 'edit'
       this.project = Object.assign({}, rowData)
-      // const { data } = await getOtherItem(rowData.id) // 模态框中需要的其他接口
-      // this.project.roles = data
     },
     // 删除按钮
-    handleDelete ({ $index, row }) {
+    handleDelete (deleData) {
       this.$confirm('此操作将永久删除该部门, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        // deleteUser(row.id)
-        //   .then((res) => {
-        //     this.$message({
-        //       type: 'success',
-        //       message: '删除成功!'
-        //     })
-        //     this.getTableData()
-        //   })
-        //   .catch((err) => {
-        //     this.$message({
-        //       type: 'error',
-        //       message: '删除失败!'
-        //     })
-        //     console.error(err)
-        //   })
+        deleteDapart(deleData.id)
+          .then((res) => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.getTableData()
+          })
+          .catch((err) => {
+            this.$message({
+              type: 'error',
+              message: '删除失败!'
+            })
+            console.error(err)
+          })
       })
+    },
+    // 多选框选中数据
+    handleSelectionChange (selection) {
+      this.selectedList = selection
     },
     // 批量删除
     async handleMultDelete () {
@@ -333,74 +300,74 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        // deleteUserBatch(this.selectedList).then((res) => {
-        //   this.$message({
-        //     type: 'success',
-        //     message: '删除成功!'
-        //   })
-        //   this.getTableData()
-        // })
+        this.selectedids = this.selectedList.map(item => {
+          return { id: item.id }
+        })
+        deleteDapartBatch(this.selectedids).then((res) => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getTableData()
+        })
       })
     },
     // 模态框提交
     async confirmRole () {
-    //   this.$refs['project'].validate(valid => {
-    //     if (valid) {
-    //       if (this.dialogType !== 'edit') { // 新增
-    //         addRole(this.role).then(res => {
-    //           this.role = res.data
-    //           console.log(this.role)
-    //           if (res.code === 200) {
-    //             this.$set(this.role, {})
-    //             this.getTableData() // 重新渲染数据列表
-    //             this.dialogVisible = false // 关闭模态框
-    //             // this.msgSuccess(res.message)
-    //             this.$message({
-    //               showClose: true,
-    //               message: '添加成功',
-    //               type: 'success'
-    //             })
-    //           } else {
-    //             this.$message({
-    //               showClose: true,
-    //               message: '添加失败',
-    //               type: 'error'
-    //             }) // 或者弹出后台返回错误
-    //           }
-    //         })
-    //       } else { // 变动
-    //         this.role = {
-    //           id: this.row.id,
-    //           name: this.row.name
-    //         }
-    //         updateRole(this.role.id, this.role).then(res => {
-    //           this.msgSuccess(res.message)
-    //           this.getTableData()
-    //           this.dialogVisible = false
-    //         })
-    //       }
-    //     }
-    //   })
+      this.$refs['project'].validate(async (valid) => {
+        if (valid) {
+          if (this.dialogType !== 'edit') { // 新增
+            await addDapart(this.project).then(res => {
+              this.$set(this.project, {})
+              this.getTableData()
+              this.dialogVisible = false
+              // if (res.status === 200) {
+              this.$message({
+                showClose: true,
+                message: '添加成功',
+                type: 'success'
+              })
+              // } else {
+              //   this.$message({
+              //     showClose: true,
+              //     message: '添加失败',
+              //     type: 'error'
+              //   })
+              // }
+            })
+          } else { // 编辑
+            await updateDapart(this.project).then(res => {
+              this.getTableData()
+              this.dialogVisible = false
+              if (res.status === 200) {
+              // this.$set(this.project, {})
+                this.$message({
+                  showClose: true,
+                  message: '编辑成功',
+                  type: 'success'
+                })
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: '编辑失败',
+                  type: 'error'
+                }) // 或者弹出后台返回错误
+              }
+            })
+          }
+        }
+      })
     },
     // 模态框取消
     cancel () {
       this.dialogVisible = false
       this.resetForm('project')
     },
-    // 分页
-    // handleCurrentChange (cpage) {
-    //   // userList.slice((currpage - 1) * pagesize, currpage * pagesize)
-    //   this.currpage = cpage
-    // },
-    // handleSizeChange (psize) {
-    //   this.pagesize = psize
-    // }
     // 分页，每页数目改变
     handleSizeChange (val) {
       this.queryParams.limit = val
       this.getTableData()
     },
-
     // 当前页码改变
     handleCurrentChange (val) {
       this.queryParams.page = val

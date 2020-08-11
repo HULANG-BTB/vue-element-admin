@@ -48,6 +48,7 @@
       <el-col :span="1.5">
         <el-button
           type="danger"
+          :disabled="deleteBatchDisable"
           icon="el-icon-delete"
           size="small"
           @click="handleMultDelete"
@@ -74,7 +75,7 @@
       <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">修改</el-button>
-          <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope)">删除</el-button>
+          <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -103,46 +104,13 @@
             <el-form-item label="生效日期" :label-width="formLabelWidth">
               <el-date-picker v-model="project.itemEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
             </el-form-item>
-            <el-form-item label="收入类别" :label-width="formLabelWidth" prop="incomeSortCode">
-              <!-- <el-input v-model="project.incomeSortCode" placeholder="收入类别" /> -->
-              <el-select v-model="project.incomeSortCode" placeholder="根据实际情况选择">
-                <el-option label="直缴" value="直缴" />
-                <el-option label="汇缴" value="汇缴" />
-                <el-option label="代缴" value="代缴" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="收缴方式" :label-width="formLabelWidth">
-              <el-select v-model="project.paymode" placeholder="请选择收缴方式">
-                <el-option label="直缴" value="直缴" />
-                <el-option label="汇缴" value="汇缴" />
-                <el-option label="代缴" value="代缴" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="资金性质" :label-width="formLabelWidth" prop="fundsnatureCode">
-              <!-- <el-input v-model="project.fundsnatureCode" placeholder="资金性质" /> -->
-              <el-select v-model="project.fundsnatureCode" placeholder="根据实际情况选择">
-                <el-option label="直缴" value="直缴" />
-                <el-option label="汇缴" value="汇缴" />
-                <el-option label="代缴" value="代缴" />
-              </el-select>
-            </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="项目名称" :label-width="formLabelWidth" prop="itemName">
               <el-input v-model="project.itemName" placeholder="项目名称" />
             </el-form-item>
             <el-form-item label="失效日期" :label-width="formLabelWidth">
-              <!-- <el-input v-model="project.itemExpdate" placeholder="失效日期" /> -->
               <el-date-picker v-model="project.itemExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
-            <el-form-item label="助记码" :label-width="formLabelWidth" prop="mnen">
-              <el-input v-model="project.mnen" placeholder="助记码" />
-            </el-form-item>
-            <el-form-item label="预算科目" :label-width="formLabelWidth">
-              <el-input v-model="project.subject" placeholder="根据实际情况填写" />
-            </el-form-item>
-            <el-form-item label="备注" :label-width="formLabelWidth">
-              <el-input v-model="project.note" placeholder="备注" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -157,28 +125,59 @@
 
 <script>
 // import { listRole, addRole, updateRole } from '@/api/projectManager'
-
-const defaultUser = {
-  isEnable: '',
-  agenIdcode: '',
-  deptName: '',
-  agenName: '',
-  typeCode: '',
-  sortCode: ''
-}
+// import { getUnitListByPage } from '@/api/unitManager'
+import { getUnitListByPage, addUnit, updateUnit, deleteUnit, deleteUnitBatch } from '@/api/unitManager'
+// const defaultUser = {
+//   note: '11',
+//   finMgr: '1',
+//   isalarmAgen: true,
+//   cityId: '1',
+//   linkTel: '1',
+//   linkMan: '1',
+//   expDate: 1597155373000,
+//   operator: '1',
+//   pidCode: '20',
+//   effDate: 1597068970000,
+//   orgCode: '20',
+//   countyId: '1',
+//   addr: '1',
+//   finMgrTel: '1',
+//   operatorId: 1,
+//   zip: '1',
+//   rgnId: 'aujdanjlsn',
+//   logicDelete: true,
+//   level: 2,
+//   agenCode: '112233',
+//   indCode: '2',
+//   updateTime: 1597933074000,
+//   sortCode: '2',
+//   provinceId: '1',
+//   version: 11,
+//   typeCode: '2',
+//   isenable: false,
+//   istickAgen: true,
+//   createTime: 1596550670000,
+//   agenName: '单位名',
+//   mnem: '1122',
+//   isleaf: false,
+//   deptCode: 'Ajanxsbxibs',
+//   findeptId: 2,
+//   isunpaid: true
+// }
 
 export default {
   data () {
     return {
     //   loading: true,
       queryParams: { // 查询参数
-        typeCode: '',
-        sortCode: '',
-        agenName: '',
-        isEnable: '',
+        // typeCode: '',
+        // sortCode: '',
+        // agenName: '',
+        // isEnable: '',
+        keyword: '',
         page: 1,
-        limit: 10,
-        total: 0
+        limit: 10
+        // total: 0
       },
       projectList: [
         {
@@ -188,40 +187,50 @@ export default {
           agenName: '江西省卫生厅',
           typeCode: '非税票据单位',
           sortCode: '事业'
-        },
-        {
-          isEnable: 1,
-          agenIdcode: '2',
-          deptName: '江西省研究院',
-          agenName: '江西省卫生厅',
-          typeCode: '非税票据单位',
-          sortCode: '事业'
-        },
-        {
-          isEnable: 1,
-          agenIdcode: '3',
-          deptName: '江西省研究院',
-          agenName: '江西省卫生厅',
-          typeCode: '非税票据单位',
-          sortCode: '事业'
-        },
-        {
-          isEnable: 1,
-          agenIdcode: '4',
-          deptName: '江西省研究院',
-          agenName: '江西省卫生厅',
-          typeCode: '非税票据单位',
-          sortCode: '事业'
         }
       ],
-      project: {},
+      project: {
+        note: '11',
+        finMgr: '1',
+        isalarmAgen: true,
+        cityId: '1',
+        linkTel: '1',
+        linkMan: '1',
+        expDate: 1597155373000,
+        operator: '1',
+        pidCode: '20',
+        effDate: 1597068970000,
+        orgCode: '20',
+        countyId: '1',
+        addr: '1',
+        finMgrTel: '1',
+        operatorId: 1,
+        zip: '1',
+        rgnId: 'aujdanjlsn',
+        logicDelete: true,
+        level: 2,
+        agenCode: '112233',
+        indCode: '2',
+        updateTime: 1597933074000,
+        sortCode: '2',
+        provinceId: '1',
+        version: 11,
+        typeCode: '2',
+        isenable: false,
+        istickAgen: true,
+        createTime: 1596550670000,
+        agenName: '单位名',
+        mnem: '1122',
+        isleaf: false,
+        deptCode: 'Ajanxsbxibs',
+        findeptId: 2,
+        isunpaid: true
+      },
       dialogVisible: false,
       dialogType: 'new',
       formLabelWidth: '100px',
+      selectedList: [],
       // multiple: true, // 非多个禁用
-      // pagesize: 5,
-      // currpage: 1,
-      fileList: [],
       rules: {
         itemCode: [
           { required: true, message: '项目编码不能为空', trigger: 'blur' }
@@ -241,6 +250,11 @@ export default {
       }
     }
   },
+  computed: {
+    deleteBatchDisable () {
+      return this.selectedList.length === 0
+    }
+  },
   created () {
     this.getTableData()
   },
@@ -248,12 +262,12 @@ export default {
     // 获取资源列表
     async getTableData () {
       // this.loading = true
-      // const res = await listRole(this.queryParams)
-      // this.projectList = res.data.items
-      // this.queryParams.total = res.data.total
-      // this.queryParams.limit = res.data.limit
-      // this.queryParams.page = res.data.page
-      // this.selectedList = []
+      const res = await getUnitListByPage(this.queryParams)
+      this.projectList = res.data.items
+      this.queryParams.total = res.data.total
+      this.queryParams.limit = res.data.limit
+      this.queryParams.page = res.data.page
+      this.selectedList = []
       // this.loading = false
     },
     // 搜索
@@ -272,28 +286,10 @@ export default {
       // this.resetForm('queryParams')
       this.queryParams = {}
     },
-    // 上传下载
-    submitUpload () {
-      this.$refs.upload.submit()
-    },
-    handleRemove (file, fileList) {
-      console.log(file, fileList)
-    },
-    handlePreview (file) {
-      console.log(file)
-    },
-    // 多选框选中数据
-    handleSelectionChange (selection) {
-      this.selectedList = selection
-      // this.ids = selection.map(item => item.itemName)
-      // console.log(this.ids)
-      // this.single = selection.length !== 1
-      // this.multiple = !selection.length
-    },
     // 新增按钮
     handleAdd () {
-      this.user = Object.assign({}, defaultUser)
-      this.dialogType !== 'edit'
+      this.project = Object.assign({}, this.project)
+      this.dialogType = 'new'
       this.dialogVisible = true
     },
     // 编辑按钮
@@ -301,108 +297,110 @@ export default {
       this.dialogVisible = true
       this.dialogType = 'edit'
       this.project = Object.assign({}, rowData)
-      // const { data } = await getOtherItem(rowData.id) // 模态框中需要的其他接口
-      // this.project.roles = data
     },
     // 删除按钮
-    handleDelete ({ $index, row }) {
-      this.$confirm('此操作将永久删除该项目, 是否继续?', '提示', {
+    handleDelete (deleData) {
+      this.$confirm('此操作将永久删除该部门, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        // deleteUser(row.id)
-        //   .then((res) => {
-        //     this.$message({
-        //       type: 'success',
-        //       message: '删除成功!'
-        //     })
-        //     this.getTableData()
-        //   })
-        //   .catch((err) => {
-        //     this.$message({
-        //       type: 'error',
-        //       message: '删除失败!'
-        //     })
-        //     console.error(err)
-        //   })
+        deleteUnit(deleData.id)
+          .then((res) => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.getTableData()
+          })
+          .catch((err) => {
+            this.$message({
+              type: 'error',
+              message: '删除失败!'
+            })
+            console.error(err)
+          })
       })
+    },
+    // 多选框选中数据
+    handleSelectionChange (selection) {
+      this.selectedList = selection
     },
     // 批量删除
     async handleMultDelete () {
-      this.$confirm('此操作将永久删除选中项目, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除选中部门, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        // deleteUserBatch(this.selectedList).then((res) => {
-        //   this.$message({
-        //     type: 'success',
-        //     message: '删除成功!'
-        //   })
-        //   this.getTableData()
-        // })
+        this.selectedids = this.selectedList.map(item => {
+          return { id: item.id }
+        })
+        deleteUnitBatch(this.selectedids).then((res) => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getTableData()
+        })
       })
     },
     // 模态框提交
     async confirmRole () {
-    //   this.$refs['project'].validate(valid => {
-    //     if (valid) {
-    //       if (this.dialogType !== 'edit') { // 新增
-    //         addRole(this.role).then(res => {
-    //           this.role = res.data
-    //           console.log(this.role)
-    //           if (res.code === 200) {
-    //             this.$set(this.role, {})
-    //             this.getTableData() // 重新渲染数据列表
-    //             this.dialogVisible = false // 关闭模态框
-    //             // this.msgSuccess(res.message)
-    //             this.$message({
-    //               showClose: true,
-    //               message: '添加成功',
-    //               type: 'success'
-    //             })
-    //           } else {
-    //             this.$message({
-    //               showClose: true,
-    //               message: '添加失败',
-    //               type: 'error'
-    //             }) // 或者弹出后台返回错误
-    //           }
-    //         })
-    //       } else { // 变动
-    //         this.role = {
-    //           id: this.row.id,
-    //           name: this.row.name
-    //         }
-    //         updateRole(this.role.id, this.role).then(res => {
-    //           this.msgSuccess(res.message)
-    //           this.getTableData()
-    //           this.dialogVisible = false
-    //         })
-    //       }
-    //     }
-    //   })
+      this.$refs['project'].validate(async (valid) => {
+        if (valid) {
+          if (this.dialogType !== 'edit') { // 新增
+            await addUnit(this.project).then(res => {
+              this.$set(this.project, {})
+              this.getTableData()
+              this.dialogVisible = false
+              // if (res.status === 200) {
+              this.$message({
+                showClose: true,
+                message: '添加成功',
+                type: 'success'
+              })
+              // } else {
+              //   this.$message({
+              //     showClose: true,
+              //     message: '添加失败',
+              //     type: 'error'
+              //   })
+              // }
+            })
+          } else { // 编辑
+            await updateUnit(this.project).then(res => {
+              this.getTableData()
+              this.dialogVisible = false
+              if (res.status === 200) {
+              // this.$set(this.project, {})
+                this.$message({
+                  showClose: true,
+                  message: '编辑成功',
+                  type: 'success'
+                })
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: '编辑失败',
+                  type: 'error'
+                }) // 或者弹出后台返回错误
+              }
+            })
+          }
+        }
+      })
     },
     // 模态框取消
     cancel () {
       this.dialogVisible = false
       this.resetForm('project')
     },
-    // 分页
-    // handleCurrentChange (cpage) {
-    //   // userList.slice((currpage - 1) * pagesize, currpage * pagesize)
-    //   this.currpage = cpage
-    // },
-    // handleSizeChange (psize) {
-    //   this.pagesize = psize
-    // }
     // 分页，每页数目改变
     handleSizeChange (val) {
       this.queryParams.limit = val
       this.getTableData()
     },
-
     // 当前页码改变
     handleCurrentChange (val) {
       this.queryParams.page = val

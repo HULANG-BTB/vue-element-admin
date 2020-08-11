@@ -43,6 +43,7 @@
           type="warning"
           icon="el-icon-message"
           size="small"
+          @click="handleAddStand"
         >新增标准</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -95,12 +96,12 @@
       <el-table-column align="center" label="项目名称" prop="itemName" :show-overflow-tooltip="true" />
       <el-table-column align="center" label="项目生效日期" prop="itemEffdate">
         <template slot-scope="scope">
-          {{ scope.row.itemEffdate }}
+          {{ parseTime(scope.row.itemEffdate) }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="项目失效日期" prop="itemExpdate">
         <template slot-scope="scope">
-          {{ scope.row.itemExpdate }}
+          {{ parseTime(scope.row.itemExpdate) }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="资金性质" prop="fundsnatureCode" />
@@ -196,16 +197,54 @@
         <el-button type="primary" @click="confirmRole">确认</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog :visible.sync="dialogVisibleTow" :title="dialogTypeTow">
+      <el-form ref="project" :model="standard" :rules="rules" label-width="80px" label-position="right" style="padding-right:25px;">
+        <!-- <el-row :gutter="20"> -->
+        <!-- <el-col :span="12"> -->
+        <el-form-item label="标准编码" :label-width="formLabelWidth" prop="itemstdCode">
+          <el-input v-model="standard.itemstdCode" placeholder="标准编码" />
+        </el-form-item>
+        <el-form-item label="标准名称" :label-width="formLabelWidth" prop="itemstdName">
+          <el-input v-model="standard.itemstdName" placeholder="标准名称" />
+        </el-form-item>
+        <el-form-item label="助记码" :label-width="formLabelWidth" prop="mnem">
+          <el-input v-model="standard.mnem" placeholder="助记码" />
+        </el-form-item>
+        <el-form-item label="标准上限" :label-width="formLabelWidth" prop="maxCharge">
+          <el-input v-model="standard.maxCharge" placeholder="标准上限" />
+        </el-form-item>
+        <el-form-item label="标准下限" :label-width="formLabelWidth" prop="minCharge">
+          <el-input v-model="standard.minCharge" placeholder="标准下限" />
+        </el-form-item>
+        <el-form-item label="计量单位" :label-width="formLabelWidth" prop="units">
+          <el-input v-model="standard.units" placeholder="计量单位" />
+        </el-form-item>
+        <el-form-item label="生效日期" :label-width="formLabelWidth" prop="itemstdEffdate">
+          <el-date-picker v-model="standard.itemstdEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
+        </el-form-item>
+        <el-form-item label="失效日期" :label-width="formLabelWidth" prop="itemstdExpdate">
+          <el-date-picker v-model="standard.itemstdExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
+        </el-form-item>
+        <el-form-item label="备注" :label-width="formLabelWidth" prop="note">
+          <el-input v-model="standard.note" placeholder="备注" />
+        </el-form-item>
+        <!-- </el-col> -->
+        <!-- </el-row> -->
+      </el-form>
+      <div style="text-align:right;">
+        <el-button type="danger" @click="cancel">取消</el-button>
+        <el-button type="primary" @click="confirmStand">确认</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getUserListByPage, updateUser, addUser, deleteUser, deleteUserBatch } from '@/api/projectManager'
-// import { parseTime } from '@/utils/index'
+import { getProjectListByPage, addProject, updateProject, deleteProject, deleteProjectBatch } from '@/api/projectManager'
+import { parseTime } from '@/utils/index'
 const defaultUser = {
-  // isEnable: '',
   // rgnId: '',
-  // id: 1,
   itemId: '',
   itemName: '',
   itemSortId: '',
@@ -259,8 +298,21 @@ export default {
         fundsnatureCode: '',
         paymode: ''
       },
+      standard: {
+        itemstdCode: '',
+        itemstdName: '',
+        mnem: '',
+        maxCharge: '',
+        minCharge: '',
+        units: '',
+        itemstdEffdate: '',
+        itemstdExpdate: '',
+        note: ''
+      },
       dialogVisible: false,
-      dialogType: 'new',
+      dialogVisibleTow: false,
+      dialogType: '',
+      dialogTypeTow: '新增标准',
       formLabelWidth: '100px',
       // multiple: true, // 非多个禁用
       fileList: [],
@@ -294,10 +346,14 @@ export default {
     this.getTableData()
   },
   methods: {
+    // 转换时间戳
+    parseTime (time, format) {
+      return parseTime(time, '{y}-{m}-{d}')
+    },
     // 获取资源列表
     async getTableData () {
       // this.loading = true
-      const res = await getUserListByPage(this.queryParams)
+      const res = await getProjectListByPage(this.queryParams)
       this.projectList = res.data.items
       this.queryParams.total = res.data.total
       this.queryParams.limit = res.data.limit
@@ -334,7 +390,7 @@ export default {
     // 新增按钮
     handleAdd () {
       this.project = Object.assign({}, defaultUser)
-      this.dialogType !== 'edit'
+      this.dialogType = 'new'
       this.dialogVisible = true
     },
     // 编辑按钮
@@ -350,7 +406,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        deleteUser(deleData.id)
+        deleteProject(deleData.id)
           .then((res) => {
             this.$message({
               type: 'success',
@@ -381,7 +437,7 @@ export default {
         this.selectedids = this.selectedList.map(item => {
           return { id: item.id }
         })
-        deleteUserBatch(this.selectedids).then((res) => {
+        deleteProjectBatch(this.selectedids).then((res) => {
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -395,7 +451,7 @@ export default {
       this.$refs['project'].validate(async (valid) => {
         if (valid) {
           if (this.dialogType !== 'edit') { // 新增
-            await addUser(this.project).then(res => {
+            await addProject(this.project).then(res => {
               this.$set(this.project, {})
               this.getTableData() // 重新渲染数据列表
               this.dialogVisible = false // 关闭模态框
@@ -414,11 +470,11 @@ export default {
               // }
             })
           } else { // 编辑
-            await updateUser(this.project).then(res => {
+            await updateProject(this.project).then(res => {
               this.getTableData()
               this.dialogVisible = false
               if (res.status === 200) {
-              // this.$set(this.project, {})
+                // this.$set(this.project, {})
                 this.$message({
                   showClose: true,
                   message: '编辑成功',
@@ -441,20 +497,20 @@ export default {
       this.dialogVisible = false
       this.resetForm('project')
     },
-    // 分页
-    // handleCurrentChange (cpage) {
-    //   // userList.slice((currpage - 1) * pagesize, currpage * pagesize)
-    //   this.currpage = cpage
-    // },
-    // handleSizeChange (psize) {
-    //   this.pagesize = psize
-    // }
+    // 新增标准
+    handleAddStand () {
+      this.standard = Object.assign({}, this.standard)
+      this.dialogVisibleTow = true
+    },
+    // 新增标准确定按钮
+    confirmStand () {
+
+    },
     // 分页，每页数目改变
     handleSizeChange (val) {
       this.queryParams.limit = val
       this.getTableData()
     },
-
     // 当前页码改变
     handleCurrentChange (val) {
       this.queryParams.page = val
