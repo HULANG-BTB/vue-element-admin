@@ -102,12 +102,18 @@
         align="center"
         label="创建日期"
         prop="createTime"
-      />
+      >
+        <template slot-scope="scope">
+          {{ parseTime(scope.row.createTime) }}
+        </template>
+      </el-table-column>
       <el-table-column
         align="center"
         label="最后修改时间"
         prop="updateTime"
-      />
+      ><template slot-scope="scope">
+        {{ parseTime(scope.row.updateTime) }}
+      </template></el-table-column>
       <el-table-column
         align="center"
         label="备注"
@@ -264,6 +270,8 @@
 <script>
 // import { listRole, addRole, updateRole } from '@/api/projectManager'
 import { addUnitPlace, getunitPlaceListByPage, updateUnitPlace, deleteUnitPlace, deleteUnitPlaceBatch } from '@/api/unitPlaceManager'
+import { parseTime } from '@/utils/index'
+
 const defaultUnitPlace = {
   agenId: '35018201',
   rgnId: '',
@@ -532,12 +540,18 @@ export default {
       this.queryParams.limit = val
       this.getTableData()
     },
-
+    // 转换时间戳
+    parseTime (time) {
+      return parseTime(new Date(time), '{y}-{m}-{d}')
+      // var dateee = new Date(time).toJSON()
+      // return new Date(+new Date(dateee) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+    },
     // 当前页码改变
     handleCurrentChange (val) {
       this.queryParams.page = val
       this.getTableData()
     }
+
   }
 }
 </script>
