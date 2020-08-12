@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getunitPlaceListByPage (data) {
   return request({
-    url: '/place/listbypage',
+    url: '/place/listByPage',
     method: 'post',
     data: data
   })
@@ -16,11 +16,11 @@ export function addUnitPlace (data) {
   })
 }
 
-export function updateUnitPlace (user) {
+export function updateUnitPlace (data) {
   return request({
     url: '/place/update',
     method: 'post',
-    data: user
+    data: data
   })
 }
 
