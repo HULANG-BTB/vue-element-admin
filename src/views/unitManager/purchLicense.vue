@@ -36,7 +36,7 @@
           icon="el-icon-plus"
           size="small"
           @click="handleAdd"
-        >新增项目</el-button>
+        >新增准购证</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -216,7 +216,7 @@ export default {
           fineno: '财务负责人',
           createTime: 1598322196000,
           proxyno: '收费委托书号',
-          agenName: 'XX单位',
+          agenName: 'XXXX单位',
           operatorI: 1414,
           chargno: '收费许可证号'
         }
@@ -313,7 +313,7 @@ export default {
     },
     // 删除按钮
     handleDelete ({ $index, row }) {
-      this.$confirm('此操作将永久删除该项目, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除准购证, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -337,7 +337,7 @@ export default {
     },
     // 批量删除
     async handleMultDelete () {
-      this.$confirm('此操作将永久删除选中项目, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除选中准购证, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
