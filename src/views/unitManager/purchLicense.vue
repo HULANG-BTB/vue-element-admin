@@ -1,23 +1,23 @@
 <template>
   <div class="app-container">
     <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
-      <el-form-item label="项目名称" prop="itemName">
+      <el-form-item label="准购证名称" prop="itemName">
         <el-input
           v-model="queryParams.itemName"
-          placeholder="请输入项目名称"
+          placeholder="请输入准购证名称"
           clearable
           style="width: 140px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="项目用途" prop="useType">
+      <el-form-item label="准购证用途" prop="useType">
         <el-select v-model="queryParams.useType" placeholder="请选择项目用途" style="width: 150px">
           <el-option label="非税收入" value="非税收入" />
           <el-option label="医疗项目" value="医疗项目" />
           <el-option label="其他项目" value="其他项目" />
         </el-select>
       </el-form-item>
-      <el-form-item label="项目状态">
+      <el-form-item label="准购证状态">
         <el-select v-model="queryParams.isEnable" placeholder="请选择项目状态" style="width: 150px">
           <el-option label="待审核" value="doing" />
           <el-option label="已完成" value="success" />
@@ -36,7 +36,7 @@
           icon="el-icon-plus"
           size="small"
           @click="handleAdd"
-        >新增项目</el-button>
+        >新增准购证</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -83,11 +83,11 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="项目业务码" prop="itemCode" />
-      <el-table-column align="center" label="项目名称" prop="itemName" :show-overflow-tooltip="true" />
-      <el-table-column align="center" label="项目生效日期" prop="itemEffdate" />
-      <el-table-column align="center" label="项目失效日期" prop="itemExpdate" />
-      <el-table-column align="center" label="资金性质" prop="fundsnatureCode" />
+      <el-table-column align="center" label="准购证号" prop="crtCode" />
+      <el-table-column align="center" label="准购证名称" prop="crtName" :show-overflow-tooltip="true" />
+      <el-table-column align="center" label="所属单位" prop="agenName" />
+      <el-table-column align="center" label="经办人" prop="operator" />
+      <el-table-column align="center" label="办证日期" prop="createTime" />
       <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">修改</el-button>
@@ -198,36 +198,27 @@ export default {
       },
       projectList: [
         {
-          isEnable: 1,
-          itemCode: '1',
-          itemName: '政府基金',
-          itemEffdate: '2020-01-02',
-          itemExpdate: '2020-02-03',
-          fundsnatureCode: '基金收入'
-        },
-        {
-          isEnable: 1,
-          itemCode: '2',
-          itemName: '政府基金',
-          itemEffdate: '2020-01-02',
-          itemExpdate: '2020-02-03',
-          fundsnatureCode: '基金收入'
-        },
-        {
-          isEnable: 1,
-          itemCode: '3',
-          itemName: '政府基金',
-          itemEffdate: '2020-01-02',
-          itemExpdate: '2020-02-03',
-          fundsnatureCode: '基金收入'
-        },
-        {
-          isEnable: 1,
-          itemCode: '4',
-          itemName: '政府基金',
-          itemEffdate: '2020-01-02',
-          itemExpdate: '2020-02-03',
-          fundsnatureCode: '基金收入'
+          id: 1,
+          note: '注释',
+          logicDelete: false,
+          address: 'XX省XX市XX区XXXX号',
+          finmgr: '财务负责人',
+          crtCode: '123',
+          agenCode: '112233',
+          crtName: 'XX准购证',
+          linkmanTel: '165165165165',
+          legalno: '单位法人证号',
+          updateTime: 1596421392000,
+          issuedate: 1595902972000,
+          version: 114,
+          linkman: '单位负责人',
+          operator: '经办人',
+          fineno: '财务负责人',
+          createTime: 1598322196000,
+          proxyno: '收费委托书号',
+          agenName: 'XXXX单位',
+          operatorI: 1414,
+          chargno: '收费许可证号'
         }
       ],
       project: {},
@@ -322,7 +313,7 @@ export default {
     },
     // 删除按钮
     handleDelete ({ $index, row }) {
-      this.$confirm('此操作将永久删除该项目, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除准购证, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -346,7 +337,7 @@ export default {
     },
     // 批量删除
     async handleMultDelete () {
-      this.$confirm('此操作将永久删除选中项目, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除选中准购证, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
