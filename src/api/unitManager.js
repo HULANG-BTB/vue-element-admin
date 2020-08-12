@@ -57,6 +57,13 @@ export function getUnitListByPage (data) {
   })
 }
 
+export function getUnitList () {
+  return request({
+    url: '/agen/listAll',
+    method: 'get'
+  })
+}
+
 export function addUnit (data) {
   return request({
     url: `/agen/save`,
