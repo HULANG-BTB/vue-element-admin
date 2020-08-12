@@ -15,9 +15,9 @@
           <el-option label="其他项目" value="其他项目" />
         </el-select>
       </el-form-item>
-      <el-form-item label="单位名称" prop="agenName">
+      <el-form-item label="单位名称" prop="keyword">
         <el-input
-          v-model="queryParams.agenName"
+          v-model="queryParams.keyword"
           placeholder="请输入单位名称"
           clearable
           style="width: 140px"

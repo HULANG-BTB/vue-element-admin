@@ -24,7 +24,7 @@ const projectManager = {
       path: 'chargeStand',
       component: () => import('@/views/projectManager/chargeStand'),
       name: 'chargeStand',
-      meta: { title: '收费标准管理', icon: 'tab' }
+      meta: { title: '项目标准管理', icon: 'tab' }
     }
   ]
 }

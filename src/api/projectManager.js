@@ -11,7 +11,7 @@ export function getProjectListByPage (data) {
 
 export function addProject (data) {
   return request({
-    url: `/item/save`,
+    url: '/item/save',
     method: 'post',
     data: data
   })
@@ -27,7 +27,7 @@ export function updateProject (user) {
 
 export function deleteProject (data) {
   return request({
-    url: `/item/delete`,
+    url: '/item/delete',
     method: 'post',
     data: { id: data }
   })
@@ -35,16 +35,23 @@ export function deleteProject (data) {
 
 export function deleteProjectBatch (data) {
   return request({
-    url: `/item/batchDelete`,
+    url: '/item/batchDelete',
     method: 'post',
     data: data
   })
 }
 
+export function projectCheck (data) {
+  return request({
+    url: '/item/batchVerify',
+    method: 'post',
+    data: data
+  })
+}
 // 项目标准
 export function getStdListByPage (data) {
   return request({
-    url: '/itemstd/listbypage',
+    url: '/itemstd/listByPage',
     method: 'post',
     data: data
   })
@@ -52,7 +59,7 @@ export function getStdListByPage (data) {
 
 export function addStd (data) {
   return request({
-    url: `/itemstd/save`,
+    url: '/itemstd/save',
     method: 'post',
     data: data
   })
@@ -68,7 +75,7 @@ export function updateStd (user) {
 
 export function deleteStd (data) {
   return request({
-    url: `/itemstd/delete`,
+    url: '/itemstd/delete',
     method: 'post',
     data: { id: data }
   })
@@ -76,7 +83,7 @@ export function deleteStd (data) {
 
 export function deleteStdBatch (data) {
   return request({
-    url: `/itemstd/batchdelete`,
+    url: '/itemstd/batchDelete',
     method: 'post',
     data: data
   })

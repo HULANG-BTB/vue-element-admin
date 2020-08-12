@@ -18,7 +18,7 @@ export function getDapartListByPage (data) {
 
 export function addDapart (data) {
   return request({
-    url: `/dept/save`,
+    url: '/dept/save',
     method: 'post',
     data: data
   })
@@ -34,7 +34,7 @@ export function updateDapart (user) {
 
 export function deleteDapart (data) {
   return request({
-    url: `/dept/remove`,
+    url: '/dept/remove',
     method: 'post',
     data: { id: data }
   })
@@ -42,7 +42,7 @@ export function deleteDapart (data) {
 
 export function deleteDapartBatch (data) {
   return request({
-    url: `/dept/removeBatch`,
+    url: '/dept/removeBatch',
     method: 'post',
     data: data
   })
@@ -59,7 +59,7 @@ export function getUnitListByPage (data) {
 
 export function addUnit (data) {
   return request({
-    url: `/agen/save`,
+    url: '/agen/save',
     method: 'post',
     data: data
   })
@@ -75,7 +75,7 @@ export function updateUnit (user) {
 
 export function deleteUnit (data) {
   return request({
-    url: `/agen/remove`,
+    url: '/agen/remove',
     method: 'post',
     data: { id: data }
   })
@@ -83,7 +83,7 @@ export function deleteUnit (data) {
 
 export function deleteUnitBatch (data) {
   return request({
-    url: `/agen/removeBatch`,
+    url: '/agen/removeBatch',
     method: 'post',
     data: data
   })
