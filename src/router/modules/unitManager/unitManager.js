@@ -31,6 +31,12 @@ const unitManager = {
       component: () => import('@/views/unitManager/unitPayer'),
       name: 'unitPayer',
       meta: { title: '缴款人管理', icon: 'icon' }
+    },
+    {
+      path: 'unitPlaceManager',
+      component: () => import('@/views/unitManager/unitPlaceManager'),
+      name: 'unitPlaceManager',
+      meta: { title: '开票点管理', icon: 'icon' }
     }
   ]
 }
