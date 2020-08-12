@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-10 15:31:53
+ * @lastTime: 2020-08-11 15:32:06
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -44,6 +44,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="submitClick" />
+        <el-button type="primary" @click="resetForm">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -69,6 +70,9 @@ export default {
     submitClick () {
       const searchParam = { ...this.searchForm }
       this.$emit('sumbitSearch', searchParam)
+    },
+    resetForm () {
+      this.$refs['searchForm'].resetFields()
     }
   }
 }

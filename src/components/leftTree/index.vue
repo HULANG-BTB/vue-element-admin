@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-11 14:02:00
+ * @lastTime: 2020-08-11 15:09:50
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -23,6 +23,7 @@
         :data="leftSideData.showTreeData"
         :show-checkbox="leftSideData.showCheckBox"
         :default-expand-all="leftSideData.expand"
+        :default-expanded-keys="leftSideData.defaultExpand"
         :node-key="leftSideData.key ? leftSideData.key:'id'"
         :props="leftSideData.treeProps ? leftSideData.treeProps:defaultProps"
         :expand-on-click-node="false"

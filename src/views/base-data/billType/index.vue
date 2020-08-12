@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: 2020-07-31 14:47:07
- * @lastTime: 2020-08-11 14:03:14
+ * @lastTime: 2020-08-11 15:53:41
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -218,6 +218,20 @@ export default {
       billType: {},
       addDialog: true,
       safeYearShow: false,
+      checkSortOptions: [
+        {
+          label: '种类',
+          value: 0
+        },
+        {
+          label: '分类',
+          value: 1
+        },
+        {
+          label: '种类及分类',
+          value: ''
+        }
+      ],
       formOptions: {
         billNatureOptions: [
           {
@@ -277,7 +291,8 @@ export default {
       leftSideData: {
         showSearch: false,
         showTitle: '票据种类',
-        expand: true,
+        expand: false,
+        defaultExpand: [0],
         key: 'id',
         treeProps: {
           children: 'children',
@@ -337,11 +352,6 @@ export default {
         {
           label: '票据名称',
           prop: 'name',
-          type: 'input'
-        },
-        {
-          label: '助记码',
-          prop: 'memoryCode',
           type: 'input'
         },
         {
@@ -659,8 +669,8 @@ export default {
     },
     init () {
       this.freshTreeAndTable()
-      this.searchFormData[2].options = this.formOptions.billNatureOptions
-      this.searchFormData[3].options = this.formOptions.checkSortOptions
+      this.searchFormData[1].options = this.formOptions.billNatureOptions
+      this.searchFormData[2].options = this.checkSortOptions
     },
     freshTreeAndTable () {
       this.getLeftTree()

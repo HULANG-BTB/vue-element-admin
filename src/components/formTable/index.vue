@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-11 14:01:34
+ * @lastTime: 2020-08-11 16:12:10
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -15,6 +15,7 @@
       :table-data="tableData"
       :table-column-data="tableColumnData"
       :total="total"
+      :page="pageParam"
       @tableHeadButtonClick="tableHeadButtonClick"
       @tableSelectionChange="tableSelectionChange"
       @pageNumChange="pageNumChange"
@@ -67,16 +68,19 @@ export default {
       defaultPage: {
         pageNum: 1,
         pageSize: 10
-      }
+      },
+      formData: {}
     }
   },
   methods: {
     requestTableData (param) {
-      this.$emit('requestTableData', param)
+      const searchPraram = { ...this.formData, ... param }
+      this.$emit('requestTableData', searchPraram)
     },
     searchTableData (searchParam) {
-      const param = { ...searchParam, ...this.defaultPage }
-      this.requestTableData(param)
+      this.pageParam.pageNum = 1
+      this.formData = { ...searchParam }
+      this.requestTableData(this.pageParam)
     },
     tableHeadButtonClick (name) {
       this.$emit('tableHeadButtonClick', name)

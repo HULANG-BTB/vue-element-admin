@@ -25,9 +25,9 @@ export default [
         meta: { title: '票据种类管理' }
       },
       {
-        path: 'dept',
-        component: () => import('@/views/base-data/dept/index'),
-        name: 'dept',
+        path: 'finDept',
+        component: () => import('@/views/base-data/finDept/index'),
+        name: 'finDept',
         meta: {
           title: '归口财政管理'
         }

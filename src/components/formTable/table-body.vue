@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-11 14:01:16
+ * @lastTime: 2020-08-11 15:45:20
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -115,22 +115,25 @@ export default {
       default () {
         return 0
       }
+    },
+    page: {
+      type: Object,
+      default () {
+        return {}
+      }
     }
   },
   data () {
     return {
-      page: {
-        pageNum: 1,
-        pageSize: 10
-      },
       maxHeight: 800,
       tableWidth: { width: window.innerWidth - 410 + 'px' },
       windowHeight: { height: window.innerHeight - 150 + 'px' },
-      tableHeight: window.innerHeight - 240,
+      tableHeight: window.innerHeight - 240 < 400 ? 400 : window.innerHeight - 240,
       resizable: false
     }
   },
   mounted () {
+    console.log(this.tableHeight)
   },
   methods: {
     tableHeadButtonClick (name) {
