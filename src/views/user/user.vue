@@ -62,7 +62,7 @@
 
     <el-table
       v-loading.body="loading"
-      :data="userTableData"
+      :data="tableData"
       style="width: 100%; margin-top: 30px;"
       border
       @selection-change="handleOnSelectChange"
@@ -268,7 +268,7 @@ import {
 } from '@/api/user'
 import { getRoleList, getRoleListByUserId } from '@/api/role'
 import { getUnitList } from '@/api/unitManager'
-import { parseTime } from '@/utils/index'
+import { parseTime, deepClone } from '@/utils/index'
 
 const defaultUser = {
   id: '',
@@ -292,7 +292,7 @@ export default {
         repassword: '',
         roles: []
       },
-      userTableData: [],
+      userList: [],
       roleList: [],
       unitList: [],
       selectedList: [],
@@ -317,6 +317,14 @@ export default {
   computed: {
     deleteBatchDisable () {
       return this.selectedList.length === 0
+    },
+
+    tableData () {
+      const data = deepClone(this.userList)
+      data.forEach(element => {
+        element.agenCode = this.computedUnit(element.agenCode)
+      })
+      return data
     }
   },
 
@@ -325,12 +333,13 @@ export default {
     this.getRoleList()
     this.getUnitList()
   },
+
   methods: {
     // 获取用户列表
     async getTableData () {
       this.loading = true
       const res = await getUserListByPage(this.query)
-      this.userTableData = res.data.items
+      this.userList = res.data.items
       this.query.total = res.data.total
       this.query.limit = res.data.limit
       this.query.page = res.data.page
@@ -344,9 +353,20 @@ export default {
       this.roleList = res.data
     },
 
+    // 获取单位列表
     async getUnitList () {
       const { data } = await getUnitList()
       this.unitList = data
+    },
+
+    // 根据单位编码获得单位名
+    computedUnit (agenCode) {
+      const unit = this.unitList.filter(val => val.agenCode === agenCode)
+      // 避免数据计算的时候单位列表还未加载完成
+      if (unit === undefined) {
+        return ''
+      }
+      return unit[0].deptName
     },
 
     handleSearch () {
