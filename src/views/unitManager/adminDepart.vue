@@ -223,8 +223,12 @@ export default {
     this.getTableData()
   },
   methods: {
-    parseTime (time, format) {
-      return parseTime(time, '{y}-{m}-{d}')
+    // parseTime (time, format) {
+    //   return parseTime(time, '{y}-{m}-{d}')
+    // },
+    // 格式化时间
+    parseTime (time) {
+      return parseTime(new Date())
     },
     // 获取资源列表
     async getTableData () {

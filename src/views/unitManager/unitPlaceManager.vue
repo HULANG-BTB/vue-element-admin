@@ -72,7 +72,7 @@
       >
         <template slot-scope="scope">
           <el-tag
-            :type="scope.row.isenable ? '1' : '0'"
+            :type="scope.row.isenable ? 'success' : 'info'"
             disable-transitions
           >{{ scope.row.isenable ? '启用' : '未启用' }}
           </el-tag>
@@ -102,12 +102,18 @@
         align="center"
         label="创建日期"
         prop="createTime"
-      />
+      >
+        <template slot-scope="scope">
+          {{ parseTime(scope.row.createTime) }}
+        </template>
+      </el-table-column>
       <el-table-column
         align="center"
         label="最后修改时间"
         prop="updateTime"
-      />
+      ><template slot-scope="scope">
+        {{ parseTime(scope.row.updateTime) }}
+      </template></el-table-column>
       <el-table-column
         align="center"
         label="备注"
@@ -116,7 +122,7 @@
       <el-table-column
         align="center"
         label="操作"
-        width="300"
+        width="200"
       >
         <template slot-scope="scope">
           <el-button
@@ -131,20 +137,26 @@
             icon="el-icon-delete"
             @click="handleDelete(scope)"
           >删除</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="管理"
+        width="100"
+      >
+        <template slot-scope="scope">
           <el-button
-            v-if="scope.row.isenable === 1"
-            type="primary"
-            size="mini"
-            icon="el-icon-edit"
-            @click="handleUse(scope)"
-          >启用</el-button>
-          <el-button
-            v-else-if="scope.row.isenable === 0"
+            v-if="scope.row.isenable"
             type="danger"
             size="mini"
-            icon="el-icon-delete"
-            @click="handleUnUse(scope)"
-          >紧用</el-button>
+            @click="handleDisable(scope)"
+          >禁用</el-button>
+          <el-button
+            v-else
+            type="success"
+            size="mini"
+            @click="handleEnable(scope)"
+          >启用</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -258,6 +270,8 @@
 <script>
 // import { listRole, addRole, updateRole } from '@/api/projectManager'
 import { addUnitPlace, getunitPlaceListByPage, updateUnitPlace, deleteUnitPlace, deleteUnitPlaceBatch } from '@/api/unitPlaceManager'
+import { parseTime } from '@/utils/index'
+
 const defaultUnitPlace = {
   agenId: '35018201',
   rgnId: '',
@@ -370,11 +384,57 @@ export default {
       // const { data } = await getOtherItem(rowData.id) // 模态框中需要的其他接口
       // this.project.roles = data
     },
-    handleUse (rowData) {
-
+    handleDisable (rowData) {
+      this.$confirm('是否禁用开票点？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        rowData.row.isenable = 0
+        updateUnitPlace(rowData.row).then(res => {
+          this.getTableData()
+          if (res.code === 10000) {
+            // this.$set(this.project, {})
+            this.$message({
+              showClose: true,
+              message: '禁用成功',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              showClose: true,
+              message: '禁用失败',
+              type: 'error'
+            }) // 或者弹出后台返回错误
+          }
+        })
+      })
     },
-    handleUnUse (rowData) {
-
+    handleEnable (rowData) {
+      this.$confirm('是否启用开票点？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        rowData.row.isenable = 1
+        updateUnitPlace(rowData.row).then(res => {
+          this.getTableData()
+          if (res.code === 10000) {
+            // this.$set(this.project, {})
+            this.$message({
+              showClose: true,
+              message: '启用成功',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              showClose: true,
+              message: '启用失败',
+              type: 'error'
+            }) // 或者弹出后台返回错误
+          }
+        })
+      })
     },
     // 删除按钮
     handleDelete ({ $index, row }) {
@@ -480,12 +540,18 @@ export default {
       this.queryParams.limit = val
       this.getTableData()
     },
-
+    // 转换时间戳
+    parseTime (time) {
+      return parseTime(new Date(time), '{y}-{m}-{d}')
+      // var dateee = new Date(time).toJSON()
+      // return new Date(+new Date(dateee) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+    },
     // 当前页码改变
     handleCurrentChange (val) {
       this.queryParams.page = val
       this.getTableData()
     }
+
   }
 }
 </script>

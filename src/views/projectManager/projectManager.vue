@@ -17,8 +17,8 @@
           <el-option label="其他项目" value="其他项目" />
         </el-select>
       </el-form-item>
-      <el-form-item label="项目状态" prop="isEnable">
-        <el-select v-model="queryParams.isEnable" placeholder="请选择项目状态" style="width: 150px">
+      <el-form-item label="项目状态" prop="isenable">
+        <el-select v-model="queryParams.isenable" placeholder="请选择项目状态" style="width: 150px">
           <el-option label="待审核" value="doing" />
           <el-option label="已完成" value="success" />
         </el-select>
@@ -83,12 +83,12 @@
 
     <el-table :data="projectList" style="width: 100%;margin-top:30px;" border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column align="center" label="状态" prop="isEnable">
+      <el-table-column align="center" label="状态" prop="isenable">
         <template slot-scope="scope">
           <el-tag
-            :type="scope.row.isEnable ? 'success' : 'info'"
+            :type="scope.row.isenable ? 'success' : 'info'"
             disable-transitions
-          >{{ scope.row.isEnable ? '已完成' : '待审核' }}
+          >{{ scope.row.isenable ? '已完成' : '待审核' }}
           </el-tag>
         </template>
       </el-table-column>
@@ -199,38 +199,34 @@
     </el-dialog>
 
     <el-dialog :visible.sync="dialogVisibleTow" :title="dialogTypeTow">
-      <el-form ref="project" :model="standard" :rules="rules" label-width="80px" label-position="right" style="padding-right:25px;">
-        <!-- <el-row :gutter="20"> -->
-        <!-- <el-col :span="12"> -->
-        <el-form-item label="标准编码" :label-width="formLabelWidth" prop="itemstdCode">
+      <el-form :model="standard" label-width="80px" label-position="right" style="padding-right:25px;">
+        <el-form-item label="标准编码" :label-width="formLabelWidth">
           <el-input v-model="standard.itemstdCode" placeholder="标准编码" />
         </el-form-item>
-        <el-form-item label="标准名称" :label-width="formLabelWidth" prop="itemstdName">
+        <el-form-item label="标准名称" :label-width="formLabelWidth">
           <el-input v-model="standard.itemstdName" placeholder="标准名称" />
         </el-form-item>
-        <el-form-item label="助记码" :label-width="formLabelWidth" prop="mnem">
+        <el-form-item label="助记码" :label-width="formLabelWidth">
           <el-input v-model="standard.mnem" placeholder="助记码" />
         </el-form-item>
-        <el-form-item label="标准上限" :label-width="formLabelWidth" prop="maxCharge">
+        <el-form-item label="标准上限" :label-width="formLabelWidth">
           <el-input v-model="standard.maxCharge" placeholder="标准上限" />
         </el-form-item>
-        <el-form-item label="标准下限" :label-width="formLabelWidth" prop="minCharge">
+        <el-form-item label="标准下限" :label-width="formLabelWidth">
           <el-input v-model="standard.minCharge" placeholder="标准下限" />
         </el-form-item>
-        <el-form-item label="计量单位" :label-width="formLabelWidth" prop="units">
+        <el-form-item label="计量单位" :label-width="formLabelWidth">
           <el-input v-model="standard.units" placeholder="计量单位" />
         </el-form-item>
-        <el-form-item label="生效日期" :label-width="formLabelWidth" prop="itemstdEffdate">
+        <el-form-item label="生效日期" :label-width="formLabelWidth">
           <el-date-picker v-model="standard.itemstdEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
         </el-form-item>
         <el-form-item label="失效日期" :label-width="formLabelWidth" prop="itemstdExpdate">
           <el-date-picker v-model="standard.itemstdExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
         </el-form-item>
-        <el-form-item label="备注" :label-width="formLabelWidth" prop="note">
+        <el-form-item label="备注" :label-width="formLabelWidth">
           <el-input v-model="standard.note" placeholder="备注" />
         </el-form-item>
-        <!-- </el-col> -->
-        <!-- </el-row> -->
       </el-form>
       <div style="text-align:right;">
         <el-button type="danger" @click="cancel">取消</el-button>
@@ -241,7 +237,7 @@
 </template>
 
 <script>
-import { getProjectListByPage, addProject, updateProject, deleteProject, deleteProjectBatch } from '@/api/projectManager'
+import { getProjectListByPage, addProject, updateProject, deleteProject, deleteProjectBatch, addStd } from '@/api/projectManager'
 import { parseTime } from '@/utils/index'
 const defaultUser = {
   // rgnId: '',
@@ -267,21 +263,12 @@ export default {
       queryParams: { // 查询参数
         keyword: '',
         // useType: '',
-        // isEnable: '',
+        // isenable: '',
         page: 1,
         limit: 10,
         total: 0
       },
-      projectList: [
-        // {
-        //   isEnable: 1,
-        //   itemCode: '1',
-        //   itemName: '政府基金',
-        //   itemEffdate: '2020-01-02',
-        //   itemExpdate: '2020-02-03',
-        //   fundsnatureCode: '基金收入'
-        // }
-      ],
+      projectList: [],
       project: {
         id: 1,
         itemId: '',
@@ -307,7 +294,14 @@ export default {
         units: '',
         itemstdEffdate: '',
         itemstdExpdate: '',
-        note: ''
+        note: '',
+        id: '',
+        isenable: '',
+        itemCode: '',
+        operator: '',
+        operatorId: '',
+        updateTime: '',
+        createTime: ''
       },
       dialogVisible: false,
       dialogVisibleTow: false,
@@ -346,9 +340,9 @@ export default {
     this.getTableData()
   },
   methods: {
-    // 转换时间戳
-    parseTime (time, format) {
-      return parseTime(time, '{y}-{m}-{d}')
+    // 格式化时间
+    parseTime (time) {
+      return parseTime(new Date())
     },
     // 获取资源列表
     async getTableData () {
@@ -497,14 +491,31 @@ export default {
       this.dialogVisible = false
       this.resetForm('project')
     },
-    // 新增标准
+    // 新增标准按钮
     handleAddStand () {
       this.standard = Object.assign({}, this.standard)
       this.dialogVisibleTow = true
     },
-    // 新增标准确定按钮
-    confirmStand () {
-
+    // 新增标准模态框确定按钮
+    async confirmStand () {
+      await addStd(this.standard).then(res => {
+        this.$set(this.standard, {})
+        // this.getTableData()
+        this.dialogVisibleTow = false
+        // if (res.status === 200) {
+        this.$message({
+          showClose: true,
+          message: '添加成功',
+          type: 'success'
+        })
+        // } else {
+        //   this.$message({
+        //     showClose: true,
+        //     message: '添加失败',
+        //     type: 'error'
+        //   })
+        // }
+      })
     },
     // 分页，每页数目改变
     handleSizeChange (val) {

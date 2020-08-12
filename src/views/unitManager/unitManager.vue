@@ -67,7 +67,7 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="单位编码" prop="agenIdcode" />
+      <el-table-column align="center" label="单位编码" prop="agenCode" />
       <el-table-column align="center" label="单位名称" prop="agenName" :show-overflow-tooltip="true" />
       <el-table-column align="center" label="部门名称" prop="deptName" />
       <el-table-column align="center" label="单位用途" prop="typeCode" />
@@ -98,19 +98,66 @@
       <el-form ref="project" :model="project" :rules="rules" label-width="80px" label-position="right" style="padding-right:25px;">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="单位编码" :label-width="formLabelWidth" prop="itemCode">
-              <el-input v-model="project.itemCode" placeholder="单位编码" />
+            <el-form-item label="单位编码" :label-width="formLabelWidth" prop="agenCode">
+              <el-input v-model="project.agenCode" placeholder="单位编码" />
             </el-form-item>
-            <el-form-item label="生效日期" :label-width="formLabelWidth">
-              <el-date-picker v-model="project.itemEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
+            <el-form-item label="部门编码" :label-width="formLabelWidth" prop="deptCode">
+              <el-input v-model="project.deptCode" placeholder="部门编码" />
+            </el-form-item>
+            <el-form-item label="部门名称" :label-width="formLabelWidth" prop="deptName">
+              <el-select v-model="project.deptName" placeholder="请选择部门名称" @change="deptVal">
+                <el-option v-for="item in deptManag" :key="item.id" :label="item.deptName" :value="item.deptName" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="单位用途" :label-width="formLabelWidth">
+              <el-input v-model="project.typeCode" placeholder="单位用途" />
+            </el-form-item>
+            <el-form-item label="所属行业" :label-width="formLabelWidth">
+              <el-input v-model="project.indCode" placeholder="所属行业" />
+            </el-form-item>
+            <el-form-item label="生效日期" :label-width="formLabelWidth" prop="effDate">
+              <el-date-picker v-model="project.effDate" type="date" placeholder="选择日期" style="width: 100%;" />
+            </el-form-item>
+            <el-form-item label="单位负责人" :label-width="formLabelWidth">
+              <el-input v-model="project.linkMan" placeholder="单位负责人" />
+            </el-form-item>
+            <el-form-item label="财务负责人" :label-width="formLabelWidth">
+              <el-input v-model="project.finMgr" placeholder="财务负责人" />
+            </el-form-item>
+            <el-form-item label="联系地址" :label-width="formLabelWidth">
+              <el-input v-model="project.addr" placeholder="联系地址" />
+            </el-form-item>
+            <el-form-item label="备注" :label-width="formLabelWidth">
+              <el-input v-model="project.note" placeholder="备注" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="项目名称" :label-width="formLabelWidth" prop="itemName">
-              <el-input v-model="project.itemName" placeholder="项目名称" />
+            <el-form-item label="单位名称" :label-width="formLabelWidth" prop="agenName">
+              <el-input v-model="project.agenName" placeholder="单位名称" />
             </el-form-item>
-            <el-form-item label="失效日期" :label-width="formLabelWidth">
-              <el-date-picker v-model="project.itemExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
+            <el-form-item label="助记码" :label-width="formLabelWidth" prop="mnem">
+              <el-input v-model="project.mnem" placeholder="助记码" />
+            </el-form-item>
+            <el-form-item label="归口财政部门" :label-width="formLabelWidth">
+              <el-input v-model="project.findeptId" placeholder="归口财政部门" />
+            </el-form-item>
+            <el-form-item label="单位分类" :label-width="formLabelWidth">
+              <el-input v-model="project.sortCode" placeholder="单位分类" />
+            </el-form-item>
+            <el-form-item label="级次" :label-width="formLabelWidth">
+              <el-input v-model="project.level" placeholder="级次" />
+            </el-form-item>
+            <el-form-item label="失效日期" :label-width="formLabelWidth" prop="expDate">
+              <el-date-picker v-model="project.expDate" type="date" placeholder="选择日期" style="width: 100%;" />
+            </el-form-item>
+            <el-form-item label="单位联系人电话" :label-width="formLabelWidth">
+              <el-input v-model="project.itemName" placeholder="单位联系人电话" />
+            </el-form-item>
+            <el-form-item label="财务负责人电话" :label-width="formLabelWidth">
+              <el-input v-model="project.itemName" placeholder="财务负责人电话" />
+            </el-form-item>
+            <el-form-item label="邮政编码" :label-width="formLabelWidth">
+              <el-input v-model="project.itemName" placeholder="邮政编码" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -124,46 +171,46 @@
 </template>
 
 <script>
-// import { listRole, addRole, updateRole } from '@/api/projectManager'
-// import { getUnitListByPage } from '@/api/unitManager'
-import { getUnitListByPage, addUnit, updateUnit, deleteUnit, deleteUnitBatch } from '@/api/unitManager'
-// const defaultUser = {
-//   note: '11',
-//   finMgr: '1',
-//   isalarmAgen: true,
-//   cityId: '1',
-//   linkTel: '1',
-//   linkMan: '1',
-//   expDate: 1597155373000,
-//   operator: '1',
-//   pidCode: '20',
-//   effDate: 1597068970000,
-//   orgCode: '20',
-//   countyId: '1',
-//   addr: '1',
-//   finMgrTel: '1',
-//   operatorId: 1,
-//   zip: '1',
-//   rgnId: 'aujdanjlsn',
-//   logicDelete: true,
-//   level: 2,
-//   agenCode: '112233',
-//   indCode: '2',
-//   updateTime: 1597933074000,
-//   sortCode: '2',
-//   provinceId: '1',
-//   version: 11,
-//   typeCode: '2',
-//   isenable: false,
-//   istickAgen: true,
-//   createTime: 1596550670000,
-//   agenName: '单位名',
-//   mnem: '1122',
-//   isleaf: false,
-//   deptCode: 'Ajanxsbxibs',
-//   findeptId: 2,
-//   isunpaid: true
-// }
+import { getUnitListByPage, addUnit, updateUnit, deleteUnit, deleteUnitBatch, getDapartListAll } from '@/api/unitManager'
+
+const defaultUser = {
+  note: '',
+  finMgr: '',
+  isalarmAgen: true,
+  cityId: '',
+  linkTel: '',
+  linkMan: '',
+  expDate: '',
+  operator: '',
+  pidCode: '',
+  effDate: '',
+  orgCode: '',
+  countyId: '',
+  addr: '',
+  finMgrTel: '',
+  operatorId: '',
+  zip: '',
+  rgnId: '',
+  logicDelete: true,
+  level: '',
+  agenCode: '',
+  indCode: '',
+  updateTime: '',
+  sortCode: '',
+  provinceId: '1',
+  version: '',
+  typeCode: '',
+  isenable: false,
+  istickAgen: true,
+  createTime: '',
+  agenName: '',
+  mnem: '',
+  isleaf: false,
+  deptCode: '',
+  findeptId: '',
+  isunpaid: true,
+  deptName: ''
+}
 
 export default {
   data () {
@@ -179,73 +226,72 @@ export default {
         limit: 10
         // total: 0
       },
-      projectList: [
-        {
-          isEnable: 1,
-          agenIdcode: '1',
-          deptName: '江西省研究院',
-          agenName: '江西省卫生厅',
-          typeCode: '非税票据单位',
-          sortCode: '事业'
-        }
-      ],
+      projectList: [],
       project: {
-        note: '11',
-        finMgr: '1',
+        note: '',
+        finMgr: '',
         isalarmAgen: true,
-        cityId: '1',
-        linkTel: '1',
-        linkMan: '1',
-        expDate: 1597155373000,
-        operator: '1',
-        pidCode: '20',
-        effDate: 1597068970000,
-        orgCode: '20',
-        countyId: '1',
-        addr: '1',
-        finMgrTel: '1',
-        operatorId: 1,
-        zip: '1',
-        rgnId: 'aujdanjlsn',
+        cityId: '',
+        linkTel: '',
+        linkMan: '',
+        expDate: '',
+        operator: '',
+        pidCode: '',
+        effDate: '',
+        orgCode: '',
+        countyId: '',
+        addr: '',
+        finMgrTel: '',
+        operatorId: '',
+        zip: '',
+        rgnId: '',
         logicDelete: true,
-        level: 2,
-        agenCode: '112233',
-        indCode: '2',
-        updateTime: 1597933074000,
-        sortCode: '2',
+        level: '',
+        agenCode: '',
+        indCode: '',
+        updateTime: '',
+        sortCode: '',
         provinceId: '1',
-        version: 11,
-        typeCode: '2',
+        version: '',
+        typeCode: '',
         isenable: false,
         istickAgen: true,
-        createTime: 1596550670000,
-        agenName: '单位名',
-        mnem: '1122',
+        createTime: '',
+        agenName: '',
+        mnem: '',
         isleaf: false,
-        deptCode: 'Ajanxsbxibs',
-        findeptId: 2,
-        isunpaid: true
+        findeptId: '',
+        isunpaid: true,
+        deptCode: '',
+        deptName: ''
       },
       dialogVisible: false,
       dialogType: 'new',
       formLabelWidth: '100px',
       selectedList: [],
+      deptManag: [],
       // multiple: true, // 非多个禁用
       rules: {
-        itemCode: [
-          { required: true, message: '项目编码不能为空', trigger: 'blur' }
+        agenCode: [
+          { required: true, message: '单位编码不能为空', trigger: 'blur' }
         ],
-        itemName: [
-          { required: true, message: '项目名称不能为空', trigger: 'blur' }
+        deptCode: [
+          { required: true, message: '部门编码不能为空', trigger: 'blur' }
         ],
-        mnen: [
+        deptName: [
+          { required: true, message: '部门名称不能为空', trigger: 'blur' }
+        ],
+        effDate: [
+          { required: true, message: '生效时间不能为空', trigger: 'blur' }
+        ],
+        expDate: [
+          { required: true, message: '失效时间不能为空', trigger: 'blur' }
+        ],
+        agenName: [
+          { required: true, message: '单位名称不能为空', trigger: 'blur' }
+        ],
+        mnem: [
           { required: true, message: '助记码不能为空', trigger: 'blur' }
-        ],
-        incomeSortCode: [
-          { required: true, message: '收入类别不能为空', trigger: 'blur' }
-        ],
-        fundsnatureCode: [
-          { required: true, message: '资金性质不能为空', trigger: 'blur' }
         ]
       }
     }
@@ -287,10 +333,21 @@ export default {
       this.queryParams = {}
     },
     // 新增按钮
-    handleAdd () {
-      this.project = Object.assign({}, this.project)
+    async handleAdd () {
+      this.project = Object.assign({}, defaultUser)
+      // this.resetQuery()
       this.dialogType = 'new'
       this.dialogVisible = true
+      const { data } = await getDapartListAll() // 无参查询部门列表
+      this.deptManag = data
+      this.deptVal()
+    },
+    deptVal (val) {
+      let obj = {}
+      obj = this.deptManag.find((item) => {
+        return item.deptName === val
+      })
+      this.project.deptCode = obj.deptCode
     },
     // 编辑按钮
     handleEdit (rowData) {
