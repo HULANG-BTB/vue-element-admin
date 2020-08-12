@@ -340,7 +340,6 @@ export default {
       this.dialogVisible = true
       const { data } = await getDapartListAll() // 无参查询部门列表
       this.deptManag = data
-      this.deptVal()
     },
     deptVal (val) {
       let obj = {}
