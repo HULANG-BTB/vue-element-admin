@@ -1,8 +1,16 @@
 import request from '@/utils/request'
 // 主管部门管理
+export function getDapartListAll (data) {
+  return request({
+    url: '/dept/listAll',
+    method: 'get',
+    data: data
+  })
+}
+
 export function getDapartListByPage (data) {
   return request({
-    url: '/fabDept/listByPage',
+    url: '/dept/listByPage',
     method: 'post',
     data: data
   })
@@ -10,7 +18,7 @@ export function getDapartListByPage (data) {
 
 export function addDapart (data) {
   return request({
-    url: `/fabDept/save`,
+    url: `/dept/save`,
     method: 'post',
     data: data
   })
@@ -18,7 +26,7 @@ export function addDapart (data) {
 
 export function updateDapart (user) {
   return request({
-    url: '/fabDept/update',
+    url: '/dept/update',
     method: 'post',
     data: user
   })
@@ -26,7 +34,7 @@ export function updateDapart (user) {
 
 export function deleteDapart (data) {
   return request({
-    url: `/fabDept/remove`,
+    url: `/dept/remove`,
     method: 'post',
     data: { id: data }
   })
@@ -34,7 +42,7 @@ export function deleteDapart (data) {
 
 export function deleteDapartBatch (data) {
   return request({
-    url: `/fabDept/removeBatch`,
+    url: `/dept/removeBatch`,
     method: 'post',
     data: data
   })
@@ -43,7 +51,7 @@ export function deleteDapartBatch (data) {
 // 单位管理
 export function getUnitListByPage (data) {
   return request({
-    url: '/fabAgen/listByPage',
+    url: '/agen/listByPage',
     method: 'post',
     data: data
   })
@@ -51,7 +59,7 @@ export function getUnitListByPage (data) {
 
 export function addUnit (data) {
   return request({
-    url: `/fabAgen/save`,
+    url: `/agen/save`,
     method: 'post',
     data: data
   })
@@ -59,7 +67,7 @@ export function addUnit (data) {
 
 export function updateUnit (user) {
   return request({
-    url: '/fabAgen/update',
+    url: '/agen/update',
     method: 'post',
     data: user
   })
@@ -67,7 +75,7 @@ export function updateUnit (user) {
 
 export function deleteUnit (data) {
   return request({
-    url: `/fabAgen/remove`,
+    url: `/agen/remove`,
     method: 'post',
     data: { id: data }
   })
@@ -75,7 +83,7 @@ export function deleteUnit (data) {
 
 export function deleteUnitBatch (data) {
   return request({
-    url: `/fabAgen/removeBatch`,
+    url: `/agen/removeBatch`,
     method: 'post',
     data: data
   })
