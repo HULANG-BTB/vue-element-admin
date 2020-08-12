@@ -89,7 +89,10 @@
               <el-input v-model="payer.payerUsername" placeholder="户名" size="small" />
             </el-form-item>
             <el-form-item label="类型" :label-width="formLabelWidth" prop="payerType">
-              <el-input v-model="payer.payerType" placeholder="类型" size="small" />
+              <el-select v-model="payer.payerType" placeholder="请选择" size="small" style="width: 100%">
+                <el-option label="个人" value="个人" />
+                <el-option label="单位" value="单位" />
+              </el-select>
             </el-form-item>
             <el-form-item label="所属银行" :label-width="formLabelWidth" prop="payerBank">
               <el-input v-model="payer.payerBank" placeholder="所属银行" size="small" />

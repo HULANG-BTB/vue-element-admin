@@ -14,47 +14,41 @@
           size="small"
         />
       </el-form-item>
-      <el-form-item label>
-        <el-button
-          icon="el-icon-search"
-          size="small"
-          @click="handleSearch"
-        >搜索</el-button>
+      <el-form-item>
+        <el-button icon="el-icon-search" type="primary" size="small" @click="handleSearch">搜索</el-button>
       </el-form-item>
-      <el-form-item label>
-        <el-button
-          type="primary"
-          size="small"
-          @click="handleAdd"
-        >创建用户</el-button>
-      </el-form-item>
-      <el-form-item label>
-        <el-button
-          :disabled="deleteBatchDisable"
-          type="danger"
-          size="small"
-          @click="handleDeleteBatch"
-        >批量删除</el-button>
-      </el-form-item>
-      <el-form-item label>
-        <el-button
-          type="success"
-          size="small"
-          @click="getTableData"
-        >重载数据</el-button>
+      <el-form-item>
+        <el-button icon="el-icon-refresh" type="default" size="small" @click="query.keyword = ''">重置</el-button>
       </el-form-item>
     </el-form>
 
-    <el-pagination
-      background
-      layout="prev, pager, next, sizes, total, jumper"
-      :total="query.total"
-      :current-page="query.page"
-      :page-sizes="[10, 20, 50, 100, 500, 1000]"
-      :page-size="query.limit"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+    <el-row :gutter="10">
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="small"
+          @click="handleAdd"
+        >新增用户</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          size="small"
+          :disabled="deleteBatchDisable"
+          @click="handleDeleteBatch"
+        >批量删除</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="success"
+          icon="el-icon-refresh"
+          size="small"
+          @click="getTableData"
+        >重载数据</el-button>
+      </el-col>
+    </el-row>
 
     <el-table
       v-loading.body="loading"
@@ -88,6 +82,18 @@
       >
         <template slot-scope="scope">{{ scope.row.nickname }}</template>
       </el-table-column>
+      <el-table-column
+        align="header-center"
+        label="单位"
+      >
+        <template slot-scope="scope">{{ scope.row.agenCode }}</template>
+      </el-table-column>
+      <el-table-column
+        align="header-center"
+        label="电话"
+      >
+        <template slot-scope="scope">{{ scope.row.phone }}</template>
+      </el-table-column>
       <el-table-column align="center" label="最后修改" width="170">
         <template slot-scope="scope">{{ parseTime(scope.row.updateTime) }}</template>
       </el-table-column>
@@ -119,6 +125,18 @@
       </el-table-column>
     </el-table>
 
+    <el-pagination
+      background
+      layout="prev, pager, next, sizes, total, jumper"
+      style="margin-top:20px;float:right;margin-right:20px;"
+      :total="query.total"
+      :current-page="query.page"
+      :page-sizes="[10, 20, 50, 100, 500, 1000]"
+      :page-size="query.limit"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
+
     <el-dialog
       :visible.sync="dialogVisible"
       :title="dialogType === 'edit' ? '编辑用户' : '新建用户'"
@@ -139,6 +157,18 @@
           <el-input
             v-model="user.nickname"
             placeholder="Nick Name"
+          />
+        </el-form-item>
+        <el-form-item label="单位">
+          <el-input
+            v-model="user.agenCode"
+            placeholder="Agen"
+          />
+        </el-form-item>
+        <el-form-item label="电话">
+          <el-input
+            v-model="user.phone"
+            placeholder="Phone Number"
           />
         </el-form-item>
         <el-form-item label="Role">
@@ -229,6 +259,8 @@ const defaultUser = {
   nickaname: '',
   password: '',
   repassword: '',
+  agenCode: '',
+  phone: '',
   roles: []
 }
 
