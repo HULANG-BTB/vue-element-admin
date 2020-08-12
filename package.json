@@ -25,7 +25,9 @@
     "screenfull": "^5.0.2",
     "vue": "2.6.10",
     "vue-router": "3.3.4",
-    "vuex": "3.1.0"
+    "vuex": "3.1.0",
+    "jwt-decode": "^2.2.0",
+    "js-base64": "^3.4.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "4.4.4",

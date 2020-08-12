@@ -39,6 +39,12 @@ Vue.use(ElementUI, { locale })
 
 Vue.config.productionTip = false
 
+import * as filters from '@/api/base/region/filter.js'
+
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
+
 new Vue({
   el: '#app',
   router,
