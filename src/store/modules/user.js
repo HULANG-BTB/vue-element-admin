@@ -8,7 +8,8 @@ const getDefaultState = () => {
     token: getToken(),
     name: '',
     avatar: '',
-    roles: []
+    roles: [],
+    agenCode: '112233'
   }
 }
 
