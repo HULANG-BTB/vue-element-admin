@@ -150,6 +150,12 @@ const users = {
         ],
         'name': '用户管理',
         'id': 2
+      },
+      {
+        'role': 'admin',
+        'permissions': [],
+        'name': '系统管理员',
+        'id': 4
       }
     ],
     'token': 'eyJhbGciOiJSUzI1NiJ9.eyJlY2RzX3VzZXIiOiJ7XCJuaWNrbmFtZVwiOlwi57O757uf566h55CG5ZGYXCIsXCJpZFwiOjMsXCJ1c2VybmFtZVwiOlwiYWRtaW5cIn0iLCJqdGkiOiJZamRqTTJFd05UQTBPR0kxTkdNNVlUZ3pOVFZrTldNNFkyRmhOVFJqTnpVPSIsImV4cCI6MTU5OTg3OTI4OX0.tiLXWZtT69hSvuZdDTMc7fWcn8nD3PkJPX8JzXG0HZK7r4xR7eZE9lG1BLreCwh4VgZo30Fnf_LeHc7FzaP7-IxZ9kYJ4T6DmgMEEJhvvC51-5bwEpHnmedvU3cnMU6TnRXzT8dNp5xCTLiN0IizHoZ9K3z_JKWDgfcj2K9XoYKUN-WeF8stfJBNmTKiePP3XVS3OIvdVIuhqkEYgCGQylMNqbSrpeQr40TLx81sOfVi74pxbQmLUEhn2b91DE0A_fhevoe0YOEIBqroSniPSTgo2DBs_RBtT0GvoJqTwQvjEEWrO2lMS2VyoW1v-3RZF47uhGotOGUTbss7C7v0Vg',

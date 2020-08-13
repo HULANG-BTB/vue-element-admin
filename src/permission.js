@@ -31,11 +31,25 @@ router.beforeEach(async (to, from, next) => {
         const hasRoles = store.getters.roles && store.getters.roles.length > 0
         // 有角色 直接跳转
         if (hasRoles) {
-          next()
+          if (store.state.addRoutes && store.state.permission.addRoutes.length === 0) {
+            // 没有权限路由 加载权限路由
+            const roles = store.getters.roles
+            // 获取动态路由
+            const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+            // 添加动态路由
+            router.options.routes = store.getters.permission_routes
+            router.addRoutes(accessRoutes)
+            next({ ...to, replace: true })
+          } else {
+            // 有权限路由 下一步
+            next()
+          }
         } else {
           try {
             // 没有角色 获取角色信息
-            const { roles } = await store.dispatch('user/getInfo')
+            await store.dispatch('user/getInfo')
+            // 需要通过getter获取role列表
+            const roles = store.getters.roles
             // 获取动态路由
             const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
             // 添加动态路由
