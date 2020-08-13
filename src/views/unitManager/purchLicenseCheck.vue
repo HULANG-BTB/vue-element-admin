@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
-      <el-form-item label="准购证名称" prop="itemName">
+      <el-form-item label="准购证名称" prop="keyword">
         <el-input
-          v-model="queryParams.itemName"
+          v-model="queryParams.keyword"
           placeholder="请输入准购证"
           clearable
           style="width: 140px"
@@ -54,7 +54,7 @@
       <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
           <el-button type="success" size="mini" @click="handleLook(scope.row)">查看</el-button>
-          <el-button type="primary" size="mini" @click="handleCheck(scope)">审核</el-button>
+          <el-button type="primary" size="mini" @click="handleCheck(scope.row)">审核</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -73,70 +73,74 @@
       @size-change="handleSizeChange"
     />
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'项目变动':'新增项目'">
-      <el-form ref="project" :model="project" :rules="rules" label-width="80px" label-position="right" style="padding-right:25px;">
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'准购证信息':'新增项目'">
+      <el-form ref="crt" :disabled="true" :model="crt" :rules="rules" label-width="80px" label-position="right" style="padding-right:25px;">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemCode">
-              <el-input v-model="project.itemCode" placeholder="项目编码" />
+            <el-form-item label="准购证号" :label-width="formLabelWidth" prop="crtCode">
+              <el-input v-model="crt.crtCode" placeholder="准购证号" />
             </el-form-item>
-            <el-form-item label="生效日期" :label-width="formLabelWidth">
-              <el-date-picker v-model="project.itemEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
+            <el-form-item label="联系地址" :label-width="formLabelWidth" prop="address">
+              <el-input v-model="crt.address" placeholder="联系地址" />
             </el-form-item>
-            <el-form-item label="收入类别" :label-width="formLabelWidth" prop="incomeSortCode">
-              <!-- <el-input v-model="project.incomeSortCode" placeholder="收入类别" /> -->
-              <el-select v-model="project.incomeSortCode" placeholder="根据实际情况选择">
-                <el-option label="直缴" value="直缴" />
-                <el-option label="汇缴" value="汇缴" />
-                <el-option label="代缴" value="代缴" />
-              </el-select>
+            <el-form-item label="经办ID" :label-width="formLabelWidth" prop="operatorId">
+              <el-input v-model="crt.operatorId" placeholder="经办ID" />
             </el-form-item>
-            <el-form-item label="收缴方式" :label-width="formLabelWidth">
-              <el-select v-model="project.paymode" placeholder="请选择收缴方式">
-                <el-option label="直缴" value="直缴" />
-                <el-option label="汇缴" value="汇缴" />
-                <el-option label="代缴" value="代缴" />
-              </el-select>
+            <el-form-item label="单位法人证号" :label-width="formLabelWidth" prop="legalno">
+              <el-input v-model="crt.legalno" placeholder="单位法人证号" />
             </el-form-item>
-            <el-form-item label="资金性质" :label-width="formLabelWidth" prop="fundsnatureCode">
-              <!-- <el-input v-model="project.fundsnatureCode" placeholder="资金性质" /> -->
-              <el-select v-model="project.fundsnatureCode" placeholder="根据实际情况选择">
-                <el-option label="直缴" value="直缴" />
-                <el-option label="汇缴" value="汇缴" />
-                <el-option label="代缴" value="代缴" />
-              </el-select>
+            <el-form-item label="收费许可证号" :label-width="formLabelWidth" prop="chargno">
+              <el-input v-model="crt.chargno" placeholder="收费许可证号" />
+            </el-form-item>
+            <el-form-item label="财务负责人" :label-width="formLabelWidth" prop="finmgr">
+              <el-input v-model="crt.finmgr" placeholder="财务负责人" />
+            </el-form-item>
+            <el-form-item label="单位编码" :label-width="formLabelWidth" prop="agenCode">
+              <el-input v-model="crt.agenCode" placeholder="单位编码" />
+            </el-form-item>
+            <el-form-item label="单位负责人" :label-width="formLabelWidth" prop="linkman">
+              <el-input v-model="crt.linkman" placeholder="单位负责人" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="项目名称" :label-width="formLabelWidth" prop="itemName">
-              <el-input v-model="project.itemName" placeholder="项目名称" />
+            <el-form-item label="准购证名称" :label-width="formLabelWidth" prop="crtName">
+              <el-input v-model="crt.crtName" placeholder="准购证名称" />
             </el-form-item>
-            <el-form-item label="失效日期" :label-width="formLabelWidth">
+            <el-form-item label="办证日期" :label-width="formLabelWidth">
               <!-- <el-input v-model="project.itemExpdate" placeholder="失效日期" /> -->
-              <el-date-picker v-model="project.itemExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
+              <el-date-picker v-model="crt.issuedate" type="date" placeholder="选择日期" style="width: 100%;" />
             </el-form-item>
-            <el-form-item label="助记码" :label-width="formLabelWidth" prop="mnen">
-              <el-input v-model="project.mnen" placeholder="助记码" />
+            <el-form-item label="经办人" :label-width="formLabelWidth" prop="operator">
+              <el-input v-model="crt.operator" placeholder="经办人" />
             </el-form-item>
-            <el-form-item label="预算科目" :label-width="formLabelWidth">
-              <el-input v-model="project.subject" placeholder="根据实际情况填写" />
+            <el-form-item label="罚没许可证号" :label-width="formLabelWidth" prop="fineno">
+              <el-input v-model="crt.proxyno" placeholder="罚没许可证号" />
             </el-form-item>
-            <el-form-item label="备注" :label-width="formLabelWidth">
-              <el-input v-model="project.note" placeholder="备注" />
+            <el-form-item label="收费委托书号" :label-width="formLabelWidth" prop="proxyno">
+              <el-input v-model="crt.proxyno" placeholder="收费委托书号" />
+            </el-form-item>
+            <el-form-item label="备注" :label-width="formLabelWidth" prop="note">
+              <el-input v-model="crt.note" placeholder="备注" />
+            </el-form-item>
+            <el-form-item label="单位名称" :label-width="formLabelWidth" prop="agenName">
+              <el-input v-model="crt.agenName" placeholder="单位名称" />
+            </el-form-item>
+            <el-form-item label="单位负责人电话" :label-width="formLabelWidth" prop="linkmanTel">
+              <el-input v-model="crt.linkmanTel" placeholder="单位负责人电话" />
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <div style="text-align:right;">
-        <el-button type="danger" @click="cancel">取消</el-button>
-        <el-button type="primary" @click="confirmRole">确认</el-button>
+        <el-button type="primary" @click="cancel">确认</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { checkCrtListByPage } from '@/api/purchLicense'
+import { checkCrtListByPage, getCrtById, checkBatch, updateCrt } from '@/api/purchLicense'
+// , updateCrt, checkBatch
 import { parseTime } from '@/utils/index'
 export default {
   data () {
@@ -148,34 +152,13 @@ export default {
         keyword: ''
       },
       crtList: [],
-      project: {},
+      crt: {},
       dialogVisible: false,
       dialogType: 'new',
       formLabelWidth: '100px',
       fileList: [],
       selectedList: [],
       rules: {
-        crtName: [
-          { required: true, message: '项目编码不能为空', trigger: 'blur' }
-        ],
-        agenName: [
-          { required: true, message: '项目名称不能为空', trigger: 'blur' }
-        ],
-        legalno: [
-          { required: true, message: '助记码不能为空', trigger: 'blur' }
-        ],
-        chargno: [
-          { required: true, message: '收入类别不能为空', trigger: 'blur' }
-        ],
-        fineno: [
-          { required: true, message: '收入类别不能为空', trigger: 'blur' }
-        ],
-        issuedate: [
-          { required: true, message: '收入类别不能为空', trigger: 'blur' }
-        ],
-        proxyno: [
-          { required: true, message: '资金性质不能为空', trigger: 'blur' }
-        ]
       }
     }
   },
@@ -186,6 +169,13 @@ export default {
     // 格式化时间
     parseTime (time) {
       return parseTime(new Date())
+    },
+    // 获取单位信息
+    async getCrtMessage (id) {
+      this.loading = true
+      const res = await getCrtById(id)
+      this.crt = res.data
+      this.loading = false
     },
     // 获取资源列表
     async getTableData () {
@@ -217,69 +207,55 @@ export default {
     // 多选框选中数据
     handleSelectionChange (selection) {
       this.selectedList = selection
-      // this.ids = selection.map(item => item.itemName)
-      // console.log(this.ids)
-      // this.single = selection.length !== 1
-      // this.multiple = !selection.length
     },
     // 批量审核
     handleMultCheck () {
-
+      this.$confirm('审核选中的准购证, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        this.selectedids = this.selectedList.map(item => {
+          return { id: item.id }
+        })
+        checkBatch(this.selectedids).then((res) => {
+          this.$message({
+            type: 'success',
+            message: '审核成功!'
+          })
+          this.getTableData()
+        })
+      })
     },
     // 审核按钮
-    handleCheck () {
-
+    async handleCheck (rowData) {
+      this.loading = true
+      const data = {
+        id: rowData.id,
+        isenable: true
+      }
+      await updateCrt(data).then(res => {
+        this.getTableData()
+        this.dialogVisible = false
+        this.$message({
+          showClose: true,
+          message: '审核成功',
+          type: 'success'
+        })
+      })
+      this.loading = false
     },
     // 查看按钮
     handleLook (rowData) {
       this.dialogVisible = true
       this.dialogType = 'edit'
-      this.project = Object.assign({}, rowData)
+      // this.project = Object.assign({}, rowData)
+      this.getCrtMessage(rowData.id)
     },
     // 模态框取消
     cancel () {
       this.dialogVisible = false
       this.resetForm('project')
-    },
-    // 模态框提交
-    confirmRole () {
-    //   this.$refs['project'].validate(valid => {
-    //     if (valid) {
-    //       if (this.dialogType !== 'edit') { // 新增
-    //         addRole(this.role).then(res => {
-    //           this.role = res.data
-    //           console.log(this.role)
-    //           if (res.code === 200) {
-    //             this.$set(this.role, {})
-    //             this.getTableData() // 重新渲染数据列表
-    //             this.dialogVisible = false // 关闭模态框
-    //             // this.msgSuccess(res.message)
-    //             this.$message({
-    //               showClose: true,
-    //               message: '添加成功',
-    //               type: 'success'
-    //             })
-    //           } else {
-    //             this.$message({
-    //               showClose: true,
-    //               message: '添加失败',
-    //               type: 'error'
-    //             }) // 或者弹出后台返回错误
-    //           }
-    //         })
-    //       } else { // 变动
-    //         this.role = {
-    //           id: this.row.id,
-    //           name: this.row.name
-    //         }
-    //         updateRole(this.role.id, this.role).then(res => {
-    //           this.msgSuccess(res.message)
-    //           this.getTableData()
-    //           this.dialogVisible = false
-    //         })
-    //       }
-    //     }
-    //   })
     },
     // 分页
     handleCurrentChange (cpage) {

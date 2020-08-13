@@ -33,6 +33,14 @@ export function updateCrt (data) {
   })
 }
 
+export function checkBatch (data) {
+  return request({
+    url: `/crt/checkBatch`,
+    method: 'post',
+    data: data
+  })
+}
+
 export function deleteCrt (data) {
   return request({
     url: '/crt/remove',
@@ -60,5 +68,13 @@ export function getAgenName () {
   return request({
     url: '/agen/listAll',
     method: 'get'
+  })
+}
+
+export function getCrtById (data) {
+  return request({
+    url: `/crt/getById`,
+    method: 'post',
+    data: { id: data }
   })
 }
