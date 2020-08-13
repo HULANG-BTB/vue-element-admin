@@ -38,11 +38,6 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column
-        type="selection"
-        width="55"
-        align="center"
-      />
-      <el-table-column
         align="center"
         label="票据名称"
         prop="name"
@@ -121,7 +116,7 @@
             >
               <el-input
                 v-model="unitBill.code"
-                :disabled="true"
+                readonly
               />
             </el-form-item>
             <el-form-item
@@ -131,7 +126,7 @@
             >
               <el-input
                 v-model="unitBill.name"
-                :disabled="true"
+                readonly
               />
             </el-form-item>
             <el-form-item
@@ -141,11 +136,11 @@
             >
               <el-input
                 v-model="unitBill.billNature"
-                :disabled="true"
+                readonly
               />
             </el-form-item>
             <el-form-item label="生效日期" :label-width="formLabelWidth" prop="effDate">
-              <el-date-picker v-model="unitBill.effDate" type="date" :disabled="true" style="width: 100%;" />
+              <el-date-picker v-model="unitBill.effDate" type="date" readonly style="width: 100%;" />
             </el-form-item>
             <el-form-item
               label="定额面值"
@@ -154,7 +149,7 @@
             >
               <el-input
                 v-model="unitBill.quotaAmount"
-                :disabled="true"
+                readonly
               />
             </el-form-item></el-col>
           <el-col :span="12">
@@ -165,7 +160,7 @@
             >
               <el-input
                 v-model="unitBill.memoryCode"
-                :disabled="true"
+                readonly
               />
             </el-form-item>
             <el-form-item
@@ -174,14 +169,9 @@
               prop="checkSort"
             >
               <el-input
-                v-if="unitBill.checkSort === 1"
-                v-model="checksort"
-                :disabled="true"
-              />
-              <el-input
-                v-else
-                v-model="nochecksort"
-                :disabled="true"
+                readonly
+                :value="unitBill.checkSort === 1? '是' : '否'"
+                placeholder=""
               />
             </el-form-item>
             <el-form-item
@@ -190,14 +180,9 @@
               prop="checkQuota"
             >
               <el-input
-                v-if="unitBill.checkQuota === 1"
-                v-model="checksort"
-                :disabled="true"
-              />
-              <el-input
-                v-else
-                v-model="nochecksort"
-                :disabled="true"
+                readonly
+                :value="unitBill.checkQuota === 1? '是' : '否'"
+                placeholder=""
               />
             </el-form-item>
             <el-form-item
@@ -208,7 +193,7 @@
               <el-date-picker
                 v-model="unitBill.expDate"
                 type="date"
-                :disabled="true"
+                readonly
                 style="width: 100%;"
               />
             </el-form-item>
@@ -219,7 +204,7 @@
             >
               <el-input
                 v-model="unitBill.safeYear"
-                :disabled="true"
+                readonly
               />
             </el-form-item></el-col>
         </el-row>
@@ -248,8 +233,6 @@ export default {
         total: 0
       },
       unitBillList: [],
-      checksort: '是',
-      nochecksort: '否',
       unitBill: {},
       dialogVisible: false,
       dialogType: 'new',

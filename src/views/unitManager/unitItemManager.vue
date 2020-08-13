@@ -38,11 +38,6 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column
-        type="selection"
-        width="55"
-        align="center"
-      />
-      <el-table-column
         align="center"
         label="项目名称"
         prop="itemName"
@@ -121,7 +116,7 @@
             >
               <el-input
                 v-model="UnitItem.itemId"
-                :disabled="true"
+                readonly
               />
             </el-form-item>
             <el-form-item
@@ -131,7 +126,7 @@
             >
               <el-input
                 v-model="UnitItem.itemName"
-                :disabled="true"
+                readonly
               />
             </el-form-item>
             <el-form-item
@@ -141,7 +136,7 @@
             >
               <el-input
                 v-model="UnitItem.itemSortId"
-                :disabled="true"
+                readonly
               />
             </el-form-item>
             <el-form-item
@@ -152,7 +147,7 @@
               <el-date-picker
                 v-model="UnitItem.itemEffdate"
                 type="date"
-                :disabled="true"
+                readonly
                 style="width: 100%;"
               />
             </el-form-item>
@@ -163,7 +158,7 @@
             >
               <el-input
                 v-model="UnitItem.mnen"
-                :disabled="true"
+                readonly
               />
             </el-form-item></el-col>
           <el-col :span="12">
@@ -174,7 +169,7 @@
             >
               <el-input
                 v-model="UnitItem.subject"
-                :disabled="true"
+                readonly
               />
             </el-form-item>
             <el-form-item
@@ -184,7 +179,7 @@
             >
               <el-input
                 v-model="UnitItem.paymode"
-                :disabled="true"
+                readonly
               />
             </el-form-item>
             <el-form-item
@@ -194,7 +189,7 @@
             >
               <el-input
                 v-model="UnitItem.incomSortCode"
-                :disabled="true"
+                readonly
               />
             </el-form-item>
             <el-form-item
@@ -205,7 +200,7 @@
               <el-date-picker
                 v-model="UnitItem.itemExpdate"
                 type="date"
-                :disabled="true"
+                readonly
                 style="width: 100%;"
               />
             </el-form-item>
@@ -216,7 +211,7 @@
             >
               <el-input
                 v-model="UnitItem.fundsnatureCode"
-                :disabled="true"
+                readonly
               />
             </el-form-item></el-col>
         </el-row>
