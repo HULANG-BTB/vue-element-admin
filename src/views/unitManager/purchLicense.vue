@@ -129,7 +129,7 @@
           <el-form-item label="准购证名称" :label-width="formLabelWidth" prop="crtName">
             <el-input v-model="crt.crtName" placeholder="准购证名称" />
           </el-form-item>
-          <el-form-item label="所属单位" :label-width="formLabelWidth" prop="agenName">
+          <el-form-item label="所属单位" :label-width="formLabelWidth" prop="agenName" @change="changed">
             <el-select v-model="crt.agenName" placeholder="根据实际情况选择">
               <el-option v-for="(item,index) in agenNameList" :key="index" :label="item.agenName" :value="item.agenName" />
             </el-select>
@@ -188,26 +188,25 @@ export default {
       crtList: [
       ],
       crt: {
-        id: 1,
         note: '',
         logicDelete: false,
-        address: 'XX省XX市XX区XXXX号',
-        finmgr: '财务负责人',
-        crtCode: '110970',
-        agenCode: '112233',
+        address: '',
+        finmgr: '',
+        crtCode: '',
+        agenCode: '',
         crtName: '',
-        linkmanTel: '165165165165',
+        linkmanTel: '',
         legalno: '',
-        updateTime: 1596421392000,
+        updateTime: 0,
         issuedate: 0,
-        version: 114,
-        linkman: '张三',
-        operator: '经办人',
+        version: 0,
+        linkman: '',
+        operator: '',
         fineno: '',
-        createTime: 1598322196000,
+        createTime: 0,
         proxyno: '',
         agenName: '',
-        operatorI: 1414,
+        operatorId: 0,
         chargno: ''
       },
       agenNameList: [],
@@ -268,6 +267,9 @@ export default {
     handleQuery () {
       this.queryParams.page = 1
       this.getTableData()
+    },
+    // 获取id
+    changed (val) {
     },
     // 表单重置封装
     resetForm (refName) {
