@@ -21,8 +21,8 @@
       </el-form-item>
       <el-form-item label="是否启用">
         <el-select v-model="queryParams.isenable" placeholder="请选择部门状态" style="width: 150px">
-          <el-option label="启用" value="启用" />
-          <el-option label="停用" value="停用" />
+          <el-option label="启用" value="success" />
+          <el-option label="停用" value="stop" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -116,8 +116,8 @@
         </el-form-item>
         <el-form-item label="是否启用" :label-width="formLabelWidth" prop="isenable">
           <el-select v-model="project.isenable" placeholder="选择是否启用">
-            <el-option label="启用" value="true" />
-            <el-option label="停用" value="false" />
+            <el-option label="启用" :value="true" />
+            <el-option label="停用" :value="false" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -134,19 +134,19 @@ import { getDapartListByPage, addDapart, updateDapart, deleteDapart, deleteDapar
 import { parseTime } from '@/utils/index'
 
 const defaultUser = {
-  isenable: null,
+  isenable: true,
   deptCode: '',
   deptName: '',
   linkMan: '',
   linkTel: '',
   operator: '',
   updateTime: '',
-  note: '无',
-  rgnId: '123',
+  note: '',
+  rgnId: '12',
   logicDelete: false,
-  addr: '福建省福清市',
-  alterCode: 'asoiaoscn',
-  operatorId: 1231651651,
+  addr: '',
+  alterCode: '',
+  operatorId: '',
   version: 1
 }
 
@@ -173,13 +173,13 @@ export default {
         operator: '',
         updateTime: '',
         createTime: '',
-        isenable: null,
-        note: '无',
-        rgnId: '123',
+        isenable: true,
+        note: '',
+        rgnId: '',
         logicDelete: false,
-        addr: '福建省福清市',
-        alterCode: 'asoiaoscn',
-        operatorId: 1231651651,
+        addr: '',
+        alterCode: '',
+        operatorId: '',
         version: 1
       },
       dialogVisible: false,
@@ -255,7 +255,8 @@ export default {
     // 重置
     resetQuery () {
       // this.resetForm('queryParams')
-      this.queryParams = {}
+      // this.queryParams = {}
+      this.queryParams.keyword = ''
     },
     // 新增按钮
     handleAdd () {

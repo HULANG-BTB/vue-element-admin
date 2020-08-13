@@ -15,6 +15,12 @@ const unitManager = {
       meta: { title: '单位管理', icon: 'icon' }
     },
     {
+      path: 'unitCheck',
+      component: () => import('@/views/unitManager/unitCheck'),
+      name: 'unitCheck',
+      meta: { title: '单位审核', icon: 'edit' }
+    },
+    {
       path: 'adminDepart',
       component: () => import('@/views/unitManager/adminDepart'),
       name: 'adminDepart',

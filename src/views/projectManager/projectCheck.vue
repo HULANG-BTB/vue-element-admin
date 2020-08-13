@@ -152,7 +152,8 @@ export default {
     return {
     //   loading: true,
       queryParams: { // 查询参数
-        keyword: '0',
+        keyword: '',
+        isenable: 0,
         page: 1,
         limit: 10,
         total: 0
@@ -241,7 +242,8 @@ export default {
     // 重置
     resetQuery () {
       // this.resetForm('queryParams')
-      this.queryParams = {}
+      // this.queryParams = {}
+      this.queryParams.keyword = ''
     },
     // 多选框选中数据
     handleSelectionChange (selection) {
@@ -268,8 +270,6 @@ export default {
       this.project = Object.assign({}, simpData)
       this.project.isenable = 1 // 单击审核就相当于让状态变为1
       await updateProject(this.project).then(res => {
-        // this.project.isenable = true
-        console.log(res)
         this.getTableData()
         this.dialogVisible = false
         this.$message({
