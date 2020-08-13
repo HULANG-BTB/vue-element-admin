@@ -33,6 +33,12 @@ const unitManager = {
       meta: { title: '准购证管理', icon: 'edit' }
     },
     {
+      path: 'purchLicenseCheck',
+      component: () => import('@/views/unitManager/purchLicenseCheck'),
+      name: 'purchLicenseCheck',
+      meta: { title: '准购证审核', icon: 'edit' }
+    },
+    {
       path: 'unitPayer',
       component: () => import('@/views/unitManager/unitPayer'),
       name: 'unitPayer',
@@ -43,6 +49,18 @@ const unitManager = {
       component: () => import('@/views/unitManager/unitPlaceManager'),
       name: 'unitPlaceManager',
       meta: { title: '开票点管理', icon: 'icon' }
+    },
+    {
+      path: 'uninItemManager',
+      component: () => import('@/views/unitManager/unitItemManager'),
+      name: 'uninItemManager',
+      meta: { title: '可用项目', icon: 'icon' }
+    },
+    {
+      path: 'unitBillManager',
+      component: () => import('@/views/unitManager/unitBillManager'),
+      name: 'unitBillManager',
+      meta: { title: '可用票据', icon: 'icon' }
     }
   ]
 }

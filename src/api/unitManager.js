@@ -111,3 +111,55 @@ export function deleteUnitBatch (data) {
     data: data
   })
 }
+
+// 获取单位已经有的票据种类
+export function getAgenBillType (data) {
+  return request({
+    url: '/agenBill/getBillAll',
+    method: 'post',
+    data
+  })
+}
+
+// 查询所有票据种类
+export function getBillAllType () {
+  return request({
+    url: '/billType/queryAllBillType',
+    method: 'post'
+  })
+}
+
+// 批量添加单位可用票据种类
+export function updateAgenBillBatch (data) {
+  return request({
+    url: '/agenBill/updateBatch',
+    method: 'post',
+    data
+  })
+}
+
+// 查询单位已经拥有的项目
+export function getAgenItemList (data) {
+  return request({
+    url: '/agenItem/getItemAll',
+    method: 'post',
+    data
+  })
+}
+
+// 查询所有项目列表
+export function getAllItemList () {
+  return request({
+    url: '/item/getItemAll',
+    method: 'get'
+  })
+}
+
+// 批量更新单位可用项目
+export function updateAgenItemBatch (data) {
+  return request({
+    url: '/agenItem/updateBatch',
+    method: 'post',
+    data
+  })
+}
