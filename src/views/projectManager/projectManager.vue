@@ -40,14 +40,6 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          type="warning"
-          icon="el-icon-message"
-          size="small"
-          @click="handleAddStand"
-        >新增标准</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
           type="danger"
           :disabled="deleteBatchDisable"
           icon="el-icon-delete"
@@ -72,13 +64,6 @@
           <el-button slot="trigger" size="small" type="success" icon="el-icon-check" @click="submitUpload">导入</el-button>
         </el-upload>
       </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-message"
-          size="small"
-        >导出</el-button>
-      </el-col> -->
     </el-row>
 
     <el-table :data="projectList" style="width: 100%;margin-top:30px;" border @selection-change="handleSelectionChange">
@@ -105,10 +90,11 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="资金性质" prop="fundsnatureCode" />
-      <el-table-column align="center" label="操作" width="220">
+      <el-table-column align="center" label="操作" width="270">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">修改</el-button>
-          <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="primary" size="mini" @click="handleEdit(scope.row)">修改</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="warning" size="mini" @click="handleAddStand(scope.row)">新增标准</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -199,34 +185,55 @@
     </el-dialog>
 
     <el-dialog :visible.sync="dialogVisibleTow" :title="dialogTypeTow">
-      <el-form :model="standard" label-width="80px" label-position="right" style="padding-right:25px;">
-        <el-form-item label="标准编码" :label-width="formLabelWidth">
-          <el-input v-model="standard.itemstdCode" placeholder="标准编码" />
-        </el-form-item>
-        <el-form-item label="标准名称" :label-width="formLabelWidth">
-          <el-input v-model="standard.itemstdName" placeholder="标准名称" />
-        </el-form-item>
-        <el-form-item label="助记码" :label-width="formLabelWidth">
-          <el-input v-model="standard.mnem" placeholder="助记码" />
-        </el-form-item>
-        <el-form-item label="标准上限" :label-width="formLabelWidth">
-          <el-input v-model="standard.maxCharge" placeholder="标准上限" />
-        </el-form-item>
-        <el-form-item label="标准下限" :label-width="formLabelWidth">
-          <el-input v-model="standard.minCharge" placeholder="标准下限" />
-        </el-form-item>
-        <el-form-item label="计量单位" :label-width="formLabelWidth">
-          <el-input v-model="standard.units" placeholder="计量单位" />
-        </el-form-item>
-        <el-form-item label="生效日期" :label-width="formLabelWidth">
-          <el-date-picker v-model="standard.itemstdEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
-        </el-form-item>
-        <el-form-item label="失效日期" :label-width="formLabelWidth" prop="itemstdExpdate">
-          <el-date-picker v-model="standard.itemstdExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
-        </el-form-item>
-        <el-form-item label="备注" :label-width="formLabelWidth">
-          <el-input v-model="standard.note" placeholder="备注" />
-        </el-form-item>
+      <el-form ref="standard" :model="standard" :rules="standRules" label-width="80px" label-position="right" style="padding-right:25px;">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="标准编码" :label-width="formLabelWidth" prop="itemstdCode">
+              <el-input v-model="standard.itemstdCode" placeholder="标准编码" />
+            </el-form-item>
+            <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemCode ">
+              <el-input v-model="standard.itemCode " placeholder="项目编码" :disabled="true" />
+            </el-form-item>
+            <el-form-item label="标准下限" :label-width="formLabelWidth" prop="minCharge">
+              <el-input v-model="standard.minCharge" placeholder="标准下限" />
+            </el-form-item>
+            <el-form-item label="生效日期" :label-width="formLabelWidth" prop="itemstdEffdate">
+              <el-date-picker v-model="standard.itemstdEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
+            </el-form-item>
+            <el-form-item label="经办人" :label-width="formLabelWidth" prop="operator">
+              <el-input v-model="standard.operator" placeholder="经办人" />
+            </el-form-item>
+            <el-form-item label="生效日期" :label-width="formLabelWidth" prop="createTime">
+              <el-date-picker v-model="standard.createTime" type="date" placeholder="选择日期" style="width: 100%;" />
+            </el-form-item>
+            <el-form-item label="计量单位" :label-width="formLabelWidth" prop="units">
+              <el-input v-model="standard.units" placeholder="计量单位" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="标准名称" :label-width="formLabelWidth" prop="itemstdName">
+              <el-input v-model="standard.itemstdName" placeholder="标准名称" />
+            </el-form-item>
+            <el-form-item label="助记码" :label-width="formLabelWidth" prop="mnem">
+              <el-input v-model="standard.mnem" placeholder="助记码" />
+            </el-form-item>
+            <el-form-item label="标准上限" :label-width="formLabelWidth" prop="maxCharge">
+              <el-input v-model="standard.maxCharge" placeholder="标准上限" />
+            </el-form-item>
+            <el-form-item label="失效日期" :label-width="formLabelWidth" prop="itemstdExpdate">
+              <el-date-picker v-model="standard.itemstdExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
+            </el-form-item>
+            <el-form-item label="经办人ID" :label-width="formLabelWidth" prop="operatorId">
+              <el-input v-model="standard.operatorId" placeholder="经办人ID" />
+            </el-form-item>
+            <el-form-item label="最后修改时间" :label-width="formLabelWidth" prop="updateTime">
+              <el-date-picker v-model="standard.updateTime" type="date" placeholder="选择日期" style="width: 100%;" />
+            </el-form-item>
+            <el-form-item label="备注" :label-width="formLabelWidth">
+              <el-input v-model="standard.note" placeholder="备注" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div style="text-align:right;">
         <el-button type="danger" @click="cancel">取消</el-button>
@@ -327,6 +334,44 @@ export default {
         ],
         fundsnatureCode: [
           { required: true, message: '资金性质不能为空', trigger: 'blur' }
+        ]
+      },
+      standRules: {
+        itemstdCode: [
+          { required: true, message: '标准编码不能为空', trigger: 'blur' }
+        ],
+        itemstdName: [
+          { required: true, message: '标准名称不能为空', trigger: 'blur' }
+        ],
+        maxCharge: [
+          { required: true, message: '标准上限不能为空', trigger: 'blur' }
+        ],
+        minCharge: [
+          { required: true, message: '标准下线不能为空', trigger: 'blur' }
+        ],
+        units: [
+          { required: true, message: '计量单位不能为空', trigger: 'blur' }
+        ],
+        itemstdEffdate: [
+          { required: true, message: '生效日期不能为空', trigger: 'blur' }
+        ],
+        itemstdExpdate: [
+          { required: true, message: '失效日期不能为空', trigger: 'blur' }
+        ],
+        itemCode: [
+          { required: true, message: '项目编码不能为空', trigger: 'blur' }
+        ],
+        operator: [
+          { required: true, message: '经办人不能为空', trigger: 'blur' }
+        ],
+        operatorId: [
+          { required: true, message: '经办人ID不能为空', trigger: 'blur' }
+        ],
+        createTime: [
+          { required: true, message: '创建时间不能为空', trigger: 'blur' }
+        ],
+        updateTime: [
+          { required: true, message: '最后修改时间不能为空', trigger: 'blur' }
         ]
       }
     }
@@ -492,7 +537,8 @@ export default {
       this.resetForm('project')
     },
     // 新增标准按钮
-    handleAddStand () {
+    handleAddStand (standData) {
+      this.standard.itemCode = standData.itemId
       this.standard = Object.assign({}, this.standard)
       this.dialogVisibleTow = true
     },
@@ -500,21 +546,12 @@ export default {
     async confirmStand () {
       await addStd(this.standard).then(res => {
         this.$set(this.standard, {})
-        // this.getTableData()
         this.dialogVisibleTow = false
-        // if (res.status === 200) {
         this.$message({
           showClose: true,
           message: '添加成功',
           type: 'success'
         })
-        // } else {
-        //   this.$message({
-        //     showClose: true,
-        //     message: '添加失败',
-        //     type: 'error'
-        //   })
-        // }
       })
     },
     // 分页，每页数目改变

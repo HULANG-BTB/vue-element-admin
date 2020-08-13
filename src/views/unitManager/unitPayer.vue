@@ -132,7 +132,7 @@ const defaultPayer = {
   agenIdcode: '',
   createTime: '',
   email: '',
-  id: 0,
+  id: '',
   isunpaid: false,
   logicDelete: false,
   mnen: '',
@@ -144,7 +144,7 @@ const defaultPayer = {
   payerBank: '',
   payerBankname: '',
   payerCertno: '',
-  payerId: 0,
+  payerId: '',
   payerName: '',
   payerType: '',
   payerUsername: '',
@@ -214,11 +214,13 @@ export default {
       this.dialogType = 'new'
       this.dialogVisible = true
       this.payer = deepClone(defaultPayer)
+      this.payer.agenIdcode = this.$store.state.user.agenCode
     },
     handleEdit (scope) {
       this.dialogType = 'edit'
       this.dialogVisible = true
       this.payer = Object.assign(deepClone(defaultPayer), scope.row)
+      this.payer.agenIdcode = this.$store.state.user.agenCode
     },
     handleDelete ({ $index, row }) {
       this.$confirm('Confirm to remove the role?', 'Warning', {

@@ -15,13 +15,13 @@ export default [
       {
         path: 'user',
         component: () => import('@/views/user/user'),
-        name: 'PageUser',
+        name: 'UserManage',
         meta: { title: '用户管理', icon: 'el-icon-user' }
       },
       {
         path: 'role',
         component: () => import('@/views/user/role'),
-        name: 'PageRole',
+        name: 'RoleManage',
         meta: {
           title: '角色管理',
           icon: 'el-icon-wallet',
@@ -31,7 +31,7 @@ export default [
       {
         path: 'permission',
         component: () => import('@/views/user/permission'),
-        name: 'PagePermissions',
+        name: 'PermissionManage',
         meta: {
           title: '权限管理',
           icon: 'el-icon-link',
