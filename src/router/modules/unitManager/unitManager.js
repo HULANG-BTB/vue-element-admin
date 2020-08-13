@@ -27,6 +27,12 @@ const unitManager = {
       meta: { title: '准购证管理', icon: 'edit' }
     },
     {
+      path: 'purchLicenseCheck',
+      component: () => import('@/views/unitManager/purchLicenseCheck'),
+      name: 'purchLicenseCheck',
+      meta: { title: '准购证审核', icon: 'edit' }
+    },
+    {
       path: 'unitPayer',
       component: () => import('@/views/unitManager/unitPayer'),
       name: 'unitPayer',
