@@ -38,12 +38,7 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="small"
-          @click="handleAdd"
-        >新增单位</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="handleAdd">新增单位</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -72,8 +67,10 @@
       <el-table-column align="center" label="部门名称" prop="deptName" />
       <el-table-column align="center" label="单位用途" prop="typeCode" />
       <el-table-column align="center" label="单位分类" prop="sortCode" />
-      <el-table-column align="center" label="操作" width="220">
+      <el-table-column align="center" label="操作" width="400">
         <template slot-scope="scope">
+          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleProject(scope.row)">项目</el-button>
+          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleBill(scope.row)">票据</el-button>
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">修改</el-button>
           <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
@@ -167,11 +164,32 @@
         <el-button type="primary" @click="confirmRole">确认</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog :visible.sync="manageDialogVisible" :title="manageDialogType === 'project' ? '项目管理' : '票据管理'">
+      <div v-loading="loading" style="text-align:center" class="transfer">
+        <el-transfer
+          v-model="manageHasList"
+          style="text-align: left; display: inline-block; margin-bottom: 1rem"
+          :data="manageOriginList"
+          :button-texts="['删除', '添加']"
+          :titles="['未拥有列表', '已拥有列表']"
+        >
+          <span slot-scope="{ option }">{{ option.label }}</span>
+        </el-transfer>
+        <div style="text-align:right;">
+          <el-button type="danger" @click="cancel">取消</el-button>
+          <el-button type="primary" @click="confirmManage">确认</el-button>
+        </div>
+      </div>
+
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import { getUnitListByPage, addUnit, updateUnit, deleteUnit, deleteUnitBatch, getDapartListAll } from '@/api/unitManager'
+import { getAgenBillType, getBillAllType, updateAgenBillBatch, getAgenItemList, getAllItemList, updateAgenItemBatch } from '@/api/unitManager'
 
 const defaultUser = {
   note: '',
@@ -215,7 +233,7 @@ const defaultUser = {
 export default {
   data () {
     return {
-    //   loading: true,
+      loading: true,
       queryParams: { // 查询参数
         // typeCode: '',
         // sortCode: '',
@@ -266,6 +284,10 @@ export default {
         deptName: ''
       },
       dialogVisible: false,
+      manageDialogVisible: false,
+      manageDialogType: 'project',
+      manageHasList: [],
+      manageOriginList: [],
       dialogType: 'new',
       formLabelWidth: '100px',
       selectedList: [],
@@ -316,6 +338,90 @@ export default {
       this.selectedList = []
       // this.loading = false
     },
+
+    // 获取所有财政票据种类
+    async getBillAllType () {
+      // Todo
+      const { data } = await getBillAllType()
+      if (!data) {
+        return
+      }
+      this.manageOriginList = data.map(item => {
+        return { ...item, disabled: false, key: item.code, label: item.name }
+      })
+      if (this.manageOriginList === undefined) {
+        this.manageOriginList = []
+      }
+    },
+
+    // 获取单位具有的所有票据
+    async getAgenBillAll (agenIdcode) {
+      const { data } = await getAgenBillType({ agenIdcode })
+      if (!data) {
+        return
+      }
+      this.manageHasList = data.map(item => item.code)
+      if (this.manageHasList === undefined) {
+        this.manageHasList = []
+      }
+    },
+
+    // 获取所有财政项目列表
+    async getAllItemList () {
+      // Todo
+      const { data } = await getAllItemList()
+      if (!data) {
+        return
+      }
+      this.manageOriginList = data.map(item => {
+        return { ...item, disabled: false, key: item.itemId, label: item.itemName }
+      })
+      if (this.manageOriginList === undefined) {
+        this.manageOriginList = []
+      }
+    },
+
+    // 查询单位具有的项目
+    async getAgenItemList (agenIdcode) {
+      const { data } = await getAgenItemList({ agenIdcode })
+      if (!data) {
+        return
+      }
+      this.manageHasList = data.map(item => item.itemId)
+      if (this.manageHasList === undefined) {
+        this.manageHasList = []
+      }
+    },
+
+    // 管理提交
+    async confirmManage () {
+      const isBillManage = this.manageDialogType === 'bill'
+      let successFlag = false
+      if (isBillManage) {
+        const postData = this.manageHasList.map(item => {
+          return { agenIdcode: this.project.agenCode, typeCode: item }
+        })
+        await updateAgenBillBatch(postData).then(res => {
+          successFlag = true
+        })
+      } else {
+        const postData = this.manageHasList.map(item => {
+          return { agenIdcode: this.project.agenCode, itemCode: item }
+        })
+        await updateAgenItemBatch(postData).then(res => {
+          successFlag = true
+        })
+      }
+      if (successFlag) {
+        this.$message({
+          showClose: true,
+          message: '添加成功',
+          type: 'success'
+        })
+      }
+      this.manageDialogVisible = false
+    },
+
     // 搜索
     handleQuery () {
       this.queryParams.page = 1
@@ -348,6 +454,33 @@ export default {
       })
       this.project.deptCode = obj.deptCode
     },
+
+    // 项目管理按钮
+    async handleProject (row) {
+      this.loading = true
+      this.manageOriginList = []
+      this.manageHasList = []
+      this.project = Object.assign({}, row)
+      this.manageDialogType = 'project'
+      this.manageDialogVisible = true
+      await this.getAllItemList()
+      await this.getAgenItemList(row.agenCode)
+      this.loading = false
+    },
+
+    // 票据管理按钮
+    async handleBill (row) {
+      this.loading = true
+      this.manageOriginList = []
+      this.manageHasList = []
+      this.project = Object.assign({}, row)
+      this.manageDialogType = 'bill'
+      this.manageDialogVisible = true
+      await this.getBillAllType()
+      await this.getAgenBillAll(row.agenCode)
+      this.loading = false
+    },
+
     // 编辑按钮
     handleEdit (rowData) {
       this.dialogVisible = true
@@ -450,6 +583,7 @@ export default {
     // 模态框取消
     cancel () {
       this.dialogVisible = false
+      this.manageDialogVisible = false
       this.resetForm('project')
     },
     // 分页，每页数目改变
@@ -473,6 +607,9 @@ export default {
   }
   .permission-tree {
     margin-bottom: 30px;
+  }
+  ::v-deep div.el-transfer-panel {
+    width: 330px;
   }
 }
 </style>
