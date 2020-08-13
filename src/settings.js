@@ -24,6 +24,6 @@ module.exports = {
   },
 
   // 请求超时时间 单位毫秒
-  requestTimeout: 10000
+  requestTimeout: 30 * 1000
 
 }
