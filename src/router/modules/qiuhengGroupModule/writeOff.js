@@ -20,7 +20,7 @@ export default [
       },
       {
         path: 'verification',
-        component: () => import('@/views/qiuhengGroupViews/verification/index'),
+        component: () => import('@/views/qiuhengGroupViews/writeOff/index'),
         name: 'MainOfVerification',
         meta: {
           title: '票据核销',
