@@ -32,14 +32,21 @@ router.beforeEach(async (to, from, next) => {
         // 有角色 直接跳转
         if (hasRoles) {
           if (store.state.addRoutes && store.state.permission.addRoutes.length === 0) {
+            try {
             // 没有权限路由 加载权限路由
-            const roles = store.getters.roles
-            // 获取动态路由
-            const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
-            // 添加动态路由
-            router.options.routes = store.getters.permission_routes
-            router.addRoutes(accessRoutes)
-            next({ ...to, replace: true })
+              const roles = store.getters.roles
+              // 获取动态路由
+              const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+              // 添加动态路由
+              router.options.routes = store.getters.permission_routes
+              router.addRoutes(accessRoutes)
+              next({ ...to, replace: true })
+            } catch (error) {
+              // 有错误 重新登陆
+              await store.dispatch('user/resetToken')
+              Message.error(error || 'Has Error')
+              next(`/login?redirect=${to.path}`)
+            }
           } else {
             // 有权限路由 下一步
             next()
