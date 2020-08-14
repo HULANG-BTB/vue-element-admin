@@ -157,6 +157,20 @@ import { parseTime } from '@/utils/index'
 
 export default {
   data () {
+    const validateDatePicker = (rule, value, callback, source, option, other) => {
+      const thisZero = new Date().setHours(0, 0, 0, 0)
+      const input = new Date(value).setHours(0, 0, 0, 0)
+      if (input < thisZero && !other) {
+        callback(new Error('日期不能早于今天'))
+      } else if (other) {
+        const otherStdData = new Date(this.standard[other]).setHours(0, 0, 0, 0)
+        if (otherStdData > input) {
+          callback(new Error('当前日期不能在开始日期之前'))
+        }
+      } else {
+        callback()
+      }
+    }
     return {
     //   loading: true,
       queryParams: { // 查询参数
@@ -189,7 +203,7 @@ export default {
       },
       dialogVisible: false,
       dialogType: '编辑标准',
-      formLabelWidth: '100px',
+      formLabelWidth: '120px',
       selectedList: [],
       rules: {
         itemstdCode: [
@@ -208,10 +222,16 @@ export default {
           { required: true, message: '计量单位不能为空', trigger: 'blur' }
         ],
         itemstdEffdate: [
-          { required: true, message: '生效日期不能为空', trigger: 'blur' }
+          { trigger: 'blur', validator: validateDatePicker }
         ],
         itemstdExpdate: [
-          { required: true, message: '失效日期不能为空', trigger: 'blur' }
+          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemstdEffdate') }
+        ],
+        createTime: [
+          { trigger: 'blur', validator: validateDatePicker }
+        ],
+        updateTime: [
+          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'createTime') }
         ],
         itemCode: [
           { required: true, message: '项目编码不能为空', trigger: 'blur' }
@@ -221,12 +241,6 @@ export default {
         ],
         operatorId: [
           { required: true, message: '经办人ID不能为空', trigger: 'blur' }
-        ],
-        createTime: [
-          { required: true, message: '创建时间不能为空', trigger: 'blur' }
-        ],
-        updateTime: [
-          { required: true, message: '最后修改时间不能为空', trigger: 'blur' }
         ]
       }
     }

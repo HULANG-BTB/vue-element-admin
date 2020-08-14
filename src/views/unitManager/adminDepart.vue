@@ -111,8 +111,8 @@
         <el-form-item label="经办人" :label-width="formLabelWidth" prop="operator">
           <el-input v-model="project.operator" placeholder="经办人" />
         </el-form-item>
-        <el-form-item label="经办日期" :label-width="formLabelWidth" prop="updateTime">
-          <el-date-picker v-model="project.updateTime" type="date" placeholder="选择日期" style="width: 100%;" />
+        <el-form-item label="经办日期" :label-width="formLabelWidth" prop="createTime">
+          <el-date-picker v-model="project.createTime" type="date" placeholder="选择日期" style="width: 100%;" />
         </el-form-item>
         <el-form-item label="是否启用" :label-width="formLabelWidth" prop="isenable">
           <el-select v-model="project.isenable" placeholder="选择是否启用">
@@ -132,6 +132,7 @@
 <script>
 import { getDapartListByPage, addDapart, updateDapart, deleteDapart, deleteDapartBatch } from '@/api/unitManager'
 import { parseTime } from '@/utils/index'
+import { validateDatePicker } from '@/utils/validate'
 
 const defaultUser = {
   isenable: true,
@@ -141,6 +142,7 @@ const defaultUser = {
   linkTel: '',
   operator: '',
   updateTime: '',
+  createTime: '',
   note: '',
   rgnId: '12',
   logicDelete: false,
@@ -199,14 +201,11 @@ export default {
         operatorId: [
           { required: true, message: '经办人ID不能为空', trigger: 'blur' }
         ],
-        updateTime: [
-          { required: true, message: '经办日期不能为空', trigger: 'blur' }
+        createTime: [
+          { trigger: 'blur', validator: validateDatePicker }
         ],
         version: [
           { required: true, message: '版本不能为空', trigger: 'blur' }
-        ],
-        createTime: [
-          { required: true, message: '创建时间不能为空', trigger: 'blur' }
         ],
         isenable: [
           { required: true, message: '状态不能为空', trigger: 'blur' }

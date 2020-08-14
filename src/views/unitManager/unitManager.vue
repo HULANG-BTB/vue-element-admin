@@ -1,6 +1,9 @@
 <template>
   <div class="app-container">
     <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
+      <el-form-item label="单位名称" prop="agenName">
+        <el-input v-model="queryParams.agenName" placeholder="请输入单位名称" clearable style="width: 140px" @keyup.enter.native="handleQuery" />
+      </el-form-item>
       <el-form-item label="单位用途" prop="typeCode">
         <el-select v-model="queryParams.typeCode" placeholder="请选择单位用途" style="width: 150px">
           <el-option label="非税收入" value="非税收入" />
@@ -14,15 +17,6 @@
           <el-option label="医疗项目" value="医疗项目" />
           <el-option label="其他项目" value="其他项目" />
         </el-select>
-      </el-form-item>
-      <el-form-item label="单位名称" prop="keyword">
-        <el-input
-          v-model="queryParams.keyword"
-          placeholder="请输入单位名称"
-          clearable
-          style="width: 140px"
-          @keyup.enter.native="handleQuery"
-        />
       </el-form-item>
       <el-form-item label="状态" prop="isenable">
         <el-select v-model="queryParams.isenable" placeholder="请选择单位状态" style="width: 150px">
@@ -41,13 +35,7 @@
         <el-button type="primary" icon="el-icon-plus" size="small" @click="handleAdd">新增单位</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="danger"
-          :disabled="deleteBatchDisable"
-          icon="el-icon-delete"
-          size="small"
-          @click="handleMultDelete"
-        >批量删除</el-button>
+        <el-button type="danger" :disabled="deleteBatchDisable" icon="el-icon-delete" size="small" @click="handleMultDelete">批量删除</el-button>
       </el-col>
     </el-row>
 
@@ -55,10 +43,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column align="center" label="状态" prop="isenable">
         <template slot-scope="scope">
-          <el-tag
-            :type="scope.row.isenable ? 'success' : 'info'"
-            disable-transitions
-          >{{ scope.row.isenable ? '已完成' : '待审核' }}
+          <el-tag :type="scope.row.isenable ? 'success' : 'info'" disable-transitions>{{ scope.row.isenable ? '已完成' : '待审核' }}
           </el-tag>
         </template>
       </el-table-column>
@@ -167,13 +152,7 @@
 
     <el-dialog :visible.sync="manageDialogVisible" :title="manageDialogType === 'project' ? '项目管理' : '票据管理'">
       <div v-loading="loading" style="text-align:center" class="transfer">
-        <el-transfer
-          v-model="manageHasList"
-          style="text-align: left; display: inline-block; margin-bottom: 1rem"
-          :data="manageOriginList"
-          :button-texts="['删除', '添加']"
-          :titles="['未拥有列表', '已拥有列表']"
-        >
+        <el-transfer v-model="manageHasList" style="text-align: left; display: inline-block; margin-bottom: 1rem" :data="manageOriginList" :button-texts="['删除', '添加']" :titles="['未拥有列表', '已拥有列表']">
           <span slot-scope="{ option }">{{ option.label }}</span>
         </el-transfer>
         <div style="text-align:right;">
@@ -188,8 +167,22 @@
 </template>
 
 <script>
-import { getUnitListByPage, addUnit, updateUnit, deleteUnit, deleteUnitBatch, getDapartListAll } from '@/api/unitManager'
-import { getAgenBillType, getBillAllType, updateAgenBillBatch, getAgenItemList, getAllItemList, updateAgenItemBatch } from '@/api/unitManager'
+import {
+  getUnitListByPage,
+  addUnit,
+  updateUnit,
+  deleteUnit,
+  deleteUnitBatch,
+  getDapartListAll
+} from '@/api/unitManager'
+import {
+  getAgenBillType,
+  getBillAllType,
+  updateAgenBillBatch,
+  getAgenItemList,
+  getAllItemList,
+  updateAgenItemBatch
+} from '@/api/unitManager'
 
 const defaultUser = {
   note: '',
@@ -232,14 +225,37 @@ const defaultUser = {
 
 export default {
   data () {
+    const validateDatePicker = (
+      rule,
+      value,
+      callback,
+      source,
+      option,
+      other
+    ) => {
+      const thisZero = new Date().setHours(0, 0, 0, 0)
+      const input = new Date(value).setHours(0, 0, 0, 0)
+      if (input < thisZero && !other) {
+        callback(new Error('日期不能早于今天'))
+      } else if (other) {
+        const otherData = new Date(this.project[other]).setHours(0, 0, 0, 0)
+        if (otherData > input) {
+          callback(new Error('当前日期不能在开始日期之前'))
+        }
+      } else {
+        callback()
+      }
+    }
     return {
       loading: true,
-      queryParams: { // 查询参数
-        // typeCode: '',
-        // sortCode: '',
-        // agenName: '',
-        // isEnable: '',
-        keyword: '',
+      queryParams: {
+        // 查询参数
+        keyword: {
+          typeCode: '',
+          sortCode: '',
+          agenName: '',
+          isEnable: ''
+        },
         page: 1,
         limit: 10
         // total: 0
@@ -289,7 +305,7 @@ export default {
       manageHasList: [],
       manageOriginList: [],
       dialogType: 'new',
-      formLabelWidth: '100px',
+      formLabelWidth: '120px',
       selectedList: [],
       deptManag: [],
       rules: {
@@ -299,18 +315,25 @@ export default {
         deptName: [
           { required: true, message: '部门名称不能为空', trigger: 'blur' }
         ],
-        effDate: [
-          { required: true, message: '生效时间不能为空', trigger: 'blur' }
-        ],
+        effDate: [{ trigger: 'blur', validator: validateDatePicker }],
         expDate: [
-          { required: true, message: '失效时间不能为空', trigger: 'blur' }
+          {
+            trigger: 'blur',
+            validator: (rule, value, callback, source, option, other) =>
+              validateDatePicker(
+                rule,
+                value,
+                callback,
+                source,
+                option,
+                'effDate'
+              )
+          }
         ],
         agenName: [
           { required: true, message: '单位名称不能为空', trigger: 'blur' }
         ],
-        mnem: [
-          { required: true, message: '助记码不能为空', trigger: 'blur' }
-        ]
+        mnem: [{ required: true, message: '助记码不能为空', trigger: 'blur' }]
       }
     }
   },
@@ -328,6 +351,7 @@ export default {
       // this.loading = true
       const res = await getUnitListByPage(this.queryParams)
       this.projectList = res.data.items
+      this.queryParams.keyword = res.data.keyword
       this.queryParams.total = res.data.total
       this.queryParams.limit = res.data.limit
       this.queryParams.page = res.data.page
@@ -370,7 +394,12 @@ export default {
         return
       }
       this.manageOriginList = data.map(item => {
-        return { ...item, disabled: false, key: item.itemId, label: item.itemName }
+        return {
+          ...item,
+          disabled: false,
+          key: item.itemId,
+          label: item.itemName
+        }
       })
       if (this.manageOriginList === undefined) {
         this.manageOriginList = []
@@ -433,7 +462,7 @@ export default {
     resetQuery () {
       // this.resetForm('queryParams')
       // this.queryParams = {}
-      this.queryParams.keyword = ''
+      // this.queryParams.keyword = ''
     },
     // 新增按钮
     async handleAdd () {
@@ -446,7 +475,7 @@ export default {
     },
     deptVal (val) {
       let obj = {}
-      obj = this.deptManag.find((item) => {
+      obj = this.deptManag.find(item => {
         return item.deptName === val
       })
       this.project.deptCode = obj.deptCode
@@ -492,14 +521,14 @@ export default {
         type: 'warning'
       }).then(async () => {
         deleteUnit(deleData.id)
-          .then((res) => {
+          .then(res => {
             this.$message({
               type: 'success',
               message: '删除成功!'
             })
             this.getTableData()
           })
-          .catch((err) => {
+          .catch(err => {
             this.$message({
               type: 'error',
               message: '删除失败!'
@@ -522,7 +551,7 @@ export default {
         this.selectedids = this.selectedList.map(item => {
           return { id: item.id }
         })
-        deleteUnitBatch(this.selectedids).then((res) => {
+        deleteUnitBatch(this.selectedids).then(res => {
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -533,9 +562,10 @@ export default {
     },
     // 模态框提交
     async confirmRole () {
-      this.$refs['project'].validate(async (valid) => {
+      this.$refs['project'].validate(async valid => {
         if (valid) {
-          if (this.dialogType !== 'edit') { // 新增
+          if (this.dialogType !== 'edit') {
+            // 新增
             await addUnit(this.project).then(res => {
               this.$set(this.project, {})
               this.getTableData()
@@ -554,13 +584,14 @@ export default {
               //   })
               // }
             })
-          } else { // 编辑
+          } else {
+            // 编辑
             this.project.isenable = false // 有修改就需要重新审核
             await updateUnit(this.project).then(res => {
               this.getTableData()
               this.dialogVisible = false
               if (res.status === 200) {
-              // this.$set(this.project, {})
+                // this.$set(this.project, {})
                 this.$message({
                   showClose: true,
                   message: '编辑成功',

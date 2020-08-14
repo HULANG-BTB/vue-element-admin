@@ -112,10 +112,10 @@
               <el-input v-model="project.itemSortId" placeholder="项目分类编码" />
             </el-form-item>
             <el-form-item label="项目生效日期" :label-width="formLabelWidth" prop="itemEffdate">
-              <el-date-picker v-model="project.itemEffdate" type="date" placeholder="选择日期" style="width: 100%;" :picker-options="itemEffdateOptions" />
+              <el-date-picker v-model="project.itemEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
             </el-form-item>
             <el-form-item label="记录生效日期" :label-width="formLabelWidth" prop="effdate">
-              <el-date-picker v-model="project.effdate" type="date" placeholder="选择日期" style="width: 100%;" :picker-options="effdateOptions" />
+              <el-date-picker v-model="project.effdate" type="date" placeholder="选择日期" style="width: 100%;" />
             </el-form-item>
             <el-form-item label="收入类别" :label-width="formLabelWidth" prop="incomSortCode ">
               <el-select v-model="project.incomSortCode " placeholder="根据实际情况选择">
@@ -147,10 +147,10 @@
               <el-input v-model="project.itemName" placeholder="项目名称" />
             </el-form-item>
             <el-form-item label="项目失效日期" :label-width="formLabelWidth" prop="itemExpdate">
-              <el-date-picker v-model="project.itemExpdate" type="date" placeholder="选择日期" style="width: 100%;" :picker-options="itemExpdateOptions" />
+              <el-date-picker v-model="project.itemExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
             </el-form-item>
             <el-form-item label="记录截止日期" :label-width="formLabelWidth" prop="expdate">
-              <el-date-picker v-model="project.expdate" type="date" placeholder="选择日期" style="width: 100%;" :picker-options="expdateOptions" />
+              <el-date-picker v-model="project.expdate" type="date" placeholder="选择日期" style="width: 100%;" />
             </el-form-item>
             <el-form-item label="助记码" :label-width="formLabelWidth" prop="mnen">
               <el-input v-model="project.mnen" placeholder="助记码" />
@@ -189,7 +189,7 @@
             <el-form-item label="经办人" :label-width="formLabelWidth" prop="operator">
               <el-input v-model="standard.operator" placeholder="经办人" />
             </el-form-item>
-            <el-form-item label="生效日期" :label-width="formLabelWidth" prop="createTime">
+            <el-form-item label="创建日期" :label-width="formLabelWidth" prop="createTime">
               <el-date-picker v-model="standard.createTime" type="date" placeholder="选择日期" style="width: 100%;" />
             </el-form-item>
             <el-form-item label="计量单位" :label-width="formLabelWidth" prop="units">
@@ -232,6 +232,7 @@
 <script>
 import { getProjectListByPage, addProject, updateProject, deleteProject, deleteProjectBatch, addStd, updateStd, getItemStd } from '@/api/projectManager'
 import { parseTime } from '@/utils/index'
+
 const defaultUser = {
   // rgnId: '',
   itemId: '',
@@ -268,33 +269,22 @@ const defaultStand = {
 }
 export default {
   data () {
+    const validateDatePicker = (rule, value, callback, source, option, other) => {
+      const thisZero = new Date().setHours(0, 0, 0, 0)
+      const input = new Date(value).setHours(0, 0, 0, 0)
+      if (input < thisZero && !other) {
+        callback(new Error('日期不能早于今天'))
+      } else if (other) {
+        const otherDate = new Date(this.project[other]).setHours(0, 0, 0, 0)
+        const otherStdData = new Date(this.standard[other]).setHours(0, 0, 0, 0)
+        if (otherDate > input || otherStdData > input) {
+          callback(new Error('当前日期不能在开始日期之前'))
+        }
+      } else {
+        callback()
+      }
+    }
     return {
-      itemEffdateOptions: { // 时间限制
-        disabledDate: time => {
-          if (this.project.itemExpdate) {
-            return time.getTime() < Date.now() - 8.64e7 || time.getTime() > this.project.itemExpdate
-          }
-          return time.getTime() < Date.now() - 8.64e7
-        }
-      },
-      itemExpdateOptions: {
-        disabledDate: time => {
-          return time.getTime() < Date.now() - 8.64e7 || time.getTime() < this.project.itemEffdate
-        }
-      },
-      effdateOptions: {
-        disabledDate: time => {
-          if (this.project.expdate) {
-            return time.getTime() < Date.now() - 8.64e7 || time.getTime() > this.project.expdate
-          }
-          return time.getTime() < Date.now() - 8.64e7
-        }
-      },
-      expdateOptions: {
-        disabledDate: time => {
-          return time.getTime() < Date.now() - 8.64e7 || time.getTime() < this.project.effdate
-        }
-      },
       //   loading: true,
       queryParams: { // 查询参数
         keyword: '',
@@ -344,7 +334,7 @@ export default {
       dialogVisibleTow: false,
       dialogType: '',
       dialogTypeTow: '',
-      formLabelWidth: '100px',
+      formLabelWidth: '120px',
       selectedList: [],
       selectedids: [],
       rules: {
@@ -362,7 +352,20 @@ export default {
         ],
         fundsnatureCode: [
           { required: true, message: '资金性质不能为空', trigger: 'blur' }
+        ],
+        itemEffdate: [
+          { trigger: 'blur', validator: validateDatePicker }
+        ],
+        itemExpdate: [
+          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemEffdate') }
+        ],
+        effdate: [
+          { trigger: 'blur', validator: validateDatePicker }
+        ],
+        expdate: [
+          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'effdate') }
         ]
+
       },
       standRules: {
         itemstdCode: [
@@ -381,10 +384,16 @@ export default {
           { required: true, message: '计量单位不能为空', trigger: 'blur' }
         ],
         itemstdEffdate: [
-          { required: true, message: '生效日期不能为空', trigger: 'blur' }
+          { trigger: 'blur', validator: validateDatePicker }
         ],
         itemstdExpdate: [
-          { required: true, message: '失效日期不能为空', trigger: 'blur' }
+          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemstdEffdate') }
+        ],
+        createTime: [
+          { trigger: 'blur', validator: validateDatePicker }
+        ],
+        updateTime: [
+          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'createTime') }
         ],
         itemCode: [
           { required: true, message: '项目编码不能为空', trigger: 'blur' }
@@ -394,12 +403,6 @@ export default {
         ],
         operatorId: [
           { required: true, message: '经办人ID不能为空', trigger: 'blur' }
-        ],
-        createTime: [
-          { required: true, message: '创建时间不能为空', trigger: 'blur' }
-        ],
-        updateTime: [
-          { required: true, message: '最后修改时间不能为空', trigger: 'blur' }
         ]
       }
     }
@@ -413,6 +416,9 @@ export default {
     this.getTableData()
   },
   methods: {
+    // validateDatePicker (rule, value, callback, source, option, this.project.itemEffdate) {
+
+    // },
     // 格式化时间
     parseTime (time) {
       return parseTime(new Date())

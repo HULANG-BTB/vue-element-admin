@@ -155,7 +155,7 @@ export default {
       crt: {},
       dialogVisible: false,
       dialogType: 'new',
-      formLabelWidth: '100px',
+      formLabelWidth: '120px',
       fileList: [],
       selectedList: [],
       rules: {

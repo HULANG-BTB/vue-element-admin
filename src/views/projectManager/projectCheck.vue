@@ -174,7 +174,7 @@ export default {
       },
       dialogVisible: false,
       dialogType: '查看项目',
-      formLabelWidth: '100px',
+      formLabelWidth: '120px',
       selectedList: [],
       selectedids: [],
       rules: {

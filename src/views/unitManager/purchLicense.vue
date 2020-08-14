@@ -124,13 +124,13 @@
     />
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'准购证变动':'新增准购证'">
-      <el-form ref="crt" :model="crt" :rules="rules" label-width="130px" label-position="right" style="padding-right:20px;">
+      <el-form ref="crt" :model="crt" :rules="rules" label-width="80px" label-position="right" style="padding-right:20px;">
         <el-row :gutter="20">
           <el-form-item label="准购证名称" :label-width="formLabelWidth" prop="crtName">
             <el-input v-model="crt.crtName" placeholder="准购证名称" />
           </el-form-item>
           <el-form-item label="所属单位" :label-width="formLabelWidth" prop="agenName" @change="changed">
-            <el-select v-model="crt.agenName" placeholder="根据实际情况选择">
+            <el-select v-model="crt.agenName">
               <el-option v-for="(item,index) in agenNameList" :key="index" :label="item.agenName" :value="item.agenName" />
             </el-select>
           </el-form-item>
@@ -165,6 +165,7 @@
 <script>
 import { getCrtListByPage, deleteCrt, deleteCrtBatch, addCrt, updateCrt, getAgenName } from '@/api/purchLicense'
 import { parseTime } from '@/utils/index'
+import { validateDatePicker } from '@/utils/validate'
 // , addCrt, updateCrt, deleteCrt, deleteCrtBatch,getCrtListByPage,
 const defaultUser = {
   isEnable: '',
@@ -198,7 +199,7 @@ export default {
         linkmanTel: '',
         legalno: '',
         updateTime: 0,
-        issuedate: 0,
+        issuedate: '',
         version: 0,
         linkman: '',
         operator: '',
@@ -212,7 +213,7 @@ export default {
       agenNameList: [],
       dialogVisible: false,
       dialogType: 'new',
-      formLabelWidth: '100px',
+      formLabelWidth: '120px',
       selectedList: [],
       // multiple: true, // 非多个禁用
       // pagesize: 5,
@@ -220,25 +221,25 @@ export default {
       fileList: [],
       rules: {
         crtName: [
-          { required: true, message: '项目编码不能为空', trigger: 'blur' }
+          { required: true, message: '准购证名称不能为空', trigger: 'blur' }
         ],
         agenName: [
-          { required: true, message: '项目名称不能为空', trigger: 'blur' }
+          { required: true, message: '所属单位不能为空', trigger: 'blur' }
         ],
         legalno: [
-          { required: true, message: '助记码不能为空', trigger: 'blur' }
+          { required: true, message: '单位法人证号不能为空', trigger: 'blur' }
         ],
         chargno: [
-          { required: true, message: '收入类别不能为空', trigger: 'blur' }
+          { required: true, message: '收费许可证号不能为空', trigger: 'blur' }
         ],
         fineno: [
-          { required: true, message: '收入类别不能为空', trigger: 'blur' }
+          { required: true, message: '罚没许可证号不能为空', trigger: 'blur' }
         ],
         issuedate: [
-          { required: true, message: '收入类别不能为空', trigger: 'blur' }
+          { trigger: 'blur', validator: validateDatePicker }
         ],
         proxyno: [
-          { required: true, message: '资金性质不能为空', trigger: 'blur' }
+          { required: true, message: '收费委托书号不能为空', trigger: 'blur' }
         ]
       }
     }
