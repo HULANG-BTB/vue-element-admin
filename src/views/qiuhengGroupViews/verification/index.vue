@@ -6,35 +6,35 @@
                 <el-container>
                     <el-header>
                     <!-- 查询表单 -->
-                        <el-form>
+                        <el-form v-model="searchForm">
                             <el-row>
                                 <el-col :span="4">
                                     <el-form-item label="业务单号:" label-width="80px">
-                                        <el-input type="text" placeholder="输入业务单号查询" autocomplete="false"></el-input>
+                                        <el-input type="text" v-model="searchForm.orderNo" placeholder="输入业务单号查询" autocomplete="false"></el-input>
                                     </el-form-item>
                                 </el-col>
                                 
                                 <el-col :span="4">
                                     <el-form-item label="编制日期:" label-width="120px">
-                                        <el-input type="text" placeholder="输入日期查询" autocomplete="false"></el-input>
+                                        <el-input type="text" v-model="searchForm.startDate" placeholder="输入日期查询" autocomplete="false"></el-input>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="3">
                                     <el-form-item label="至" label-width="40px">
-                                        <el-input type="text" placeholder="输入日期查询" autocomplete="false"></el-input>
+                                        <el-input type="text" v-model="searchForm.endDate" placeholder="输入日期查询" autocomplete="false"></el-input>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="4">
                                     <el-form-item label="状态" label-width="80px">
-                                        <el-select v-model="status" placeholder="请选择">
-                                            <el-option label="已审验" value="yes"></el-option>
-                                            <el-option label="未审验" value="no"></el-option>
+                                        <el-select v-model="searchForm.state" placeholder="请选择">
+                                            <el-option label="已审验" value="1"></el-option>
+                                            <el-option label="未审验" value="0"></el-option>
                                         </el-select>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="2">
                                     <el-form-item label="" label-width="40px">
-                                        <el-button type="primary" style="width: 100%;" @click="onSubmit()">查询</el-button>
+                                        <el-button type="primary" style="width: 100%;" @click="onSearch()">查询</el-button>
                                     </el-form-item>
                                 </el-col>
 
@@ -101,7 +101,7 @@
                         <el-table-column prop="reason" label="退票原因" width="320" align="center"></el-table-column>
                         <el-table-column prop="author" label="经办人" width="120" align="center"></el-table-column>
                         <el-table-column label="操作" width="400" align="center">
-                            <i class="el-icon-tickets" style="padding: 10px;" @click="testBtn()"></i>
+                            <i class="el-icon-tickets" style="padding: 10px;" @click="onDetailsBtn()"></i>
                             <i class="el-icon-success" style="padding: 10px"></i>
                         </el-table-column>
                     </el-table>
@@ -135,18 +135,24 @@ export default {
             status: "",
             fileList: [],
             tableData : [],
-            searchForm : {
-                number : "",
-                startDate: "",
-                endDate: ""
-            },
+
             // 记录选中的行
             currentPage : 1, // 初始页
             pageSize: 10, // 分页大小
             multipleSelection: Array(20).fill(item), //这里用multipleSelection存储数据
             tableData : [],
+            
+            // 上述为前端测试数据
             // dialog显示
             dialogVisible : false,
+            // 搜索表单
+            searchForm : {
+                orderNo : "",
+                startDate: "",
+                endDate: "",
+                state: ""
+            },
+
         }
     },
     methods: {
@@ -176,19 +182,26 @@ export default {
             this.tableData = this.multipleSelection.slice((this.currentPage-1) * this.pageSize, this.currentPage * this.pageSize);
         },
 
-        testBtn() {
+        onSearch() {
+            // 提交查询表单信息
+            // 有后端进行搜索并实现分页
+            
+        },
+        onDetailsBtn() {
             // 点击打开Dialog
             this.dialogVisible = true
+            // 获取核销单位信息
+            // function() 
+            // 查询核销信息
+            this.doSearch()
         },
         closeMoule(e) {
-            // 点击关闭的callback事件
-            // e为值
+            // 点击关闭的callback事件 e的值为false，这里直接赋值为false
             this.dialogVisible = false
         },
-        
         doSearch: function(){
             // 查询核销信息
-
+            // 发送请求从后端获取核销的详细信息
         },
         doReceive: function(){
             // 接收核销请求
