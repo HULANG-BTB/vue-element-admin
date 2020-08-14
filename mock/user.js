@@ -181,6 +181,22 @@ const users = {
     'agenCode': '112233',
     'avatar': 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
   },
+  'financial_check': {
+    'roles': [
+      {
+        'role': 'financial_check',
+        'permissions': [],
+        'name': '财政端_审查',
+        'id': 3
+      }
+    ],
+    'token': 'eyJhbGciOiJSUzI1NiJ9.eyJlY2RzX3VzZXIiOiJ7XCJuaWNrbmFtZVwiOlwi6LSi5pS_XCIsXCJpZFwiOjQsXCJ1c2VybmFtZVwiOlwiZmluYW5jaWFsXCJ9IiwianRpIjoiWXpVMk5URTBZV00yWTJReE5HUmpOVGhoTVRjMFpUUmtPREUyTkRjeVlqRT0iLCJleHAiOjE1OTk4Nzk0MDF9.gJw2_qyhqlYSwVQOokVu96rY671WhUUOyhN4KRt8di3Bz3ZEJukQoYlpKPVHkD95_YqMoYrFuRT52sjVAtWeMRk31mXHO_cyFXMHAbRlwpQTgzkWNLCyvTCCXjSmpXp1iTY-acgmEH6jCG8WneAUenI1Ws1SyOVPh0WRQpMPZwn1AsdYxsnClWo4cCWz25WkMnE13RcdXqKky6IiV1Q4QneUKteCmF1Ok3b_og-w6X8XoIIewGUBo1-kHwHXeksZSvRbg-w71ij-lqZrjOVMG7S9c-8YL8gfEBqmQVeCNSMOsFSFw6d-5C7PAbh-iPD8L0TZAUFAvmpcyv905oT7QS',
+    'nickname': '财政_审查',
+    'id': 4,
+    'username': 'financial',
+    'agenCode': '112233',
+    'avatar': 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
+  },
   'unit': {
     'roles': [
       {

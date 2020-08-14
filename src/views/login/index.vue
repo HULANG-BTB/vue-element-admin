@@ -55,12 +55,12 @@
       >Login</el-button>
 
       <div class="tips">
-        <span style="margin-right:20px;">管理员: admin</span>
-        <span style="margin-right:20px;">财政端: financial</span>
-        <span style="margin-right:20px;">单位端: unit</span>
-        <span>密码: any</span>
-      </div>
-    </el-form>
+        <div style="margin-right:20px;">管理员: admin</div>
+        <div style="margin-right:20px;">财政端: financial</div>
+        <div style="margin-right:20px;">财政端审核: financial_check</div>
+        <div style="margin-right:20px;">单位端: unit</div>
+        <div>密码: any</div>
+      </div></el-form>
   </div>
 </template>
 
