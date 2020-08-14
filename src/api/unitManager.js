@@ -57,6 +57,22 @@ export function getUnitListByPage (data) {
   })
 }
 
+export function getCheckList (data) {
+  return request({
+    url: '/agen/checkListByPage',
+    method: 'post',
+    data: data
+  })
+}
+
+export function getCheckBatch (data) {
+  return request({
+    url: '/agen/checkBatch',
+    method: 'post',
+    data: data
+  })
+}
+
 export function getUnitList () {
   return request({
     url: '/agen/listAll',

@@ -15,6 +15,12 @@ const unitManager = {
       meta: { title: '单位管理', icon: 'icon' }
     },
     {
+      path: 'unitCheck',
+      component: () => import('@/views/unitManager/unitCheck'),
+      name: 'unitCheck',
+      meta: { title: '单位审核', icon: 'edit' }
+    },
+    {
       path: 'adminDepart',
       component: () => import('@/views/unitManager/adminDepart'),
       name: 'adminDepart',
@@ -25,6 +31,12 @@ const unitManager = {
       component: () => import('@/views/unitManager/purchLicense'),
       name: 'purchLicense',
       meta: { title: '准购证管理', icon: 'edit' }
+    },
+    {
+      path: 'purchLicenseCheck',
+      component: () => import('@/views/unitManager/purchLicenseCheck'),
+      name: 'purchLicenseCheck',
+      meta: { title: '准购证审核', icon: 'edit' }
     },
     {
       path: 'unitPayer',

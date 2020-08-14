@@ -12,8 +12,8 @@
       </el-form-item>
       <el-form-item label="状态">
         <el-select v-model="queryParams.isenable" placeholder="请选择标准状态" style="width: 150px">
-          <el-option label="启用" value="启用" />
-          <el-option label="停用" value="停用" />
+          <el-option label="已完成" value="已完成" />
+          <el-option label="待审核" value="待审核" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -23,14 +23,15 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <!-- <el-col :span="1.5">
+      <el-col :span="1.5">
         <el-button
-          type="primary"
-          icon="el-icon-plus"
+          type="success"
+          :disabled="deleteBatchDisable"
+          icon="el-icon-delete"
           size="small"
-          @click="handleAdd"
-        >新增标准</el-button>
-      </el-col> -->
+          @click="handleMultCheck"
+        >批量审核</el-button>
+      </el-col>
       <el-col :span="1.5">
         <el-button
           type="danger"
@@ -49,7 +50,7 @@
           <el-tag
             :type="scope.row.isenable ? 'success' : 'info'"
             disable-transitions
-          >{{ scope.row.isenable ? '启用' : '停用' }}
+          >{{ scope.row.isenable ? '已完成' : '待审核' }}
           </el-tag>
         </template>
       </el-table-column>
@@ -70,8 +71,9 @@
       </el-table-column>
       <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">修改</el-button>
-          <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="primary" size="mini" @click="handleEdit(scope.row)">修改</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="success" size="mini" @click="handleCheck(scope.row)">审核</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -150,7 +152,7 @@
 </template>
 
 <script>
-import { getStdListByPage, updateStd, deleteStd, deleteStdBatch } from '@/api/projectManager'
+import { getStdListByPage, updateStd, deleteStd, deleteStdBatch, projectStdCheck } from '@/api/projectManager'
 import { parseTime } from '@/utils/index'
 
 export default {
@@ -266,7 +268,8 @@ export default {
     },
     // 重置
     resetQuery () {
-      this.queryParams = {}
+      // this.queryParams = {}
+      this.queryParams.keyword = ''
     },
     // 编辑按钮
     handleEdit (rowData) {
@@ -320,10 +323,11 @@ export default {
         })
       })
     },
-    // 模态框提交
+    // 编辑模态框提交
     async confirmRole () {
       this.$refs['standard'].validate(async (valid) => {
         if (valid) {
+          this.standard.isenable = 0 // 有修改就需要重新审核
           await updateStd(this.standard).then(res => {
             this.getTableData()
             this.dialogVisible = false
@@ -340,6 +344,36 @@ export default {
     cancel () {
       this.dialogVisible = false
       this.resetForm('standard')
+    },
+    // 单个审核
+    async handleCheck (simpData) {
+      this.standard = Object.assign({}, simpData)
+      this.standard.isenable = 1 // 单击审核就相当于让状态变为1
+      await updateStd(this.standard).then(res => {
+        this.getTableData()
+        this.dialogVisible = false
+        this.$message({
+          showClose: true,
+          message: '审核成功',
+          type: 'success'
+        })
+      })
+    },
+    // 批量审核按钮
+    async handleMultCheck (checkData) {
+      this.selectedids = this.selectedList.map(item => {
+        return { id: item.id }
+      })
+      await projectStdCheck(this.selectedids).then(res => {
+        this.$set(this.standard, {})
+        this.getTableData()
+        this.dialogVisible = false
+        this.$message({
+          showClose: true,
+          message: '全部审核成功',
+          type: 'success'
+        })
+      })
     },
     // 分页，每页数目改变
     handleSizeChange (val) {

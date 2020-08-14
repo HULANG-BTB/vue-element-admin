@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 项目管理
 export function getProjectListByPage (data) {
   return request({
-    url: '/item/listbypage',
+    url: '/item/listByPage',
     method: 'post',
     data: data
   })
@@ -57,6 +57,14 @@ export function getStdListByPage (data) {
   })
 }
 
+export function getItemStd (data) {
+  return request({
+    url: '/itemstd/getItemStd',
+    method: 'post',
+    data: { itemCode: data }
+  })
+}
+
 export function addStd (data) {
   return request({
     url: '/itemstd/save',
@@ -84,6 +92,14 @@ export function deleteStd (data) {
 export function deleteStdBatch (data) {
   return request({
     url: '/itemstd/batchDelete',
+    method: 'post',
+    data: data
+  })
+}
+
+export function projectStdCheck (data) {
+  return request({
+    url: '/itemstd/batchVerify',
     method: 'post',
     data: data
   })
