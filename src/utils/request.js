@@ -26,7 +26,6 @@ service.interceptors.request.use(
   error => {
     NProgress.done()
     // 请求失败处理
-    console.log(error) // for debug
     return Promise.reject(error)
   }
 )

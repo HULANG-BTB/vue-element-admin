@@ -1,17 +1,15 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://localhost:8001'
-
 export function getRoleList () {
   return request({
-    url: BASE_URL + '/role/list',
+    url: '/role/list',
     method: 'get'
   })
 }
 
 export function getRoleListByUserId (id) {
   return request({
-    url: BASE_URL + '/role/listByUserId',
+    url: '/role/listByUserId',
     method: 'get',
     params: { id }
   })
@@ -19,7 +17,7 @@ export function getRoleListByUserId (id) {
 
 export function getRoleListByPage (query) {
   return request({
-    url: BASE_URL + '/role/listByPage',
+    url: '/role/listByPage',
     method: 'get',
     params: query
   })
@@ -27,7 +25,7 @@ export function getRoleListByPage (query) {
 
 export function updateRole (role) {
   return request({
-    url: BASE_URL + '/role/update',
+    url: '/role/update',
     method: 'put',
     data: role
   })
@@ -35,14 +33,14 @@ export function updateRole (role) {
 
 export function deleteRole (id) {
   return request({
-    url: `${BASE_URL}/role/remove/${id}`,
+    url: `/role/remove/${id}`,
     method: 'delete'
   })
 }
 
 export function deleteRoleBatch (data) {
   return request({
-    url: `${BASE_URL}/role/removeBatch`,
+    url: `/role/removeBatch`,
     method: 'delete',
     data: data
   })
@@ -50,7 +48,7 @@ export function deleteRoleBatch (data) {
 
 export function addRole (data) {
   return request({
-    url: `${BASE_URL}/role/save`,
+    url: `/role/save`,
     method: 'post',
     data
   })
