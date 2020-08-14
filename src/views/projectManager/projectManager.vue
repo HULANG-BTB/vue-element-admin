@@ -112,13 +112,12 @@
               <el-input v-model="project.itemSortId" placeholder="项目分类编码" />
             </el-form-item>
             <el-form-item label="项目生效日期" :label-width="formLabelWidth" prop="itemEffdate">
-              <el-date-picker v-model="project.itemEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
+              <el-date-picker v-model="project.itemEffdate" type="date" placeholder="选择日期" style="width: 100%;" :picker-options="itemEffdateOptions" />
             </el-form-item>
             <el-form-item label="记录生效日期" :label-width="formLabelWidth" prop="effdate">
-              <el-date-picker v-model="project.effdate" type="date" placeholder="选择日期" style="width: 100%;" />
+              <el-date-picker v-model="project.effdate" type="date" placeholder="选择日期" style="width: 100%;" :picker-options="effdateOptions" />
             </el-form-item>
             <el-form-item label="收入类别" :label-width="formLabelWidth" prop="incomSortCode ">
-              <!-- <el-input v-model="project.incomSortCode" placeholder="收入类别" /> -->
               <el-select v-model="project.incomSortCode " placeholder="根据实际情况选择">
                 <el-option label="直缴" value="直缴" />
                 <el-option label="汇缴" value="汇缴" />
@@ -133,7 +132,6 @@
               </el-select>
             </el-form-item>
             <el-form-item label="资金性质" :label-width="formLabelWidth" prop="fundsnatureCode">
-              <!-- <el-input v-model="project.fundsnatureCode" placeholder="资金性质" /> -->
               <el-select v-model="project.fundsnatureCode" placeholder="根据实际情况选择">
                 <el-option label="直缴" value="直缴" />
                 <el-option label="汇缴" value="汇缴" />
@@ -143,16 +141,16 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemId">
-              <el-input v-model="project.itemId" placeholder="项目编码" />
+              <el-input v-model="project.itemId" placeholder="项目编码" :disabled="true" />
             </el-form-item>
             <el-form-item label="项目名称" :label-width="formLabelWidth" prop="itemName">
               <el-input v-model="project.itemName" placeholder="项目名称" />
             </el-form-item>
             <el-form-item label="项目失效日期" :label-width="formLabelWidth" prop="itemExpdate">
-              <el-date-picker v-model="project.itemExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
+              <el-date-picker v-model="project.itemExpdate" type="date" placeholder="选择日期" style="width: 100%;" :picker-options="itemExpdateOptions" />
             </el-form-item>
             <el-form-item label="记录截止日期" :label-width="formLabelWidth" prop="expdate">
-              <el-date-picker v-model="project.expdate" type="date" placeholder="选择日期" style="width: 100%;" />
+              <el-date-picker v-model="project.expdate" type="date" placeholder="选择日期" style="width: 100%;" :picker-options="expdateOptions" />
             </el-form-item>
             <el-form-item label="助记码" :label-width="formLabelWidth" prop="mnen">
               <el-input v-model="project.mnen" placeholder="助记码" />
@@ -271,7 +269,33 @@ const defaultStand = {
 export default {
   data () {
     return {
-    //   loading: true,
+      itemEffdateOptions: { // 时间限制
+        disabledDate: time => {
+          if (this.project.itemExpdate) {
+            return time.getTime() < Date.now() - 8.64e7 || time.getTime() > this.project.itemExpdate
+          }
+          return time.getTime() < Date.now() - 8.64e7
+        }
+      },
+      itemExpdateOptions: {
+        disabledDate: time => {
+          return time.getTime() < Date.now() - 8.64e7 || time.getTime() < this.project.itemEffdate
+        }
+      },
+      effdateOptions: {
+        disabledDate: time => {
+          if (this.project.expdate) {
+            return time.getTime() < Date.now() - 8.64e7 || time.getTime() > this.project.expdate
+          }
+          return time.getTime() < Date.now() - 8.64e7
+        }
+      },
+      expdateOptions: {
+        disabledDate: time => {
+          return time.getTime() < Date.now() - 8.64e7 || time.getTime() < this.project.effdate
+        }
+      },
+      //   loading: true,
       queryParams: { // 查询参数
         keyword: '',
         // useType: '',
@@ -502,23 +526,24 @@ export default {
               // }
             })
           } else { // 编辑
+            this.project.isenable = 0 // 有修改就需要重新审核
             await updateProject(this.project).then(res => {
               this.getTableData()
               this.dialogVisible = false
-              if (res.status === 200) {
-                // this.$set(this.project, {})
-                this.$message({
-                  showClose: true,
-                  message: '编辑成功',
-                  type: 'success'
-                })
-              } else {
-                this.$message({
-                  showClose: true,
-                  message: '编辑失败',
-                  type: 'error'
-                }) // 或者弹出后台返回错误
-              }
+              // if (res.status === 200) {
+              this.$set(this.project, {})
+              this.$message({
+                showClose: true,
+                message: '编辑成功',
+                type: 'success'
+              })
+              // } else {
+              //   this.$message({
+              //     showClose: true,
+              //     message: '编辑失败',
+              //     type: 'error'
+              //   }) // 或者弹出后台返回错误
+              // }
             })
           }
         }
@@ -580,8 +605,6 @@ export default {
             await updateStd(this.standard).then(res => {
               this.getTableData()
               this.dialogVisibleTow = false
-              // this.resetForm(this.standard)
-              // this.standard = {}
               this.$message({
                 showClose: true,
                 message: '修改标准成功',

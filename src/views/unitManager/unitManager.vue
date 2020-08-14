@@ -292,7 +292,6 @@ export default {
       formLabelWidth: '100px',
       selectedList: [],
       deptManag: [],
-      // multiple: true, // 非多个禁用
       rules: {
         agenCode: [
           { required: true, message: '单位编码不能为空', trigger: 'blur' }
@@ -556,6 +555,7 @@ export default {
               // }
             })
           } else { // 编辑
+            this.project.isenable = false // 有修改就需要重新审核
             await updateUnit(this.project).then(res => {
               this.getTableData()
               this.dialogVisible = false

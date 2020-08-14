@@ -12,19 +12,22 @@ const projectManager = {
       path: 'projectManager',
       component: () => import('@/views/projectManager/projectManager'),
       name: 'projectManager',
-      meta: { title: '项目维护', icon: 'icon' }
+      meta: { title: '项目维护', icon: 'icon' },
+      roles: ['financial', 'admin']
     },
     {
       path: 'projectCheck',
       component: () => import('@/views/projectManager/projectCheck'),
       name: 'projectCheck',
-      meta: { title: '项目审核', icon: 'link' }
+      meta: { title: '项目审核', icon: 'link' },
+      roles: ['admin']
     },
     {
       path: 'chargeStand',
       component: () => import('@/views/projectManager/chargeStand'),
       name: 'chargeStand',
-      meta: { title: '项目标准管理', icon: 'tab' }
+      meta: { title: '项目标准管理', icon: 'tab' },
+      roles: ['financial', 'admin']
     }
   ]
 }

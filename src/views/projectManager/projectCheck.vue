@@ -38,10 +38,6 @@
           >{{ scope.row.isenable ? '已完成' : '待审核' }}
           </el-tag>
         </template>
-        <!-- <el-switch
-          active-color="#13ce66"
-          inactive-color="#ff4949"
-        /> -->
       </el-table-column>
       <el-table-column align="center" label="项目编码" prop="itemId" />
       <el-table-column align="center" label="项目名称" prop="itemName" :show-overflow-tooltip="true" />
@@ -150,7 +146,7 @@ import { parseTime } from '@/utils/index'
 export default {
   data () {
     return {
-    //   loading: true,
+      //   loading: true,
       queryParams: { // 查询参数
         keyword: '',
         isenable: 0,
@@ -209,7 +205,6 @@ export default {
     this.getTableData()
   },
   methods: {
-    // 格式化时间
     parseTime (time) {
       return parseTime(new Date())
     },
@@ -228,28 +223,21 @@ export default {
       this.selectedList = []
       // this.loading = false
     },
-    // 搜索
     handleQuery () {
       this.queryParams.page = 1
       this.getTableData()
     },
-    // 表单重置封装
     resetForm (refName) {
       if (this.$refs[refName]) {
         this.$refs[refName].resetFields()
       }
     },
-    // 重置
     resetQuery () {
-      // this.resetForm('queryParams')
-      // this.queryParams = {}
       this.queryParams.keyword = ''
     },
-    // 多选框选中数据
     handleSelectionChange (selection) {
       this.selectedList = selection
     },
-    // 批量审核按钮
     async handleMultCheck (checkData) {
       this.selectedids = this.selectedList.map(item => {
         return { id: item.id }
@@ -265,7 +253,6 @@ export default {
         })
       })
     },
-    // 单个审核
     async handleCheck (simpData) {
       this.project = Object.assign({}, simpData)
       this.project.isenable = 1 // 单击审核就相当于让状态变为1
@@ -279,26 +266,21 @@ export default {
         })
       })
     },
-    // 查看按钮
     handleLook (rowData) {
       this.dialogVisible = true
       this.project = Object.assign({}, rowData)
     },
-    // 查看模态框提交
     confirmRole () {
       this.dialogVisible = false
     },
-    //  查看模态框取消
     cancel () {
       this.dialogVisible = false
       this.resetForm('project')
     },
-    // 分页，每页数目改变
     handleSizeChange (val) {
       this.queryParams.limit = val
       this.getTableData()
     },
-    // 当前页码改变
     handleCurrentChange (val) {
       this.queryParams.page = val
       this.getTableData()
