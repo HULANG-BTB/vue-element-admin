@@ -1,5 +1,4 @@
 <template>
-
   <div>
     <el-header class="top">
       <el-row gutter="20">
@@ -10,7 +9,9 @@
           <div><h3>票据池-设置</h3></div>
         </el-col>
         <el-col :span="3">
-          <el-button type="primary" icon="el-icon-circle-plus"> 创建共享池</el-button>
+          <el-button type="primary" icon="el-icon-circle-plus">
+            创建共享池
+          </el-button>
         </el-col>
         <el-col :span="2">
           <el-button type="primary" icon="el-icon-success"> 保存</el-button>
@@ -21,55 +22,60 @@
       </el-row>
     </el-header>
 
-    <el-form ref="form" :model="form" label-width="120px" inline="true" class="form">
-
-      <el-form-item hide-required-asterisk="true" label="票据池编码" class="form-item">
-        <el-input v-model="form.code" type="text" size="15" placeholder="请输入票据编码" maxlength="6" class="input" />
+    <el-form
+      ref="form"
+      :model="form"
+      label-width="120px"
+      inline="true"
+      class="form"
+    >
+      <el-form-item
+        hide-required-asterisk="true"
+        label="票据池编码"
+        class="form-item"
+      >
+        <el-input
+          v-model="form.code"
+          type="text"
+          size="15"
+          placeholder="请输入票据编码"
+          maxlength="6"
+          class="input"
+        />
       </el-form-item>
       <el-form-item class="form-item-button">
         <el-button type="primary" plain="">查询</el-button>
       </el-form-item>
       <br />
       <el-form-item label="票据池名称" class="form-item">
-        <el-input v-model="form.code" :disabled="true" type="text" size="15" placeholder="票据编码" maxlength="6" class="input" />
+        <el-input
+          v-model="form.code"
+          :readonly="true"
+          type="text"
+          size="15"
+          placeholder="票据编码"
+          maxlength="6"
+          class="input"
+        />
       </el-form-item>
       <el-form-item label="票据池编码" class="form-item">
-        <el-input v-model="form.code" :disabled="true" type="text" size="15" placeholder="票据编码" maxlength="6" class="input" />
+        <el-input
+          v-model="form.code"
+          :readonly="true"
+          type="text"
+          size="15"
+          placeholder="票据编码"
+          maxlength="6"
+          class="input"
+        />
       </el-form-item>
-
     </el-form>
 
     <el-form ref="form" :model="form" label-width="120px" inline="true">
       <el-form-item class="form-item"><h2>可用票据</h2></el-form-item>
     </el-form>
   </div>
-
 </template>
-
-<script>
-export default {
-  data () {
-    return {
-      form: {
-        code: '',
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      }
-    }
-  },
-  methods: {
-    onSubmit () {
-      console.log('submit!')
-    }
-  }
-}
-</script>
 
 <style scoped>
 .form {
