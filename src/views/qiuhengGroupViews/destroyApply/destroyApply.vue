@@ -101,7 +101,7 @@
       </el-table-column>
       <el-table-column
         prop="changeMan"
-        label="经办人"
+        label="申请人"
         sortable
         width="180"
       >
