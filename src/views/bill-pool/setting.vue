@@ -8,17 +8,17 @@
         <el-col :span="13" class="grid-content" push="1">
           <div><h3>票据池-设置</h3></div>
         </el-col>
-        <el-col :span="3">
-          <el-button type="primary" icon="el-icon-circle-plus">
-            创建共享池
+        <el-col :span="3" push="4">
+          <el-button type="primary" icon="el-icon-circle-plus" @click="dialogFormVisible = true">
+            创建票据池
           </el-button>
         </el-col>
-        <el-col :span="2">
+        <!-- <el-col :span="2">
           <el-button type="primary" icon="el-icon-success"> 保存</el-button>
         </el-col>
         <el-col :span="2">
           <el-button type="primary" icon="el-icon-error"> 关闭</el-button>
-        </el-col>
+        </el-col> -->
       </el-row>
     </el-header>
 
@@ -35,7 +35,7 @@
         class="form-item"
       >
         <el-input
-          v-model="form.code"
+          v-model="poolData.code"
           type="text"
           size="15"
           placeholder="请输入票据编码"
@@ -49,33 +49,50 @@
       <br />
       <el-form-item label="票据池名称" class="form-item">
         <el-input
-          v-model="form.code"
+          v-model="poolData[0].name"
           :readonly="true"
           type="text"
           size="15"
-          placeholder="票据编码"
-          maxlength="6"
-          class="input"
-        />
-      </el-form-item>
-      <el-form-item label="票据池编码" class="form-item">
-        <el-input
-          v-model="form.code"
-          :readonly="true"
-          type="text"
-          size="15"
-          placeholder="票据编码"
+          placeholder="票据池名称"
           maxlength="6"
           class="input"
         />
       </el-form-item>
     </el-form>
 
-    <el-form ref="form" :model="form" label-width="120px" inline="true">
-      <el-form-item class="form-item"><h2>可用票据</h2></el-form-item>
-    </el-form>
+    <!-- <el-divider /> -->
+
+    <h2 style="margin-left: 100px">票据池信息</h2>
+    <el-table :data="poolData">
+      <el-table-column prop="code" label="票据编码" width="180" />
+      <el-table-column prop="name" label="票据名称" width="200" />
+      <el-table-column prop="minNumber" label="票据池预警数量" width="200" />
+      <el-table-column prop="pushNumber" label="每次推送数量" width="200" />
+      <el-table-column prop="available" label="是否可用" width="200" />
+      <el-table-column label="操作" width="200" />
+    </el-table>
+
   </div>
 </template>
+
+<script>
+export default {
+  name: 'PoolSetting',
+  data () {
+    return {
+      poolData: [{
+        code: '350505',
+        available: '可用',
+        name: '住院医疗票据',
+        pushNumber: '500',
+        minNumber: '3000',
+        operator: '',
+        operatorId: ''
+      }]
+    }
+  }
+}
+</script>
 
 <style scoped>
 .form {
@@ -101,9 +118,9 @@
 }
 .el-row {
   margin-bottom: 20px;
-  &:last-child {
+  /* &:last-child {
     margin-bottom: 0;
-  }
+  } */
 }
 .el-col {
   border-radius: 4px;
@@ -124,5 +141,8 @@
 .row-bg {
   padding: 10px 0;
   background-color: #f9fafc;
+}
+.el-table {
+  margin-left: 100px;
 }
 </style>

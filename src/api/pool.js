@@ -1,9 +1,17 @@
 import request from '@/utils/request'
 
-export function settingPool (param) {
+export function settingPool (data) {
   return request({
     url: 'pool/setting',
     method: 'post',
-    params: param
+    params: data
+  })
+}
+
+export function query (data) {
+  return request({
+    url: 'pool/setting',
+    method: 'post',
+    params: data
   })
 }

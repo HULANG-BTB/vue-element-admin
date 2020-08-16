@@ -25,7 +25,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="createNewCode">创建</el-button>
+        <el-button type="primary" @click="confirm">创建</el-button>
       </div>
     </el-dialog>
   </div>
@@ -61,9 +61,28 @@ export default {
     // 赋码
     createNewCode () {
       createCode(this.code).then(response => {
-        this.dialogFormVisible = false
         this.encodeMessage = response.msg
-        alert(this.encodeMessage)
+      })
+    },
+
+    // 确认
+    confirm () {
+      this.dialogFormVisible = false
+      this.$confirm('此操作将创建新的票据代码, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '创建成功!'
+        })
+        this.createNewCode()
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消创建'
+        })
       })
     }
   }

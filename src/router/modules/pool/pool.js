@@ -21,14 +21,14 @@ export default [
       {
         path: 'delete',
         component: () => import('@/views/user/user'),
-        name: 'PageUser',
-        meta: { title: '用户管理' }
+        name: 'other',
+        meta: { title: '待补充' }
       },
       {
         path: 'add',
         component: () => import('@/views/user/user'),
-        name: 'PageUser',
-        meta: { title: '用户管理' }
+        name: 'other',
+        meta: { title: '待补充' }
       }
     ]
   }
