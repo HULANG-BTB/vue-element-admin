@@ -26,9 +26,9 @@
                                 </el-col>
                                 <el-col :span="4">
                                     <el-form-item label="状态" label-width="80px">
-                                        <el-select v-model="searchForm.state" placeholder="请选择">
-                                            <el-option label="已审验" value="1"></el-option>
-                                            <el-option label="未审验" value="0"></el-option>
+                                        <el-select placeholder="请选择">
+                                            <el-option label="已审验" value="yes"></el-option>
+                                            <el-option label="未审验" value="no"></el-option>
                                         </el-select>
                                     </el-form-item>
                                 </el-col>
@@ -88,7 +88,6 @@
                     </el-header>
                     
                     <el-table :data="tableData" 
-                        stripe="true"
                         tooltip-effect="dark" 
                         :cell-style="rowClass" 
                         :header-cell-style="headClass"
@@ -116,8 +115,12 @@
 </template>
 
 <script>
+// 引入核销票据详细信息的Dialog
 import InfoDialog from './billInfo'
 
+// 引入api
+import { receive, sendBack, getDetails, getUnitDetails, setResult, search } from '@/api/qiuhengGroupApi/writeOff/writeOff'
+ 
 export default {
     components: {
        "dialog-info" : InfoDialog
@@ -140,19 +143,17 @@ export default {
             currentPage : 1, // 初始页
             pageSize: 10, // 分页大小
             multipleSelection: Array(20).fill(item), //这里用multipleSelection存储数据
-            tableData : [],
             
             // 上述为前端测试数据
             // dialog显示
             dialogVisible : false,
             // 搜索表单
             searchForm : {
-                orderNo : "",
-                startDate: "",
-                endDate: "",
-                state: ""
+                orderNo : '',
+                startDate: new Date().toLocaleDateString(),
+                endDate: new Date().toLocaleDateString(),
+                state: ''
             },
-
         }
     },
     methods: {
@@ -182,43 +183,66 @@ export default {
             this.tableData = this.multipleSelection.slice((this.currentPage-1) * this.pageSize, this.currentPage * this.pageSize);
         },
 
-        onSearch() {
+        async onSearch() {
             // 提交查询表单信息
             // 有后端进行搜索并实现分页
-            
-
+            let params = {
+                number: this.searchForm.orderNo,
+                date1: this.searchForm.startDate,
+                date2: this.searchForm.endDate,
+                state: this.searchForm.state
+            }
+            const res = await search(params)
+            alert(res)
         },
-        onDetailsBtn() {
+        async onDetailsBtn() {
             // 点击打开Dialog
             this.dialogVisible = true
+            // 单位ID, 申请单位， 审验时间， 备注 ， 编制人， 编制日期， 前端在获取的时候保存， 后端只要通过单号获取详细信息
             // 获取核销单位信息
             // function() 
             // 查询核销信息
-            this.doSearch()
+            let params = {
+                // 票据单号或者核销的业务单号
+            }
+            const res = await getDetails(params)
+            // ### 将 res 存入一个对象中 prop 方法传给billInfo.vue
+
         },
         closeMoule(e) {
             // 点击关闭的callback事件 e的值为false，这里直接赋值为false
             this.dialogVisible = false
         },
-        doSearch: function(){
-            // 查询核销信息
-            // 发送请求从后端获取核销的详细信息
-        },
-        doReceive: function(){
+
+        async doReceive(){
             // 接收核销请求
-
+            let params = {
+                // 这里需要新建一个获取单位信息的Dialog， 获取单位信息
+                // 需要核销的单位信息， 单位ID
+            }
+            const res = await receive(params)
+            // ### 将数据存在 multipleSelection 再去做分页
+            this.multipleSelection = res.date
         },
-        doReturn: function(){
+        async doReturn(){
             // 退回核销请求
-
+            let params = {
+                // 票据单号或者核销的业务单号
+            }
+            const res = await sendBack(params)
+            if(res){
+                // 如果退回成功， 移除改票据单号
+                // 刷新UI
+            }
         },
-        doManualImport: function(){
+        doManualImport(){
             // 手工导入核销
-
+            // 直接导入，这里做文件导入格式类型判断
         },
-        doDelete: function(){
+        doDelete(){
             // 删除核销请求
-
+            // 获取要删除的票据单号或者核销的业务单号
+            // 直接进行删除，刷新UI
         }
 
     },
