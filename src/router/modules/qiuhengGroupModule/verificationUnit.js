@@ -3,10 +3,10 @@ import Layout from '@/layout'
 
 export default [
   {
-    path: '/bill',
+    path: '/bills',
     component: Layout,
-    redirect: '/bill/verificationUnit',
-    name: 'Bill',
+    redirect: '/bills/verificationUnit',
+    name: 'Bills',
     meta: {
       title: '票据管理',
       icon: 'clipboard'
@@ -14,7 +14,7 @@ export default [
     children: [
       {
         path: 'verificationUnit',
-        component: () => import('@/views/qiuhengGroupViews/verificationUnit'),
+        component: () => import('@/views/qiuhengGroupViews/writeOff/verificationUnit'),
         name: 'PageVerificationUnit',
         meta: {
           title: '票据核销',

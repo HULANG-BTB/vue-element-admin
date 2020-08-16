@@ -154,7 +154,7 @@
 </template>
 
 <script>
-import { getApplyList, deleteApply, uploadApply } from '@/api/qiuhengGroupApi/wirteoffunit'
+import { getApplyList, deleteApply, uploadApply } from '@/api/qiuhengGroupApi/writeOff/wirteOffUnit'
 import BillVerificationInfo from './billVerificationInfo'
 export default {
   components: {
