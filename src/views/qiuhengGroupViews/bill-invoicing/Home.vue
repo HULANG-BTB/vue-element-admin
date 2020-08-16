@@ -74,6 +74,7 @@
             :data="billList"
             style="width: 100%"
             border
+            stripe
             size="small"
           >
             <el-table-column type="expand">
