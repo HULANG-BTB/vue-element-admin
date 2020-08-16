@@ -23,26 +23,15 @@
               >搜索</el-button>
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="4">
+          <el-col :span="4">
             <el-button
-              type="primary"
-              @click="addDestroyApply()"
-            >新增</el-button>
-          </el-col> -->
-          <!-- <el-dialog
-            :visible.sync="dialogVisible"
-            :show-close="true"
-            width="80%"
-            top="6vh"
-            title="票据销毁申请——新增"
-          > -->
-          <!-- <add-destroy-apply-dialog></add-destroy-apply-dialog> -->
-          <!-- </el-dialog> -->
+              type="success"
+              @click="refreshButton()"
+            >刷新</el-button>
+          </el-col>
         </el-row>
       </el-form>
-
     </el-header>
-
     <el-pagination
       background
       @size-change="handleSizeChange"
@@ -72,44 +61,50 @@
       >
       </el-table-column>
       <el-table-column
-        prop="status"
-        label="状态"
+        prop="fDestroyNo"
+        label="申请单号"
         sortable
         width="180"
       >
       </el-table-column>
       <el-table-column
-        prop="no"
-        label="业务单号"
+        prop="fUnitName"
+        label="单位名称"
         sortable
         width="180"
       >
       </el-table-column>
       <el-table-column
-        prop="date"
-        label="编制日期"
+        prop="fApplyMan"
+        label="申请人"
         sortable
-        width="180"
+        width="100"
       >
       </el-table-column>
       <el-table-column
-        prop="type"
+        prop="fApplyDate"
+        label="申请日期"
+        sortable
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="fDestroyType"
         label="销毁类型"
         sortable
         width="180"
       >
       </el-table-column>
       <el-table-column
-        prop="changeMan"
-        label="经办人"
+        prop="fStatus"
+        label="审核状态"
         sortable
-        width="180"
+        width="100"
       >
       </el-table-column>
       <el-table-column
         fixed="right"
         label="操作"
-        width="180"
+        width="100"
       >
         <template slot-scope="scope">
           <el-button
@@ -124,52 +119,48 @@
 </template>
 
 <script>
+import{
+  refresh
+}from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
   export default {
     //components:{
       //"addDestroyApplyDialog": addDestroyApplyVue
     //},
-
-    methods: {
-      handleClick(row) {
-        console.log(row);
-      },
-      // addDestroyApply(){
-      //   this.dialogVisible=true;
-      // }
+    created(){
+       this.refreshButton();//需要触发的函数
     },
 
     data() {
       return {
-        tableData: [{
-          id: '1',
-          status: '未审核',
-          no: '90293092617',
-          date: '2020-08-10',
-          type: '核销票据销毁',
-          changeMan: '张三'
-        },{
-          id: '2',
-          status: '已审核',
-          no: '90293092618',
-          date: '2020-08-10',
-          type: '库存票据销毁',
-          changeMan: '李四'
-        },{
-          id: '3',
-          status: '已审核',
-          no: '90293092619',
-          date: '2020-08-10',
-          type: '核销票据销毁',
-          changeMan: '王二'
-        }],
-
+        tableData:[],
+        // tableData: [{
+        //   fDestroyNo: '',
+        //   fUnitName: '',
+        //   fApplyMan: '',
+        //   fApplyDate: '',
+        //   fDestroyType: '',
+        //   fStatus: '',
+        //   },
+        // ],
         //dialogVisible: false,
         labelPosition: "right",
 
         destroySearch:{
-          no: ""
+          no: "",
         }
       }
-    }
+    },
+    methods: {
+      handleClick(row) {
+        console.log(row);
+      },
+      async refreshButton(){
+        const res = await refresh();
+        // debugger
+        console.log(res);
+        this.tableData = res;
+      }
+    },
+
   }
 </script>
