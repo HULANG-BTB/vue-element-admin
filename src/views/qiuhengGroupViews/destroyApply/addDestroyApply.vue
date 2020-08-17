@@ -276,6 +276,7 @@ export default {
         }).then(async () => {
           const res = await addDestroyApply(applyVo);
           console.log(res);
+          this.$router.push;
           this.$message({
             type: 'success',
             message: '创建票据销毁申请成功!'

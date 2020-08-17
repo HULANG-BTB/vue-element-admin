@@ -56,6 +56,7 @@
       </el-table-column>
       <el-table-column
         prop="id"
+        type="index"
         label="序号"
         width="50"
       >
@@ -159,6 +160,22 @@ import{
         // debugger
         console.log(res);
         this.tableData = res;
+        console.log(this.tableData);
+        for(var i = 0; i < this.tableData.length; i++){
+          if(this.tableData[i].fDestroyType){
+          this.tableData[i].fDestroyType="库存票据销毁";
+          }else{
+          this.tableData[i].fDestroyType="核销票据销毁";
+          }
+        }
+        for(var i = 0; i < this.tableData.length; i++){
+          if(this.tableData[i].fStatus){
+          this.tableData[i].fStatus="已审核";
+          }else{
+          this.tableData[i].fStatus="未审核";
+          }
+        }
+        console.log(this.tableData);
       }
     },
 
