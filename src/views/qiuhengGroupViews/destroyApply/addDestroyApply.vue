@@ -80,11 +80,21 @@
           width="180px"
         >
           <template slot-scope="scope">
-            <el-input
+            <el-select
+              v-model="applyDto.billName"
+              placeholder="选择销毁的票据种类"
+            >
+              <el-option
+                v-show="scope.row.show"
+                label="非税收入通用票据"
+                value="非税收入通用票据"
+              />
+            </el-select>
+            <!-- <el-input
               v-show="scope.row.show"
               v-model="scope.row.billName"
               placeholder="票据名称"
-            />
+            /> -->
             <span v-show="!scope.row.show">{{ scope.row.billName }}</span>
           </template>
         </el-table-column>
@@ -206,7 +216,7 @@
         type="primary"
         @click="addDestroyApply()"
       >立即申请</el-button>
-      <el-button>取消</el-button>
+      <el-button @click="cancel()">取消</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -230,14 +240,16 @@ export default {
       itemDtoList: [
         { fBillBatchCode: '13412321', fWarehouseId: '213213', fWarehouseName: 'A仓库', fNumber: 100, fBillNo1: '00000001', fBillNo2: '00000100', show: true },
         { fBillBatchCode: '13412321', fWarehouseId: '213213', fWarehouseName: 'A仓库', fNumber: 66, fBillNo1: '00000120', fBillNo2: '00000186', show: true }
-      ]
+      ],
+      dialogVisible:false
     }
   },
 
   labelPosition: 'right',
   created () {
-    this.applyDto.fDestroyNo = this.randomNumber()
-    console.log(this.applyDto.fDestroyNo)
+    this.$root.eventBus.$on('fDestroyNo', (val) => {
+      this.applyDto.fDestroyNo = val
+    })
   },
   methods: {
     async addDestroyApply () {
@@ -269,24 +281,22 @@ export default {
           fRgnCode: '42',
           fAgenIdCode: '1314'
         },
-<<<<<<< HEAD
-        itemDtoList: this.itemDtoList
-=======
           itemDtoList: this.itemDtoList
         };
-
         this.$confirm('是否立即创建票据销毁申请, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async () => {
           const res = await addDestroyApply(applyVo);
+          this.$root.eventBus.$emit('dialogVisible1', this.dialogVisible)
           console.log(res);
           this.$router.push;
           this.$message({
             type: 'success',
             message: '创建票据销毁申请成功!'
           });
+
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -296,40 +306,10 @@ export default {
       },
       indexMethod(index){
         return index+1;
->>>>>>> a67698114e47e74c4840fc02b532aff2461354ea
+      },
+      cancel(){
+         this.$root.eventBus.$emit('dialogVisibleCancel', this.dialogVisible)
       }
-
-      this.$confirm('是否立即创建票据销毁申请, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async () => {
-        const res = await addDestroyApply(applyVo)
-        console.log(res)
-        this.$message({
-          type: 'success',
-          message: '创建票据销毁申请成功!'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
-      })
-    },
-    indexMethod (index) {
-      return index + 1
-    },
-    // 生成流水号
-    randomNumber () {
-      const now = new Date()
-      const month = now.getMonth() + 1
-      const day = now.getDate()
-      const hour = now.getHours()
-      const minutes = now.getMinutes()
-      const seconds = now.getSeconds()
-      return now.getFullYear().toString() + month.toString() + day + hour + minutes + seconds + (Math.round(Math.random() * 23 + 100)).toString()
-    }
   }
 }
 </script>

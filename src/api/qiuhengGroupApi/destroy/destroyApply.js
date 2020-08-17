@@ -9,3 +9,13 @@ export function addDestroyApply(applyVo) {
     data: applyVo
   })
 }
+
+export function getApplyListByAgenIdCode(agenIdCode) {
+  return request({
+    url: BASE_URL + '/apply/getApplyListByAgenIdCode',
+    method: 'get',
+    params: {
+      agenIdCode
+    }
+  })
+}
