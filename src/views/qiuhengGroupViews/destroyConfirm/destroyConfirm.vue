@@ -1,6 +1,6 @@
 <template>
   <div class="destroy-confirm-container">
-    <el-header>
+    <el-header class="header">
       <el-form
         :model="destroySearch"
         label-width="100px"
@@ -109,6 +109,7 @@
         </template>
       </el-table-column>
     </el-table>
+    <destroy-confirm-dialog />
   </div>
 </template>
 
@@ -116,8 +117,13 @@
 import {
   refresh
 } from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
+import DestroyConfirmDialog from '@/views/qiuhengGroupViews/destroyConfirm/destroyConfirmDialog'
+
 export default {
 
+  components: {
+    'destroy-confirm-dialog': DestroyConfirmDialog
+   },
   data () {
     return {
       tableData: [],
@@ -136,20 +142,22 @@ export default {
       destroySearch: {
         no: ''
       },
-<<<<<<< HEAD
       // 分页
       page: {
         currentPage: 1,
         pageSize: 1,
         total: 0,
         keyword: ''
-=======
+      },
+
+      visible: true,
+
       async refreshButton(){
         const res = await refresh();
         // debugger
-        console.log(res);
+        //console.log(res);
         this.tableData = res;
-        console.log(this.tableData);
+        //console.log(this.tableData);
         for(var i = 0; i < this.tableData.length; i++){
           if(this.tableData[i].fDestroyType){
           this.tableData[i].fDestroyType="库存票据销毁";
@@ -165,7 +173,6 @@ export default {
           }
         }
         console.log(this.tableData);
->>>>>>> a67698114e47e74c4840fc02b532aff2461354ea
       }
     }
   },
@@ -187,8 +194,17 @@ export default {
     },
     handleSearch () {},
     handleSizeChange () {},
-    handleCurrentChange () {}
+    handleCurrentChange () {},
+    handleClick (row) {
+      console.log(this.visible)
+      this.$root.eventBus.$emit('visible', this.visible)
+    },
   }
 
 }
 </script>
+<style scoped>
+.header {
+  margin-top: 20px;
+}
+</style>
