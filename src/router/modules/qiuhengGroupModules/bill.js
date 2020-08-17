@@ -5,19 +5,19 @@ import Layout from '@/layout'
 
 export default [
   {
-    path: '/bill',
+    path: '/voicingbill',
     component: Layout,
-    redirect: '/bill/ticket',
-    name: 'bill',
+    redirect: '/voicingbill/ticket',
+    name: 'voicingbill',
     meta: {
       title: '票据管理',
       icon: 'el-icon-s-ticket'
     },
     children: [
       {
-        path: 'bill',
+        path: 'voicingbill',
         component: () => import('@/views/qiuhengGroupViews/bill-invoicing/Home.vue'),
-        name: 'bill',
+        name: 'voicingbill',
         meta: {
           title: '开票',
           roles: ['user_manager', 'editor']
