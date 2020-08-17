@@ -19,13 +19,13 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="项目用途" prop="useType">
+          <!-- <el-form-item label="项目用途" prop="useType">
             <el-select v-model="queryParams.useType" placeholder="请选择项目用途" style="width: 150px">
               <el-option label="非税收入" value="非税收入" />
               <el-option label="医疗项目" value="医疗项目" />
               <el-option label="其他项目" value="其他项目" />
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="项目状态" prop="isenable">
             <el-select v-model="queryParams.isenable" placeholder="请选择项目状态" style="width: 150px">
               <el-option label="待审核" value="0" />
