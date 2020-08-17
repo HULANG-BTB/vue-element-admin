@@ -126,7 +126,7 @@
                 <el-button
                   icon="el-icon-notebook-2"
                   size="small"
-                  @click="edit"
+                  @click="edit(scope.row)"
                 />
               </el-tooltip>
               <el-tooltip
@@ -150,6 +150,7 @@
       v-if="dialogVisible"
       :dialog-visible="dialogVisible"
       :is-new="isNew"
+      :row="row"
     />
 
   </div>
@@ -193,7 +194,12 @@ export default {
       // 是否为新增
       isNew: false,
       // 选中的数据
-      multipleSelection: []
+      multipleSelection: [],
+      row: {
+        fNo: '',
+        fChangeState: '',
+        fIsUpload: ''
+      }
     }
   },
   created () {
@@ -215,6 +221,7 @@ export default {
 
       this.loading = false
     },
+    // 查询
     query () {
       this.loading = true
       if (this.rangeDate.length !== 0) {
@@ -260,11 +267,18 @@ export default {
     add () {
       this.dialogVisible = true
       this.isNew = true
+      this.row = {
+        fNo: '',
+        fChangeState: '',
+        fIsUpload: '',
+        fMemo: ''
+      }
     },
     // 修改申请对话框显示
-    edit () {
+    edit (row) {
       this.dialogVisible = true
       this.isNew = false
+      this.row = row
     },
     // 关闭对话框
     close () {
@@ -277,7 +291,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        if (row.fIsUpload !== '已上报') {
+        if (row.fIsUpload !== '已上报' && row.fChangeState !== '已审验') {
           deleteApply(row.fNo)
             .then((res) => {
               if (res.status === 200) {
@@ -303,7 +317,7 @@ export default {
         } else {
           this.$message({
             type: 'info',
-            message: '已上报的申请不可删除!'
+            message: '该申请不可删除!'
           })
         }
       }).catch(() => {

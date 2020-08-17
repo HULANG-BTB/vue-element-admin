@@ -21,10 +21,11 @@
       <!-- 按钮区 -->
       <div style="float: right;">
         <el-button
+          v-if="row.fIsUpload!=='已上报'"
           type="primary"
           size="small"
           icon="el-icon-document-checked"
-          @click="close"
+          @click="save"
         >保 存</el-button>
         <el-button
           size="small"
@@ -36,9 +37,17 @@
     <div class="body">
       <el-row>
         <el-col
-          :span="30"
+          :span="10"
           :offset="3"
         >NO.{{ unitCode }}</el-col>
+        <el-col
+          :span="2"
+          :offset="9"
+          style="color: red; font-size: 15px"
+        >
+          <span v-if="row.fChangeState==='已审验'">已审验</span>
+          <span v-if="row.fChangeState!=='已审验'&&row.fIsUpload==='已上报'">已上报</span>
+        </el-col>
       </el-row>
       <el-row>
         <el-col
@@ -55,8 +64,15 @@
             disabled
           />
         </el-col>
+        <el-col
+          v-if="row.fChangeState==='已审验'"
+          :span="4"
+          :offset="9"
+          style="color: red; font-size: 15px; text-align: right; margin-top: 7px;"
+        >审验结果： {{ row.fCheckResult }}</el-col>
       </el-row>
       <el-row
+        v-if="row.fIsUpload!=='已上报'"
         :gutter="20"
         style="margin-left:5px"
       >
@@ -111,36 +127,99 @@
         </el-col>
         <el-col :span="21">
           <el-input
-            v-model="remark"
+            v-model="memo"
             size="small"
           />
         </el-col>
       </el-row>
 
-      <el-table
-        style="margin-top:8px"
-        :data="bill.list"
-        :header-cell-style="{'text-align':'center', 'background-color':'#EEF5FD'}"
-        :cell-style="{'text-align':'center'}"
-        stripe
-        border
-      >
-        <el-table-column type="selection" />
-        <el-table-column
-          label="序号"
-          type="index"
-          :index="table_index"
-          width="60"
-        />
-        <el-table-column label="票据种类" />
-        <el-table-column label="票据编码" />
-        <el-table-column
-          label="开票日期"
-          prop="displayDate"
-        />
-        <el-table-column label="金额" />
-        <el-table-column label="状态" />
-      </el-table>
+      <div v-if="row.fIsUpload==='已上报'">
+        <el-table
+          :data="items.list"
+          :header-cell-style="{'text-align':'center', 'background-color':'#EEF5FD'}"
+          :cell-style="{'text-align':'center'}"
+          stripe
+          border
+        >
+          <el-table-column
+            label="序号"
+            type="index"
+            :index="table_index"
+            width="60"
+          />
+          <el-table-column
+            label="票据种类"
+            prop="fType"
+          />
+          <el-table-column
+            label="票据编码"
+            prop="fBillCode"
+          />
+          <el-table-column
+            label="票据名称"
+            prop="fBillName"
+          />
+          <el-table-column
+            label="份数"
+            prop="fNumber"
+          />
+          <el-table-column
+            label="起始号"
+            prop="fBillNo1"
+          />
+          <el-table-column
+            label="终止号"
+            prop="fBillNo2"
+          />
+          <el-table-column
+            label="金额"
+            prop="fAmt"
+          />
+        </el-table>
+
+        <el-row>
+          <el-col
+            :span="9"
+            :offset="13"
+          >
+            <!-- 分页区域 -->
+            <el-pagination
+              :current-page="queryInfo.pageNum"
+              :page-sizes="[10, 15, 20, 30, 50]"
+              :page-size="queryInfo.pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="items.total"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            />
+          </el-col>
+        </el-row>
+      </div>
+
+      <div v-if="row.fIsUpload!=='已上报'">
+        <el-table
+          :data="bill"
+          style="margin-top:8px"
+          :header-cell-style="{'text-align':'center', 'background-color':'#EEF5FD'}"
+          :cell-style="{'text-align':'center'}"
+          stripe
+          border
+        >
+          <el-table-column type="selection" />
+          <el-table-column
+            label="序号"
+            type="index"
+            :index="table_index"
+            width="60"
+          />
+          <el-table-column label="票据种类" />
+          <el-table-column label="票据编码" />
+          <el-table-column label="开票日期" />
+          <el-table-column label="金额" />
+          <el-table-column label="状态" />
+        </el-table>
+      </div>
+
     </div>
     <div
       slot="footer"
@@ -153,10 +232,17 @@
 </template>
 
 <script>
+import { getItemList } from '@/api/qiuhengGroupApi/writeOff/wirteOffUnit'
 export default {
   props: {
     dialogVisible: Boolean,
-    isNew: Boolean
+    isNew: Boolean,
+    row: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
   },
   data () {
     return {
@@ -166,12 +252,17 @@ export default {
           return time.getTime() > Date.now()
         }
       },
+      // 编制人
       author: '',
+      // 编制日期
       date: '',
+      // 单位代码
       unitCode: '090293092616',
+      // 单位名
       unitName: '',
-      remark: '',
-      activeName: 'first',
+      // 备注
+      memo: '',
+      // 下拉框相关数据
       types: [
         {
           value: '1',
@@ -184,12 +275,18 @@ export default {
       ],
       defaultType: '请选择票据种类',
       selectType: '',
-      bill: {
+      // apply item
+      items: {
         list: [],
-        total: 0,
+        total: 0
+      },
+      // itemqueryInfo
+      queryInfo: {
+        no: this.row.fNo,
         pageNum: 1,
         pageSize: 10
-      }
+      },
+      bill: []
     }
   },
   mounted () {
@@ -201,19 +298,45 @@ export default {
     },
     // 翻页序号连续
     table_index (index) {
-      return (this.displayTable.pageNum - 1) * this.displayTable.pageSize + index + 1
+      return (this.queryInfo.pageNum - 1) * this.queryInfo.pageSize + index + 1
     },
     // 初始化数据
     initData () {
       this.author = '杨乐乐'
       this.date = new Date().toLocaleDateString()
       this.unitName = '北京市海淀区交警大队'
+      this.memo = this.row.fMemo
+      if (this.row.fIsUpload === '已上报') {
+        this.getWriteOffItemList()
+      }
+    },
+    async getWriteOffItemList () {
+      const { data: res } = await getItemList(this.queryInfo)
+
+      this.items.list = res.records
+      this.items.total = res.total
     },
     // 处理下拉框点击事件
     handleCommand (command) {
       if (command !== this.defaultType) {
         this.defaultType = command
       }
+    },
+    // 监听 pagesize 改变的事件
+    handleSizeChange (newSize) {
+      this.loading = true
+      this.queryInfo.pageSize = newSize
+      this.getWriteOffItemList()
+    },
+    // 监听 页码值 改变的事件
+    handleCurrentChange (newPage) {
+      this.loading = true
+      this.queryInfo.pageNum = newPage
+      this.getWriteOffItemList()
+    },
+    // 添加明细到数据库
+    save () {
+      this.close()
     }
   }
 }
@@ -230,8 +353,9 @@ export default {
     .el-row {
       margin-top: 10px;
     }
-    .el-tabs {
+    .el-table {
       margin-top: 12px;
+      margin-bottom: 5px;
     }
   }
 }
@@ -241,6 +365,9 @@ export default {
 .el-dialog__header {
   height: 65px;
   border-bottom: 1px solid #e8eaec;
+}
+.el-dialog__body {
+  padding-top: 5px;
 }
 .el-dialog__footer {
   border-top: 1px solid #e8eaec;
