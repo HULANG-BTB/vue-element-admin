@@ -1,54 +1,32 @@
 <template>
   <div class="app-container">
-    <el-form
-      :model="query"
-      :inline="true"
-      class="demo-form-inline"
-      @keyup.enter.native="handleSearch"
-    >
+    <el-form :model="query" :inline="true" class="demo-form-inline" @keyup.enter.native="handleSearch">
       <el-form-item label="搜索权限：">
         <el-input v-model="query.keyword" placeholder="请输入权限名称或路径" clearable size="small" />
       </el-form-item>
-      <el-form-item label>
-        <el-button icon="el-icon-search" size="small" @click="handleSearch">搜索</el-button>
+      <el-form-item>
+        <el-button icon="el-icon-search" type="primary" size="small" @click="handleSearch">搜索</el-button>
       </el-form-item>
-      <el-form-item label>
-        <el-button type="primary" size="small" @click="handleAdd">创建权限</el-button>
-      </el-form-item>
-      <el-form-item label>
-        <el-button
-          :disabled="deleteBatchDisable"
-          type="danger"
-          size="small"
-          @click="handleDeleteBatch"
-        >批量删除</el-button>
-      </el-form-item>
-      <el-form-item label>
-        <el-button type="success" size="small" @click="getTableData">重载数据</el-button>
+      <el-form-item>
+        <el-button icon="el-icon-refresh" type="default" size="small" @click="query.keyword = ''">重置</el-button>
       </el-form-item>
     </el-form>
 
-    <el-pagination
-      background
-      layout="prev, pager, next, sizes, total, jumper"
-      :total="query.total"
-      :current-page="query.page"
-      :page-sizes="[10, 20, 50, 100, 500, 1000]"
-      :page-size="query.limit"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+    <el-row :gutter="10">
+      <el-col :span="1.5">
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="handleAdd">新增角色</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="danger" icon="el-icon-delete" size="small" :disabled="deleteBatchDisable" @click="handleDeleteBatch">批量删除</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="success" icon="el-icon-refresh" size="small" @click="getTableData">重载数据</el-button>
+      </el-col>
+    </el-row>
 
-    <el-table
-      v-loading.body="loading"
-      :data="permissionTableData"
-      class="permissions-table"
-      style="width: 100%; margin-top:30px;"
-      border
-      @selection-change="handleOnSelectChange"
-    >
+    <el-table v-loading.body="loading" :data="permissionTableData" class="permissions-table" style="width: 100%; margin-top:30px;" border @selection-change="handleOnSelectChange">
       <el-table-column type="selection" align="center" width="55" />
-      <el-table-column align="center" label="权限ID" width="280">
+      <el-table-column align="center" label="权限ID" width="80">
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
       <el-table-column align="left" label="权限名称" width="220">
@@ -56,15 +34,17 @@
       </el-table-column>
       <el-table-column align="center" label="请求方式" width="220">
         <template slot-scope="scope">
-          <el-button
-            :style="requestMethodStyle(scope.row.method)"
-            type="text"
-            size="mini"
-          >{{ scope.row.method }}</el-button>
+          <el-button :style="requestMethodStyle(scope.row.method)" type="text" size="mini">{{ scope.row.method }}</el-button>
         </template>
       </el-table-column>
       <el-table-column align="header-center" label="请求路径">
         <template slot-scope="scope">{{ scope.row.url }}</template>
+      </el-table-column>
+      <el-table-column align="center" label="最后修改" width="170">
+        <template slot-scope="scope">{{ parseTime(scope.row.updateTime) }}</template>
+      </el-table-column>
+      <el-table-column align="header-center" label="操作人">
+        <template slot-scope="scope">{{ scope.row.operator }}</template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
@@ -74,28 +54,13 @@
       </el-table-column>
     </el-table>
 
+    <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="margin-top:20px;float:right;margin-right:20px;" :total="query.total" :current-page="query.page" :page-sizes="[10, 20, 50, 100, 500, 1000]" :page-size="query.limit" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑权限':'新建权限'">
-      <el-form
-        v-loading="dialogLoading"
-        :model="permission"
-        label-width="120px"
-        label-position="left"
-      >
+      <el-form v-loading="dialogLoading" :model="permission" label-width="120px" label-position="left">
         <el-form-item label="父级权限">
-          <el-select
-            v-model="permission.parentId"
-            size="medium"
-            filterable
-            style="width: 100%"
-            clearable
-            placeholder="Request Method"
-          >
-            <el-option
-              v-for="(item, index) in permissionSelectList"
-              :key="index"
-              :label="item.name"
-              :value="item.id"
-            >
+          <el-select v-model="permission.parentId" size="medium" filterable style="width: 100%" clearable placeholder="Request Method">
+            <el-option v-for="(item, index) in permissionSelectList" :key="index" :label="item.name" :value="item.id">
               <span>{{ item.name }}</span>
               <span style="margin-left: 1.5rem; color: #8492a6; font-size: 13px">{{ item.url }}</span>
             </el-option>
@@ -105,19 +70,8 @@
           <el-input v-model="permission.name" placeholder="Permission Name" />
         </el-form-item>
         <el-form-item label="方式">
-          <el-select
-            v-model="permission.method"
-            size="medium"
-            filterable
-            style="width: 100%"
-            placeholder="Request Method"
-          >
-            <el-option
-              v-for="(item, index) in requestMethod"
-              :key="index"
-              :label="item"
-              :value="item"
-            >
+          <el-select v-model="permission.method" size="medium" filterable style="width: 100%" placeholder="Request Method">
+            <el-option v-for="(item, index) in requestMethod" :key="index" :label="item" :value="item">
               <el-button :style="requestMethodStyle(item)" type="text" size="mini">{{ item }}</el-button>
             </el-option>
           </el-select>
@@ -128,7 +82,7 @@
       </el-form>
       <div style="text-align:right;">
         <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
-        <el-button type="primary" @click="confirmPermission">Confirm</el-button>
+        <el-button type="primary" :loading="confirmLoading" @click="confirmPermission">Confirm</el-button>
       </div>
     </el-dialog>
   </div>
@@ -136,6 +90,7 @@
 
 <script>
 import { deepClone } from '@/utils'
+import { parseTime } from '@/utils/index'
 import { savePermission, updatePermission, removePermission, removePermissionBatch, getPermissionListByPage, getPermissionList } from '@/api/permission'
 
 const defaultPermission = {
@@ -153,6 +108,7 @@ export default {
       permissionList: [],
       selectedList: [],
       loading: false,
+      confirmLoading: false,
       dialogLoading: false,
       dialogVisible: false,
       dialogType: 'new',
@@ -275,6 +231,7 @@ export default {
               type: 'success',
               message: 'Delete succed!'
             })
+            this.getTableData()
           }).catch(err => {
             this.$message({
               type: 'error',
@@ -288,6 +245,7 @@ export default {
     // 提交数据
     async confirmPermission () {
       const isEdit = this.dialogType === 'edit'
+      this.confirmLoading = true
       let successFlag = false
       if (isEdit) {
         await updatePermission(this.permission).then(res => {
@@ -298,6 +256,7 @@ export default {
           successFlag = true
         })
       }
+      this.confirmLoading = false
       this.dialogVisible = false
       if (successFlag) {
         const { method, name, url } = this.permission
@@ -350,6 +309,11 @@ export default {
     handleCurrentChange (val) {
       this.query.page = val
       this.getTableData()
+    },
+
+    // 格式化时间
+    parseTime (time) {
+      return parseTime(new Date())
     }
   }
 }
