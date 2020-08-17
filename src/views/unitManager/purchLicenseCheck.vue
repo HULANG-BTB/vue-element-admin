@@ -223,7 +223,16 @@ export default {
     // 重置
     resetQuery () {
       // this.resetForm('queryParams')
-      this.queryParams = {}
+      this.queryParams = {
+        page: 1,
+        limit: 10,
+        keyword: {
+          crtName: '',
+          agenName: '',
+          crtCode: '',
+          isenable: ''
+        }
+      }
     },
     // 多选框选中数据
     handleSelectionChange (selection) {
