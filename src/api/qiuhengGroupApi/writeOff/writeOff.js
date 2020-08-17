@@ -49,3 +49,19 @@ export function search (data) {
     data: data
   })
 }
+
+export function pass (data) {
+  return request({
+    url: BASE_URL + '/financial/pass',
+    method: 'post',
+    data: data
+  })
+}
+
+export function unPass (data) {
+  return request({
+    url: BASE_URL + '/financial/unPass',
+    method: 'post',
+    data: data
+  })
+}

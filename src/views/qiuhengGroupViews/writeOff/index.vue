@@ -71,7 +71,7 @@
                                     </el-form-item>
                                 </el-col>
                                 <!-- 分页 -->
-                                <!-- <el-col :span="1">
+                                <el-col :span="1">
                                     <el-form-item label="" label-width="120px">
                                         <el-pagination
                                             @size-change="handleSizeChange"
@@ -80,10 +80,10 @@
                                             :page-sizes="[10, 20]"
                                             :page-size="100"
                                             layout="total, sizes, prev, pager, next, jumper"
-                                            :total="multipleSelection.length">
+                                            :total="tableData.length">
                                         </el-pagination>
                                     </el-form-item>
-                                </el-col> -->
+                                </el-col>
                             </el-row>
                         </el-form>
                     </el-header>
@@ -113,14 +113,15 @@
                         <el-table-column label="操作" width="400" align="center">
                             <!-- 获取整行数据 -->
                             <template slot-scope="scope">
-                                <i class="el-icon-tickets" style="padding: 10px;" @click="onDetailsBtn(scope.row)"></i>
+                                <i class="el-icon-tickets" style="padding: 10px;" 
+                                @click="onDetailsBtn(scope.row)"></i>
                                 <i class="el-icon-success" style="padding: 10px"></i>
                             </template>
                         </el-table-column>
                     </el-table>
                     <!-- dialog -->
                     <el-dialog :visible.sync="dialogVisible" :show-close="true" width="70%" top="5vh">
-                        <dialog-info :closeValue="false" @closeMoule="closeMoule"></dialog-info>
+                        <dialog-info @closeMoule="closeMoule" v-bind:billInfo="billInfo"></dialog-info>
                     </el-dialog>
                 </el-container>
             </el-container>
@@ -160,9 +161,18 @@ export default {
                 state: ''
             },
             // 这里单位号是要获取的Dialog
+            fAgenName : "同福客栈",
             fAgenIdCode : 1,
             tableData : [],
             multipleSelection: [], //这里用multipleSelection存储勾选的数据
+            
+            // 传给BillInfo数据
+            billInfo : {
+                fAgenName: "",
+                fAgenIdCode: "",
+                date: "",
+                author: "",
+            }
         }
     },
     methods: {
@@ -172,6 +182,14 @@ export default {
         },
         headClass(){
             return "text-align: center;";
+        },
+
+        // 分页
+        handleSizeChange(val){
+
+        },
+        handleCurrentChange(val){
+
         },
 
         // 点击勾选，并保存勾选内容
@@ -198,11 +216,19 @@ export default {
             this.dialogVisible = true
             // 单位ID, 申请单位， 审验时间， 备注 ， 编制人， 编制日期， 前端在获取的时候保存， 后端只要通过单号获取详细信息
             // 获取核销单位信息
-            // function() 
+            this.billInfo.fAgenName = this.fAgenName
+            this.billInfo.fAgenIdCode = this.fAgenIdCode
+            this.billInfo.date = row.date
+            this.billInfo.author = row.author
+            
+            console.log(billInfo)
+
             // 查询核销信息
             let params = {
-                // 票据单号或者核销的业务单号
-                // fNo : row.no
+                // 单位ID
+                fAgenIdCode : this.fAgenIdCode,
+                // 业务单号
+                fNo : row.no
             }
             const res = await getDetails(params)
             alert(res)
