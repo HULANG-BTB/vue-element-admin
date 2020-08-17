@@ -24,3 +24,11 @@ export function uploadApply (noList) {
     data: noList
   })
 }
+
+export function rescindApply (noList) {
+  return request({
+    url: BASE_URL + '/unit/rescindApply',
+    method: 'put',
+    data: noList
+  })
+}
