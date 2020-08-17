@@ -104,3 +104,43 @@ export function projectStdCheck (data) {
     data: data
   })
 }
+
+// 项目管理
+export function getGroupListByPage (data) {
+  return request({
+    url: '/group/listByPage',
+    method: 'post',
+    data: data
+  })
+}
+export function addGroup (data) {
+  return request({
+    url: '/group/save',
+    method: 'post',
+    data: data
+  })
+}
+
+export function deleteGroup (data) {
+  return request({
+    url: '/group/delete',
+    method: 'post',
+    data: { id: data }
+  })
+}
+
+export function getItemList (data) {
+  return request({
+    url: '/groupItem/getItemInfo',
+    method: 'post',
+    data: { groupCode: data }
+  })
+}
+
+export function deleteItemFromGroup (data) {
+  return request({
+    url: '/groupItem/delete',
+    method: 'post',
+    data: { id: data }
+  })
+}
