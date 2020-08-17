@@ -9,6 +9,13 @@ export function getProjectListByPage (data) {
   })
 }
 
+export function getSubjectTree () {
+  return request({
+    url: '/item/getItemTree',
+    method: 'get'
+  })
+}
+
 export function addProject (data) {
   return request({
     url: '/item/save',

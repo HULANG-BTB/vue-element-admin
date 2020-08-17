@@ -149,6 +149,7 @@ export default {
       //   loading: true,
       queryParams: { // 查询参数
         keyword: '',
+        subjectCode: '',
         isenable: 0,
         page: 1,
         limit: 10,
