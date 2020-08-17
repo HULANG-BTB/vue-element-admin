@@ -1,27 +1,19 @@
 <template>
   <div class="app-container">
     <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
-      <el-form-item label="单位名称" prop="agenName">
-        <el-input v-model="queryParams.agenName" placeholder="请输入单位名称" clearable style="width: 140px" @keyup.enter.native="handleQuery" />
+      <el-form-item label="单位名称" prop="keyword.agenName">
+        <el-input v-model="queryParams.keyword.agenName" placeholder="请输入单位名称" clearable style="width: 140px" @keyup.enter.native="handleQuery" />
       </el-form-item>
-      <el-form-item label="单位用途" prop="typeCode">
-        <el-select v-model="queryParams.typeCode" placeholder="请选择单位用途" style="width: 150px">
-          <el-option label="非税收入" value="非税收入" />
-          <el-option label="医疗项目" value="医疗项目" />
-          <el-option label="其他项目" value="其他项目" />
+      <el-form-item label="部门名称" prop="keyword.deptName">
+        <el-select v-model="queryParams.keyword.deptName" placeholder="请选择部门名称" @change="deptVal">
+          <el-option v-for="item in deptManag" :key="item.id" :label="item.deptName" :value="item.deptName" />
         </el-select>
       </el-form-item>
-      <el-form-item label="单位分类" prop="sortCode">
-        <el-select v-model="queryParams.sortCode" placeholder="请选择单位分类" style="width: 150px">
-          <el-option label="非税收入" value="非税收入" />
-          <el-option label="医疗项目" value="医疗项目" />
-          <el-option label="其他项目" value="其他项目" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="状态" prop="isenable">
-        <el-select v-model="queryParams.isenable" placeholder="请选择单位状态" style="width: 150px">
-          <el-option label="待审核" value="doing" />
-          <el-option label="已完成" value="success" />
+      <el-form-item label="状态" prop="keyword.isenable">
+        <el-select v-model="queryParams.keyword.isenable" placeholder="请选择单位状态" style="width: 150px">
+          <el-option label="待审核" value="false" />
+          <el-option label="已完成" value="true" />
+          <el-option label="全部" value="" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -211,7 +203,7 @@ const defaultUser = {
   provinceId: '1',
   version: '',
   typeCode: '',
-  isenable: false,
+  isenable: '',
   istickAgen: true,
   createTime: '',
   agenName: '',
@@ -251,10 +243,9 @@ export default {
       queryParams: {
         // 查询参数
         keyword: {
-          typeCode: '',
-          sortCode: '',
+          deptName: '',
           agenName: '',
-          isEnable: ''
+          isenable: ''
         },
         page: 1,
         limit: 10
@@ -344,6 +335,7 @@ export default {
   },
   created () {
     this.getTableData()
+    this.getDapartName()
   },
   methods: {
     // 获取资源列表
@@ -351,7 +343,6 @@ export default {
       // this.loading = true
       const res = await getUnitListByPage(this.queryParams)
       this.projectList = res.data.items
-      this.queryParams.keyword = res.data.keyword
       this.queryParams.total = res.data.total
       this.queryParams.limit = res.data.limit
       this.queryParams.page = res.data.page
@@ -460,16 +451,16 @@ export default {
     },
     // 重置
     resetQuery () {
-      // this.resetForm('queryParams')
-      // this.queryParams = {}
-      // this.queryParams.keyword = ''
+      this.queryParams.keyword = {}
     },
     // 新增按钮
     async handleAdd () {
       this.project = Object.assign({}, defaultUser)
-      // this.resetQuery()
       this.dialogType = 'new'
       this.dialogVisible = true
+    },
+    // 获取部门列表
+    async getDapartName () {
       const { data } = await getDapartListAll() // 无参查询部门列表
       this.deptManag = data
     },
@@ -479,6 +470,7 @@ export default {
         return item.deptName === val
       })
       this.project.deptCode = obj.deptCode
+      this.queryParams.keyword.deptName = obj.deptName
     },
 
     // 项目管理按钮
@@ -564,7 +556,19 @@ export default {
     async confirmRole () {
       this.$refs['project'].validate(async valid => {
         if (valid) {
-          if (this.dialogType !== 'edit') {
+          if (this.dialogType === 'edit') { // 编辑
+            this.project.isenable = false // 有修改就需要重新审核
+            await updateUnit(this.project).then(res => {
+              this.getTableData()
+              this.dialogVisible = false
+              // this.$set(this.project, {})
+              this.$message({
+                showClose: true,
+                message: '编辑成功',
+                type: 'success'
+              })
+            })
+          } else {
             // 新增
             await addUnit(this.project).then(res => {
               this.$set(this.project, {})
@@ -583,27 +587,6 @@ export default {
               //     type: 'error'
               //   })
               // }
-            })
-          } else {
-            // 编辑
-            this.project.isenable = false // 有修改就需要重新审核
-            await updateUnit(this.project).then(res => {
-              this.getTableData()
-              this.dialogVisible = false
-              if (res.status === 200) {
-                // this.$set(this.project, {})
-                this.$message({
-                  showClose: true,
-                  message: '编辑成功',
-                  type: 'success'
-                })
-              } else {
-                this.$message({
-                  showClose: true,
-                  message: '编辑失败',
-                  type: 'error'
-                }) // 或者弹出后台返回错误
-              }
             })
           }
         }
