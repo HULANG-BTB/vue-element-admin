@@ -123,7 +123,7 @@ export default {
       },
       src: '',
       loading: false,
-      selectedList: [],
+      selectedList: '',
       dialogVisible: false,
       pdfTableData: '',
       query: {
@@ -142,10 +142,8 @@ export default {
   },
   created () {
     this.getTableData()
-    // this.src = pdf.createLoadingTask(this.src)
   },
   mounted () {
-    this.src = 'http://123.206.126.23:8080/pdf/output/011602010000000021.pdf'
   },
   methods: {
     // 获取pdf列表
