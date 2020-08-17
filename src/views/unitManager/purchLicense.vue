@@ -301,10 +301,10 @@ export default {
       this.$refs.upload.submit()
     },
     handleRemove (file, fileList) {
-      console.log(file, fileList)
+      // console.log(file, fileList)
     },
     handlePreview (file) {
-      console.log(file)
+      // console.log(file)
     },
     // 多选框选中数据
     handleSelectionChange (selection) {
@@ -339,12 +339,12 @@ export default {
             })
             this.getTableData()
           })
+          // eslint-disable-next-line handle-callback-err
           .catch((err) => {
             this.$message({
               type: 'error',
               message: '删除失败!'
             })
-            console.error(err)
           })
       })
     },

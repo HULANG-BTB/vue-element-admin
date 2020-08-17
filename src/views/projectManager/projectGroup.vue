@@ -285,8 +285,6 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        console.log('itemId: ' + deleData.itemId)
-        console.log('groupId: ' + this.groupId)
         const datas = {
           groupCode: this.groupId,
           itemCode: deleData.itemId
