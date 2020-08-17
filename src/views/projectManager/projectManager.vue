@@ -30,6 +30,7 @@
             <el-select v-model="queryParams.isenable" placeholder="请选择项目状态" style="width: 150px">
               <el-option label="待审核" value="0" />
               <el-option label="已完成" value="1" />
+              <el-option label="全部" value="" />
             </el-select>
           </el-form-item>
           <el-form-item>
