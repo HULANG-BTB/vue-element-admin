@@ -1,35 +1,33 @@
 <template>
   <div class="app-container">
     <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
-      <el-form-item label="准购证编码" prop="keyword">
+      <el-form-item label="准购证编码" prop="keyword.crtCode">
         <el-input
-          v-model="queryParams.keyword"
+          v-model="queryParams.keyword.crtCode"
           placeholder="请输入准购证编码"
           clearable
           style="width: 140px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="准购证名称" prop="keyword">
+      <el-form-item label="准购证名称" prop="keyword.crtName">
         <el-input
-          v-model="queryParams.keyword"
+          v-model="queryParams.keyword.crtName"
           placeholder="请输入准购证名称"
           clearable
           style="width: 140px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="所属单位" prop="useType">
-        <el-select v-model="queryParams.useType" placeholder="请选择项目用途" style="width: 150px">
-          <el-option label="非税收入" value="非税收入" />
-          <el-option label="医疗项目" value="医疗项目" />
-          <el-option label="其他项目" value="其他项目" />
+      <el-form-item label="所属单位" prop="keyword.agenName">
+        <el-select v-model="queryParams.keyword.agenName" placeholder="请选择项目用途" style="width: 150px">
+          <el-option v-for="(item,index) in agenNameList" :key="index" :label="item.agenName" :value="item.agenName" />
         </el-select>
       </el-form-item>
       <el-form-item label="准购证状态">
-        <el-select v-model="queryParams.isenable" placeholder="请选择项目状态" style="width: 150px">
-          <el-option label="待审核" value="doing" />
-          <el-option label="已完成" value="success" />
+        <el-select v-model="queryParams.keyword.isenable" placeholder="请选择项目状态" style="width: 150px">
+          <el-option label="待审核" value="false" />
+          <el-option label="已完成" value="true" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -183,7 +181,12 @@ export default {
       queryParams: { // 查询参数
         page: 1,
         limit: 10,
-        keyword: ''
+        keyword: {
+          crtName: '',
+          agenName: '',
+          crtCode: '',
+          isenable: ''
+        }
         // total: 0
       },
       crtList: [
