@@ -51,28 +51,38 @@ export function submit (query) {
   })
 }
 
-/* sms 相关 */
-export function getSmsList (query) {
+/* 出库审核相关 */
+
+export function check (query) {
   return request({
-    url: '/sms/list',
+    url: '/stock-out/check',
     method: 'post',
     data: query
   })
 }
-export function updateSmsStatus (sms) {
-  return request({
-    url: '/sms/updateStatus',
-    method: 'put',
-    data: sms
-  })
-}
-export function getBill (query) {
-  return request({
-    url: '/sms/getBill',
-    method: 'get',
-    params: { tel: query.tel, verifyCode: query.verifyCode }
-  })
-}
+
+// /* sms 相关 */
+// export function getSmsList (query) {
+//   return request({
+//     url: '/sms/list',
+//     method: 'post',
+//     data: query
+//   })
+// }
+// export function updateSmsStatus (sms) {
+//   return request({
+//     url: '/sms/updateStatus',
+//     method: 'put',
+//     data: sms
+//   })
+// }
+// export function getBill (query) {
+//   return request({
+//     url: '/sms/getBill',
+//     method: 'get',
+//     params: { tel: query.tel, verifyCode: query.verifyCode }
+//   })
+// }
 /* 统一方法 */
 export const util = {
   jsonFormat: function (src) {
