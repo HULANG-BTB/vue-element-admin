@@ -141,6 +141,6 @@ export function deleteItemFromGroup (data) {
   return request({
     url: '/groupItem/delete',
     method: 'post',
-    data: { id: data }
+    data: data
   })
 }
