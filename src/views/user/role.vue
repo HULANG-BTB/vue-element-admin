@@ -7,13 +7,26 @@
       @keyup.enter.native="handleSearch"
     >
       <el-form-item label="搜索角色：">
-        <el-input v-model="query.keyword" placeholder="请输入角色名或角色Key" clearable size="small" />
+        <el-input
+          v-model="query.keyword"
+          placeholder="请输入角色名或角色Key"
+          clearable
+          size="small"
+        />
       </el-form-item>
       <el-form-item label>
-        <el-button icon="el-icon-search" size="small" @click="handleSearch">搜索</el-button>
+        <el-button
+          icon="el-icon-search"
+          size="small"
+          @click="handleSearch"
+        >搜索</el-button>
       </el-form-item>
       <el-form-item label>
-        <el-button type="primary" size="small" @click="handleAdd">创建角色</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="handleAdd"
+        >创建角色</el-button>
       </el-form-item>
       <el-form-item label>
         <el-button
@@ -24,7 +37,11 @@
         >批量删除</el-button>
       </el-form-item>
       <el-form-item label>
-        <el-button type="success" size="small" @click="getTableData">重载数据</el-button>
+        <el-button
+          type="success"
+          size="small"
+          @click="getTableData"
+        >重载数据</el-button>
       </el-form-item>
     </el-form>
 
@@ -46,31 +63,72 @@
       border
       @selection-change="handleOnSelectChange"
     >
-      <el-table-column type="selection" align="center" width="55" />
-      <el-table-column align="left" label="角色Key" width="220">
+      <el-table-column
+        type="selection"
+        align="center"
+        width="55"
+      />
+      <el-table-column
+        align="left"
+        label="角色Key"
+        width="220"
+      >
         <template slot-scope="scope">{{ scope.row.role }}</template>
       </el-table-column>
-      <el-table-column align="center" label="角色名称" width="220">
+      <el-table-column
+        align="center"
+        label="角色名称"
+        width="220"
+      >
         <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
-      <el-table-column align="header-center" label="描述">
+      <el-table-column
+        align="header-center"
+        label="描述"
+      >
         <template slot-scope="scope">{{ scope.row.description }}</template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="220">
+      <el-table-column
+        align="center"
+        label="操作"
+        width="220"
+      >
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleEdit(scope)">Edit</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope)">Delete</el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleEdit(scope)"
+          >Edit</el-button>
+          <el-button
+            type="danger"
+            size="mini"
+            @click="handleDelete(scope)"
+          >Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑角色':'新建角色'">
-      <el-form v-loading="dialogLoading" :model="role" label-width="80px" label-position="left">
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :title="dialogType==='edit'?'编辑角色':'新建角色'"
+    >
+      <el-form
+        v-loading="dialogLoading"
+        :model="role"
+        label-width="80px"
+        label-position="left"
+      >
         <el-form-item label="Key">
-          <el-input v-model="role.role" placeholder="Role Name" />
+          <el-input
+            v-model="role.role"
+            placeholder="Role Name"
+          />
         </el-form-item>
         <el-form-item label="名称">
-          <el-input v-model="role.name" placeholder="Role Name" />
+          <el-input
+            v-model="role.name"
+            placeholder="Role Name"
+          />
         </el-form-item>
         <el-form-item label="描述">
           <el-input
@@ -90,7 +148,10 @@
             node-key="id"
             :default-checked-keys="role.permissions"
           >
-            <span slot-scope="{ node, data }" class="custom-tree-node">
+            <span
+              slot-scope="{ node, data }"
+              class="custom-tree-node"
+            >
               <span>{{ node.label }}</span>
               <el-button
                 v-if="data.method"
@@ -98,14 +159,23 @@
                 type="text"
                 size="mini"
               >{{ data.method }}</el-button>
-              <span v-if="data.url" style="margin-left:1rem">{{ data.url }}</span>
+              <span
+                v-if="data.url"
+                style="margin-left:1rem"
+              >{{ data.url }}</span>
             </span>
           </el-tree>
         </el-form-item>
       </el-form>
       <div style="text-align:right;">
-        <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
-        <el-button type="primary" @click="confirmRole">Confirm</el-button>
+        <el-button
+          type="danger"
+          @click="dialogVisible=false"
+        >Cancel</el-button>
+        <el-button
+          type="primary"
+          @click="confirmRole"
+        >Confirm</el-button>
       </div>
     </el-dialog>
   </div>

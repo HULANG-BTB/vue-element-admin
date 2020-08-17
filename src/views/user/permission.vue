@@ -7,13 +7,26 @@
       @keyup.enter.native="handleSearch"
     >
       <el-form-item label="搜索权限：">
-        <el-input v-model="query.keyword" placeholder="请输入权限名称或路径" clearable size="small" />
+        <el-input
+          v-model="query.keyword"
+          placeholder="请输入权限名称或路径"
+          clearable
+          size="small"
+        />
       </el-form-item>
       <el-form-item label>
-        <el-button icon="el-icon-search" size="small" @click="handleSearch">搜索</el-button>
+        <el-button
+          icon="el-icon-search"
+          size="small"
+          @click="handleSearch"
+        >搜索</el-button>
       </el-form-item>
       <el-form-item label>
-        <el-button type="primary" size="small" @click="handleAdd">创建权限</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="handleAdd"
+        >创建权限</el-button>
       </el-form-item>
       <el-form-item label>
         <el-button
@@ -24,7 +37,11 @@
         >批量删除</el-button>
       </el-form-item>
       <el-form-item label>
-        <el-button type="success" size="small" @click="getTableData">重载数据</el-button>
+        <el-button
+          type="success"
+          size="small"
+          @click="getTableData"
+        >重载数据</el-button>
       </el-form-item>
     </el-form>
 
@@ -47,14 +64,30 @@
       border
       @selection-change="handleOnSelectChange"
     >
-      <el-table-column type="selection" align="center" width="55" />
-      <el-table-column align="center" label="权限ID" width="280">
+      <el-table-column
+        type="selection"
+        align="center"
+        width="55"
+      />
+      <el-table-column
+        align="center"
+        label="权限ID"
+        width="280"
+      >
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
-      <el-table-column align="left" label="权限名称" width="220">
+      <el-table-column
+        align="left"
+        label="权限名称"
+        width="220"
+      >
         <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
-      <el-table-column align="center" label="请求方式" width="220">
+      <el-table-column
+        align="center"
+        label="请求方式"
+        width="220"
+      >
         <template slot-scope="scope">
           <el-button
             :style="requestMethodStyle(scope.row.method)"
@@ -63,18 +96,36 @@
           >{{ scope.row.method }}</el-button>
         </template>
       </el-table-column>
-      <el-table-column align="header-center" label="请求路径">
+      <el-table-column
+        align="header-center"
+        label="请求路径"
+      >
         <template slot-scope="scope">{{ scope.row.url }}</template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="220">
+      <el-table-column
+        align="center"
+        label="操作"
+        width="220"
+      >
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleEdit(scope)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope)">删除</el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleEdit(scope)"
+          >编辑</el-button>
+          <el-button
+            type="danger"
+            size="mini"
+            @click="handleDelete(scope)"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑权限':'新建权限'">
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :title="dialogType==='edit'?'编辑权限':'新建权限'"
+    >
       <el-form
         v-loading="dialogLoading"
         :model="permission"
@@ -102,7 +153,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="名称">
-          <el-input v-model="permission.name" placeholder="Permission Name" />
+          <el-input
+            v-model="permission.name"
+            placeholder="Permission Name"
+          />
         </el-form-item>
         <el-form-item label="方式">
           <el-select
@@ -118,17 +172,30 @@
               :label="item"
               :value="item"
             >
-              <el-button :style="requestMethodStyle(item)" type="text" size="mini">{{ item }}</el-button>
+              <el-button
+                :style="requestMethodStyle(item)"
+                type="text"
+                size="mini"
+              >{{ item }}</el-button>
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="Url">
-          <el-input v-model="permission.url" placeholder="Request Url" />
+          <el-input
+            v-model="permission.url"
+            placeholder="Request Url"
+          />
         </el-form-item>
       </el-form>
       <div style="text-align:right;">
-        <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
-        <el-button type="primary" @click="confirmPermission">Confirm</el-button>
+        <el-button
+          type="danger"
+          @click="dialogVisible=false"
+        >Cancel</el-button>
+        <el-button
+          type="primary"
+          @click="confirmPermission"
+        >Confirm</el-button>
       </div>
     </el-dialog>
   </div>
