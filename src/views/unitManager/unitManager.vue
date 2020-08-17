@@ -1,27 +1,19 @@
 <template>
   <div class="app-container">
     <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
-      <el-form-item label="单位名称" prop="agenName">
-        <el-input v-model="queryParams.agenName" placeholder="请输入单位名称" clearable style="width: 140px" @keyup.enter.native="handleQuery" />
+      <el-form-item label="单位名称" prop="keyword.agenName">
+        <el-input v-model="queryParams.keyword.agenName" placeholder="请输入单位名称" clearable style="width: 140px" @keyup.enter.native="handleQuery" />
       </el-form-item>
-      <el-form-item label="单位用途" prop="typeCode">
-        <el-select v-model="queryParams.typeCode" placeholder="请选择单位用途" style="width: 150px">
-          <el-option label="非税收入" value="非税收入" />
-          <el-option label="医疗项目" value="医疗项目" />
-          <el-option label="其他项目" value="其他项目" />
+      <el-form-item label="部门名称" prop="keyword.deptName">
+        <el-select v-model="queryParams.keyword.deptName" placeholder="请选择部门名称" @change="deptVal">
+          <el-option v-for="item in deptManag" :key="item.id" :label="item.deptName" :value="item.deptName" />
         </el-select>
       </el-form-item>
-      <el-form-item label="单位分类" prop="sortCode">
-        <el-select v-model="queryParams.sortCode" placeholder="请选择单位分类" style="width: 150px">
-          <el-option label="非税收入" value="非税收入" />
-          <el-option label="医疗项目" value="医疗项目" />
-          <el-option label="其他项目" value="其他项目" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="状态" prop="isenable">
-        <el-select v-model="queryParams.isenable" placeholder="请选择单位状态" style="width: 150px">
-          <el-option label="待审核" value="doing" />
-          <el-option label="已完成" value="success" />
+      <el-form-item label="状态" prop="keyword.isenable">
+        <el-select v-model="queryParams.keyword.isenable" placeholder="请选择单位状态" style="width: 150px">
+          <el-option label="待审核" value="false" />
+          <el-option label="已完成" value="true" />
+          <el-option label="全部" value="" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -50,7 +42,6 @@
       <el-table-column align="center" label="单位编码" prop="agenCode" />
       <el-table-column align="center" label="单位名称" prop="agenName" :show-overflow-tooltip="true" />
       <el-table-column align="center" label="部门名称" prop="deptName" />
-      <el-table-column align="center" label="单位用途" prop="typeCode" />
       <el-table-column align="center" label="单位分类" prop="sortCode" />
       <el-table-column align="center" label="操作" width="400">
         <template slot-scope="scope">
@@ -91,9 +82,6 @@
                 <el-option v-for="item in deptManag" :key="item.id" :label="item.deptName" :value="item.deptName" />
               </el-select>
             </el-form-item>
-            <el-form-item label="单位用途" :label-width="formLabelWidth">
-              <el-input v-model="project.typeCode" placeholder="单位用途" />
-            </el-form-item>
             <el-form-item label="所属行业" :label-width="formLabelWidth">
               <el-input v-model="project.indCode" placeholder="所属行业" />
             </el-form-item>
@@ -126,9 +114,6 @@
             <el-form-item label="单位分类" :label-width="formLabelWidth">
               <el-input v-model="project.sortCode" placeholder="单位分类" />
             </el-form-item>
-            <el-form-item label="级次" :label-width="formLabelWidth">
-              <el-input v-model="project.level" placeholder="级次" />
-            </el-form-item>
             <el-form-item label="失效日期" :label-width="formLabelWidth" prop="expDate">
               <el-date-picker v-model="project.expDate" type="date" placeholder="选择日期" style="width: 100%;" />
             </el-form-item>
@@ -137,6 +122,9 @@
             </el-form-item>
             <el-form-item label="财务负责人电话" :label-width="formLabelWidth">
               <el-input v-model="project.finMgrTel" placeholder="财务负责人电话" />
+            </el-form-item>
+            <el-form-item label="级次" :label-width="formLabelWidth">
+              <el-input v-model="project.level" placeholder="级次" />
             </el-form-item>
             <el-form-item label="邮政编码" :label-width="formLabelWidth">
               <el-input v-model="project.zip" placeholder="邮政编码" />
@@ -150,7 +138,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="manageDialogVisible" :title="manageDialogType === 'project' ? '项目管理' : '票据管理'">
+    <el-dialog :visible.sync="manageDialogVisible" :title="manageDialogType === 'projectTow' ? '项目管理' : '票据管理'">
       <div v-loading="loading" style="text-align:center" class="transfer">
         <el-transfer v-model="manageHasList" style="text-align: left; display: inline-block; margin-bottom: 1rem" :data="manageOriginList" :button-texts="['删除', '添加']" :titles="['未拥有列表', '已拥有列表']">
           <span slot-scope="{ option }">{{ option.label }}</span>
@@ -187,74 +175,49 @@ import {
 const defaultUser = {
   note: '',
   finMgr: '',
-  isalarmAgen: true,
-  cityId: '',
   linkTel: '',
   linkMan: '',
   expDate: '',
-  operator: '',
-  pidCode: '',
   effDate: '',
-  orgCode: '',
-  countyId: '',
   addr: '',
   finMgrTel: '',
-  operatorId: '',
   zip: '',
-  rgnId: '',
-  logicDelete: true,
   level: '',
   agenCode: '',
   indCode: '',
-  updateTime: '',
   sortCode: '',
-  provinceId: '1',
-  version: '',
-  typeCode: '',
-  isenable: false,
-  istickAgen: true,
-  createTime: '',
   agenName: '',
   mnem: '',
-  isleaf: false,
   deptCode: '',
   findeptId: '',
-  isunpaid: true,
   deptName: ''
 }
 
 export default {
   data () {
-    const validateDatePicker = (
-      rule,
-      value,
-      callback,
-      source,
-      option,
-      other
-    ) => {
-      const thisZero = new Date().setHours(0, 0, 0, 0)
-      const input = new Date(value).setHours(0, 0, 0, 0)
-      if (input < thisZero && !other) {
-        callback(new Error('日期不能早于今天'))
-      } else if (other) {
-        const otherData = new Date(this.project[other]).setHours(0, 0, 0, 0)
-        if (otherData > input) {
-          callback(new Error('当前日期不能在开始日期之前'))
-        }
-      } else {
-        callback()
-      }
-    }
+    // const validateDatePicker = (rule, value, callback, source, option, other) => {
+    //   const thisZero = new Date().setHours(0, 0, 0, 0)
+    //   const input = new Date(value).setHours(0, 0, 0, 0)
+    //   if (input < thisZero && !other) {
+    //     callback(new Error('日期不能早于今天'))
+    //   } else if (other) {
+    //     const otherDate = new Date(this.project[other]).setHours(0, 0, 0, 0)
+    //     if (otherDate > input) {
+    //       callback(new Error('当前日期不能在开始日期之前'))
+    //     }
+    //   } else {
+    //     callback()
+    //   }
+    // }
     return {
+      optionsStart: {},
+      optionsEnd: {},
       loading: true,
       queryParams: {
-        // 查询参数
         keyword: {
-          typeCode: '',
-          sortCode: '',
+          deptName: '',
           agenName: '',
-          isEnable: ''
+          isenable: ''
         },
         page: 1,
         limit: 10
@@ -264,44 +227,26 @@ export default {
       project: {
         note: '',
         finMgr: '',
-        isalarmAgen: true,
-        cityId: '',
         linkTel: '',
         linkMan: '',
         expDate: '',
-        operator: '',
-        pidCode: '',
         effDate: '',
-        orgCode: '',
-        countyId: '',
         addr: '',
         finMgrTel: '',
-        operatorId: '',
         zip: '',
-        rgnId: '',
-        logicDelete: true,
         level: '',
         agenCode: '',
         indCode: '',
-        updateTime: '',
         sortCode: '',
-        provinceId: '1',
-        version: '',
-        typeCode: '',
-        isenable: false,
-        istickAgen: true,
-        createTime: '',
         agenName: '',
         mnem: '',
-        isleaf: false,
-        findeptId: '',
-        isunpaid: true,
         deptCode: '',
+        findeptId: '',
         deptName: ''
       },
       dialogVisible: false,
       manageDialogVisible: false,
-      manageDialogType: 'project',
+      manageDialogType: 'projectTow',
       manageHasList: [],
       manageOriginList: [],
       dialogType: 'new',
@@ -310,30 +255,21 @@ export default {
       deptManag: [],
       rules: {
         agenCode: [
-          { required: true, message: '单位编码不能为空', trigger: 'blur' }
+          { required: true, message: '单位编码不能为空', trigger: 'change' }
         ],
         deptName: [
           { required: true, message: '部门名称不能为空', trigger: 'blur' }
-        ],
-        effDate: [{ trigger: 'blur', validator: validateDatePicker }],
-        expDate: [
-          {
-            trigger: 'blur',
-            validator: (rule, value, callback, source, option, other) =>
-              validateDatePicker(
-                rule,
-                value,
-                callback,
-                source,
-                option,
-                'effDate'
-              )
-          }
         ],
         agenName: [
           { required: true, message: '单位名称不能为空', trigger: 'blur' }
         ],
         mnem: [{ required: true, message: '助记码不能为空', trigger: 'blur' }]
+        // effDate: [
+        //   { trigger: 'blur', validator: validateDatePicker }
+        // ],
+        // expDate: [
+        //   { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'effDate') }
+        // ]
       }
     }
   },
@@ -344,6 +280,7 @@ export default {
   },
   created () {
     this.getTableData()
+    this.getDapartName()
   },
   methods: {
     // 获取资源列表
@@ -351,14 +288,25 @@ export default {
       // this.loading = true
       const res = await getUnitListByPage(this.queryParams)
       this.projectList = res.data.items
-      this.queryParams.keyword = res.data.keyword
       this.queryParams.total = res.data.total
       this.queryParams.limit = res.data.limit
       this.queryParams.page = res.data.page
       this.selectedList = []
       // this.loading = false
     },
-
+    // 获取部门列表
+    async getDapartName () {
+      const { data } = await getDapartListAll() // 无参查询部门列表
+      this.deptManag = data
+    },
+    deptVal (val) {
+      let obj = {}
+      obj = this.deptManag.find(item => {
+        return item.deptName === val
+      })
+      this.project.deptCode = obj.deptCode
+      this.queryParams.keyword.deptName = obj.deptName
+    },
     // 获取所有财政票据种类
     async getBillAllType () {
       // Todo
@@ -460,34 +408,73 @@ export default {
     },
     // 重置
     resetQuery () {
-      // this.resetForm('queryParams')
-      // this.queryParams = {}
-      // this.queryParams.keyword = ''
+      this.queryParams.keyword = {}
     },
     // 新增按钮
     async handleAdd () {
       this.project = Object.assign({}, defaultUser)
-      // this.resetQuery()
       this.dialogType = 'new'
       this.dialogVisible = true
-      const { data } = await getDapartListAll() // 无参查询部门列表
-      this.deptManag = data
     },
-    deptVal (val) {
-      let obj = {}
-      obj = this.deptManag.find(item => {
-        return item.deptName === val
+    // 编辑按钮
+    handleEdit (rowData) {
+      this.dialogVisible = true
+      this.dialogType = 'edit'
+      this.project = Object.assign({}, rowData)
+    },
+    // 单位管理模态框提交
+    confirmRole () {
+      this.$refs.project.validate(async (valid) => {
+        if (valid) {
+          if (this.dialogType === 'edit') { // 编辑
+            this.project.isenable = false // 有修改就需要重新审核
+            await updateUnit(this.project).then(res => {
+              this.getTableData()
+              this.dialogVisible = false
+              // this.$set(this.project, {})
+              this.$message({
+                showClose: true,
+                message: '编辑成功',
+                type: 'success'
+              })
+            })
+          } else {
+            // 新增
+            await addUnit(this.project).then(res => {
+              this.$set(this.project, {})
+              this.getTableData()
+              this.dialogVisible = false
+              // if (res.status === 200) {
+              this.$message({
+                showClose: true,
+                message: '添加成功',
+                type: 'success'
+              })
+              // } else {
+              //   this.$message({
+              //     showClose: true,
+              //     message: '添加失败',
+              //     type: 'error'
+              //   })
+              // }
+            })
+          }
+        }
       })
-      this.project.deptCode = obj.deptCode
     },
-
+    // 模态框取消
+    cancel () {
+      this.dialogVisible = false
+      this.manageDialogVisible = false
+      this.resetForm('project')
+    },
     // 项目管理按钮
     async handleProject (row) {
       this.loading = true
       this.manageOriginList = []
       this.manageHasList = []
       this.project = Object.assign({}, row)
-      this.manageDialogType = 'project'
+      this.manageDialogType = 'projectTow'
       this.manageDialogVisible = true
       await this.getAllItemList()
       await this.getAgenItemList(row.agenCode)
@@ -505,13 +492,6 @@ export default {
       await this.getBillAllType()
       await this.getAgenBillAll(row.agenCode)
       this.loading = false
-    },
-
-    // 编辑按钮
-    handleEdit (rowData) {
-      this.dialogVisible = true
-      this.dialogType = 'edit'
-      this.project = Object.assign({}, rowData)
     },
     // 删除按钮
     handleDelete (deleData) {
@@ -559,61 +539,6 @@ export default {
           this.getTableData()
         })
       })
-    },
-    // 模态框提交
-    async confirmRole () {
-      this.$refs['project'].validate(async valid => {
-        if (valid) {
-          if (this.dialogType !== 'edit') {
-            // 新增
-            await addUnit(this.project).then(res => {
-              this.$set(this.project, {})
-              this.getTableData()
-              this.dialogVisible = false
-              // if (res.status === 200) {
-              this.$message({
-                showClose: true,
-                message: '添加成功',
-                type: 'success'
-              })
-              // } else {
-              //   this.$message({
-              //     showClose: true,
-              //     message: '添加失败',
-              //     type: 'error'
-              //   })
-              // }
-            })
-          } else {
-            // 编辑
-            this.project.isenable = false // 有修改就需要重新审核
-            await updateUnit(this.project).then(res => {
-              this.getTableData()
-              this.dialogVisible = false
-              if (res.status === 200) {
-                // this.$set(this.project, {})
-                this.$message({
-                  showClose: true,
-                  message: '编辑成功',
-                  type: 'success'
-                })
-              } else {
-                this.$message({
-                  showClose: true,
-                  message: '编辑失败',
-                  type: 'error'
-                }) // 或者弹出后台返回错误
-              }
-            })
-          }
-        }
-      })
-    },
-    // 模态框取消
-    cancel () {
-      this.dialogVisible = false
-      this.manageDialogVisible = false
-      this.resetForm('project')
     },
     // 分页，每页数目改变
     handleSizeChange (val) {

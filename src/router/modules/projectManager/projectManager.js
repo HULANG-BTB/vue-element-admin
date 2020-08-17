@@ -23,6 +23,13 @@ const projectManager = {
       roles: ['admin']
     },
     {
+      path: 'projectGroup',
+      component: () => import('@/views/projectManager/projectGroup'),
+      name: 'projectGroup',
+      meta: { title: '项目分组', icon: 'link' },
+      roles: ['admin']
+    },
+    {
       path: 'chargeStand',
       component: () => import('@/views/projectManager/chargeStand'),
       name: 'chargeStand',

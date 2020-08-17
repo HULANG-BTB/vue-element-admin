@@ -1,33 +1,12 @@
 <template>
   <div class="app-container">
     <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
-      <el-form-item label="单位用途" prop="typeCode">
-        <el-select v-model="queryParams.typeCode" placeholder="请选择单位用途" style="width: 150px">
-          <el-option label="非税收入" value="非税收入" />
-          <el-option label="医疗项目" value="医疗项目" />
-          <el-option label="其他项目" value="其他项目" />
-        </el-select>
+      <el-form-item label="单位名称" prop="keyword.agenName">
+        <el-input v-model="queryParams.keyword.agenName" placeholder="请输入单位名称" clearable style="width: 140px" @keyup.enter.native="handleQuery" />
       </el-form-item>
-      <el-form-item label="单位分类" prop="sortCode">
-        <el-select v-model="queryParams.sortCode" placeholder="请选择单位分类" style="width: 150px">
-          <el-option label="非税收入" value="非税收入" />
-          <el-option label="医疗项目" value="医疗项目" />
-          <el-option label="其他项目" value="其他项目" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="单位名称" prop="keyword">
-        <el-input
-          v-model="queryParams.keyword"
-          placeholder="请输入单位名称"
-          clearable
-          style="width: 140px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="isenable">
-        <el-select v-model="queryParams.isenable" placeholder="请选择单位状态" style="width: 150px">
-          <el-option label="待审核" value="doing" />
-          <el-option label="已完成" value="success" />
+      <el-form-item label="部门名称" prop="keyword.deptName">
+        <el-select v-model="queryParams.keyword.deptName" placeholder="请选择部门名称">
+          <el-option v-for="item in deptManag" :key="item.id" :label="item.deptName" :value="item.deptName" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -161,7 +140,7 @@
 </template>
 
 <script>
-import { getCheckList, getCheckBatch, updateUnit } from '@/api/unitManager'
+import { getCheckList, getCheckBatch, updateUnit, getDapartListAll } from '@/api/unitManager'
 import { parseTime } from '@/utils/index'
 
 export default {
@@ -169,8 +148,10 @@ export default {
     return {
     //   loading: true,
       queryParams: { // 查询参数
-        keyword: '',
-        // isenable: 0,
+        keyword: {
+          deptName: '',
+          agenName: ''
+        },
         page: 1,
         limit: 10,
         total: 0
@@ -248,6 +229,7 @@ export default {
   },
   created () {
     this.getTableData()
+    this.getDapartName()
   },
   methods: {
     // 格式化时间
@@ -265,6 +247,11 @@ export default {
       this.selectedList = []
       // this.loading = false
     },
+    // 获取部门列表
+    async getDapartName () {
+      const { data } = await getDapartListAll() // 无参查询部门列表
+      this.deptManag = data
+    },
     // 搜索
     handleQuery () {
       this.queryParams.page = 1
@@ -278,9 +265,7 @@ export default {
     },
     // 重置
     resetQuery () {
-      // this.resetForm('queryParams')
-      // this.queryParams = {}
-      this.queryParams.keyword = ''
+      this.queryParams.keyword = {}
     },
     // 多选框选中数据
     handleSelectionChange (selection) {
