@@ -1,9 +1,9 @@
 import request from '@/utils/request'
 
-export function createCode (data) {
+export function createCode (code) {
   return request({
     url: '/encode/createCode',
     method: 'post',
-    data
+    code
   })
 }
