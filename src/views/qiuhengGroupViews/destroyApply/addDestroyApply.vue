@@ -269,7 +269,34 @@ export default {
           fRgnCode: '42',
           fAgenIdCode: '1314'
         },
+<<<<<<< HEAD
         itemDtoList: this.itemDtoList
+=======
+          itemDtoList: this.itemDtoList
+        };
+
+        this.$confirm('是否立即创建票据销毁申请, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          const res = await addDestroyApply(applyVo);
+          console.log(res);
+          this.$router.push;
+          this.$message({
+            type: 'success',
+            message: '创建票据销毁申请成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
+      indexMethod(index){
+        return index+1;
+>>>>>>> a67698114e47e74c4840fc02b532aff2461354ea
       }
 
       this.$confirm('是否立即创建票据销毁申请, 是否继续?', '提示', {
