@@ -3,9 +3,9 @@ import Layout from '@/layout'
 
 export default [
   {
-    path: '/bill',
+    path: '/writeoff',
     component: Layout,
-    redirect: '/bill/verification',
+    redirect: '/writeoff/verificationUnit',
     name: 'VerificationOfBill',
     meta: {
       title: '票据核销管理',
@@ -13,17 +13,20 @@ export default [
     },
     children: [
       {
-        path: 'main',
-        component: () => import('@/views/user/user'),
-        name: 'PageUser',
-        meta: { title: '用户管理' }
+        path: 'verificationUnit',
+        component: () => import('@/views/qiuhengGroupViews/writeOff/verificationUnit'),
+        name: 'PageVerificationUnit',
+        meta: {
+          title: '票据核销(单位端)',
+          roles: ['role_manager', 'admin']
+        }
       },
       {
-        path: 'verification',
+        path: 'verificationFinancial',
         component: () => import('@/views/qiuhengGroupViews/writeOff/index'),
         name: 'MainOfVerification',
         meta: {
-          title: '票据核销',
+          title: '票据核销(财政端)',
           roles: ['role_manager', 'admin']
         }
       }
