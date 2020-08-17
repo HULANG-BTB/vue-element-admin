@@ -26,9 +26,9 @@
                                 </el-col>
                                 <el-col :span="4">
                                     <el-form-item label="状态" label-width="80px">
-                                        <el-select placeholder="请选择">
-                                            <el-option label="已审验" value="yes"></el-option>
-                                            <el-option label="未审验" value="no"></el-option>
+                                        <el-select placeholder="请选择" v-model="searchForm.state">
+                                            <el-option label="已审验" value="1"></el-option>
+                                            <el-option label="未审验" value="0"></el-option>
                                         </el-select>
                                     </el-form-item>
                                 </el-col>
@@ -48,12 +48,12 @@
                             <el-row>
                                 <el-col :span="1">
                                     <el-form-item label="">
-                                        <el-button type="primary" @click="addButton()">接 收</el-button>    
+                                        <el-button type="primary" @click="doReceive()">接 收</el-button>    
                                     </el-form-item>
                                 </el-col >
                                 <el-col :span="1" style="padding-left:10px">
                                     <el-form-item label="">                                       
-                                        <el-button type="primary">退 回</el-button>
+                                        <el-button type="primary" @click="doSendBack()">退 回</el-button>
                                     </el-form-item>
                                 </el-col >
                                 <el-col :span="1" style="padding-left:20px">
@@ -67,9 +67,10 @@
                                 </el-col>
                                 <el-col :span="11" style="padding-left:82px">
                                     <el-form-item label="">
-                                        <el-button type="primary">删 除</el-button>                  
+                                        <el-button type="primary" @click="doDelete()">删 除</el-button>                  
                                     </el-form-item>
                                 </el-col>
+                                <!-- 分页 -->
                                 <el-col :span="1">
                                     <el-form-item label="" label-width="120px">
                                         <el-pagination
@@ -79,7 +80,7 @@
                                             :page-sizes="[10, 20]"
                                             :page-size="100"
                                             layout="total, sizes, prev, pager, next, jumper"
-                                            :total="multipleSelection.length">
+                                            :total="tableData.length">
                                         </el-pagination>
                                     </el-form-item>
                                 </el-col>
@@ -88,25 +89,39 @@
                     </el-header>
                     
                     <el-table :data="tableData" 
+                        stripe
                         tooltip-effect="dark" 
-                        :cell-style="rowClass" 
+                        :cell-style="rowClass"
                         :header-cell-style="headClass"
                         @selection-change="handleSelectionChange">
                         <el-table-column type="selection" width="55" align="center"></el-table-column>  
-                        <el-table-column prop="id" label="序号" width="120" align="center"></el-table-column>
-                        <el-table-column prop="state" label="状态" width="160" align="center"></el-table-column>
+                        <el-table-column label="序号" width="120" align="center">
+                            <!-- 自动生成序号 -->
+                            <template slot-scope="scope">
+                                <span>{{(currentPage-1)*pageSize + scope.$index + 1}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="状态" width="160" align="center">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.state}}</span>
+                            </template>
+                        </el-table-column>
                         <el-table-column prop="no" label="业务单号" width="200" align="center"></el-table-column>
                         <el-table-column prop="date" label="编制日期" width="200" align="center"></el-table-column>
                         <el-table-column prop="reason" label="退票原因" width="320" align="center"></el-table-column>
                         <el-table-column prop="author" label="经办人" width="120" align="center"></el-table-column>
                         <el-table-column label="操作" width="400" align="center">
-                            <i class="el-icon-tickets" style="padding: 10px;" @click="onDetailsBtn()"></i>
-                            <i class="el-icon-success" style="padding: 10px"></i>
+                            <!-- 获取整行数据 -->
+                            <template slot-scope="scope">
+                                <i class="el-icon-tickets" style="padding: 10px;" 
+                                @click="onDetailsBtn(scope.row)"></i>
+                                <i class="el-icon-success" style="padding: 10px"></i>
+                            </template>
                         </el-table-column>
                     </el-table>
                     <!-- dialog -->
                     <el-dialog :visible.sync="dialogVisible" :show-close="true" width="70%" top="5vh">
-                        <dialog-info :closeValue="false" @closeMoule="closeMoule"></dialog-info>
+                        <dialog-info @closeMoule="closeMoule" v-bind:billInfo="billInfo"></dialog-info>
                     </el-dialog>
                 </el-container>
             </el-container>
@@ -126,23 +141,14 @@ export default {
        "dialog-info" : InfoDialog
     },
     data() {
-        const item = {
-            id: '1',
-            state: '未审验',
-            no: '00001',
-            date: '2020-8-5',
-            reason: '没啥原因',
-            author: '王某人'    
-        };
         return {
             status: "",
             fileList: [],
-            tableData : [],
+            
 
             // 记录选中的行
             currentPage : 1, // 初始页
             pageSize: 10, // 分页大小
-            multipleSelection: Array(20).fill(item), //这里用multipleSelection存储数据
             
             // 上述为前端测试数据
             // dialog显示
@@ -154,6 +160,19 @@ export default {
                 endDate: new Date().toLocaleDateString(),
                 state: ''
             },
+            // 这里单位号是要获取的Dialog
+            fAgenName : "同福客栈",
+            fAgenIdCode : 1,
+            tableData : [],
+            multipleSelection: [], //这里用multipleSelection存储勾选的数据
+            
+            // 传给BillInfo数据
+            billInfo : {
+                fAgenName: "",
+                fAgenIdCode: "",
+                date: "",
+                author: "",
+            }
         }
     },
     methods: {
@@ -165,22 +184,18 @@ export default {
             return "text-align: center;";
         },
 
-        // 功能函数
-        handleSelectionChange: function(val) {
+        // 分页
+        handleSizeChange(val){
+
+        },
+        handleCurrentChange(val){
+
+        },
+
+        // 点击勾选，并保存勾选内容
+        handleSelectionChange: function(row) {
             // 记录 Table 中的选择内容
-            this.multipleSelection = val;
-        },
-        handleSizeChange(val) {
-            // 直接选择跳转的页面
-            this.pageSize = val
-            console.log(`每页 ${val} 条`);
-            this.tableData = this.multipleSelection.slice((this.currentPage-1) * this.pageSize, this.currentPage * this.pageSize);
-        },
-        handleCurrentChange(val) {
-            // 跳转到输入的界面
-            this.currentPage = val
-            console.log(`当前页: ${val}`);
-            this.tableData = this.multipleSelection.slice((this.currentPage-1) * this.pageSize, this.currentPage * this.pageSize);
+            this.multipleSelection = row;
         },
 
         async onSearch() {
@@ -193,47 +208,52 @@ export default {
                 state: this.searchForm.state
             }
             const res = await search(params)
+            // 返回结果响应
             alert(res)
         },
-        async onDetailsBtn() {
+        async onDetailsBtn(row) {
             // 点击打开Dialog
             this.dialogVisible = true
             // 单位ID, 申请单位， 审验时间， 备注 ， 编制人， 编制日期， 前端在获取的时候保存， 后端只要通过单号获取详细信息
             // 获取核销单位信息
-            // function() 
+            this.billInfo.fAgenName = this.fAgenName
+            this.billInfo.fAgenIdCode = this.fAgenIdCode
+            this.billInfo.date = row.date
+            this.billInfo.author = row.author
+            
+            console.log(billInfo)
+
             // 查询核销信息
             let params = {
-                // 票据单号或者核销的业务单号
+                // 单位ID
+                fAgenIdCode : this.fAgenIdCode,
+                // 业务单号
+                fNo : row.no
             }
             const res = await getDetails(params)
+            alert(res)
             // ### 将 res 存入一个对象中 prop 方法传给billInfo.vue
-
+            // row.state = "已审验"
         },
         closeMoule(e) {
             // 点击关闭的callback事件 e的值为false，这里直接赋值为false
             this.dialogVisible = false
         },
-
         async doReceive(){
+            var that = this
             // 接收核销请求
             let params = {
-                // 这里需要新建一个获取单位信息的Dialog， 获取单位信息
-                // 需要核销的单位信息， 单位ID
+                fAgenIdCode : this.fAgenIdCode
             }
             const res = await receive(params)
             // ### 将数据存在 multipleSelection 再去做分页
-            this.multipleSelection = res.date
+            this.tableData = res;
         },
-        async doReturn(){
+        async doSendBack(){
             // 退回核销请求
-            let params = {
-                // 票据单号或者核销的业务单号
-            }
+            let params = this.multipleSelection
+            this.doDelete()
             const res = await sendBack(params)
-            if(res){
-                // 如果退回成功， 移除改票据单号
-                // 刷新UI
-            }
         },
         doManualImport(){
             // 手工导入核销
@@ -243,12 +263,17 @@ export default {
             // 删除核销请求
             // 获取要删除的票据单号或者核销的业务单号
             // 直接进行删除，刷新UI
+            this.multipleSelection.forEach ((item) => {
+                for (let i=0; i<this.tableData.length; i++){
+                    if (this.tableData[i].no === item.no){
+                        this.tableData.splice(i, 1)
+                        break
+                    }
+                }
+            })
+            this.multipleSelection = []
         }
-
     },
-    created(){
-        this.tableData = this.multipleSelection.slice((this.currentPage-1) * this.pageSize, this.currentPage * this.pageSize);
-    }
 }
 </script>
 

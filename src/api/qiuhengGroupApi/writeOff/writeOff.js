@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 const BASE_URL = "http://localhost:8888"
-
+// http://localhost:8888/financial/receive?fAgenIdCode=1
 export function receive (data) {
   return request({
     url: BASE_URL + '/financial/receive',
@@ -45,6 +45,22 @@ export function setResult (data) {
 export function search (data) {
   return request({
     url: BASE_URL + '/financial/search',
+    method: 'post',
+    data: data
+  })
+}
+
+export function pass (data) {
+  return request({
+    url: BASE_URL + '/financial/pass',
+    method: 'post',
+    data: data
+  })
+}
+
+export function unPass (data) {
+  return request({
+    url: BASE_URL + '/financial/unPass',
     method: 'post',
     data: data
   })

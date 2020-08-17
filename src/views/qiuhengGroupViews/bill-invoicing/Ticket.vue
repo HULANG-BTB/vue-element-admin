@@ -285,12 +285,12 @@ export default {
   created () {
     this.$root.eventBus.$on('data', (val) => {
       this.tableData = val
+      this.itemDtos = this.tableData
     })
     this.$root.eventBus.$on('amt', (val) => {
       this.amt = val
-      console.log(val)
+      console.log(this.amt)
     })
-    this.itemDtos = this.tableData
   },
   methods: {
     async insertBill () {
@@ -299,7 +299,7 @@ export default {
         payerDto: {},
         uneCbillDto: {},
         itemDtos: [],
-        fAmt: 0
+        fAmt: this.amt
       }
       batchPojo.unitName = this.unitName
       batchPojo.payerDto = this.payerDto
@@ -307,6 +307,7 @@ export default {
       batchPojo.itemDtos = this.itemDtos
       batchPojo.fAmt = this.amt
       console.log(batchPojo.fAmt)
+      console.log(batchPojo.itemDtos)
       const res = await addBill(batchPojo)
       alert(res.msg)
       this.$router.push({ name: 'bill' })

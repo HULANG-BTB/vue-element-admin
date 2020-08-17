@@ -25,7 +25,9 @@
         <el-form :label-position="labelPosition" label-width="80px" :model="form">
             <el-row>
                 <el-col :span="8">
-                    <el-form-item label="单位ID">{{form.id}}</el-form-item> 
+                    <el-form-item label="单位ID">
+                        <span>{{billInfo.fAgenIdCode}}</span>
+                    </el-form-item> 
                 </el-col>
                 <el-col :span="5.5" style="float:right">
                     <el-form-item>
@@ -40,7 +42,7 @@
             <el-row>
                 <el-col :span="10">
                     <el-form-item label="申请单位" >
-                        <el-input v-model="form.name"></el-input>
+                        <span>{{billInfo.fAgenName}}</span>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12" style="float:right">
@@ -62,7 +64,7 @@
 
             <el-tab-pane label="开票总览">
                 <el-table class="main-el-table" 
-                stripe="true"
+                stripe
                 :data="gridData" height="350px" 
                 :cell-style="rowClass" 
                 :header-cell-style="headClass">
@@ -83,7 +85,7 @@
 
             <el-tab-pane label="收入情况">
                 <el-table class="main-el-table"
-                stripe="true"
+                stripe
                 :data="gridData" height="350px" 
                 :cell-style="rowClass" 
                 :header-cell-style="headClass">
@@ -99,7 +101,7 @@
             </el-tab-pane>
             <el-tab-pane label="预警记录">
                 <el-table class="main-el-table"
-                stripe="true"
+                stripe
                 :data="gridData" height="350px" 
                 :cell-style="rowClass" 
                 :header-cell-style="headClass">
@@ -118,7 +120,7 @@
 
             <el-tab-pane label="开票明细">
                 <el-table class="main-el-table"
-                stripe="true"
+                stripe
                 :data="gridData" height="350px" 
                 :cell-style="rowClass" 
                 :header-cell-style="headClass">
@@ -135,7 +137,7 @@
             </el-tab-pane>
             <el-tab-pane label="作废票段号">
                 <el-table class="main-el-table" 
-                stripe="true"
+                stripe
                 :data="gridData" height="350px" 
                 :cell-style="rowClass" 
                 :header-cell-style="headClass">
@@ -154,10 +156,10 @@
             <el-form label-width="80px">
                 <el-row>
                     <el-col :span="6">
-                        <el-form-item label="编制人: ">{{}}</el-form-item>
+                        <el-form-item label="编制人: ">{{billInfo.author}}</el-form-item>
                     </el-col>
                    <el-col :span="6">
-                        <el-form-item label="编制日期: ">{{}}</el-form-item>
+                        <el-form-item label="编制日期: ">{{billInfo.date}}</el-form-item>
                     </el-col>
                 </el-row>
             </el-form>
@@ -171,15 +173,38 @@
 import UnitInfo from './unitInfo'
 
 export default {
-    props: ['closeValue'],
+    props: {
+        billInfo : {
+            // 申请单位
+            fAgenName : {
+                type: String,
+                default : ""
+            },
+            // 单位ID
+            fAgenIdCode : {
+                type: String,
+                default : ""
+            },
+            // 编制日期
+            date : {
+                type: Date,
+                default : ""
+            },
+            // 编制人   
+            author : {
+                type: String,
+                default : ""
+            }
+        }
+    },
     components:{
         "unit-dialog" : UnitInfo
     },
     data(){
         return {
             form: {
-                id: '',
-                name: '',
+                id: this.billInfo.fAgenIdCode,
+                name: this.billInfo.fAgenName,
                 date1: '',
                 date2: '',
                 remarks: ''
@@ -211,7 +236,7 @@ export default {
             unitInfo:{
                 name: "111",
                 no: "222"
-            }
+            },
         }
     },
     methods: {
@@ -224,10 +249,16 @@ export default {
         },
 
         // 功能函数
-        onCancel() {
+        async onCancel() {
+            // 不通过
+            let params = {}
+            // const res = await pass(params)
             this.$emit('closeMoule', 'true')
         },
-        onSubmit() {
+        async onSubmit() {
+            // 通过
+            let params = {}
+            // const res = await unPass(params)
             this.$emit('closeMoule', 'true')
         },
         getUnitElectronicFile(){
@@ -247,7 +278,7 @@ export default {
             // 查看预警信息
             alert("check")
         }
-    }
+    },
 }
 </script>
 

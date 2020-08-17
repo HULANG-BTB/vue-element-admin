@@ -1,6 +1,6 @@
 <template>
   <div class="destroy-confirm-container">
-    <el-header>
+    <el-header class="header">
       <el-form
         :model="destroySearch"
         label-width="100px"
@@ -34,15 +34,14 @@
     </el-header>
     <el-pagination
       background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage4"
+      :current-page="page.currentPage"
       :page-sizes="[10,100, 200, 300, 400]"
       :page-size="10"
       layout="total, sizes, prev, pager, next, jumper"
       :total="400"
-    >
-    </el-pagination>
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
 
     <el-table
       :data="tableData"
@@ -52,55 +51,50 @@
       <el-table-column
         type="selection"
         width="55"
-      >
-      </el-table-column>
+      />
       <el-table-column
         prop="id"
+        type="index"
         label="序号"
         width="50"
-      >
-      </el-table-column>
+      />
       <el-table-column
         prop="fDestroyNo"
         label="申请单号"
         sortable
+        disable="true"
         width="180"
-      >
-      </el-table-column>
+      />
       <el-table-column
         prop="fUnitName"
         label="单位名称"
         sortable
         width="180"
-      >
-      </el-table-column>
+      />
       <el-table-column
         prop="fApplyMan"
         label="申请人"
         sortable
         width="100"
-      >
-      </el-table-column>
+      />
       <el-table-column
         prop="fApplyDate"
         label="申请日期"
         sortable
         width="180"
-      ></el-table-column>
+      />
       <el-table-column
         prop="fDestroyType"
         label="销毁类型"
         sortable
         width="180"
-      >
-      </el-table-column>
+      />
       <el-table-column
         prop="fStatus"
         label="审核状态"
         sortable
         width="100"
-      >
-      </el-table-column>
+      />
       <el-table-column
         fixed="right"
         label="操作"
@@ -108,59 +102,109 @@
       >
         <template slot-scope="scope">
           <el-button
-            @click="handleClick(scope.row)"
             type="text"
             size="small"
+            @click="handleClick(scope.row)"
           >查看</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <destroy-confirm-dialog />
   </div>
 </template>
 
 <script>
-import{
+import {
   refresh
-}from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
-  export default {
-    //components:{
-      //"addDestroyApplyDialog": addDestroyApplyVue
-    //},
-    created(){
-       this.refreshButton();//需要触发的函数
-    },
+} from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
+import DestroyConfirmDialog from '@/views/qiuhengGroupViews/destroyConfirm/destroyConfirmDialog'
 
-    data() {
-      return {
-        tableData:[],
-        // tableData: [{
-        //   fDestroyNo: '',
-        //   fUnitName: '',
-        //   fApplyMan: '',
-        //   fApplyDate: '',
-        //   fDestroyType: '',
-        //   fStatus: '',
-        //   },
-        // ],
-        //dialogVisible: false,
-        labelPosition: "right",
+export default {
 
-        destroySearch:{
-          no: "",
-        }
-      }
-    },
-    methods: {
-      handleClick(row) {
-        console.log(row);
+  components: {
+    'destroy-confirm-dialog': DestroyConfirmDialog
+   },
+  data () {
+    return {
+      tableData: [],
+      // tableData: [{
+      //   fDestroyNo: '',
+      //   fUnitName: '',
+      //   fApplyMan: '',
+      //   fApplyDate: '',
+      //   fDestroyType: '',
+      //   fStatus: '',
+      //   },
+      // ],
+      // dialogVisible: false,
+      labelPosition: 'right',
+
+      destroySearch: {
+        no: ''
       },
+      // 分页
+      page: {
+        currentPage: 1,
+        pageSize: 1,
+        total: 0,
+        keyword: ''
+      },
+
+      visible: true,
+
       async refreshButton(){
         const res = await refresh();
         // debugger
-        console.log(res);
+        //console.log(res);
         this.tableData = res;
+        //console.log(this.tableData);
+        for(var i = 0; i < this.tableData.length; i++){
+          if(this.tableData[i].fDestroyType){
+          this.tableData[i].fDestroyType="库存票据销毁";
+          }else{
+          this.tableData[i].fDestroyType="核销票据销毁";
+          }
+        }
+        for(var i = 0; i < this.tableData.length; i++){
+          if(this.tableData[i].fStatus){
+          this.tableData[i].fStatus="已审核";
+          }else{
+          this.tableData[i].fStatus="未审核";
+          }
+        }
+        console.log(this.tableData);
       }
+    }
+  },
+  // components:{
+  // "addDestroyApplyDialog": addDestroyApplyVue
+  // },
+  created () {
+    this.refreshButton()// 需要触发的函数
+  },
+  methods: {
+    handleClick (row) {
+      console.log(row)
     },
-
+    async refreshButton () {
+      const res = await refresh()
+      // debugger
+      console.log(res)
+      this.tableData = res
+    },
+    handleSearch () {},
+    handleSizeChange () {},
+    handleCurrentChange () {},
+    handleClick (row) {
+      console.log(this.visible)
+      this.$root.eventBus.$emit('visible', this.visible)
+    },
   }
+
+}
 </script>
+<style scoped>
+.header {
+  margin-top: 20px;
+}
+</style>

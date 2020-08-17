@@ -15,7 +15,7 @@ export default [{
       component: () => import('@/views/qiuhengGroupViews/destroyApply/destroyApply.vue'),
       name: 'PageDestroyApply',
       meta: {
-        title: '票据销毁申请'
+        title: '票据销毁申请（单位端）'
       }
       // roles: ['role_manager', 'admin']
     },
@@ -24,7 +24,7 @@ export default [{
       component: () => import('@/views/qiuhengGroupViews/destroyConfirm/destroyConfirm.vue'),
       name: 'PageDestroyConfirm',
       meta: {
-        title: '票据销毁审核',
+        title: '票据销毁审核（财政端）'
         // roles: ['role_manager', 'admin']
       }
     }

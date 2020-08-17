@@ -1,6 +1,6 @@
 <template>
   <div class="destroy-apply-container">
-    <el-header>
+    <el-header class="header">
       <el-form
         :model="destroySearch"
         label-width="100px"
@@ -29,6 +29,12 @@
               @click="addDestroyApply()"
             >新增</el-button>
           </el-col>
+          <el-col :span="4">
+            <el-button
+              type="success"
+              @click="refreshButton()"
+            >刷新</el-button>
+          </el-col>
           <el-dialog
             :visible.sync="dialogVisible"
             :show-close="true"
@@ -36,7 +42,7 @@
             top="6vh"
             title="票据销毁申请——新增"
           >
-            <add-destroy-apply-dialog></add-destroy-apply-dialog>
+            <add-destroy-apply-dialog />
           </el-dialog>
         </el-row>
       </el-form>
@@ -45,15 +51,14 @@
 
     <el-pagination
       background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage4"
+      :current-page="page.currentPage"
       :page-sizes="[10,100, 200, 300, 400]"
       :page-size="10"
       layout="total, sizes, prev, pager, next, jumper"
       :total="400"
-    >
-    </el-pagination>
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
 
     <el-table
       :data="tableData"
@@ -63,49 +68,43 @@
       <el-table-column
         type="selection"
         width="55"
-      >
-      </el-table-column>
+      />
       <el-table-column
         prop="id"
+        type="index"
         label="序号"
         width="50"
-      >
-      </el-table-column>
+      />
       <el-table-column
-        prop="status"
-        label="状态"
+        prop="fStatus"
+        label="审核状态"
         sortable
         width="180"
-      >
-      </el-table-column>
+      />
       <el-table-column
-        prop="no"
-        label="业务单号"
+        prop="fDestroyNo"
+        label="申请单号"
         sortable
         width="180"
-      >
-      </el-table-column>
+      />
       <el-table-column
-        prop="date"
-        label="编制日期"
+        prop="fApplyDate"
+        label="申请日期"
         sortable
         width="180"
-      >
-      </el-table-column>
+      />
       <el-table-column
-        prop="type"
+        prop="fDestroyType"
         label="销毁类型"
         sortable
         width="180"
-      >
-      </el-table-column>
+      />
       <el-table-column
-        prop="changeMan"
+        prop="fApplyMan"
         label="申请人"
         sortable
         width="180"
-      >
-      </el-table-column>
+      />
       <el-table-column
         fixed="right"
         label="操作"
@@ -113,19 +112,19 @@
       >
         <template slot-scope="scope">
           <el-button
-            @click="handleClick(scope.row)"
             type="text"
             size="small"
+            @click="handleClick(scope.row)"
           >查看</el-button>
           <el-button
-            @click="handleClick(scope.row)"
             type="text"
             size="small"
+            @click="handleClick(scope.row)"
           >修改</el-button>
           <el-button
-            @click="handleClick(scope.row)"
             type="text"
             size="small"
+            @click="handleClick(scope.row)"
           >新增</el-button>
           <el-button
             type="text"
@@ -138,53 +137,91 @@
 </template>
 
 <script>
-import addDestroyApplyVue from './addDestroyApply';
-  export default {
-    components:{
-      "addDestroyApplyDialog": addDestroyApplyVue
-    },
+import {addDestroyApply,getApplyListByAgenIdCode } from '@/api/qiuhengGroupApi/destroy/destroyApply'
+import addDestroyApplyVue from './addDestroyApply'
+export default {
+  components: {
+    'addDestroyApplyDialog': addDestroyApplyVue
+  },
 
-    methods: {
-      handleClick(row) {
-        console.log(row);
+  data () {
+    return {
+      tableData: [],
+
+      dialogVisible: false,
+      labelPosition: 'right',
+
+      destroySearch: {
+        no: ''
       },
-      addDestroyApply(){
-        this.dialogVisible=true;
-      }
-    },
+      // 分页
+      page: {
+        currentPage: 1,
+        pageSize: 1,
+        total: 0,
+        keyword: ''
+      },
 
-    data() {
-      return {
-        tableData: [{
-          id: '1',
-          status: '未审核',
-          no: '90293092617',
-          date: '2020-08-10',
-          type: '核销票据销毁',
-          changeMan: '张三'
-        },{
-          id: '2',
-          status: '已审核',
-          no: '90293092618',
-          date: '2020-08-10',
-          type: '库存票据销毁',
-          changeMan: '李四'
-        },{
-          id: '3',
-          status: '已审核',
-          no: '90293092619',
-          date: '2020-08-10',
-          type: '核销票据销毁',
-          changeMan: '王二'
-        }],
-
-        dialogVisible: false,
-        labelPosition: "right",
-
-        destroySearch:{
-          no: ""
-        }
-      }
+      fDestroyNo: ''
     }
+  },
+  created () {
+    this.$root.eventBus.$on('dialogVisible1', (val) => {
+      this.dialogVisible = val
+      //console.log(this.dialogVisible)
+    })
+    this.$root.eventBus.$on('dialogVisibleCancel', (val) => {
+      this.dialogVisible = val
+    })
+    this.refreshButton();
+  },
+  methods: {
+    handleClick (row) {
+      console.log(row)
+    },
+    addDestroyApply () {
+      this.dialogVisible = true
+      this.randomNumber()
+      this.$root.eventBus.$emit('fDestroyNo', this.fDestroyNo)
+
+    },
+    handleSearch () {},
+    handleSizeChange () {},
+    handleCurrentChange () {},
+    // 生成流水号
+    randomNumber () {
+      const now = new Date()
+      const month = now.getMonth() + 1
+      const day = now.getDate()
+      const hour = now.getHours()
+      const minutes = now.getMinutes()
+      const seconds = now.getSeconds()
+      this.fDestroyNo = now.getFullYear().toString() + month.toString() + day + hour + minutes + seconds + (Math.round(Math.random() * 23 + 100)).toString()
+    },
+    async refreshButton(){
+      const res = await getApplyListByAgenIdCode("1314")
+      this.tableData = res
+      for(var i = 0; i < this.tableData.length; i++){
+          if(this.tableData[i].fDestroyType){
+          this.tableData[i].fDestroyType="库存票据销毁";
+          }else{
+          this.tableData[i].fDestroyType="核销票据销毁";
+          }
+      }
+      for(var i = 0; i < this.tableData.length; i++){
+          if(this.tableData[i].fStatus){
+          this.tableData[i].fStatus="已审核";
+          }else{
+          this.tableData[i].fStatus="未审核";
+          }
+      }
+        //console.log(this.tableData);
+    },
   }
+}
 </script>
+<style scoped>
+.header {
+  margin-top: 20px;
+}
+</style>
