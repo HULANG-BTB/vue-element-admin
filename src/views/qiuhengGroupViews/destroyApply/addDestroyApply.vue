@@ -307,11 +307,14 @@ export default {
 
       indexMethod(index){
         return index+1;
-      },
+      }
+    },
+  
       cancel(){
          this.$root.eventBus.$emit('dialogVisibleCancel', this.dialogVisible)
       }
-  }
+  
+
 }
 </script>
 
