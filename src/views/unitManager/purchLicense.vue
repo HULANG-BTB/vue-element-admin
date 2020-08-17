@@ -284,7 +284,17 @@ export default {
     // 重置
     resetQuery () {
       // this.resetForm('queryParams')
-      this.queryParams = {}
+      this.queryParams = {
+        page: 1,
+        limit: 10,
+        keyword: {
+          crtName: '',
+          agenName: '',
+          crtCode: '',
+          isenable: ''
+        }
+      }
+      this.getTableData()
     },
     // 上传下载
     submitUpload () {
@@ -310,7 +320,7 @@ export default {
     handleEdit (rowData) {
       this.dialogVisible = true
       this.dialogType = 'edit'
-      this.project = Object.assign({}, rowData)
+      this.crt = Object.assign({}, rowData)
       // const { data } = await getOtherItem(rowData.id) // 模态框中需要的其他接口
       // this.project.roles = data
     },
@@ -377,7 +387,7 @@ export default {
             await updateCrt(this.crt).then(res => {
               this.getTableData()
               this.dialogVisible = false
-              if (res.status === 200) {
+              if (res.code === 10000) {
                 this.$message({
                   showClose: true,
                   message: '编辑成功',
