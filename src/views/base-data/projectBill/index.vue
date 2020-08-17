@@ -35,7 +35,16 @@
           <el-table-column property="id" label="id" width="150" />
           <el-table-column property="itemId" label="项目编码" width="200" />
           <el-table-column property="itemName" label="项目名称" />
-          <el-table-column property="operator" label="经办人" />
+          <el-table-column label="创建时间" >
+            <template slot-scope="scope">
+             <span>{{scope.row.createTime | formatDate}}</span>
+             </template>
+          </el-table-column>
+          <el-table-column label="更新时间" >
+           <template slot-scope="scope">
+          <span>{{scope.row.updateTime | formatDate}}</span>
+          </template>
+           </el-table-column>
         </el-table>
         <el-pagination
           layout="total, prev, pager, next, jumper"
@@ -202,6 +211,14 @@
               prop: 'itemIsEnabled',
               label: '项目启用',
               width: 80
+            },
+            {
+              prop: 'createTime',
+              label: '创建时间'
+            },
+            {
+              prop: 'updateTime',
+              label: '更新时间'
             }
           ],
           operation: [{
