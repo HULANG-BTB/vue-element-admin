@@ -1,9 +1,9 @@
-import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import Config from '@/settings'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import axios from 'axios'
+import { Message, MessageBox } from 'element-ui'
 import NProgress from 'nprogress'
-import Config from '@/settings'
 
 // create an axios instance
 const service = axios.create({
@@ -19,7 +19,7 @@ service.interceptors.request.use(
     NProgress.start()
     if (store.getters.token) {
       // 请求头附带token
-      config.headers[Config.auth.header] = getToken()
+      config.headers[Config.auth.header] = `Basic ${getToken()}`
     }
     return config
   },
