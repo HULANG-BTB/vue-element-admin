@@ -202,10 +202,12 @@ export default {
             // 查询核销信息
             let params = {
                 // 票据单号或者核销的业务单号
+                // fNo : row.no
             }
             const res = await getDetails(params)
+            alert(res)
             // ### 将 res 存入一个对象中 prop 方法传给billInfo.vue
-            row.state = "已审验"
+            // row.state = "已审验"
         },
         closeMoule(e) {
             // 点击关闭的callback事件 e的值为false，这里直接赋值为false

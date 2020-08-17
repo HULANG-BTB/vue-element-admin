@@ -269,10 +269,8 @@ export default {
           fRgnCode: '42',
           fAgenIdCode: '1314'
         },
-<<<<<<< HEAD
+        itemDtoList: this.itemDtoList,
         itemDtoList: this.itemDtoList
-=======
-          itemDtoList: this.itemDtoList
         };
 
         this.$confirm('是否立即创建票据销毁申请, 是否继续?', '提示', {
@@ -294,43 +292,12 @@ export default {
           });
         });
       },
+
       indexMethod(index){
         return index+1;
->>>>>>> a67698114e47e74c4840fc02b532aff2461354ea
       }
-
-      this.$confirm('是否立即创建票据销毁申请, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async () => {
-        const res = await addDestroyApply(applyVo)
-        console.log(res)
-        this.$message({
-          type: 'success',
-          message: '创建票据销毁申请成功!'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
-      })
     },
-    indexMethod (index) {
-      return index + 1
-    },
-    // 生成流水号
-    randomNumber () {
-      const now = new Date()
-      const month = now.getMonth() + 1
-      const day = now.getDate()
-      const hour = now.getHours()
-      const minutes = now.getMinutes()
-      const seconds = now.getSeconds()
-      return now.getFullYear().toString() + month.toString() + day + hour + minutes + seconds + (Math.round(Math.random() * 23 + 100)).toString()
-    }
-  }
+  
 }
 </script>
 
