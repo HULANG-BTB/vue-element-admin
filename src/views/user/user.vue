@@ -329,9 +329,9 @@ export default {
   },
 
   created () {
+    this.getUnitList()
     this.getTableData()
     this.getRoleList()
-    this.getUnitList()
   },
 
   methods: {
@@ -363,7 +363,7 @@ export default {
     computedUnit (agenCode) {
       const unit = this.unitList.filter(val => val.agenCode === agenCode)
       // 避免数据计算的时候单位列表还未加载完成
-      if (unit === undefined) {
+      if (unit === undefined || unit.length === 0) {
         return ''
       }
       return unit[0].deptName
