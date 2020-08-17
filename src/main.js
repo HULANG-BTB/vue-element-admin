@@ -39,7 +39,7 @@ Vue.use(ElementUI, { locale })
 
 Vue.config.productionTip = false
 
-import * as filters from '@/api/base/region/filter.js'
+import * as filters from '@/api/base/region/filter'
 
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])

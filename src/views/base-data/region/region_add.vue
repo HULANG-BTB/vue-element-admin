@@ -33,7 +33,7 @@
         </el-radio-group>
       </el-form-item>
 
-      <template v-if=" regionForm.level && (!regionForm.assortment || regionForm.level != 1) ">
+      <template v-if="regionForm.assortment != null &&  regionForm.level && (!regionForm.assortment || regionForm.level != 1) ">
       <el-form-item label="所属区划" prop="parentId">
         <el-cascader
           expand-trigger="hover"
@@ -44,7 +44,7 @@
       </el-form-item>
       </template>
 
-      <!--<template v-if=" regionForm.level && (regionForm.assortment!=1 || regionForm.level != 1) ">
+      <template v-if=" !regionForm.assortment && regionForm.level ">
       <el-form-item label="业务上级区划" prop="busParentId">
         <el-cascader
           expand-trigger="hover"
@@ -53,7 +53,7 @@
           :props="props">
         </el-cascader>
       </el-form-item>
-      </template>-->
+      </template>
 
       <el-form-item label="是否底级" prop="leaf">
         <el-radio-group v-model="regionForm.leaf">
@@ -100,15 +100,15 @@
             parentId:'',
             categoryList: [],
             categoryActive:[],
-//            busList: [],
-//            busActive:[],
+            busList: [],
+            busActive:[],
             regionForm:{
               code:'',
               name:'',
               mnem:'',
               parentId:'',
               level:'',
-              assortment:'',
+              assortment: null,
               leaf:'',
               enabled:'',
               topRegion:'',
@@ -167,12 +167,16 @@
                   }else{
                     this.regionForm.parentId = this.categoryActive[this.categoryActive.length-1]
                   }
+                  if(!this.regionForm.assortment){
+                    this.regionForm.busParentId = this.busActive[this.busActive.length-1]
+                  }
+                  console.log(this.regionForm)
                   regionApi.addRegion(this.regionForm).then(res => {
                       if(res.success){
-                          this.$message.success("添加成功")
+                        this.$message.success("添加成功")
                         this.regionForm = {};
                       }else if(res.message){
-                          this.$message.error(res.message)
+                        this.$message.error(res.message)
                       }else{
                         this.$message.error("提交失败")
                       }
@@ -192,10 +196,10 @@
           },*/
           levelChange(val){//树级次
             if(val == 3){
-                this.regionForm.assortment = false;
+                this.regionForm.assortment = false
                 regionApi.region_city().then(res => {
                   if(res.success){
-                    this.categoryList = res.query;
+                    this.categoryList = res.data
                   }
               })
             }
@@ -203,7 +207,7 @@
                 if(val == 2){
                   regionApi.region_province().then(res => {
                     if(res.success){
-                      this.categoryList = res.query;
+                      this.categoryList = res.data
                     }
                   })
                 }
@@ -211,32 +215,32 @@
                 if(val == 1){
                   regionApi.region_province().then(res => {
                     if(res.success){
-                      this.categoryList = res.query;
+                      this.categoryList = res.data
                     }
                   })
                 }else if(val == 2){
                   regionApi.region_city().then(res => {
                     if(res.success){
-                      this.categoryList = res.query;
+                      this.categoryList = res.data
                     }
                   })
                 }
             }
-            this.categoryActive = [];
+            this.categoryActive = []
           },
           assortChange(val){//是否分类
             if(val){
                 if(this.regionForm.level == 3){
-                  this.regionForm.assortment = false;
+                  this.regionForm.assortment = false
                   regionApi.region_city().then(res => {
                     if(res.success){
-                      this.categoryList = res.query;
+                      this.categoryList = res.data
                     }
                   })
                 }else if(this.regionForm.level == 2){
                   regionApi.region_province().then(res => {
                     if(res.success){
-                      this.categoryList = res.query;
+                      this.categoryList = res.data
                     }
                   })
                 }
@@ -244,22 +248,27 @@
                 if(this.regionForm.level == 1){
                   regionApi.region_province().then(res => {
                     if(res.success){
-                      this.categoryList = res.query;
+                      this.categoryList = res.data
                     }
                   })
                 }else  if(this.regionForm.level == 2){
                   regionApi.region_city().then(res => {
                     if(res.success){
-                      this.categoryList = res.query;
+                      this.categoryList = res.data
                     }
                   })
                 }
             }
-            this.categoryActive = [];
+            this.categoryActive = []
           }
     },
     created(){
-      this.parentId = this.$route.query.parentId;
+      regionApi.region_category().then(res => {
+          if (res.success) {
+              this.busList = res.data
+          }
+      })
+      this.parentId = this.$route.query.parentId
     }
   }
 </script>
