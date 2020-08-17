@@ -62,7 +62,7 @@
 
             <el-tab-pane label="开票总览">
                 <el-table class="main-el-table" 
-                stripe="true"
+                stripe
                 :data="gridData" height="350px" 
                 :cell-style="rowClass" 
                 :header-cell-style="headClass">
@@ -83,7 +83,7 @@
 
             <el-tab-pane label="收入情况">
                 <el-table class="main-el-table"
-                stripe="true"
+                stripe
                 :data="gridData" height="350px" 
                 :cell-style="rowClass" 
                 :header-cell-style="headClass">
@@ -99,7 +99,7 @@
             </el-tab-pane>
             <el-tab-pane label="预警记录">
                 <el-table class="main-el-table"
-                stripe="true"
+                stripe
                 :data="gridData" height="350px" 
                 :cell-style="rowClass" 
                 :header-cell-style="headClass">
@@ -118,7 +118,7 @@
 
             <el-tab-pane label="开票明细">
                 <el-table class="main-el-table"
-                stripe="true"
+                stripe
                 :data="gridData" height="350px" 
                 :cell-style="rowClass" 
                 :header-cell-style="headClass">
@@ -135,7 +135,7 @@
             </el-tab-pane>
             <el-tab-pane label="作废票段号">
                 <el-table class="main-el-table" 
-                stripe="true"
+                stripe
                 :data="gridData" height="350px" 
                 :cell-style="rowClass" 
                 :header-cell-style="headClass">

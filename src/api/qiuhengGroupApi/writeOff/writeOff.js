@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 const BASE_URL = "http://localhost:8888"
-
+// http://localhost:8888/financial/receive?fAgenIdCode=1
 export function receive (data) {
   return request({
     url: BASE_URL + '/financial/receive',
