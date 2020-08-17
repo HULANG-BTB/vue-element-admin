@@ -11,22 +11,22 @@ export default [{
     icon: 'user'
   },
   children: [{
-    path: 'destroyApply',
-    component: () => import('@/views/qiuhengGroupViews/destroyApply/destroyApply.vue'),
-    name: 'PageDestroyApply',
-    meta: {
-      title: '票据销毁申请'
-    }
-    // roles: ['role_manager', 'admin']
-  },
-  {
-    path: 'destroyConfirm',
-    component: () => import('@/views/qiuhengGroupViews/destroyConfirm/destroyConfirm.vue'),
-    name: 'PageDestroyConfirm',
-    meta: {
-      title: '票据销毁审核'
+      path: 'destroyApply',
+      component: () => import('@/views/qiuhengGroupViews/destroyApply/destroyApply.vue'),
+      name: 'PageDestroyApply',
+      meta: {
+        title: '票据销毁申请（单位端）'
+      }
       // roles: ['role_manager', 'admin']
+    },
+    {
+      path: 'destroyConfirm',
+      component: () => import('@/views/qiuhengGroupViews/destroyConfirm/destroyConfirm.vue'),
+      name: 'PageDestroyConfirm',
+      meta: {
+        title: '票据销毁审核（财政端）'
+        // roles: ['role_manager', 'admin']
+      }
     }
-  }
   ]
 }]

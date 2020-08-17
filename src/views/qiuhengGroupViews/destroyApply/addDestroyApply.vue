@@ -281,12 +281,7 @@ export default {
           fRgnCode: '42',
           fAgenIdCode: '1314'
         },
-<<<<<<< HEAD
-        itemDtoList: this.itemDtoList,
-        itemDtoList: this.itemDtoList
-=======
           itemDtoList: this.itemDtoList
->>>>>>> 85ca99d7c465c823297d3cc5e63fe534870b2cd8
         };
         this.$confirm('是否立即创建票据销毁申请, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -312,17 +307,11 @@ export default {
 
       indexMethod(index){
         return index+1;
-<<<<<<< HEAD
-      }
-    },
-  
-=======
       },
       cancel(){
          this.$root.eventBus.$emit('dialogVisibleCancel', this.dialogVisible)
       }
   }
->>>>>>> 85ca99d7c465c823297d3cc5e63fe534870b2cd8
 }
 </script>
 
