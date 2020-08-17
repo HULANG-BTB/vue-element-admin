@@ -57,6 +57,7 @@
             <el-button
               type="primary"
               size="small"
+              @click="rescindApply"
             >撤销</el-button>
           </el-col>
           <el-col
@@ -76,6 +77,7 @@
           </el-col>
         </el-row>
         <el-table
+          v-loading="loading"
           :data="writeOffApply.list"
           :header-cell-style="{'text-align':'center', 'background-color':'#EEF5FD'}"
           :cell-style="{'text-align':'center'}"
@@ -154,7 +156,7 @@
 </template>
 
 <script>
-import { getApplyList, deleteApply, uploadApply } from '@/api/qiuhengGroupApi/writeOff/wirteOffUnit'
+import { getApplyList, deleteApply, uploadApply, rescindApply } from '@/api/qiuhengGroupApi/writeOff/wirteOffUnit'
 import BillVerificationInfo from './billVerificationInfo'
 export default {
   components: {
@@ -185,6 +187,7 @@ export default {
         // 数据总数
         total: 0
       },
+      loading: true,
       // 是否显示
       dialogVisible: false,
       // 是否为新增
@@ -209,8 +212,11 @@ export default {
         date.setTime(item.fDate)
         item.fDate = date.toLocaleDateString()
       })
+
+      this.loading = false
     },
     query () {
+      this.loading = true
       if (this.rangeDate.length !== 0) {
         this.queryInfo.startDate = this.rangeDate[0].toLocaleDateString()
         // 由于传到后端的数据为当日0时，所以查不到结束日期当天的数据，为此将日期多加一天以达到要求
@@ -224,11 +230,13 @@ export default {
     },
     // 监听 pagesize 改变的事件
     handleSizeChange (newSize) {
+      this.loading = true
       this.queryInfo.pageSize = newSize
       this.getWriteOffApplyList()
     },
     // 监听 页码值 改变的事件
     handleCurrentChange (newPage) {
+      this.loading = true
       this.queryInfo.pageNum = newPage
       this.getWriteOffApplyList()
     },
@@ -323,7 +331,6 @@ export default {
           }
           list.push(item.fNo)
         })
-        console.log(list)
         uploadApply(list)
           .then((res) => {
             if (res.status === 200) {
@@ -348,6 +355,53 @@ export default {
           })
       } catch (e) {
         if (e.message !== 'hasUploadApply') console.error(e)
+      }
+    },
+    // 撤销申请
+    rescindApply () {
+      try {
+        const list = []
+        this.multipleSelection.forEach(item => {
+          if (item.fChangeState === '已审验') {
+            this.$message({
+              type: 'warning',
+              message: '选中的申请中存在已经被审验'
+            })
+            throw new Error('err')
+          }
+          if (item.fIsUpload === '未上报') {
+            this.$message({
+              type: 'warning',
+              message: '选中的申请中存在未上报的'
+            })
+            throw new Error('err')
+          }
+          list.push(item.fNo)
+        })
+        rescindApply(list)
+          .then((res) => {
+            if (res.status === 200) {
+              this.$message({
+                type: 'success',
+                message: '撤销成功!'
+              })
+              this.getWriteOffApplyList()
+            } else {
+              this.$message({
+                type: 'error',
+                message: '无法撤销!'
+              })
+            }
+          })
+          .catch((err) => {
+            this.$message({
+              type: 'error',
+              message: '撤销失败!'
+            })
+            console.error(err)
+          })
+      } catch (e) {
+        if (e.message !== 'err') console.error(e)
       }
     }
   }

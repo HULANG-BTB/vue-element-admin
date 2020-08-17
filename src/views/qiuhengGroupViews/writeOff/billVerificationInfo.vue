@@ -141,19 +141,6 @@
         <el-table-column label="金额" />
         <el-table-column label="状态" />
       </el-table>
-      <el-col
-        :span="9"
-        :offset="9"
-      >
-        <!-- 分页区域 -->
-        <el-pagination
-          :current-page="bill.pageNum"
-          :page-sizes="[10, 15, 20, 30, 50]"
-          :page-size="bill.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="bill.total"
-        />
-      </el-col>
     </div>
     <div
       slot="footer"
