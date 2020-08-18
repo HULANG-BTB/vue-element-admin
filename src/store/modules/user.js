@@ -1,12 +1,12 @@
-import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getInfo, login, logout } from '@/api/user'
 import router, { resetRouter } from '@/router'
+import { getToken, removeToken, setToken } from '@/utils/auth'
 
 const getDefaultState = () => {
   return {
     token: getToken(),
     nickname: '',
-    avatar: '',
+    avatar: '/assets/images/avator.jpg',
     roles: [],
     agenCode: '112233'
   }
@@ -58,11 +58,10 @@ const actions = {
           return reject('Verification failed, please Login again.')
         }
 
-        const { roles, nickname, avatar } = data
+        const { roles, nickname } = data
 
         commit('SET_ROLES', roles)
         commit('SET_NAME', nickname)
-        commit('SET_AVATAR', avatar)
         resolve(data)
       }).catch(error => {
         reject(error)

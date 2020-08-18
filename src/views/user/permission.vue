@@ -57,7 +57,7 @@
     <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="margin-top:20px;float:right;margin-right:20px;" :total="query.total" :current-page="query.page" :page-sizes="[10, 20, 50, 100, 500, 1000]" :page-size="query.limit" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑权限':'新建权限'">
-      <el-form v-loading="dialogLoading" :model="permission" label-width="120px" label-position="left">
+      <el-form v-loading="dialogLoading" :model="permission" label-width="120px" label-position="right">
         <el-form-item label="父级权限">
           <el-select v-model="permission.parentId" size="medium" filterable style="width: 100%" clearable placeholder="Request Method">
             <el-option v-for="(item, index) in permissionSelectList" :key="index" :label="item.name" :value="item.id">

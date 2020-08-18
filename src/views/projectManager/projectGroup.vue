@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
-      <el-form-item label="分组名称" prop="keyword">
+      <el-form-item label="分组名称" prop="groupName">
         <el-input
-          v-model="queryParams.keyword"
+          v-model="queryParams.groupName"
           placeholder="请输入分组名称"
           clearable
           style="width: 140px"
@@ -132,7 +132,9 @@ export default {
       queryParams: { // 查询参数
         page: 1,
         limit: 10,
-        keyword: ''
+        total: 0,
+        agenCode: '',
+        groupName: ''
       },
       groupList: [],
       projectList: [],
@@ -180,6 +182,7 @@ export default {
     }
   },
   created () {
+    this.queryParams.agenCode = this.$store.state.user.agenCode
     this.getTableData()
   },
   methods: {
