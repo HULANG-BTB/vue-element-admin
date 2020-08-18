@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-11 15:45:20
+ * @lastTime: 2020-08-18 16:03:39
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -22,6 +22,7 @@
         size="small"
         :style="tableWidth"
         highlight-current-row
+        border
         @selection-change="tableSelectionChange"
       >
         <el-table-column
@@ -78,6 +79,7 @@
         :current-page="page.pageNum"
         :page-size="page.pageSize"
         layout="total, prev, pager, next, jumper,sizes"
+        :pager-count="3"
         :page-sizes="[5,10]"
         :total="total"
         class="pagination"
@@ -115,25 +117,21 @@ export default {
       default () {
         return 0
       }
-    },
-    page: {
-      type: Object,
-      default () {
-        return {}
-      }
     }
   },
   data () {
     return {
+      page: {
+        pageNum: 1,
+        pageSize: 10
+      },
       maxHeight: 800,
       tableWidth: { width: window.innerWidth - 410 + 'px' },
       windowHeight: { height: window.innerHeight - 150 + 'px' },
-      tableHeight: window.innerHeight - 240 < 400 ? 400 : window.innerHeight - 240,
-      resizable: false
+      tableHeight: window.innerHeight - 240 ? window.innerHeight - 240 < 300 + 'px' : 300 + 'px'
     }
   },
   mounted () {
-    console.log(this.tableHeight)
   },
   methods: {
     tableHeadButtonClick (name) {
@@ -177,7 +175,8 @@ export default {
 </script>
 <style scoped>
 .pagination{
-  margin-top:10px;
   position: absolute;
+  bottom: 10px;
+  right: 0;
 }
 </style>
