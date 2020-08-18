@@ -286,7 +286,7 @@
         </el-table-column>
         <el-table-column align="center" label="终止号" width="165">
           <template slot-scope="scope">
-            {{ (parseInt(scope.row.billNo1)+parseInt(scope.row.number)).toString().padStart(10, '000000000') }}
+            {{ scope.row.billNo2 = (parseInt(scope.row.billNo1)+parseInt(scope.row.number)-1).toString().padStart(10, '000000000') }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作" width="100">
@@ -539,6 +539,9 @@ export default {
             e.selected = true
           }
         })
+        if (e.billPrecode === scope.row.billPrecode) {
+          scope.row.billName = e.billName
+        }
       })
     },
 
