@@ -1,18 +1,27 @@
 <template>
   <div class="app-container">
     <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
-      <el-form-item label="准购证名称" prop="keyword">
+      <el-form-item label="准购证编码" prop="keyword.crtCode">
         <el-input
-          v-model="queryParams.keyword"
+          v-model="queryParams.keyword.crtCode"
+          placeholder="请输入准购证编码"
+          clearable
+          style="width: 140px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="准购证名称" prop="keyword.crtName">
+        <el-input
+          v-model="queryParams.keyword.crtName"
           placeholder="请输入准购证"
           clearable
           style="width: 140px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="所属单位" prop="useType">
-        <el-select v-model="queryParams.useType" placeholder="请选择项目用途" style="width: 150px">
-          <el-option label="非税收入" value="非税收入" />
+      <el-form-item label="所属单位" prop="keyword.agenName">
+        <el-select v-model="queryParams.keyword.agenName" placeholder="请选择项目用途" style="width: 150px">
+          <el-option v-for="(item,index) in agenNameList" :key="index" :label="item.agenName" :value="item.agenName" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -139,7 +148,7 @@
 </template>
 
 <script>
-import { checkCrtListByPage, getCrtById, checkBatch, updateCrt } from '@/api/purchLicense'
+import { checkCrtListByPage, getCrtById, checkBatch, updateCrt, getAgenName } from '@/api/purchLicense'
 // , updateCrt, checkBatch
 import { parseTime } from '@/utils/index'
 export default {
@@ -149,7 +158,11 @@ export default {
       queryParams: { // 查询参数
         page: 1,
         limit: 10,
-        keyword: ''
+        keyword: {
+          crtName: '',
+          agenName: '',
+          crtCode: ''
+        }
       },
       crtList: [],
       crt: {},
@@ -158,17 +171,25 @@ export default {
       formLabelWidth: '120px',
       fileList: [],
       selectedList: [],
+      agenNameList: [],
       rules: {
       }
     }
   },
   created () {
     this.getTableData()
+    this.getAgenNames()
   },
   methods: {
     // 格式化时间
     parseTime (time) {
       return parseTime(new Date())
+    },
+    async getAgenNames () {
+      this.loading = true
+      const res = await getAgenName()
+      this.agenNameList = res.data
+      this.loading = false
     },
     // 获取单位信息
     async getCrtMessage (id) {
@@ -202,7 +223,17 @@ export default {
     // 重置
     resetQuery () {
       // this.resetForm('queryParams')
-      this.queryParams = {}
+      this.queryParams = {
+        page: 1,
+        limit: 10,
+        keyword: {
+          crtName: '',
+          agenName: '',
+          crtCode: '',
+          isenable: ''
+        }
+      }
+      this.getTableData()
     },
     // 多选框选中数据
     handleSelectionChange (selection) {
