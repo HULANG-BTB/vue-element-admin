@@ -56,8 +56,8 @@
       </el-table-column>
       <el-table-column align="center" label="标准编码" prop="itemstdCode" />
       <el-table-column align="center" label="标准名称" prop="itemstdName" :show-overflow-tooltip="true" />
-      <el-table-column align="center" label="标准下线" prop="minCharge" />
-      <el-table-column align="center" label="标准上线" prop="maxCharge" />
+      <el-table-column align="center" label="标准下限" prop="minCharge" />
+      <el-table-column align="center" label="标准上限" prop="maxCharge" />
       <el-table-column align="center" label="计量单位" prop="units" />
       <el-table-column align="center" label="生效日期" prop="itemstdEffdate">
         <template slot-scope="scope">
@@ -97,22 +97,16 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="标准编码" :label-width="formLabelWidth" prop="itemstdCode">
-              <el-input v-model="standard.itemstdCode" placeholder="标准编码" />
+              <el-input v-model="standard.itemstdCode" placeholder="标准编码" readonly />
             </el-form-item>
             <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemCode ">
-              <el-input v-model="standard.itemCode " placeholder="项目编码" :disabled="true" />
+              <el-input v-model="standard.itemCode " placeholder="项目编码" readonly />
             </el-form-item>
             <el-form-item label="标准下限" :label-width="formLabelWidth" prop="minCharge">
               <el-input v-model="standard.minCharge" placeholder="标准下限" />
             </el-form-item>
             <el-form-item label="生效日期" :label-width="formLabelWidth" prop="itemstdEffdate">
               <el-date-picker v-model="standard.itemstdEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
-            <el-form-item label="经办人" :label-width="formLabelWidth" prop="operator">
-              <el-input v-model="standard.operator" placeholder="经办人" />
-            </el-form-item>
-            <el-form-item label="生效日期" :label-width="formLabelWidth" prop="createTime">
-              <el-date-picker v-model="standard.createTime" type="date" placeholder="选择日期" style="width: 100%;" />
             </el-form-item>
             <el-form-item label="计量单位" :label-width="formLabelWidth" prop="units">
               <el-input v-model="standard.units" placeholder="计量单位" />
@@ -131,14 +125,8 @@
             <el-form-item label="失效日期" :label-width="formLabelWidth" prop="itemstdExpdate">
               <el-date-picker v-model="standard.itemstdExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
             </el-form-item>
-            <el-form-item label="经办人ID" :label-width="formLabelWidth" prop="operatorId">
-              <el-input v-model="standard.operatorId" placeholder="经办人ID" />
-            </el-form-item>
-            <el-form-item label="最后修改时间" :label-width="formLabelWidth" prop="updateTime">
-              <el-date-picker v-model="standard.updateTime" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
-            <el-form-item label="备注" :label-width="formLabelWidth">
-              <el-input v-model="standard.note" placeholder="备注" />
+            <el-form-item label="标准金额" :label-width="formLabelWidth">
+              <el-input v-model="standard.charge" placeholder="标准金额" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -188,6 +176,7 @@ export default {
         mnem: '',
         maxCharge: '',
         minCharge: '',
+        charge: '',
         units: '',
         itemstdEffdate: '',
         itemstdExpdate: '',
@@ -255,7 +244,7 @@ export default {
   methods: {
     // 格式化时间
     parseTime (time) {
-      return parseTime(new Date())
+      return parseTime(new Date(time), '{y}-{m}-{d}')
     },
     // 获取资源列表
     async getTableData () {

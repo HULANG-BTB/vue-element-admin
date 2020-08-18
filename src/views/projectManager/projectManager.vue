@@ -3,9 +3,9 @@
     <el-row :gutter="20">
       <el-col :span="6">
         <el-card class="box-card">
-          <el-tree ref="tree" :data="treeList" node-key="id" :default-expanded-keys="[1]" :props="defaultProps" style="font-size: 13px;" @node-click="handleNodeClick">
+          <el-tree ref="tree" :data="treeList" node-key="id" :props="defaultProps" style="font-size:10px;" @node-click="handleNodeClick">
             <span slot-scope="{ node, data }" class="custom-tree-node">
-              <span :show-overflow-tooltip="true"><i icon="iconfont table" />{{ data.code }} {{ node.label }}</span>
+              <span>{{ data.code }} {{ node.label }}</span>
             </span>
           </el-tree>
         </el-card>
@@ -68,18 +68,18 @@
           </el-table-column>
           <el-table-column align="center" label="项目编码" prop="itemId" />
           <el-table-column align="center" label="项目名称" prop="itemName" :show-overflow-tooltip="true" />
-          <el-table-column align="center" label="项目生效日期" prop="itemEffdate" width="150">
+          <el-table-column align="center" label="项目生效日期" prop="itemEffdate" width="110">
             <template slot-scope="scope">
               {{ parseTime(scope.row.itemEffdate) }}
             </template>
           </el-table-column>
-          <el-table-column align="center" label="项目失效日期" prop="itemExpdate" width="150">
+          <el-table-column align="center" label="项目失效日期" prop="itemExpdate" width="110">
             <template slot-scope="scope">
               {{ parseTime(scope.row.itemExpdate) }}
             </template>
           </el-table-column>
           <el-table-column align="center" label="资金性质" prop="fundsnatureCode" />
-          <el-table-column align="center" label="操作" width="150">
+          <el-table-column align="center" label="项目操作" width="150" fixed="right">
             <template slot-scope="scope">
               <el-button type="primary" size="mini" @click="handleEdit(scope.row)">修改</el-button>
               <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
@@ -87,8 +87,8 @@
           </el-table-column>
           <el-table-column align="center" label="标准管理" width="210" fixed="right">
             <template slot-scope="scope">
-              <el-button type="warning" size="mini" @click="handleAddStand(scope.row)">新增标准</el-button>
-              <el-button type="success" size="mini" @click="handleEditStand(scope.row)">修改标准</el-button>
+              <el-button type="primary" size="mini" @click="handleAddStand(scope.row)">新增</el-button>
+              <el-button type="primary" size="mini" @click="handleEditStand(scope.row)">修改</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -112,7 +112,7 @@
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemId">
-                  <el-input v-model="project.itemId" placeholder="项目编码" :disabled="true" />
+                  <el-input v-model="project.itemId" placeholder="项目编码" readonly />
                 </el-form-item>
                 <el-form-item label="项目生效日期" :label-width="formLabelWidth" prop="itemEffdate">
                   <el-date-picker v-model="project.itemEffdate" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width: 100%;" />
@@ -121,7 +121,7 @@
                   <el-date-picker v-model="project.effdate" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width: 100%;" />
                 </el-form-item>
                 <el-form-item label="收入类别" :label-width="formLabelWidth" prop="name ">
-                  <el-input v-model="incomeSort.name" placeholder="收入类别" :disabled="true" />
+                  <el-input v-model="incomeSort.name" placeholder="收入类别" readonly />
                 </el-form-item>
                 <el-form-item label="收缴方式" :label-width="formLabelWidth">
                   <el-select v-model="project.paymode" placeholder="请选择收缴方式">
@@ -130,12 +130,8 @@
                     <el-option label="代缴" value="代缴" />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="资金性质" :label-width="formLabelWidth" prop="fundsnatureCode">
-                  <el-select v-model="project.fundsnatureCode" placeholder="根据实际情况选择">
-                    <el-option label="直缴" value="直缴" />
-                    <el-option label="汇缴" value="汇缴" />
-                    <el-option label="代缴" value="代缴" />
-                  </el-select>
+                <el-form-item label="资金性质" :label-width="formLabelWidth" prop="name">
+                  <el-input v-model="fund" placeholder="资金性质" readonly />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -152,7 +148,7 @@
                   <el-input v-model="project.mnen" placeholder="助记码" />
                 </el-form-item>
                 <el-form-item label="预算科目" :label-width="formLabelWidth">
-                  <el-input v-model="project.subjectName" placeholder="根据实际情况填写" :disabled="true" />
+                  <el-input v-model="project.subjectName" placeholder="预算科目" readonly />
                 </el-form-item>
                 <el-form-item label="备注" :label-width="formLabelWidth">
                   <el-input v-model="project.note" placeholder="备注" />
@@ -171,10 +167,10 @@
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="标准编码" :label-width="formLabelWidth" prop="itemstdCode">
-                  <el-input v-model="standard.itemstdCode" placeholder="标准编码" :disabled="true" />
+                  <el-input v-model="standard.itemstdCode" placeholder="标准编码" readonly />
                 </el-form-item>
                 <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemCode ">
-                  <el-input v-model="standard.itemCode " placeholder="项目编码" :disabled="true" />
+                  <el-input v-model="standard.itemCode " placeholder="项目编码" readonly />
                 </el-form-item>
                 <el-form-item label="标准下限" :label-width="formLabelWidth" prop="minCharge">
                   <el-input v-model="standard.minCharge" placeholder="标准下限" />
@@ -183,7 +179,7 @@
                   <el-date-picker v-model="standard.itemstdEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
                 </el-form-item>
                 <el-form-item label="计量单位" :label-width="formLabelWidth" prop="units">
-                  <el-input v-model="standard.units" placeholder="计量单位" />
+                  <el-input v-model="standard.units" placeholder="计量单位" readonly />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -199,8 +195,8 @@
                 <el-form-item label="失效日期" :label-width="formLabelWidth" prop="itemstdExpdate">
                   <el-date-picker v-model="standard.itemstdExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
                 </el-form-item>
-                <el-form-item label="标准金额" :label-width="formLabelWidth">
-                  <el-input v-model="standard.chargr" placeholder="标准金额" />
+                <el-form-item label="标准金额" :label-width="formLabelWidth" prop="charge">
+                  <el-input v-model="standard.charge" placeholder="标准金额" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -243,7 +239,7 @@ const defaultStand = {
   maxCharge: '',
   minCharge: '',
   chargr: '',
-  units: '',
+  units: '元',
   itemstdEffdate: '',
   itemstdExpdate: '',
   note: '',
@@ -257,6 +253,15 @@ const defaultStand = {
 }
 export default {
   data () {
+    const chargeMethod = (rule, value, callback) => {
+      if (value > this.standard.maxCharge) {
+        callback(new Error('金额必须低于标准上限'))
+      } else if (value < this.standard.minCharge) {
+        callback(new Error('金额必须高于标准下限'))
+      } else {
+        callback()
+      }
+    }
     const validateDatePicker = (rule, value, callback, source, option, other) => {
       const thisZero = new Date().setHours(0, 0, 0, 0)
       const input = new Date(value).setHours(0, 0, 0, 0)
@@ -281,18 +286,21 @@ export default {
         isenable: '',
         page: 1,
         limit: 10,
+        state: 1,
         total: 0
       },
       isleaf: true,
       treeList: [],
       defaultProps: {
         children: 'subjectVOS',
-        label: 'name'
+        label: 'name',
+        level: 'level'
       },
       incomeSort: {
         code: '',
         name: ''
       },
+      fund: '',
       subjectList: {
         id: '',
         year: '',
@@ -324,7 +332,7 @@ export default {
         maxCharge: '',
         minCharge: '',
         charge: '',
-        units: '',
+        units: '元',
         itemstdEffdate: '',
         itemstdExpdate: '',
         note: '',
@@ -374,6 +382,9 @@ export default {
         ]
       },
       standRules: {
+        charge: [
+          { validator: chargeMethod, trigger: 'blur' }
+        ],
         itemstdCode: [
           { required: true, message: '标准编码不能为空', trigger: 'blur' }
         ],
@@ -387,7 +398,7 @@ export default {
           { required: true, message: '标准下线不能为空', trigger: 'blur' }
         ],
         units: [
-          { required: true, message: '计量单位不能为空', trigger: 'blur' }
+          { required: true, message: '计量单位不能修改', trigger: 'change' }
         ],
         itemstdEffdate: [
           { required: true, trigger: 'blur', validator: validateDatePicker }
@@ -424,7 +435,7 @@ export default {
   methods: {
     // 格式化时间
     parseTime (time) {
-      return parseTime(new Date(time))
+      return parseTime(new Date(time), '{y}-{m}-{d}')
     },
     // 获取资源列表
     async getTableData () {
@@ -456,14 +467,23 @@ export default {
     // 重置
     resetQuery () {
       this.queryParams.keyword = ''
+      this.queryParams.isenable = ''
+      this.queryParams.subjectCode = ''
+      this.getTableData()
     },
     // 新增按钮
     handleAdd () {
       this.project = Object.assign({}, defaultUser)
-      this.project.itemId = this.subjectList.code
       this.project.subject = this.subjectList.code
       this.project.subjectName = this.subjectList.name
       this.project.incomSortCode = this.incomeSort.code
+      this.project.fundsnatureCode = this.incomeSort.name + '收入'
+      if (this.projectList.length === 0) {
+        this.project.itemId = this.subjectList.code + '01'
+      } else {
+        const val = parseInt(this.projectList[this.projectList.length - 1].itemId) + 1
+        this.project.itemId = val + ''
+      }
       this.dialogType = 'new'
       this.dialogVisible = true
     },
@@ -555,16 +575,13 @@ export default {
       // }).catch(err => console.log(err))
     },
     async handleNodeClick (data) {
-      if (data.leaf) {
+      if (data.level === 2) {
         this.isleaf = false
-        let parent = this.$refs.tree.getNode(data)
-        while (parent.level !== 2) {
-          parent = parent.parent
-        }
         this.queryParams.subjectCode = data.code
         this.subjectList = data
-        const res = await getBySubjectId(parent.data.id)
+        const res = await getBySubjectId(data.id)
         this.incomeSort = res.data
+        this.fund = this.incomeSort.name + '收入'
         this.getTableData()
       }
     },
