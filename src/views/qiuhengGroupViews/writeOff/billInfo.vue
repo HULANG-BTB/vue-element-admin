@@ -365,29 +365,76 @@ import UnitInfo from './unitInfo'
 import { getUnitDetails, pass, unPass } from '@/api/qiuhengGroupApi/writeOff/writeOff'
 
 export default {
-    props: {
-        billInfo : {
-            // 申请单位
-            fAgenName : {
-                type: String,
-                default : ""
-            },
-            // 单位ID
-            fAgenIdCode : {
-                type: String,
-                default : ""
-            },
-            // 编制日期
-            date : {
-                type: Date,
-                default : ""
-            },
-            // 编制人   
-            author : {
-                type: String,
-                default : ""
-            }
+  components: {
+    'unit-dialog': UnitInfo
+  },
+  props: {
+    billInfo: {
+      // 申请单位
+      fAgenName: {
+        type: String,
+        default: ''
+      },
+      // 单位ID
+      fAgenIdCode: {
+        type: String,
+        default: ''
+      },
+      // 编制日期
+      date: {
+        type: Date,
+        default: ''
+      },
+      // 编制人
+      author: {
+        type: String,
+        default: ''
+      }
+    }
+  },
+  data () {
+    return {
+      form: {
+        id: this.billInfo.fAgenIdCode,
+        name: this.billInfo.fAgenName,
+        date1: '',
+        date2: '',
+        remarks: ''
+      },
+      gridData: [
+        {
+          date: '01',
+          name: '王小虎',
+          address: '上海市'
+        },
+        {
+          date: '01',
+          name: '王小虎',
+          address: '上海市'
+        },
+        {
+          date: '01',
+          name: '王小虎',
+          address: '上海市'
+        },
+        {
+          date: '01',
+          name: '王小虎',
+          address: '上海市'
         }
+      ],
+      labelPosition: 'right',
+      unitInfoDialogVisible: false,
+      unitInfo: {
+        name: '111',
+        no: '222'
+      }
+    }
+  },
+  methods: {
+    // 样式函数
+    rowClass () {
+      return 'text-align: center;'
     },
     components:{
         "unit-dialog" : UnitInfo
@@ -430,14 +477,6 @@ export default {
             },
         }
     },
-    methods: {
-        // 样式函数
-        rowClass(){
-            return "text-align: center;";
-        },
-        headClass(){
-            return "text-align: center;";
-        },
 
         // 功能函数
         async onCancel() {
@@ -460,18 +499,18 @@ export default {
             this.unitInfo.name = "shhs"
             this.unitInfo.no = 123
 
-            // 打开子组件 UnitInfoDialog
-            this.unitInfoDialogVisible = true
-        },
-        onDelete(){
-            // 删除操作 -- 开票预览
-            alert("delete")
-        },
-        onCheck(){
-            // 查看预警信息
-            alert("check")
-        }
+      // 打开子组件 UnitInfoDialog
+      this.unitInfoDialogVisible = true
     },
+    onDelete () {
+      // 删除操作 -- 开票预览
+      alert('delete')
+    },
+    onCheck () {
+      // 查看预警信息
+      alert('check')
+    }
+  }
 }
 </script>
 

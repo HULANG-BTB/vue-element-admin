@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title='财政端票据销毁审核'
+    title="财政端票据销毁审核"
     :visible.sync="visible"
     width="70%"
   >
@@ -87,9 +87,9 @@
           class="subject"
           size="small"
         >
-          <span>开票明细</span>
+          <span>票据销毁申请明细</span>
         </div>
-        <el-divider content-position="left">开票审验</el-divider>
+        <el-divider content-position="left">票据销毁审核</el-divider>
         <el-table
           ref="multipleTable"
           :data="tableData"
@@ -97,31 +97,40 @@
           style="width: 100%"
           class="infinite-list-wrapper"
           size="small"
+          border
         >
           <el-table-column
-            fixed
+            type="index"
             prop="no"
             label="序号"
           />
           <el-table-column
-            prop="status"
-            label="状态"
+            prop="fBillName"
+            label="票据名称"
           />
           <el-table-column
-            prop="time"
-            label="审验期间"
+            prop="fBillBatchCode"
+            label="票据代码"
           />
           <el-table-column
-            prop="bill_number"
-            label="开票份数"
+            prop="fWarehouseId"
+            label="仓库ID"
           />
           <el-table-column
-            prop="payment"
-            label="开票金额"
+            prop="fWarehouseName"
+            label="仓库名"
           />
           <el-table-column
-            prop="existWarn"
-            label="是否存在预警记录"
+            prop="fNumber"
+            label="数量"
+          />
+          <el-table-column
+            prop="fBillNo1"
+            label="起始号"
+          />
+          <el-table-column
+            prop="fBillNo2"
+            label="终止号"
           />
         </el-table>
       </div>
@@ -129,21 +138,14 @@
   </el-dialog>
 </template>
 <script>
+import {
+  getItemListByDestroyNo
+} from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
 export default {
   data () {
     return {
       visible: false,
-      tableData: [{
-        no: 1,
-        status: '未审验',
-        type: '手工审核',
-        danwei: '福州市boss软件',
-        time: '20160101-20160131',
-        bill_number: 100,
-        payment: '888888.00',
-        existWarn: '是'
-      }
-      ],
+      tableData: [],
       ruleForm: {
         date1: '',
         date2: '',
@@ -162,22 +164,19 @@ export default {
   },
   mounted () {},
   created () {
-    console.log(this.visible)
-    this.$root.eventBus.$on('visible', (val) => {
+    this.$root.eventBus.$on('fDestroyNoConfirm', (val) => {
+      this.getData(val)
+    })
+    this.$root.eventBus.$on('visibleDestroyConfirm', (val) => {
       console.log(this.visible)
       this.visible = val
     })
   },
   methods: {
-    getData () {
-      var arr = this.multipleSelection
-      const multis = []
-      for (var i = 0; i < arr.length; i++) {
-        multis.push(arr[i])
-        this.$root.eventBus.$emit('data', multis)
-        this.dialogVisible = false
-        console.log(this.dialogVisible)
-      }
+    async getData (val) {
+      const res = await getItemListByDestroyNo(val)
+      console.log(res)
+      this.tableData = res
     }
   }
 }

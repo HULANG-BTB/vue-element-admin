@@ -215,6 +215,7 @@
                   class="el-icon-success"
                   style="padding: 10px"
                 ></i>
+
               </template>
             </el-table-column>
           </el-table>
@@ -229,6 +230,7 @@
               @closeMoule="closeMoule"
               v-bind:billInfo="billInfo"
             ></dialog-info>
+
           </el-dialog>
         </el-container>
       </el-container>
