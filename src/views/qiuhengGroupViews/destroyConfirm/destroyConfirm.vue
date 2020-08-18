@@ -123,7 +123,7 @@ export default {
 
   components: {
     'destroy-confirm-dialog': DestroyConfirmDialog
-   },
+  },
   data () {
     return {
       tableData: [],
@@ -152,27 +152,28 @@ export default {
 
       visible: true,
 
-      async refreshButton(){
-        const res = await refresh();
+      async refreshButton () {
+        const res = await refresh()
         // debugger
-        //console.log(res);
-        this.tableData = res;
-        //console.log(this.tableData);
-        for(var i = 0; i < this.tableData.length; i++){
-          if(this.tableData[i].fDestroyType){
-          this.tableData[i].fDestroyType="库存票据销毁";
-          }else{
-          this.tableData[i].fDestroyType="核销票据销毁";
+        // console.log(res);
+        this.tableData = res
+        // console.log(this.tableData);
+        for (var i = 0; i < this.tableData.length; i++) {
+          if (this.tableData[i].fDestroyType) {
+            this.tableData[i].fDestroyType = '库存票据销毁'
+          } else {
+            this.tableData[i].fDestroyType = '核销票据销毁'
           }
         }
-        for(var i = 0; i < this.tableData.length; i++){
-          if(this.tableData[i].fStatus){
-          this.tableData[i].fStatus="已审核";
-          }else{
-          this.tableData[i].fStatus="未审核";
+        // eslint-disable-next-line no-redeclare
+        for (var i = 0; i < this.tableData.length; i++) {
+          if (this.tableData[i].fStatus) {
+            this.tableData[i].fStatus = '已审核'
+          } else {
+            this.tableData[i].fStatus = '未审核'
           }
         }
-        console.log(this.tableData);
+        console.log(this.tableData)
       }
     }
   },
@@ -183,9 +184,7 @@ export default {
     this.refreshButton()// 需要触发的函数
   },
   methods: {
-    handleClick (row) {
-      console.log(row)
-    },
+    // eslint-disable-next-line vue/no-dupe-keys
     async refreshButton () {
       const res = await refresh()
       // debugger
@@ -196,9 +195,11 @@ export default {
     handleSizeChange () {},
     handleCurrentChange () {},
     handleClick (row) {
+      console.log(row)
+      this.$root.eventBus.$emit('fDestroyNoConfirm', row.fDestroyNo)
       console.log(this.visible)
-      this.$root.eventBus.$emit('visible', this.visible)
-    },
+      this.$root.eventBus.$emit('visibleDestroyConfirm', this.visible)
+    }
   }
 
 }

@@ -119,16 +119,17 @@
           <el-button
             type="text"
             size="small"
-            @click="handleClick(scope.row)"
+            @click="updateApplyInfo(scope.row)"
           >修改</el-button>
           <el-button
             type="text"
             size="small"
-            @click="handleClick(scope.row)"
+            @click="addApplyInfo(scope.row)"
           >新增</el-button>
           <el-button
             type="text"
             size="small"
+            @click="deleteApplyInfo(scope.row)"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -137,7 +138,7 @@
 </template>
 
 <script>
-import {addDestroyApply,getApplyListByAgenIdCode } from '@/api/qiuhengGroupApi/destroy/destroyApply'
+import { getApplyListByAgenIdCode, deleteApplyInfoByDestroyNo, deleteItemInfoByDestroyNo } from '@/api/qiuhengGroupApi/destroy/destroyApply'
 import addDestroyApplyVue from './addDestroyApply'
 export default {
   components: {
@@ -168,22 +169,21 @@ export default {
   created () {
     this.$root.eventBus.$on('dialogVisible1', (val) => {
       this.dialogVisible = val
-      //console.log(this.dialogVisible)
+      // console.log(this.dialogVisible)
     })
     this.$root.eventBus.$on('dialogVisibleCancel', (val) => {
       this.dialogVisible = val
     })
-    this.refreshButton();
+    this.refreshButton()
   },
   methods: {
-    handleClick (row) {
-      console.log(row)
+    updateApplyInfo (row) {
+      // console.log(row)
     },
     addDestroyApply () {
       this.dialogVisible = true
       this.randomNumber()
       this.$root.eventBus.$emit('fDestroyNo', this.fDestroyNo)
-
     },
     handleSearch () {},
     handleSizeChange () {},
@@ -198,25 +198,37 @@ export default {
       const seconds = now.getSeconds()
       this.fDestroyNo = now.getFullYear().toString() + month.toString() + day + hour + minutes + seconds + (Math.round(Math.random() * 23 + 100)).toString()
     },
-    async refreshButton(){
-      const res = await getApplyListByAgenIdCode("1314")
+    async refreshButton () {
+      const res = await getApplyListByAgenIdCode('1314')
       this.tableData = res
-      for(var i = 0; i < this.tableData.length; i++){
-          if(this.tableData[i].fDestroyType){
-          this.tableData[i].fDestroyType="库存票据销毁";
-          }else{
-          this.tableData[i].fDestroyType="核销票据销毁";
-          }
+      for (var i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].fDestroyType) {
+          this.tableData[i].fDestroyType = '库存票据销毁'
+        } else {
+          this.tableData[i].fDestroyType = '核销票据销毁'
+        }
       }
-      for(var i = 0; i < this.tableData.length; i++){
-          if(this.tableData[i].fStatus){
-          this.tableData[i].fStatus="已审核";
-          }else{
-          this.tableData[i].fStatus="未审核";
-          }
+      // eslint-disable-next-line no-redeclare
+      for (var i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].fStatus) {
+          this.tableData[i].fStatus = '已审核'
+        } else {
+          this.tableData[i].fStatus = '未审核'
+        }
       }
-        //console.log(this.tableData);
+      // console.log(this.tableData);
     },
+    // 新增票据销毁申请
+    async addApplyInfo (row) {
+      await this.addDestroyApply()
+    },
+    // 删除票据销毁申请
+    async deleteApplyInfo (row) {
+      console.log(row)
+      await deleteApplyInfoByDestroyNo(row.fDestroyNo)
+      await deleteItemInfoByDestroyNo(row.fDestroyNo)
+      await this.refreshButton()
+    }
   }
 }
 </script>
