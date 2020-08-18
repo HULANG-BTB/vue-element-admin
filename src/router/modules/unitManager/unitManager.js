@@ -15,12 +15,6 @@ const unitManager = {
       meta: { title: '单位管理', icon: 'icon' }
     },
     {
-      path: 'unitCheck',
-      component: () => import('@/views/unitManager/unitCheck'),
-      name: 'unitCheck',
-      meta: { title: '单位审核', icon: 'edit' }
-    },
-    {
       path: 'adminDepart',
       component: () => import('@/views/unitManager/adminDepart'),
       name: 'adminDepart',
@@ -36,7 +30,7 @@ const unitManager = {
       path: 'purchLicenseCheck',
       component: () => import('@/views/unitManager/purchLicenseCheck'),
       name: 'purchLicenseCheck',
-      meta: { title: '准购证审核', icon: 'edit' }
+      meta: { title: '准购证审核', icon: 'link' }
     },
     {
       path: 'unitPayer',
@@ -51,16 +45,11 @@ const unitManager = {
       meta: { title: '开票点管理', icon: 'icon' }
     },
     {
-      path: 'uninItemManager',
-      component: () => import('@/views/unitManager/unitItemManager'),
-      name: 'uninItemManager',
-      meta: { title: '可用项目', icon: 'icon' }
-    },
-    {
-      path: 'unitBillManager',
-      component: () => import('@/views/unitManager/unitBillManager'),
-      name: 'unitBillManager',
-      meta: { title: '可用票据', icon: 'icon' }
+      path: 'projectGroup',
+      component: () => import('@/views/projectManager/projectGroup'),
+      name: 'projectGroup',
+      meta: { title: '项目分组', icon: 'link' },
+      roles: ['admin']
     }
   ]
 }
