@@ -1,20 +1,24 @@
 <template>
-    <el-form :label-position="labelPosition" label-width="80px" :model="form">
-        <el-row>
-            <el-col :span="8">
-                <el-form-item label="单位ID">
-                    <span>{{unitInfo.no}}</span>
-                </el-form-item> 
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col :span="10">
-                <el-form-item label="申请单位" >
-                    <span>{{unitInfo.name}}</span>
-                </el-form-item>
-            </el-col>
-        </el-row>
-    </el-form>
+  <el-form
+    :label-position="labelPosition"
+    label-width="80px"
+    :model="form"
+  >
+    <el-row>
+      <el-col :span="8">
+        <el-form-item label="单位ID">
+          <span>{{unitInfo.no}}</span>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="10">
+        <el-form-item label="申请单位">
+          <span>{{unitInfo.name}}</span>
+        </el-form-item>
+      </el-col>
+    </el-row>
+  </el-form>
 </template>
 
 <script>
@@ -51,5 +55,4 @@ export default {
 </script>
 
 <style>
-
 </style>
