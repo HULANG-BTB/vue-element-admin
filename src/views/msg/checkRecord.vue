@@ -6,18 +6,18 @@
       class="demo-form-inline"
       @keyup.enter.native="handleSearch"
     >
-      <el-form-item label="邮件ID:">
+      <el-form-item label="记录ID:">
         <el-input
           v-model="query.id"
-          placeholder="请输入邮件ID"
+          placeholder="请输入记录ID"
           clearable
           size="small"
         />
       </el-form-item>
-      <el-form-item label="收件人:">
+      <el-form-item label="票据号码:">
         <el-input
-          v-model="query.mailTo"
-          placeholder="请输入收件人"
+          v-model="query.billCode"
+          placeholder="请输入票据号码"
           clearable
           size="small"
         />
@@ -37,15 +37,19 @@
             size="small"
           />
         </div>
-      </el-form-item>
 
-      <el-form-item :label="query.isSent ? '已发件':'未发件'">
-        <el-switch
-          v-model="query.isSent"
-          active-color="#13ce66"
-          inactive-color="#ff4949"
-          @change="handleIsSentChange"
-        />
+      </el-form-item>
+      <el-form-item label="">
+        <el-select v-model="query.result" clearable placeholder="请选择" size="small">
+          <el-option
+            label="查验为真"
+            value="1"
+          />
+          <el-option
+            label="查验为假"
+            value="0"
+          />
+        </el-select>
       </el-form-item>
 
       <el-form-item label>
@@ -62,13 +66,6 @@
           size="small"
           @click="getTableData"
         >重载数据</el-button>
-      </el-form-item>
-      <el-form-item label>
-        <el-button
-          type="primary"
-          size="small"
-          @click="handleAdd"
-        >新建邮件</el-button>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -93,45 +90,33 @@
 
     <el-table
       v-loading.body="loading"
-      :data="mailTableData"
+      :data="checkRecordTableData"
       style="width: 100%; margin-top: 30px;"
       border
       @selection-change="handleOnSelectChange"
     >
       <el-table-column type="selection" align="center" width="55" />
-      <el-table-column align="center" label="邮件Id" width="165">
+      <el-table-column align="center" label="记录Id" width="165">
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
-      <el-table-column align="center" label="发件人" width="165">
-        <template slot-scope="scope">{{ scope.row.mailFrom }}</template>
+      <el-table-column align="center" label="票据号码" width="165">
+        <template slot-scope="scope">{{ scope.row.billCode }}</template>
       </el-table-column>
-      <el-table-column align="center" label="收件人" width="165">
-        <template slot-scope="scope">{{ scope.row.mailTo }}</template>
+      <el-table-column align="center" label="查验结果" width="165">
+        <template slot-scope="scope">{{ scope.row.result }}</template>
       </el-table-column>
-      <el-table-column align="center" label="邮件主题">
-        <template slot-scope="scope">{{ scope.row.subject }}</template>
+      <el-table-column align="center" label="查验类型">
+        <template slot-scope="scope">{{ scope.row.checkType }}</template>
       </el-table-column>
-      <el-table-column align="center" label="邮件内容" width="165">
-        <template slot-scope="scope">{{ util.jsonFormat(scope.row.content) }}</template>
+      <el-table-column align="center" label="查验人">
+        <template slot-scope="scope">{{ scope.row.operator }}</template>
       </el-table-column>
-      <el-table-column align="center" label="发件时间">
-        <template slot-scope="scope">{{ scope.row.sentDate }}</template>
+      <el-table-column align="center" label="查验时间">
+        <template slot-scope="scope">{{ scope.row.createTime }}</template>
       </el-table-column>
-      <el-table-column align="center" label="是否已发送">
-        <template slot-scope="scope">{{ scope.row.isSent ? '已发送' : '未发送' }}</template>
-      </el-table-column>
-      <el-table-column align="center" label="发件详情" width="165">
-        <template slot-scope="scope">{{ scope.row.error }}</template>
-      </el-table-column>
+
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <el-button
-            v-if="!query.isSent"
-            type="primary"
-            size="mini"
-            @click="handleEdit(scope)"
-          >已发件</el-button>
-
           <el-button
             type="danger"
             size="mini"
@@ -141,82 +126,24 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog
-      :visible.sync="dialogVisible"
-      :title="dialogType === 'edit' ? '编辑邮件' : '新建邮件'"
-    >
-      <el-form
-        v-loading="dialogLoading"
-        :model="mail"
-        label-width="80px"
-        label-position="left"
-      >
-        <el-form-item label="发件人">
-          <el-input
-            v-model="mail.mailFrom"
-            placeholder="发件人"
-          />
-        </el-form-item><el-form-item label="收件人">
-          <el-input
-            v-model="mail.mailTo"
-            placeholder="收件人"
-          />
-        </el-form-item><el-form-item label="邮件主题">
-          <el-input
-            v-model="mail.subject"
-            placeholder="邮件主题"
-          />
-        </el-form-item><el-form-item label="邮件内容 ">
-          <el-input
-            v-model="mail.content"
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            placeholder="邮件内容"
-          />
-
-        </el-form-item>
-
-      </el-form>
-      <div style="text-align: right;">
-        <el-button
-          type="danger"
-          @click="dialogVisible = false"
-        >取消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmMail"
-        >确定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getMailList, updateStatus, util, deleteMail, deleteMailBatch, addMail, updateMail } from '@/api/msg.js'
-const defaultMail = {
-  id: '',
-  mailFrom: '',
-  mailTo: '',
-  subject: '',
-  content: '',
-  sentDate: '',
-  isSent: '',
-  error: ''
-}
+import { util, getCheckRecordList, deleteCheckRecordBatch, deleteCheckRecord } from '@/api/msg.js'
+
 export default {
   data () {
     return {
-      mail: {
+      checkRecord: {
         id: '',
-        mailFrom: '',
-        mailTo: '',
-        subject: '',
-        content: '',
-        sentDate: '',
-        isSent: '',
-        error: ''
+        billCode: '',
+        checkType: '',
+        createTime: '',
+        operator: '',
+        result: ''
       },
-      mailTableData: [],
+      checkRecordTableData: [],
       selectedList: [],
       loading: true,
       dialogLoading: false,
@@ -232,10 +159,11 @@ export default {
         total: 0,
 
         id: null,
-        mailTo: null,
-        isSent: true,
-        period: null
-
+        billCode: null,
+        checkType: null,
+        period: null,
+        operator: null,
+        result: null
       },
       pickerOptions: {
         shortcuts: [{
@@ -281,10 +209,9 @@ export default {
     async getTableData () {
       this.loading = true
       this.query.page = 1
-      this.mailTableData = []
-      await getMailList(this.query).then(res => {
-        console.log(res.data.row)
-        this.mailTableData = res.data.row
+      this.checkRecordTableData = []
+      await getCheckRecordList(this.query).then(res => {
+        this.checkRecordTableData = res.data.row
         this.query.total = res.data.total
         this.query.limit = res.data.limit
         this.query.page = res.data.page
@@ -298,31 +225,14 @@ export default {
       this.getTableData()
     },
 
-    // 更新邮件为已发件
-    async handleEdit (scope) {
-      this.loading = true
-      this.mail = Object.assign(this.mail, scope.row)
-      this.mail.isSent = true
-      await updateStatus(this.mail).catch(() => { this.loading = false })
-      this.getTableData()
-      this.loading = false
-    },
-
-    // 新建邮件
-    async handleAdd () {
-      this.mail = Object.assign({}, defaultMail)
-      this.dialogType = 'new'
-      this.dialogVisible = true
-    },
-
     // 根据ID删除
     async handleDelete ({ $index, row }) {
-      this.$confirm('确定要删除此邮件?', '警告', {
+      this.$confirm('确定要删除此记录?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        deleteMail(row.id)
+        deleteCheckRecord(row.id)
           .then((res) => {
             this.$message({
               type: 'success',
@@ -346,7 +256,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        deleteMailBatch(this.selectedList).then((res) => {
+        deleteCheckRecordBatch(this.selectedList).then((res) => {
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -354,35 +264,6 @@ export default {
           this.getTableData()
         })
       })
-    },
-    async confirmMail () {
-      const isEdit = this.dialogType === 'edit'
-      let successFlag = false
-      if (isEdit) {
-        await updateMail(this.mail).then((res) => {
-          successFlag = true
-        })
-      } else {
-        await addMail(this.mail).then((res) => {
-          successFlag = true
-        })
-      }
-      if (successFlag) {
-        const { mailFrom, mailTo, subject } = this.mail
-        this.dialogVisible = false
-        this.$notify({
-          title: '成功',
-          dangerouslyUseHTMLString: true,
-          message: `
-          
-            <div>发件人: ${mailFrom}</div>
-            <div>收件人: ${mailTo}</div>
-            <div>邮件主题: ${subject}</div>
-          `,
-          type: 'success'
-        })
-        await this.getTableData()
-      }
     },
 
     handleOnSelectChange (selection) {
