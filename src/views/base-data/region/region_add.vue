@@ -3,7 +3,7 @@
     <el-form  ref="regionForm" :model="regionForm" :rules="regionFormRules" label-width="140px"  >
 
       <el-form-item label="编码" prop="code">
-        <el-input v-model="regionForm.code" auto-complete="off"  ></el-input>
+        <el-input v-model="regionForm.code" auto-complete="off" placeholder="请输入六位数字以内的区划编码"  ></el-input>
       </el-form-item>
 
       <el-form-item label="名称" prop="name">
@@ -118,7 +118,24 @@
             },
             regionFormRules: {
               code: [
-                {required: true, message: '请输入区划编码', trigger: 'blur'}
+                {required: true,
+                  validator: (rule, value, callback) => {
+                    const reg = /^[0-9]+$/
+                    if (!value) {
+                      return callback(new Error('请输入区划编码'))
+                    }
+                    setTimeout(() => {
+                      if (!Number.isInteger(+value)) {
+                        callback(new Error('请输入数字编码值'))
+                      }else if(reg.test(value) && value.length <= 6){
+                        callback()
+                      }else{
+                        callback(new Error('区划编码格式错误'))
+                      }
+                    }, 1000)
+                  },
+                  trigger: 'blur'
+                }
               ],
               name: [
                 {required: true, message: '请输入区划名称', trigger: 'blur'}

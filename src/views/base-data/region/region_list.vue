@@ -1,8 +1,8 @@
 <template>
   <div>
-    <el-container style="border: 1px solid #eee" >
-      <el-aside width="230px"  style="height:100vh; background-color: rgb(238, 241, 246)">
-        <el-menu  >
+    <el-container style="height:100%;" >
+      <el-aside width="250px"  style="height:100vh">
+        <!--<el-menu  >
           <template v-for="province in category">
             <el-submenu v-if="province.assortment" :index="province.id.toString()">
               <template slot="title" ><p @click="show(province.id)"><i class="el-icon-menu" ></i>{{province.name}}</p></template>
@@ -18,20 +18,23 @@
             </el-submenu>
             <el-menu-item v-else :index="province.id.toString()" @click="show(province.id)"><i class="el-icon-document" ></i>{{province.name}}</el-menu-item>
           </template>
-        </el-menu>
+        </el-menu>-->
+        <left-tree :left-side-data="leftSideData"  @treeNodeSearch="treeNodeSearch" />
       </el-aside>
-      <el-container >
-        <el-header>
-          <el-form ref="form" >
-            区划编码：<el-input style="width: 200px" v-model="params.code" placeholder="区划编码" />
-            名称：<el-input style="width: 200px" v-model="params.name" placeholder="名称" />
-            <el-button type="primary" @click="query" >查询</el-button>
-            <div class="right-items" style="float: right;">
-            <el-button type="primary" @click="add" >新增</el-button>
-            </div>
+        <el-main style=" border: 1px solid #eee">
+          <el-form ref="form" :inline="true" >
+            <el-form-item label="区划编码:" prop="code">
+              <el-input style="width: 200px"  size="small" v-model="params.code" placeholder="区划编码" />
+            </el-form-item>
+            <el-form-item label="名称:"  prop="name">
+            <el-input style="width: 200px"  size="small" v-model="params.name" placeholder="名称" />
+            </el-form-item>
+            <el-form-item>
+            <el-button type="primary" size="mini" @click="query" icon="el-icon-search" >查询</el-button>
+            </el-form-item></br>
+            <el-button type="primary" size="mini" @click="add" icon="el-icon-plus" >新增</el-button>
           </el-form>
-        </el-header>
-        <el-main >
+
           <el-table :data="regionData" style="width: 100%">
             <el-table-column prop="code" label="编码" >
             </el-table-column>
@@ -41,22 +44,22 @@
             </el-table-column>
             <el-table-column   label="是否分类" >
               <template slot-scope="scope" v-if="scope.row.assortment">
-                <i  style="color:lightgreen; font-size:35px"  class="el-icon-check"></i>
+                <i  style="color:lightgreen; font-size:25px"  class="el-icon-check"></i>
               </template>
             </el-table-column>
             <el-table-column prop="leaf" label="是否底级" >
               <template slot-scope="scope" v-if="scope.row.leaf">
-                <i  style="color:lightgreen; font-size:35px" class="el-icon-check"></i>
+                <i  style="color:lightgreen; font-size:25px" class="el-icon-check"></i>
               </template>
             </el-table-column>
             <el-table-column prop="enabled" label="是否启用" >
               <template slot-scope="scope" v-if="scope.row.enabled">
-                <i  style="color:lightgreen; font-size:35px" class="el-icon-check"></i>
+                <i  style="color:lightgreen; font-size:25px" class="el-icon-check"></i>
               </template>
             </el-table-column>
             <el-table-column prop="topRegion" label="是否系统最高区划" >
               <template slot-scope="scope" v-if="scope.row.topRegion">
-                <i  style="color:lightgreen; font-size:35px" class="el-icon-check"></i>
+                <i  style="color:lightgreen; font-size:25px" class="el-icon-check"></i>
               </template>
             </el-table-column>
 
@@ -66,9 +69,15 @@
               width="200px"
             >
               <template slot-scope="scope">
+                <el-tooltip class="item" effect="dark" content="查看"  placement="top">
                 <el-button  size="mini" type="success" @click="look(scope.row)"><i style="font-size:10px" class="el-icon-tickets"></i></el-button>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="修改"  placement="top">
                 <el-button  size="mini" type="primary" @click="edit(scope.row)"><i style="font-size:10px" class="el-icon-edit"></i></el-button>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="删除"  placement="top">
                 <el-button  type="danger" size="mini" @click="del(scope.row.id)"><i style="font-size:10px" class="el-icon-delete"></i></el-button>
+                </el-tooltip>
               </template>
             </el-table-column>
           </el-table>
@@ -81,7 +90,6 @@
             :total="total" style="float:right;">
           </el-pagination>
         </el-main>
-      </el-container>
     </el-container>
 
     <el-dialog title="更新" :visible.sync="editDialogVisible">
@@ -118,23 +126,23 @@
           </el-radio-group>
         </el-form-item>
 
-        <template v-if=" regionForm.level && (!regionForm.assortment || regionForm.level != 1) ">
+        <template v-if="regionForm.id != 1 && regionForm.level && (!regionForm.assortment || regionForm.level != 1) ">
           <el-form-item label="所属区划" prop="parentId">
             <el-cascader
               expand-trigger="hover"
               :options="categoryList"
-              :value="categoryActive"
+              v-model="categoryActive"
               :props="props">
             </el-cascader>
           </el-form-item>
         </template>
 
-        <template v-if=" regionForm.level && (regionForm.assortment!=1 || regionForm.level != 1) ">
+        <template v-if="regionForm.id != 1 && !regionForm.assortment ">
         <el-form-item label="业务上级区划" prop="busParentId">
           <el-cascader
             expand-trigger="hover"
             :options="busList"
-            :value="busActive"
+            v-model="busActive"
             :props="props">
           </el-cascader>
         </el-form-item>
@@ -206,23 +214,29 @@
 </template>
 
 <style>
-  .el-header {
-    background-color: #B3C0D1;
-    color: #333;
-    line-height: 60px;
-  }
-  .el-aside {
-    background-color: #D3DCE6;
-    color: #333;
-    line-height: 100%;
-  }
 </style>
 
 <script>
+  import LeftTree from '@/components/leftTree'
   import * as regionApi from "@/api/base/region/region"
   export default {
+    components: {
+      LeftTree
+    },
     data() {
       return {
+        leftSideData: {
+          showSearch: false,
+          showTitle: '区划',
+          expand: true,
+          key: 'id',
+          treeProp: {
+            children: 'children',
+            label: 'name'
+          },
+          showCheckBox: false,
+          showTreeData: []
+        },
         category:[],
         regionData:[],
         id:'',
@@ -263,7 +277,24 @@
         },
         regionFormRules: {
           code: [
-            {required: true, message: '请输入区划编码', trigger: 'blur'}
+            {required: true,
+              validator: (rule, value, callback) => {
+                const reg = /^[0-9]+$/
+                if (!value) {
+                  return callback(new Error('请输入区划编码'))
+                }
+                setTimeout(() => {
+                  if (!Number.isInteger(+value)) {
+                    callback(new Error('请输入数字编码值'))
+                  }else if(reg.test(value) && value.length <= 6){
+                    callback()
+                  }else{
+                    callback(new Error('区划编码格式错误'))
+                  }
+                }, 1000)
+              },
+              trigger: 'blur'
+            }
           ],
           name: [
             {required: true, message: '请输入区划名称', trigger: 'blur'}
@@ -299,13 +330,13 @@
       }
     },
     methods:{
-        show(id){
-          this.id = id;
+        treeNodeSearch (object) {
+          this.id = object.id
         },
         queryCategory() {
           regionApi.region_category().then(res => {
             if(res.success){
-              this.category = res.data;
+              this.leftSideData.showTreeData = res.data;
             }else if(res.message){
               this.$message.error(res.message)
             }else{
@@ -351,12 +382,14 @@
           this.regionForm = Object.assign({}, row)
           let level = this.regionForm.level
           let assort = this.regionForm.assortment
-          this.categoryActive = []
+
+          this.busActive = []
           if(assort || (!assort && level == 1) ){
             regionApi.region_province().then(res => {
               if(res.success){
                 this.categoryList = res.data;
               }
+              this.categoryActive = []
               this.categoryActive.push(this.regionForm.parentId)
             })
           }else{
@@ -367,9 +400,9 @@
             })
             regionApi.getGrandId(this.regionForm.parentId).then(res => {
               if(res.success){
+                this.categoryActive = []
                 this.categoryActive.push(res.data)
                 this.categoryActive.push(this.regionForm.parentId)
-                console.log(this.categoryActive)
               }
             })
           }
@@ -464,6 +497,9 @@
                   this.regionForm.parentId = 0
                 }else{
                   this.regionForm.parentId = this.categoryActive[this.categoryActive.length-1]
+                }
+                if(!this.regionForm.assortment){
+                  this.regionForm.busParentId = this.busActive.pop();
                 }
                 regionApi.editRegion(this.regionForm).then(res => {
                   if(res.success){
