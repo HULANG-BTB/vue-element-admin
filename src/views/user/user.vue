@@ -162,7 +162,7 @@
         v-loading="dialogLoading"
         :model="user"
         label-width="80px"
-        label-position="left"
+        label-position="right"
       >
         <el-form-item label="用户名">
           <el-input
@@ -225,7 +225,7 @@
       <el-form
         :model="user"
         label-width="80px"
-        label-position="left"
+        label-position="right"
       >
         <el-form-item label="密码">
           <el-input

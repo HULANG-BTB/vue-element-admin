@@ -89,7 +89,7 @@
     />
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑角色':'新建角色'">
-      <el-form v-loading="dialogLoading" :model="role" label-width="80px" label-position="left">
+      <el-form v-loading="dialogLoading" :model="role" label-width="80px" label-position="right">
         <el-form-item label="Key">
           <el-input v-model="role.role" placeholder="角色 Key" />
         </el-form-item>
