@@ -39,6 +39,29 @@
             />
           </div>
         </el-form-item>
+        <el-form-item label style="margin-left: 30px">
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="small"
+            @click="handleSearch"
+          >搜索</el-button>
+        </el-form-item>
+        <!-- <el-form-item label>
+          <el-button
+            :disabled="deleteBatchDisable"
+            type="danger"
+            size="small"
+            @click="handleDeleteBatch"
+          >批量删除</el-button>
+        </el-form-item> -->
+        <el-form-item label>
+          <el-button
+            type="success"
+            size="small"
+            @click="getTableData"
+          >重置</el-button>
+        </el-form-item>
       </div>
 
       <!-- <el-form-item :label="query.changeState!=0 ? '已审核':'未审核'">
@@ -62,42 +85,8 @@
             <el-radio-button label="4">退回</el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label style="margin-left: 30px">
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            size="small"
-            @click="handleSearch"
-          >搜索</el-button>
-        </el-form-item>
-        <!-- <el-form-item label>
-          <el-button
-            :disabled="deleteBatchDisable"
-            type="danger"
-            size="small"
-            @click="handleDeleteBatch"
-          >批量删除</el-button>
-        </el-form-item> -->
-        <el-form-item label>
-          <el-button
-            type="success"
-            size="small"
-            @click="getTableData"
-          >重载数据</el-button>
-        </el-form-item>
       </div>
     </el-form>
-
-    <el-pagination
-      background
-      layout="prev, pager, next, sizes, total, jumper"
-      :total="query.total"
-      :current-page="query.page"
-      :page-sizes="[10, 20, 50, 100, 500, 1000]"
-      :page-size="query.limit"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
 
     <el-table
       v-loading.body="loading"
@@ -124,7 +113,7 @@
       <el-table-column align="center" label="编制人" width="165">
         <template slot-scope="scope">{{ scope.row.author }}</template>
       </el-table-column>
-      <el-table-column align="center" label="摘要">
+      <el-table-column align="center" label="摘要" width="200">
         <template slot-scope="scope">{{ scope.row.abstact }}</template>
       </el-table-column>
       <el-table-column align="center" label="审核状态" width="100">
@@ -139,7 +128,7 @@
         </template>
       </el-table-column>
       <!-- <el-table-column v-if="!query.changeState" align="center" label="操作"> -->
-      <el-table-column align="center" label="操作" width="200">
+      <el-table-column align="center" fixed="right" label="操作" width="200">
         <template slot-scope="scope">
           <el-button
             type="primary"
@@ -155,6 +144,17 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <el-pagination
+      background
+      layout="prev, pager, next, sizes, total, jumper"
+      :total="query.total"
+      :current-page="query.page"
+      :page-sizes="[10, 20, 50, 100, 500, 1000]"
+      :page-size="query.limit"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
     <!--
       弹出Dialog框
       ----------------------------------------------------
@@ -664,7 +664,7 @@ export default {
 }
 .my-form-item {
   .el-form-item {
-    margin-right: 50px;
+    margin-right: 15px;
   }
 }
 .my-dialog {
@@ -675,5 +675,10 @@ export default {
 }
 .el-col {
   min-height: 1px;
+}
+// 跳转页脚
+.el-pagination {
+  float: right;
+  margin-right: 30px;
 }
 </style>
