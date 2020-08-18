@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-18 16:03:39
+ * @lastTime: 2020-08-18 16:23:24
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -79,7 +79,7 @@
         :current-page="page.pageNum"
         :page-size="page.pageSize"
         layout="total, prev, pager, next, jumper,sizes"
-        :pager-count="3"
+        :pager-count="pageCount"
         :page-sizes="[5,10]"
         :total="total"
         class="pagination"
@@ -117,18 +117,21 @@ export default {
       default () {
         return 0
       }
+    },
+    page: {
+      type: Object,
+      default () {
+        return {}
+      }
     }
   },
   data () {
     return {
-      page: {
-        pageNum: 1,
-        pageSize: 10
-      },
       maxHeight: 800,
+      pageCount: 5,
       tableWidth: { width: window.innerWidth - 410 + 'px' },
       windowHeight: { height: window.innerHeight - 150 + 'px' },
-      tableHeight: window.innerHeight - 240 ? window.innerHeight - 240 < 300 + 'px' : 300 + 'px'
+      tableHeight: window.innerHeight - 240 < 300 ? 300 + 'px' : window.innerHeight - 240 + 'px'
     }
   },
   mounted () {
