@@ -7,7 +7,7 @@
       @keyup.enter.native="handleSearch"
     >
       <div class="my-form-item">
-        <el-form-item label="单号:">
+        <el-form-item label="单号">
           <el-input
             v-model="query.id"
             placeholder="请输入业务单号"
@@ -15,7 +15,7 @@
             size="small"
           />
         </el-form-item>
-        <el-form-item label="编制人:">
+        <el-form-item label="编制人">
           <el-input
             v-model="query.author"
             placeholder="请输入编制人"
@@ -24,7 +24,7 @@
           />
         </el-form-item>
 
-        <el-form-item label="日期:">
+        <el-form-item label="日期">
           <div class="block">
             <el-date-picker
               v-model="query.period"
@@ -46,16 +46,6 @@
             size="small"
             @click="handleSearch"
           >搜索</el-button>
-        </el-form-item>
-        <!-- <el-form-item label>
-          <el-button
-            :disabled="deleteBatchDisable"
-            type="danger"
-            size="small"
-            @click="handleDeleteBatch"
-          >批量删除</el-button>
-        </el-form-item> -->
-        <el-form-item label>
           <el-button
             type=""
             icon="el-icon-refresh"
@@ -64,7 +54,14 @@
           >重置</el-button>
         </el-form-item>
       </div>
-
+        <!-- <el-form-item label>
+          <el-button
+            :disabled="deleteBatchDisable"
+            type="danger"
+            size="small"
+            @click="handleDeleteBatch"
+          >批量删除</el-button>
+        </el-form-item> -->
       <!-- <el-form-item :label="query.changeState!=0 ? '已审核':'未审核'">
         <el-switch
           v-model="query.ischange"
@@ -73,19 +70,32 @@
           @change="handleIsSentChange"
         />
       </el-form-item> -->
-      <div>
-        <el-form-item label="审核状态">
-          <el-radio-group
-            v-model="query.changeState"
-            size="medium"
-            @change="handleSearch"
-          >
-            <el-radio-button label="1">保存</el-radio-button>
-            <el-radio-button label="2">待审核</el-radio-button>
-            <el-radio-button label="3">通过</el-radio-button>
-            <el-radio-button label="4">退回</el-radio-button>
-          </el-radio-group>
-        </el-form-item>
+      <div class="my-form-item">
+        <el-row>
+          <el-col :span="5">
+            <el-form-item label="操作">
+              <el-button
+                type="primary"
+                size="small"
+                @click="handleAdd(); dialogFormVisible = true"
+              >新增</el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="审核状态">
+              <el-radio-group
+                v-model="query.changeState"
+                size="small"
+                @change="handleSearch"
+              >
+                <el-radio-button label="1">保存</el-radio-button>
+                <el-radio-button label="2">待审核</el-radio-button>
+                <el-radio-button label="3">通过</el-radio-button>
+                <el-radio-button label="4">退回</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </div>
     </el-form>
 
@@ -97,27 +107,27 @@
     >
       <el-table-column type="selection" align="center" width="55" />
       <!-- 从1开始，与数据库数据无关 -->
-      <el-table-column type="index" align="center" label="序号" width="90%" />
+      <el-table-column type="index" align="center" label="序号" width="65" />
       <!-- 出库主键 -->
-      <el-table-column align="center" label="单号" width="100%">
+      <el-table-column align="center" label="单号" width="130">
         <template slot-scope="scope">{{ scope.row.id.toString().padStart(9, 'S0000000') }}</template>
       </el-table-column>
-      <el-table-column align="center" label="仓库ID" width="70%">
+      <el-table-column align="center" label="仓库ID" width="85">
         <template slot-scope="scope">{{ scope.row.warehouseId }}</template>
       </el-table-column>
-      <el-table-column align="center" label="领用人" width="200">
+      <el-table-column align="center" label="领用人" width="155">
         <template slot-scope="scope">{{ scope.row.useMan }}</template>
       </el-table-column>
-      <el-table-column align="center" label="申请日期" width="200%">
+      <el-table-column align="center" label="申请日期" width="155">
         <template slot-scope="scope">{{ dateFormat(scope.row.date) }}</template>
       </el-table-column>
-      <el-table-column align="center" label="编制人" width="165">
+      <el-table-column align="center" label="编制人" width="155">
         <template slot-scope="scope">{{ scope.row.author }}</template>
       </el-table-column>
       <el-table-column align="center" label="摘要" width="200">
         <template slot-scope="scope">{{ scope.row.abstact }}</template>
       </el-table-column>
-      <el-table-column align="center" label="审核状态" width="100">
+      <el-table-column align="center" label="审核状态" width="85">
         <template slot-scope="scope">
           <!-- <el-tag v-if="scope.row.changeState==0" type="info" effect="dark">{{ showCheckStr(scope.row.changeState) }}</el-tag> -->
           <el-tag
@@ -129,7 +139,7 @@
         </template>
       </el-table-column>
       <!-- <el-table-column v-if="!query.changeState" align="center" label="操作"> -->
-      <el-table-column align="center" fixed="right" label="操作" width="200">
+      <el-table-column align="center" fixed="right" label="操作" width="165">
         <template slot-scope="scope">
           <el-button
             type="primary"
@@ -301,33 +311,22 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="dialogFormVisible = false; initVo()">取 消</el-button>
         <el-button
           type="primary"
-          @click="handleSave(scope); dialogFormVisible = false"
+          @click="handleSave(scope); dialogFormVisible = false; initVo()"
         >保 存</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
-import { getAll, getItem, save, submit, util } from '@/api/finanbill.js'
+import { getAll, addOut, getItem, save, submit, util } from '@/api/finanbill.js'
 
 export default {
   name: 'OutApp',
   data () {
     return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
-
       /**
        * 出票项
        */
@@ -337,7 +336,7 @@ export default {
         warehouseId: '',
         useMan: '',
         date: '',
-        author: '',
+        author: 'defaultAuthor',
         changeState: '',
         abstact: '',
         altercode: '',
@@ -478,13 +477,20 @@ export default {
       this.loading = false
     },
 
-    // 进入出库编辑界面(旧：更新邮件为已发件)
+    // 初始化数据，退出详情界面时强制要求调用
+    async initVo () {
+      Object.assign(this.$data.outVo, this.$options.data().outVo)
+      // this.getTableData()
+    },
+
+    // 进入出库编辑界面
     async handleEdit (scope) {
       this.loading = true
       this.outVo = Object.assign(this.outVo, scope.row)
       // console.log('pid:' + this.outVo.id)
       const items = await getItem(this.outVo.id).catch(() => { this.loading = false })
       this.outVo.outItemVos = items.data
+      this.outVo.altercode = 2
       // 处理票据代码选择时的选项
       this.billPrecodeChange(scope)
       this.loading = false
@@ -497,6 +503,16 @@ export default {
       // this.loading = false
     },
 
+    // 进入出库新增界面
+    async handleAdd () {
+      this.loading = true
+      const items = await addOut(this.outVo.author).catch(() => { this.loading = false })
+      this.outVo = items.data
+      this.outVo.altercode = 1
+      // 处理票据代码选择时的选项
+      this.loading = false
+    },
+
     // 新增item
     async itemAdd (tableData, pid) {
       this.loading = true
@@ -506,7 +522,7 @@ export default {
         'billName': '',
         'number': 0,
         'billNo1': '0000000001',
-        'billNo2': '0000000010',
+        'billNo2': '0000000000',
         'id': 0
       })
       this.loading = false
@@ -599,9 +615,9 @@ export default {
         case 2:
           return { type: 'info', label: '审核中', effect: 'plain' }
         case 3:
-          return { type: 'success', label: '通过', effect: 'dark' }
+          return { type: 'success', label: '通过', effect: 'plain' }
         case 4:
-          return { type: 'danger', label: '退回', effect: 'dark' }
+          return { type: 'danger', label: '退回', effect: 'plain' }
       }
     },
 
@@ -664,8 +680,9 @@ export default {
   }
 }
 .my-form-item {
+  margin-top: 0px;
   .el-form-item {
-    margin-right: 15px;
+    margin-right: 20px;
   }
 }
 .my-dialog {
@@ -680,6 +697,7 @@ export default {
 // 跳转页脚
 .el-pagination {
   float: right;
+  margin-top: 10px;
   margin-right: 30px;
 }
 </style>
