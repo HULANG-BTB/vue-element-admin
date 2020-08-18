@@ -6,7 +6,7 @@ import request from '@/utils/request'
  * 获得出库列表
  * @param {*} query 出库vo，包含编制人，审核状态等信息
  */
-export function getAllList (query) {
+export function getAll (query) {
   return request({
     url: '/stock-out/showAll',
     method: 'post',
@@ -16,20 +16,20 @@ export function getAllList (query) {
 
 /**
  * 获得出库中的明细
- * @param {*} pid 父id，即出库id
+ * @param {pid} pid 父id，即出库id
  */
 export function getItem (pid) {
   return request({
     url: '/stock-out/getItem',
     // url: '/mail/updateStatus',
-    method: 'post',
-    data: { 'pid': pid }
+    method: 'get',
+    params: { pid: pid }
   })
 }
 
 /**
  * 提交保存请求
- * @param {*} query 保存的信息map，key=出库，value=明细list
+ * @param {*} query 出库即其明细
  */
 export function save (query) {
   return request({
@@ -43,11 +43,11 @@ export function save (query) {
  * 提交请求，即：将保存状态变更为待审核状态checkState
  * @param {*} query 提交vo
  */
-export function submit (query) {
+export function submit (id) {
   return request({
     url: '/stock-out/submit',
-    method: 'post',
-    data: query
+    method: 'put',
+    params: { id: id }
   })
 }
 
