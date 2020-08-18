@@ -57,7 +57,8 @@
         </el-form-item> -->
         <el-form-item label>
           <el-button
-            type="success"
+            type=""
+            icon="el-icon-refresh"
             size="small"
             @click="getTableData"
           >重置</el-button>
