@@ -49,12 +49,30 @@ export default [
         }
       },
       {
-        path: 'quhuaguanli',
-        component: () => import('@/views/base-data/quhuaguanli/index'),
-        name: 'quhuaguanli',
+        path: 'region',
+        name: 'region',
+        component: () => import('@/views/base-data/region/index'),
         meta: {
           title: '区划管理'
-        }
+        },
+        children: [
+          { path: 'list',
+            name: '区划列表',
+            component: () => import('@/views/base-data/region/region_list'),
+            hidden: false,
+            meta: {
+              title: '区划列表'
+            }
+          },
+          { path: 'add',
+            name: '新增区划',
+            component: () => import('@/views/base-data/region/region_add'),
+            hidden: true,
+            meta: {
+              title: '新增区划'
+            }
+          }
+        ]
       }
     ]
   }

@@ -242,7 +242,7 @@ export default {
 
       rules: {
         name: [
-          { required: true, message: '请输入收入名称', trigger: 'blur' }
+          { required: true, message: '请输入票据名称', trigger: 'blur' }
         ],
         leaf: [
           { required: true, message: '请选择是否是底级', trigger: 'change' }
