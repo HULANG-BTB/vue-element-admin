@@ -9,13 +9,14 @@
         <div>注意：校验码是6位由字母和数字组成。</div>
       </el-collapse-item>
     </el-collapse>
+
     <el-form
       :model="query"
       :inline="true"
       class="demo-form-inline"
       @keyup.enter.native="handleSearch"
     >
-      <el-form-item label="手机号码：">
+      <el-form-item label="手机号码：15651995937">
         <el-input
           v-model="query.tel"
           placeholder="请输入手机号码"
@@ -23,7 +24,7 @@
           size="small"
         />
       </el-form-item>
-      <el-form-item label="校验码：">
+      <el-form-item label="校验码：i7gxlo">
         <el-input
           v-model="query.verifyCode"
           placeholder="请输入校验码"
@@ -44,11 +45,15 @@
 
       </el-form-item>
 
+    </el-form>
+    <el-button v-if="bill.fBillImgUrl !== undefine" type="button" @click="openImg">查看票据详情</el-button>
+
+    <el-form :inline="true">
+
       <el-table
         v-show="showTable"
         :data="tableData"
-        stripe
-        style="width: 100%"
+        style="width: 30%"
       >
         <el-table-column
           prop="title"
@@ -58,7 +63,15 @@
           prop="property"
         />
       </el-table>
-    </el-form></div>
+    </el-form>
+    <el-dialog
+      :visible.sync="dialogVisible"
+      title="电子票据"
+    >
+      <el-image
+        :src="bill.fBillImgUrl"
+      /></el-dialog>
+  </div>
 
 </template>
 
@@ -68,6 +81,7 @@ import { getBill } from '@/api/msg.js'
 export default {
   data () {
     return {
+      dialogVisible: false,
       query: {
         tel: '',
         verifyCode: ''
@@ -101,7 +115,7 @@ export default {
       ],
       loading: false,
       showTable: false,
-      validatorMsg: ''
+      validatorMsg: null
 
     }
   },
@@ -118,14 +132,14 @@ export default {
 
     loadTable () {
       this.showTable = true
-      this.tableData[0].property = this.bill.billDate
-      this.tableData[1].property = this.bill.billType
-      this.tableData[2].property = this.bill.billPreCode
-      this.tableData[3].property = this.bill.billCode
-      this.tableData[4].property = this.bill.billVerifyCode
-      this.tableData[5].property = this.bill.billDep
-      this.tableData[6].property = this.bill.payer
-      this.tableData[7].property = this.bill.billAmount
+      this.tableData[0].property = this.bill.fCreateTime
+      this.tableData[1].property = this.bill.fBillType
+      this.tableData[2].property = this.bill.fBillId
+      this.tableData[3].property = this.bill.fBillNo
+      this.tableData[4].property = this.bill.fCheckCode
+      this.tableData[5].property = this.bill.fPlaceName
+      this.tableData[6].property = this.bill.fPayerName
+      this.tableData[7].property = this.bill.fTotalAmt
     },
 
     async handleSearch () {
@@ -168,6 +182,9 @@ export default {
         message: '请输入正确的11位手机号码及6位校验码',
         type: 'error'
       })
+    },
+    openImg () {
+      this.dialogVisible = true
     }
   }
 }
