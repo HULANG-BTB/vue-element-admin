@@ -301,10 +301,10 @@ export default {
       this.$refs.upload.submit()
     },
     handleRemove (file, fileList) {
-      console.log(file, fileList)
+      // console.log(file, fileList)
     },
     handlePreview (file) {
-      console.log(file)
+      // console.log(file)
     },
     // 多选框选中数据
     handleSelectionChange (selection) {
@@ -339,12 +339,12 @@ export default {
             })
             this.getTableData()
           })
+          // eslint-disable-next-line handle-callback-err
           .catch((err) => {
             this.$message({
               type: 'error',
               message: '删除失败!'
             })
-            console.error(err)
           })
       })
     },
@@ -410,15 +410,6 @@ export default {
       this.dialogVisible = false
       this.resetForm('project')
     },
-    // 分页
-    // handleCurrentChange (cpage) {
-    //   // userList.slice((currpage - 1) * pagesize, currpage * pagesize)
-    //   this.currpage = cpage
-    // },
-    // handleSizeChange (psize) {
-    //   this.pagesize = psize
-    // }
-    // 分页，每页数目改变
     handleSizeChange (val) {
       this.queryParams.limit = val
       this.getTableData()

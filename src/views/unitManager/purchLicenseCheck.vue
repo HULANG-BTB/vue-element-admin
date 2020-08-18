@@ -233,6 +233,7 @@ export default {
           isenable: ''
         }
       }
+      this.getTableData()
     },
     // 多选框选中数据
     handleSelectionChange (selection) {
