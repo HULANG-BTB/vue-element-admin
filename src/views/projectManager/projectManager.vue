@@ -115,10 +115,10 @@
                   <el-input v-model="project.itemId" placeholder="项目编码" readonly />
                 </el-form-item>
                 <el-form-item label="项目生效日期" :label-width="formLabelWidth" prop="itemEffdate">
-                  <el-date-picker v-model="project.itemEffdate" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width: 100%;" />
+                  <el-date-picker v-model="project.itemEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
                 </el-form-item>
                 <el-form-item label="记录生效日期" :label-width="formLabelWidth" prop="effdate">
-                  <el-date-picker v-model="project.effdate" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width: 100%;" />
+                  <el-date-picker v-model="project.effdate" type="date" placeholder="选择日期" style="width: 100%;" />
                 </el-form-item>
                 <el-form-item label="收入类别" :label-width="formLabelWidth" prop="name ">
                   <el-input v-model="incomeSort.name" placeholder="收入类别" readonly />
@@ -139,10 +139,10 @@
                   <el-input v-model="project.itemName" placeholder="项目名称" />
                 </el-form-item>
                 <el-form-item label="项目失效日期" :label-width="formLabelWidth" prop="itemExpdate">
-                  <el-date-picker v-model="project.itemExpdate" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width: 100%;" />
+                  <el-date-picker v-model="project.itemExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
                 </el-form-item>
                 <el-form-item label="记录截止日期" :label-width="formLabelWidth" prop="expdate">
-                  <el-date-picker v-model="project.expdate" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width: 100%;" />
+                  <el-date-picker v-model="project.expdate" type="date" placeholder="选择日期" style="width: 100%;" />
                 </el-form-item>
                 <el-form-item label="助记码" :label-width="formLabelWidth" prop="mnen">
                   <el-input v-model="project.mnen" placeholder="助记码" />
@@ -354,7 +354,7 @@ export default {
       selectedids: [],
       rules: {
         itemId: [
-          { required: true, message: '项目编码不可修改', trigger: 'blur' }
+          { required: true, message: '项目编码不能为空', trigger: 'blur' }
         ],
         itemName: [
           { required: true, message: '项目名称不能为空', trigger: 'blur' }
@@ -369,17 +369,18 @@ export default {
           { required: true, message: '资金性质不能为空', trigger: 'blur' }
         ],
         itemEffdate: [
-          { required: true, trigger: 'blur', validator: validateDatePicker }
+          { trigger: 'blur', validator: validateDatePicker }
         ],
         itemExpdate: [
-          { required: true, trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemEffdate') }
+          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemEffdate') }
         ],
         effdate: [
-          { required: true, trigger: 'blur', validator: validateDatePicker }
+          { trigger: 'blur', validator: validateDatePicker }
         ],
         expdate: [
-          { required: true, trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'effdate') }
+          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'effdate') }
         ]
+
       },
       standRules: {
         charge: [
@@ -401,16 +402,16 @@ export default {
           { required: true, message: '计量单位不能修改', trigger: 'change' }
         ],
         itemstdEffdate: [
-          { required: true, trigger: 'blur', validator: validateDatePicker }
+          { trigger: 'blur', validator: validateDatePicker }
         ],
         itemstdExpdate: [
-          { required: true, trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemstdEffdate') }
+          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemstdEffdate') }
         ],
         createTime: [
-          { required: true, trigger: 'blur', validator: validateDatePicker }
+          { trigger: 'blur', validator: validateDatePicker }
         ],
         updateTime: [
-          { required: true, trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'createTime') }
+          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'createTime') }
         ],
         itemCode: [
           { required: true, message: '项目编码不能为空', trigger: 'blur' }
@@ -448,7 +449,6 @@ export default {
       this.selectedList = []
       // this.loading = false
     },
-    // 获取树形菜单列表
     async getTableTree () {
       const res = await getSubjectTree()
       this.treeList = res.data
@@ -549,30 +549,43 @@ export default {
               this.$set(this.project, {})
               this.getTableData() // 重新渲染数据列表
               this.dialogVisible = false // 关闭模态框
+              // if (res.status === 200) {
               this.$message({
                 showClose: true,
                 message: '添加成功',
                 type: 'success'
               })
+              // } else {
+              //   this.$message({
+              //     showClose: true,
+              //     message: '添加失败',
+              //     type: 'error'
+              //   })
+              // }
             })
           } else { // 编辑
             this.project.isenable = 0 // 有修改就需要重新审核
             await updateProject(this.project).then(res => {
               this.getTableData()
               this.dialogVisible = false
+              // if (res.status === 200) {
               this.$set(this.project, {})
               this.$message({
                 showClose: true,
                 message: '编辑成功',
                 type: 'success'
               })
+              // } else {
+              //   this.$message({
+              //     showClose: true,
+              //     message: '编辑失败',
+              //     type: 'error'
+              //   }) // 或者弹出后台返回错误
+              // }
             })
           }
         }
       })
-      // await this.$refs['project'].validate().then((res) => {
-      //   console.log(res)
-      // }).catch(err => console.log(err))
     },
     async handleNodeClick (data) {
       if (data.level === 2) {

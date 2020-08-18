@@ -290,6 +290,8 @@ export default {
         nickaname: '',
         password: '',
         repassword: '',
+        agenCode: '',
+        phone: '',
         roles: []
       },
       userList: [],

@@ -14,7 +14,7 @@
 
     <el-row :gutter="10">
       <el-col :span="1.5">
-        <el-button type="primary" icon="el-icon-plus" size="small" @click="handleAdd">新增角色</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="handleAdd">新增权限</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="danger" icon="el-icon-delete" size="small" :disabled="deleteBatchDisable" @click="handleDeleteBatch">批量删除</el-button>

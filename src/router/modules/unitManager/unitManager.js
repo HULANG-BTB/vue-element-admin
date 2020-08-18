@@ -56,6 +56,18 @@ const unitManager = {
       name: 'projectGroup',
       meta: { title: '项目分组', icon: 'link' },
       roles: ['admin']
+    },
+    {
+      path: 'agenBill',
+      component: () => import('@/views/unitManager/unitBillManager'),
+      name: 'agenBill',
+      meta: { title: '可用票据', icon: 'edit' }
+    },
+    {
+      path: 'agenItem',
+      component: () => import('@/views/unitManager/unitBillManager'),
+      name: 'agenItem',
+      meta: { title: '可用项目', icon: 'edit' }
     }
   ]
 }

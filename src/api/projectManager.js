@@ -16,6 +16,14 @@ export function getSubjectTree () {
   })
 }
 
+export function getIncomSortName (data) {
+  return request({
+    url: '/item/getIncomSortName',
+    method: 'get',
+    params: { 'code': data }
+  })
+}
+
 export function getBySubjectId (data) {
   return request({
     url: '/incomeSort/getBySubjectId',
