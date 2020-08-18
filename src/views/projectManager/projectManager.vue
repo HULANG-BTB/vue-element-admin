@@ -2,11 +2,13 @@
   <div class="app-container">
     <el-row :gutter="20">
       <el-col :span="6">
-        <el-tree ref="tree" :data="treeList" node-key="id" :props="defaultProps" @node-click="handleNodeClick">
-          <span slot-scope="{ node, data }" class="custom-tree-node">
-            <span>{{ data.code }} {{ node.label }}</span>
-          </span>
-        </el-tree>
+        <el-card class="box-card">
+          <el-tree ref="tree" :data="treeList" node-key="id" :default-expanded-keys="[1]" :props="defaultProps" style="font-size: 13px;" @node-click="handleNodeClick">
+            <span slot-scope="{ node, data }" class="custom-tree-node">
+              <span :show-overflow-tooltip="true"><i icon="iconfont table" />{{ data.code }} {{ node.label }}</span>
+            </span>
+          </el-tree>
+        </el-card>
       </el-col>
       <el-col :span="18">
         <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
@@ -66,12 +68,12 @@
           </el-table-column>
           <el-table-column align="center" label="项目编码" prop="itemId" />
           <el-table-column align="center" label="项目名称" prop="itemName" :show-overflow-tooltip="true" />
-          <el-table-column align="center" label="项目生效日期" prop="itemEffdate">
+          <el-table-column align="center" label="项目生效日期" prop="itemEffdate" width="150">
             <template slot-scope="scope">
               {{ parseTime(scope.row.itemEffdate) }}
             </template>
           </el-table-column>
-          <el-table-column align="center" label="项目失效日期" prop="itemExpdate">
+          <el-table-column align="center" label="项目失效日期" prop="itemExpdate" width="150">
             <template slot-scope="scope">
               {{ parseTime(scope.row.itemExpdate) }}
             </template>
@@ -83,7 +85,7 @@
               <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="标准管理" width="210">
+          <el-table-column align="center" label="标准管理" width="210" fixed="right">
             <template slot-scope="scope">
               <el-button type="warning" size="mini" @click="handleAddStand(scope.row)">新增标准</el-button>
               <el-button type="success" size="mini" @click="handleEditStand(scope.row)">修改标准</el-button>
@@ -258,9 +260,9 @@ export default {
     const validateDatePicker = (rule, value, callback, source, option, other) => {
       const thisZero = new Date().setHours(0, 0, 0, 0)
       const input = new Date(value).setHours(0, 0, 0, 0)
-      if (input < thisZero && !other) {
+      if (input < thisZero && !other && this.dialogType !== 'edit') {
         callback(new Error('日期不能早于今天'))
-      } else if (other) {
+      } else if (other || this.dialogType === 'edit') {
         const otherDate = new Date(this.project[other]).setHours(0, 0, 0, 0)
         const otherStdData = new Date(this.standard[other]).setHours(0, 0, 0, 0)
         if (otherDate > input || otherStdData > input) {
@@ -420,12 +422,9 @@ export default {
     this.getTableTree()
   },
   methods: {
-    // validateDatePicker (rule, value, callback, source, option, this.project.itemEffdate) {
-
-    // },
     // 格式化时间
     parseTime (time) {
-      return parseTime(new Date())
+      return parseTime(new Date(time))
     },
     // 获取资源列表
     async getTableData () {
@@ -523,9 +522,7 @@ export default {
     },
     // 模态框提交
     confirmRole () {
-      // console.log(typeof this.project.itemEffdate)
       this.$refs['project'].validate(async (valid) => {
-        // console.log(valid)
         if (valid) {
           if (this.dialogType !== 'edit') { // 新增
             await addProject(this.project).then(res => {

@@ -160,12 +160,14 @@ export default {
     const validateDatePicker = (rule, value, callback, source, option, other) => {
       const thisZero = new Date().setHours(0, 0, 0, 0)
       const input = new Date(value).setHours(0, 0, 0, 0)
-      if (input < thisZero && !other) {
+      if (input < thisZero && !other && this.dialogType !== 'edit') {
         callback(new Error('日期不能早于今天'))
-      } else if (other) {
+      } else if (other || this.dialogType === 'edit') {
         const otherStdData = new Date(this.standard[other]).setHours(0, 0, 0, 0)
         if (otherStdData > input) {
           callback(new Error('当前日期不能在开始日期之前'))
+        } else {
+          callback()
         }
       } else {
         callback()
@@ -174,9 +176,6 @@ export default {
     return {
     //   loading: true,
       queryParams: { // 查询参数
-        // deptCode: '',
-        // deptName: '',
-        // isEnable: '',
         keyword: '',
         page: 1,
         limit: 10

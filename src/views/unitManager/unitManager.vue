@@ -195,20 +195,22 @@ const defaultUser = {
 
 export default {
   data () {
-    // const validateDatePicker = (rule, value, callback, source, option, other) => {
-    //   const thisZero = new Date().setHours(0, 0, 0, 0)
-    //   const input = new Date(value).setHours(0, 0, 0, 0)
-    //   if (input < thisZero && !other) {
-    //     callback(new Error('日期不能早于今天'))
-    //   } else if (other) {
-    //     const otherDate = new Date(this.project[other]).setHours(0, 0, 0, 0)
-    //     if (otherDate > input) {
-    //       callback(new Error('当前日期不能在开始日期之前'))
-    //     }
-    //   } else {
-    //     callback()
-    //   }
-    // }
+    const validateDatePicker = (rule, value, callback, source, option, other) => {
+      const thisZero = new Date().setHours(0, 0, 0, 0)
+      const input = new Date(value).setHours(0, 0, 0, 0)
+      if (input < thisZero && !other && this.dialogType !== 'edit') {
+        callback(new Error('日期不能早于今天'))
+      } else if (other || this.dialogType === 'edit') {
+        const otherDate = new Date(this.project[other]).setHours(0, 0, 0, 0)
+        if (otherDate > input) {
+          callback(new Error('当前日期不能在开始日期之前'))
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
+    }
     return {
       optionsStart: {},
       optionsEnd: {},
@@ -263,13 +265,13 @@ export default {
         agenName: [
           { required: true, message: '单位名称不能为空', trigger: 'blur' }
         ],
-        mnem: [{ required: true, message: '助记码不能为空', trigger: 'blur' }]
-        // effDate: [
-        //   { trigger: 'blur', validator: validateDatePicker }
-        // ],
-        // expDate: [
-        //   { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'effDate') }
-        // ]
+        mnem: [{ required: true, message: '助记码不能为空', trigger: 'blur' }],
+        effDate: [
+          { trigger: 'blur', validator: validateDatePicker }
+        ],
+        expDate: [
+          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'effDate') }
+        ]
       }
     }
   },

@@ -135,9 +135,6 @@
           <el-form-item label="办证日期" :label-width="formLabelWidth" prop="issuedate">
             <el-date-picker v-model="crt.issuedate" type="date" placeholder="选择日期" style="width: 100%;" />
           </el-form-item>
-          <el-form-item label="备注" :label-width="formLabelWidth">
-            <el-input v-model="crt.note" placeholder="备注" />
-          </el-form-item>
           <el-form-item label="单位法人证号" :label-width="formLabelWidth" prop="legalno">
             <el-input v-model="crt.legalno" placeholder="单位法人证号" />
           </el-form-item>
@@ -149,6 +146,9 @@
           </el-form-item>
           <el-form-item label="收费委托书号" :label-width="formLabelWidth" prop="proxyno">
             <el-input v-model="crt.proxyno" placeholder="收费委托书号" />
+          </el-form-item>
+          <el-form-item label="备注" :label-width="formLabelWidth">
+            <el-input v-model="crt.note" placeholder="备注" />
           </el-form-item>
         </el-row>
       </el-form>
@@ -163,19 +163,42 @@
 <script>
 import { getCrtListByPage, deleteCrt, deleteCrtBatch, addCrt, updateCrt, getAgenName } from '@/api/purchLicense'
 import { parseTime } from '@/utils/index'
-import { validateDatePicker } from '@/utils/validate'
-// , addCrt, updateCrt, deleteCrt, deleteCrtBatch,getCrtListByPage,
+// import { validateDatePicker } from '@/utils/validate'
+
 const defaultUser = {
-  isEnable: '',
-  itemCode: '',
-  itemName: '',
-  itemEffdate: '',
-  itemExpdate: '',
-  fundsnatureCode: ''
+  note: '',
+  logicDelete: false,
+  address: '',
+  finmgr: '',
+  crtCode: '',
+  agenCode: '',
+  crtName: '',
+  linkmanTel: '',
+  legalno: '',
+  updateTime: 0,
+  issuedate: '',
+  version: 0,
+  linkman: '',
+  operator: '',
+  fineno: '',
+  createTime: 0,
+  proxyno: '',
+  agenName: '',
+  operatorId: 0,
+  chargno: ''
 }
 
 export default {
   data () {
+    const validateDatePicker = (rule, value, callback, source, option) => {
+      const thisZero = new Date().setHours(0, 0, 0, 0)
+      const input = new Date(value).setHours(0, 0, 0, 0)
+      if (input < thisZero && this.dialogType !== 'edit') {
+        callback(new Error('日期不能早于今天'))
+      } else {
+        callback()
+      }
+    }
     return {
     //   loading: true,
       queryParams: { // 查询参数
@@ -218,9 +241,6 @@ export default {
       dialogType: 'new',
       formLabelWidth: '120px',
       selectedList: [],
-      // multiple: true, // 非多个禁用
-      // pagesize: 5,
-      // currpage: 1,
       fileList: [],
       rules: {
         crtName: [
@@ -283,17 +303,7 @@ export default {
     },
     // 重置
     resetQuery () {
-      // this.resetForm('queryParams')
-      this.queryParams = {
-        page: 1,
-        limit: 10,
-        keyword: {
-          crtName: '',
-          agenName: '',
-          crtCode: '',
-          isenable: ''
-        }
-      }
+      this.queryParams.keyword = {}
       this.getTableData()
     },
     // 上传下载
@@ -312,8 +322,8 @@ export default {
     },
     // 新增按钮
     handleAdd () {
-      this.user = Object.assign({}, defaultUser)
-      this.dialogType !== 'edit'
+      this.crt = Object.assign({}, defaultUser)
+      this.dialogType = 'new'
       this.dialogVisible = true
     },
     // 编辑按钮
