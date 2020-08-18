@@ -116,11 +116,8 @@
           <el-form ref="project" :model="project" :rules="rules" label-width="80px" label-position="right" style="padding-right:25px;">
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item label="区划id" :label-width="formLabelWidth" prop="rgnId">
-                  <el-input v-model="project.rgnId" placeholder="区划id" />
-                </el-form-item>
-                <el-form-item label="项目分类编码" :label-width="formLabelWidth" prop="itemSortId">
-                  <el-input v-model="project.itemSortId" placeholder="项目分类编码" />
+                <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemId">
+                  <el-input v-model="project.itemId" placeholder="项目编码" :disabled="true" />
                 </el-form-item>
                 <el-form-item label="项目生效日期" :label-width="formLabelWidth" prop="itemEffdate">
                   <el-date-picker v-model="project.itemEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
@@ -128,12 +125,8 @@
                 <el-form-item label="记录生效日期" :label-width="formLabelWidth" prop="effdate">
                   <el-date-picker v-model="project.effdate" type="date" placeholder="选择日期" style="width: 100%;" />
                 </el-form-item>
-                <el-form-item label="收入类别" :label-width="formLabelWidth" prop="incomSortCode ">
-                  <el-select v-model="project.incomSortCode " placeholder="根据实际情况选择">
-                    <el-option label="直缴" value="直缴" />
-                    <el-option label="汇缴" value="汇缴" />
-                    <el-option label="代缴" value="代缴" />
-                  </el-select>
+                <el-form-item label="收入类别" :label-width="formLabelWidth" prop="name ">
+                  <el-input v-model="incomeSort.name" placeholder="收入类别" :disabled="true" />
                 </el-form-item>
                 <el-form-item label="收缴方式" :label-width="formLabelWidth">
                   <el-select v-model="project.paymode" placeholder="请选择收缴方式">
@@ -151,9 +144,6 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemId">
-                  <el-input v-model="project.itemId" placeholder="项目编码" :disabled="true" />
-                </el-form-item>
                 <el-form-item label="项目名称" :label-width="formLabelWidth" prop="itemName">
                   <el-input v-model="project.itemName" placeholder="项目名称" />
                 </el-form-item>
@@ -186,7 +176,7 @@
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="标准编码" :label-width="formLabelWidth" prop="itemstdCode">
-                  <el-input v-model="standard.itemstdCode" placeholder="标准编码" />
+                  <el-input v-model="standard.itemstdCode" placeholder="标准编码" :disabled="true" />
                 </el-form-item>
                 <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemCode ">
                   <el-input v-model="standard.itemCode " placeholder="项目编码" :disabled="true" />
@@ -196,12 +186,6 @@
                 </el-form-item>
                 <el-form-item label="生效日期" :label-width="formLabelWidth" prop="itemstdEffdate">
                   <el-date-picker v-model="standard.itemstdEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
-                </el-form-item>
-                <el-form-item label="经办人" :label-width="formLabelWidth" prop="operator">
-                  <el-input v-model="standard.operator" placeholder="经办人" />
-                </el-form-item>
-                <el-form-item label="创建日期" :label-width="formLabelWidth" prop="createTime">
-                  <el-date-picker v-model="standard.createTime" type="date" placeholder="选择日期" style="width: 100%;" />
                 </el-form-item>
                 <el-form-item label="计量单位" :label-width="formLabelWidth" prop="units">
                   <el-input v-model="standard.units" placeholder="计量单位" />
@@ -220,14 +204,8 @@
                 <el-form-item label="失效日期" :label-width="formLabelWidth" prop="itemstdExpdate">
                   <el-date-picker v-model="standard.itemstdExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
                 </el-form-item>
-                <el-form-item label="经办人ID" :label-width="formLabelWidth" prop="operatorId">
-                  <el-input v-model="standard.operatorId" placeholder="经办人ID" />
-                </el-form-item>
-                <el-form-item label="最后修改时间" :label-width="formLabelWidth" prop="updateTime">
-                  <el-date-picker v-model="standard.updateTime" type="date" placeholder="选择日期" style="width: 100%;" />
-                </el-form-item>
-                <el-form-item label="备注" :label-width="formLabelWidth">
-                  <el-input v-model="standard.note" placeholder="备注" />
+                <el-form-item label="标准金额" :label-width="formLabelWidth">
+                  <el-input v-model="standard.chargr" placeholder="标准金额" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -243,7 +221,7 @@
 </template>
 
 <script>
-import { getProjectListByPage, addProject, getSubjectTree, updateProject, deleteProject, deleteProjectBatch, addStd, updateStd, getItemStd } from '@/api/projectManager'
+import { getProjectListByPage, getBySubjectId, addProject, getSubjectTree, updateProject, deleteProject, deleteProjectBatch, addStd, updateStd, getItemStd } from '@/api/projectManager'
 import { parseTime } from '@/utils/index'
 
 const defaultUser = {
@@ -269,6 +247,7 @@ const defaultStand = {
   mnem: '',
   maxCharge: '',
   minCharge: '',
+  chargr: '',
   units: '',
   itemstdEffdate: '',
   itemstdExpdate: '',
@@ -283,29 +262,25 @@ const defaultStand = {
 }
 export default {
   data () {
-    const validateDatePicker = (rule, value, callback, source, option, other) => {
-      const thisZero = new Date().setHours(0, 0, 0, 0)
-      const input = new Date(value).setHours(0, 0, 0, 0)
-      if (input < thisZero && !other) {
-        callback(new Error('日期不能早于今天'))
-      } else if (other) {
-        const otherDate = new Date(this.project[other]).setHours(0, 0, 0, 0)
-        const otherStdData = new Date(this.standard[other]).setHours(0, 0, 0, 0)
-        if (otherDate > input || otherStdData > input) {
-          callback(new Error('当前日期不能在开始日期之前'))
-        }
-      } else {
-        callback()
-      }
-    }
+    // const validateDatePicker = (rule, value, callback, source, option, other) => {
+    //   const thisZero = new Date().setHours(0, 0, 0, 0)
+    //   const input = new Date(value).setHours(0, 0, 0, 0)
+    //   if (input < thisZero && !other) {
+    //     callback(new Error('日期不能早于今天'))
+    //   } else if (other) {
+    //     const otherDate = new Date(this.project[other]).setHours(0, 0, 0, 0)
+    //     const otherStdData = new Date(this.standard[other]).setHours(0, 0, 0, 0)
+    //     if (otherDate > input || otherStdData > input) {
+    //       callback(new Error('当前日期不能在开始日期之前'))
+    //     }
+    //     callback()
+    //   }
+    // }
     return {
-      //   loading: true,
       queryParams: { // 查询参数
         keyword: '',
         subjectCode: '',
         isenable: '',
-        // useType: '',
-        // isenable: '',
         page: 1,
         limit: 10,
         total: 0
@@ -315,6 +290,10 @@ export default {
       defaultProps: {
         children: 'subjectVOS',
         label: 'name'
+      },
+      incomeSort: {
+        code: '',
+        name: ''
       },
       subjectList: {
         id: '',
@@ -346,6 +325,7 @@ export default {
         mnem: '',
         maxCharge: '',
         minCharge: '',
+        charge: '',
         units: '',
         itemstdEffdate: '',
         itemstdExpdate: '',
@@ -412,18 +392,18 @@ export default {
         units: [
           { required: true, message: '计量单位不能为空', trigger: 'blur' }
         ],
-        itemstdEffdate: [
-          { trigger: 'blur', validator: validateDatePicker }
-        ],
-        itemstdExpdate: [
-          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemstdEffdate') }
-        ],
-        createTime: [
-          { trigger: 'blur', validator: validateDatePicker }
-        ],
-        updateTime: [
-          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'createTime') }
-        ],
+        // itemstdEffdate: [
+        //   { trigger: 'blur', validator: validateDatePicker }
+        // ],
+        // itemstdExpdate: [
+        //   { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemstdEffdate') }
+        // ],
+        // createTime: [
+        //   { trigger: 'blur', validator: validateDatePicker }
+        // ],
+        // updateTime: [
+        //   { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'createTime') }
+        // ],
         itemCode: [
           { required: true, message: '项目编码不能为空', trigger: 'blur' }
         ],
@@ -465,7 +445,6 @@ export default {
     },
     async getTableTree () {
       const res = await getSubjectTree()
-      console.log(res.data)
       this.treeList = res.data
     },
     // 搜索
@@ -489,6 +468,7 @@ export default {
       this.project.itemId = this.subjectList.code
       this.project.subject = this.subjectList.code
       this.project.subjectName = this.subjectList.name
+      this.project.incomSortCode = this.incomeSort.code
       this.dialogType = 'new'
       this.dialogVisible = true
     },
@@ -592,22 +572,19 @@ export default {
         }
       })
     },
-    handleNodeClick (data) {
+    async handleNodeClick (data) {
       if (data.leaf) {
         this.isleaf = false
         let parent = this.$refs.tree.getNode(data)
         while (parent.level !== 2) {
           parent = parent.parent
         }
-        // parent.data.id
-        console.log(this.$refs.tree.getCheckedNodes())
         this.queryParams.subjectCode = data.code
         this.subjectList = data
+        const res = await getBySubjectId(parent.data.id)
+        this.incomeSort = res.data
         this.getTableData()
       }
-    },
-    getCheckedNodes () {
-      console.log(this.$refs.tree.getCheckedNodes())
     },
     // 模态框取消
     cancel () {
@@ -618,6 +595,7 @@ export default {
     handleAddStand (standData) {
       defaultStand.itemCode = standData.itemId
       this.standard = Object.assign({}, defaultStand)
+      this.standard.itemstdCode = standData.itemId + '01'
       this.dialogVisibleTow = true
       this.dialogTypeTow = 'new'
     },
