@@ -97,6 +97,7 @@
           style="width: 100%"
           class="infinite-list-wrapper"
           size="small"
+          border
         >
           <el-table-column
             type="index"

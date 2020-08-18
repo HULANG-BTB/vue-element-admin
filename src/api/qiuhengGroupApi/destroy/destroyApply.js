@@ -10,12 +10,30 @@ export function addDestroyApply (applyVo) {
   })
 }
 
+export function updateApplyInfo (applyVo) {
+  return request({
+    url: BASE_URL + '/apply/updateApplyInfo',
+    method: 'get',
+    data: applyVo
+  })
+}
+
 export function getApplyListByAgenIdCode (agenIdCode) {
   return request({
     url: BASE_URL + '/apply/getApplyListByAgenIdCode',
     method: 'get',
     params: {
       agenIdCode
+    }
+  })
+}
+
+export function getApplyInfoByDestroyNo (fDestroyNo) {
+  return request({
+    url: BASE_URL + '/apply/getApplyInfoByDestroyNo',
+    method: 'get',
+    params: {
+      fDestroyNo
     }
   })
 }

@@ -47,6 +47,7 @@
       :data="tableData"
       style="width: 100%"
       :default-sort="{prop: 'id'}"
+      border
     >
       <el-table-column
         type="selection"
@@ -93,7 +94,7 @@
         prop="fStatus"
         label="审核状态"
         sortable
-        width="100"
+        width="120"
       />
       <el-table-column
         fixed="right"
