@@ -29,7 +29,7 @@
     </el-row>
 
     <el-table :data="projectList" style="width: 100%;margin-top:30px;" border @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="selection" align="center" />
       <el-table-column align="center" label="状态" prop="isenable">
         <template slot-scope="scope">
           <el-tag
@@ -75,58 +75,46 @@
     />
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType">
-      <el-form ref="project" :disabled="true" :model="project" :rules="rules" label-width="80px" label-position="right" style="padding-right:25px;">
+      <el-form ref="project" :model="project" label-width="80px" label-position="right" style="padding-right:25px;">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="区划id" :label-width="formLabelWidth" prop="rgnId">
-              <el-input v-model="project.rgnId" placeholder="区划id" />
-            </el-form-item>
-            <el-form-item label="项目分类编码" :label-width="formLabelWidth" prop="itemSortId">
-              <el-input v-model="project.itemSortId" placeholder="项目分类编码" />
+            <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemId">
+              <el-input v-model="project.itemId" placeholder="项目编码" readonly />
             </el-form-item>
             <el-form-item label="项目生效日期" :label-width="formLabelWidth" prop="itemEffdate">
-              <el-date-picker v-model="project.itemEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
+              <el-date-picker v-model="project.itemEffdate" type="date" placeholder="选择日期" style="width: 100%;" readonly />
             </el-form-item>
             <el-form-item label="记录生效日期" :label-width="formLabelWidth" prop="effdate">
-              <el-date-picker v-model="project.effdate" type="date" placeholder="选择日期" style="width: 100%;" />
+              <el-date-picker v-model="project.effdate" type="date" placeholder="选择日期" style="width: 100%;" readonly />
             </el-form-item>
             <el-form-item label="收入类别" :label-width="formLabelWidth" prop="incomSortCode ">
-              <el-select v-model="project.incomSortCode " placeholder="根据实际情况选择">
-                <el-option label="直缴" value="直缴" />
-              </el-select>
+              <el-input v-model="project.incomSortCode" placeholder="收入类别" readonly />
             </el-form-item>
             <el-form-item label="收缴方式" :label-width="formLabelWidth">
-              <el-select v-model="project.paymode" placeholder="请选择收缴方式">
-                <el-option label="直缴" value="直缴" />
-              </el-select>
+              <el-input v-model="project.paymode" placeholder="收入类别" readonly />
             </el-form-item>
             <el-form-item label="资金性质" :label-width="formLabelWidth" prop="fundsnatureCode">
-              <el-select v-model="project.fundsnatureCode" placeholder="根据实际情况选择">
-                <el-option label="直缴" value="直缴" />
-              </el-select>
+              <el-input v-model="project.fundsnatureCode" placeholder="收入类别" readonly />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemId">
-              <el-input v-model="project.itemId" placeholder="项目编码" />
-            </el-form-item>
             <el-form-item label="项目名称" :label-width="formLabelWidth" prop="itemName">
-              <el-input v-model="project.itemName" placeholder="项目名称" />
+              <el-input v-model="project.itemName" placeholder="项目名称" readonly />
             </el-form-item>
             <el-form-item label="项目失效日期" :label-width="formLabelWidth" prop="itemExpdate">
-              <el-date-picker v-model="project.itemExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
+              <el-date-picker v-model="project.itemExpdate" type="date" placeholder="选择日期" style="width: 100%;" readonly />
             </el-form-item>
             <el-form-item label="记录截止日期" :label-width="formLabelWidth" prop="expdate">
-              <el-date-picker v-model="project.expdate" type="date" placeholder="选择日期" style="width: 100%;" />
+              <el-date-picker v-model="project.expdate" type="date" placeholder="选择日期" style="width: 100%;" readonly />
             </el-form-item>
             <el-form-item label="助记码" :label-width="formLabelWidth" prop="mnen">
-              <el-input v-model="project.mnen" placeholder="助记码" />
+              <el-input v-model="project.mnen" placeholder="助记码" readonly />
             </el-form-item>
             <el-form-item label="预算科目" :label-width="formLabelWidth">
-              <el-input v-model="project.subject" placeholder="根据实际情况填写" />
+              <el-input v-model="project.subjectName" placeholder="根据实际情况填写" readonly />
             </el-form-item>
             <el-form-item label="备注" :label-width="formLabelWidth">
-              <el-input v-model="project.note" placeholder="备注" />
+              <el-input v-model="project.note" placeholder="备注" readonly />
             </el-form-item>
           </el-col>
         </el-row>
@@ -140,7 +128,7 @@
 </template>
 
 <script>
-import { getProjectListByPage, projectCheck, updateProject } from '@/api/projectManager'
+import { getProjectListByPage, projectCheck, updateProject, getIncomSortName } from '@/api/projectManager'
 import { parseTime } from '@/utils/index'
 
 export default {
@@ -152,6 +140,7 @@ export default {
         subjectCode: '',
         isenable: 0,
         page: 1,
+        state: 2,
         limit: 10,
         total: 0
       },
@@ -167,6 +156,7 @@ export default {
         effdate: '',
         expdate: '',
         subject: '',
+        subjectName: '',
         // note: '',
         mnen: '',
         incomSortCode: '',
@@ -177,24 +167,7 @@ export default {
       dialogType: '查看项目',
       formLabelWidth: '120px',
       selectedList: [],
-      selectedids: [],
-      rules: {
-        itemId: [
-          { required: true, message: '项目编码不能为空', trigger: 'blur' }
-        ],
-        itemName: [
-          { required: true, message: '项目名称不能为空', trigger: 'blur' }
-        ],
-        mnen: [
-          { required: true, message: '助记码不能为空', trigger: 'blur' }
-        ],
-        incomSortCode: [
-          { required: true, message: '收入类别不能为空', trigger: 'blur' }
-        ],
-        fundsnatureCode: [
-          { required: true, message: '资金性质不能为空', trigger: 'blur' }
-        ]
-      }
+      selectedids: []
     }
   },
   computed: {
@@ -207,17 +180,13 @@ export default {
   },
   methods: {
     parseTime (time) {
-      return parseTime(new Date())
+      return parseTime(new Date(time), '{y}-{m}-{d}')
     },
     // 获取资源列表
     async getTableData () {
       // this.loading = true
       const res = await getProjectListByPage(this.queryParams)
-      let arry = []
-      arry = res.data.items.filter(item => {
-        return item.isenable === 0
-      })
-      this.projectList = arry
+      this.projectList = res.data.items
       this.queryParams.total = res.data.total
       this.queryParams.limit = res.data.limit
       this.queryParams.page = res.data.page
@@ -267,9 +236,11 @@ export default {
         })
       })
     },
-    handleLook (rowData) {
+    async handleLook (rowData) {
       this.dialogVisible = true
+      const res = await getIncomSortName(rowData.incomSortCode)
       this.project = Object.assign({}, rowData)
+      this.project.incomSortCode = res.data.name
     },
     confirmRole () {
       this.dialogVisible = false
