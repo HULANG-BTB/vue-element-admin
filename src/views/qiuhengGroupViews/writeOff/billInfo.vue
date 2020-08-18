@@ -87,7 +87,7 @@
             <el-date-picker
               type="date"
               placeholder="审验时间"
-              v-model="form.date1"
+              v-model="form.date"
               style="width: 100%;"
             ></el-date-picker>
           </el-form-item>
@@ -117,10 +117,13 @@
           :header-cell-style="headClass"
         >
           <el-table-column
-            property="date"
             label="序号"
             width="50"
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              <span>{{scope.$index + 1}}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             property="name"
             label="开票单位"
@@ -139,32 +142,27 @@
           <el-table-column
             property="address"
             label="计量单位"
-            width="80"
+            width="100"
           ></el-table-column>
           <el-table-column
             property="address"
             label="份数"
-            width="100"
+            width="120"
           ></el-table-column>
           <el-table-column
             property="address"
             label="开票份数"
-            width="100"
+            width="120"
           ></el-table-column>
           <el-table-column
             property="address"
             label="开票金额"
-            width="140"
-          ></el-table-column>
-          <el-table-column
-            property="address"
-            label="作废份数"
-            width="100"
+            width="160"
           ></el-table-column>
           <el-table-column
             property="address"
             label="操作"
-            width="70"
+            width="90"
           >
             <i
               class="el-icon-delete"
@@ -184,10 +182,13 @@
           :header-cell-style="headClass"
         >
           <el-table-column
-            property="date"
             label="序号"
             width="50"
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              <span>{{scope.$index + 1}}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             property="name"
             label="开票单位"
@@ -225,6 +226,60 @@
           ></el-table-column>
         </el-table>
       </el-tab-pane>
+      <el-tab-pane label="开票明细">
+        <el-table
+          class="main-el-table"
+          stripe
+          :data="gridData"
+          height="350px"
+          :cell-style="rowClass"
+          :header-cell-style="headClass"
+        >
+          <el-table-column
+            label="序号"
+            width="50"
+          >
+            <template slot-scope="scope">
+              <span>{{scope.$index + 1}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            property="name"
+            label="开票单位"
+            width="160"
+          ></el-table-column>
+          <el-table-column
+            property="address"
+            label="票据批次编码"
+            width="200"
+          ></el-table-column>
+          <el-table-column
+            property="address"
+            label="票据批次名称"
+            width="200"
+          ></el-table-column>
+          <el-table-column
+            property="address"
+            label="份数"
+            width="100"
+          ></el-table-column>
+          <el-table-column
+            property="address"
+            label="起始号"
+            width="190"
+          ></el-table-column>
+          <el-table-column
+            property="address"
+            label="终止号"
+            width="190"
+          ></el-table-column>
+          <el-table-column
+            property="address"
+            label="开票金额"
+            width="160"
+          ></el-table-column>
+        </el-table>
+      </el-tab-pane>
       <el-tab-pane label="预警记录">
         <el-table
           class="main-el-table"
@@ -235,10 +290,13 @@
           :header-cell-style="headClass"
         >
           <el-table-column
-            property="date"
             label="序号"
             width="50"
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              <span>{{scope.$index + 1}}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             property="name"
             label="开票单位"
@@ -279,109 +337,6 @@
               @click="onCheck()"
             ></i>
           </el-table-column>
-        </el-table>
-      </el-tab-pane>
-
-      <el-tab-pane label="开票明细">
-        <el-table
-          class="main-el-table"
-          stripe
-          :data="gridData"
-          height="350px"
-          :cell-style="rowClass"
-          :header-cell-style="headClass"
-        >
-          <el-table-column
-            property="date"
-            label="序号"
-            width="50"
-          ></el-table-column>
-          <el-table-column
-            property="name"
-            label="开票单位"
-            width="160"
-          ></el-table-column>
-          <el-table-column
-            property="address"
-            label="票据批次编码"
-            width="160"
-          ></el-table-column>
-          <el-table-column
-            property="address"
-            label="票据批次名称"
-            width="180"
-          ></el-table-column>
-          <el-table-column
-            property="address"
-            label="份数"
-            width="80"
-          ></el-table-column>
-          <el-table-column
-            property="address"
-            label="起始号"
-            width="190"
-          ></el-table-column>
-          <el-table-column
-            property="address"
-            label="终止号"
-            width="190"
-          ></el-table-column>
-          <el-table-column
-            property="address"
-            label="开票金额"
-            width="140"
-          ></el-table-column>
-          <el-table-column
-            property="address"
-            label="作废份数"
-            width="80"
-          ></el-table-column>
-        </el-table>
-      </el-tab-pane>
-      <el-tab-pane label="作废票段号">
-        <el-table
-          class="main-el-table"
-          stripe
-          :data="gridData"
-          height="350px"
-          :cell-style="rowClass"
-          :header-cell-style="headClass"
-        >
-          <el-table-column
-            property="date"
-            label="序号"
-            width="50"
-          ></el-table-column>
-          <el-table-column
-            property="name"
-            label="开票单位"
-            width="200"
-          ></el-table-column>
-          <el-table-column
-            property="address"
-            label="票据批次编码"
-            width="165"
-          ></el-table-column>
-          <el-table-column
-            property="address"
-            label="票据批次名称"
-            width="165"
-          ></el-table-column>
-          <el-table-column
-            property="address"
-            label="作废份数"
-            width="160"
-          ></el-table-column>
-          <el-table-column
-            property="address"
-            label="起始号"
-            width="260"
-          ></el-table-column>
-          <el-table-column
-            property="address"
-            label="终止号"
-            width="260"
-          ></el-table-column>
         </el-table>
       </el-tab-pane>
     </el-tabs>
@@ -442,8 +397,7 @@ export default {
             form: {
                 id: this.billInfo.fAgenIdCode,
                 name: this.billInfo.fAgenName,
-                date1: '',
-                date2: '',
+                date: '',
                 remarks: ''
             },
             gridData: [
