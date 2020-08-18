@@ -97,7 +97,7 @@
       <el-table-column align="center" label="收信人" width="165">
         <template slot-scope="scope">{{ scope.row.smsTo }}</template>
       </el-table-column>
-      <el-table-column align="center" label="短信内容" width="165">
+      <el-table-column align="center" label="短信内容">
         <template slot-scope="scope">{{ util.jsonFormat(scope.row.content) }}</template>
       </el-table-column>
       <el-table-column align="center" label="发信时间">
@@ -106,7 +106,7 @@
       <el-table-column align="center" label="是否已发送">
         <template slot-scope="scope">{{ scope.row.isSent ? '已发送' : '未发送' }}</template>
       </el-table-column>
-      <el-table-column align="center" label="发件详情" width="165">
+      <el-table-column align="center" label="发件详情">
         <template slot-scope="scope">{{ scope.row.error }}</template>
       </el-table-column>
       <el-table-column v-if="!query.isSent" align="center" label="操作">
@@ -154,10 +154,10 @@ export default {
         limit: 10,
         total: 0,
 
-        id: null,
-        smsTo: null,
+        id: '',
+        smsTo: '',
         isSent: true,
-        period: null
+        period: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 90), new Date()]
 
       },
       pickerOptions: {
@@ -197,7 +197,7 @@ export default {
     this.getTableData()
   },
   methods: {
-    // 获取短信列表
+    // 获取邮件列表
     async getTableData () {
       this.loading = true
       const res = await getSmsList(this.query).catch(() => { this.loading = false })
@@ -214,7 +214,7 @@ export default {
       this.getTableData()
     },
 
-    // 更新短信为已发件
+    // 更新邮件为已发件
     async handleEdit (scope) {
       this.loading = true
       this.sms = Object.assign(this.sms, scope.row)

@@ -16,13 +16,13 @@ export default [
         path: '/mail',
         component: () => import('@/views/msg/mail'),
         name: 'PageMail',
-        meta: { title: '邮件管理' }
+        meta: { title: '邮件记录' }
       },
       {
         path: '/sms',
         component: () => import('@/views/msg/sms'),
         name: 'PageSms',
-        meta: { title: '短信管理' }
+        meta: { title: '短信记录' }
       },
       {
         path: '/smsCheck',
@@ -31,10 +31,16 @@ export default [
         meta: { title: '短信查验' }
       },
       {
-        path: '/verify',
-        component: () => import('@/views/msg/verify'),
+        path: '/check',
+        component: () => import('@/views/msg/check'),
         name: 'PageVerify',
         meta: { title: '票据查验' }
+      },
+      {
+        path: '/checkRecord',
+        component: () => import('@/views/msg/checkRecord'),
+        name: 'PageCheckRecord',
+        meta: { title: '票据查验记录' }
       }
     ]
   }
