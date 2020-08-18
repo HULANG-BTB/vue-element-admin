@@ -78,11 +78,8 @@
       <el-form ref="project" :model="project" label-width="80px" label-position="right" style="padding-right:25px;">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="区划id" :label-width="formLabelWidth" prop="rgnId">
-              <el-input v-model="project.rgnId" placeholder="区划id" readonly />
-            </el-form-item>
-            <el-form-item label="项目分类编码" :label-width="formLabelWidth" prop="itemSortId">
-              <el-input v-model="project.itemSortId" placeholder="项目分类编码" readonly />
+            <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemId">
+              <el-input v-model="project.itemId" placeholder="项目编码" readonly />
             </el-form-item>
             <el-form-item label="项目生效日期" :label-width="formLabelWidth" prop="itemEffdate">
               <el-date-picker v-model="project.itemEffdate" type="date" placeholder="选择日期" style="width: 100%;" readonly />
@@ -101,9 +98,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemId">
-              <el-input v-model="project.itemId" placeholder="项目编码" readonly />
-            </el-form-item>
             <el-form-item label="项目名称" :label-width="formLabelWidth" prop="itemName">
               <el-input v-model="project.itemName" placeholder="项目名称" readonly />
             </el-form-item>
@@ -134,7 +128,7 @@
 </template>
 
 <script>
-import { getProjectListByPage, projectCheck, updateProject } from '@/api/projectManager'
+import { getProjectListByPage, projectCheck, updateProject, getIncomSortName } from '@/api/projectManager'
 import { parseTime } from '@/utils/index'
 
 export default {
@@ -186,7 +180,7 @@ export default {
   },
   methods: {
     parseTime (time) {
-      return parseTime(new Date(time))
+      return parseTime(new Date(time), '{y}-{m}-{d}')
     },
     // 获取资源列表
     async getTableData () {
@@ -242,9 +236,11 @@ export default {
         })
       })
     },
-    handleLook (rowData) {
+    async handleLook (rowData) {
       this.dialogVisible = true
+      const res = await getIncomSortName(rowData.incomSortCode)
       this.project = Object.assign({}, rowData)
+      this.project.incomSortCode = res.data.name
     },
     confirmRole () {
       this.dialogVisible = false
