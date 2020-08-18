@@ -1,11 +1,13 @@
 /*
- * @Author: Raiz
+ * @Author: Jianbinbing
  * @since: Do not edit
  * @lastTime: 2020-08-09 23:42:58
- * @LastEditors: Raiz
+ * @LastEditors: Jianbinbing
  * @Description:
  */
-import request from '@/utils/request'
+import request from '@/utils/request';
+import {Decrypt,Encrypt} from "@/api/incomeSort/cryptoJS";
+
 
 const baseUrl = '/incomeSort/'
 
@@ -18,10 +20,17 @@ export function getIncomeTree (data) {
 }
 
 export function queryByCondition (data) {
+  // console.log("加密测试")
+  // data=Encrypt(JSON.stringify(data));
   return request({
     url: baseUrl + 'pageQueryById',
     method: 'post',
     data
+    // data:{
+    //   data:data,
+    //   aesKey:"1",
+    //   publicKey:"233"
+    // }
   })
 }
 
@@ -41,6 +50,7 @@ export function add (data) {
 }
 
 export function update (data) {
+
   return request({
     url: baseUrl + 'update',
     method: 'post',
