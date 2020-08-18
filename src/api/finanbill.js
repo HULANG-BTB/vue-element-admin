@@ -28,6 +28,18 @@ export function getItem (pid) {
 }
 
 /**
+ * 新增出库记录
+ * @param {*} author 编制人
+ */
+export function addOut (author) {
+  return request({
+    url: '/stock-out/add',
+    method: 'get',
+    params: { author: author }
+  })
+}
+
+/**
  * 提交保存请求
  * @param {*} query 出库即其明细
  */
