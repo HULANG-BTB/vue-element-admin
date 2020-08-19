@@ -29,7 +29,7 @@
       <el-table-column align="center" label="权限ID" width="80">
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
-      <el-table-column align="left" label="权限名称" min-width="220" show-overflow-tooltipnpm>
+      <el-table-column align="left" label="权限名称" min-width="220" show-overflow-tooltip>
         <template slot-scope="scope">
           <span :style="{marginLeft: computedUrlMargin(scope.row.url)}">
             <span v-if="scope.row.parentId">|-- </span> {{ scope.row.name }}
@@ -158,7 +158,6 @@ export default {
     },
 
     deleteBatchDisable () {
-      this.apis
       return this.selectedList.length === 0
     }
   },
