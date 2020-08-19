@@ -128,7 +128,7 @@ export default {
       maxHeight: 800,
       tableWidth: { width: window.innerWidth - 410 + 'px' },
       windowHeight: { height: window.innerHeight - 150 + 'px' },
-      tableHeight: window.innerHeight - 240 < 400 ? 400 : window.innerHeight - 240,
+      tableHeight: window.innerHeight - 240 < 330 ? 350 : window.innerHeight - 240,
       resizable: false
     }
   },

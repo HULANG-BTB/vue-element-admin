@@ -1,13 +1,24 @@
 /*
- * @Author: Raiz
+ * @Author: Jianbinbing
  * @since: Do not edit
  * @lastTime: 2020-08-09 23:42:58
- * @LastEditors: Raiz
+ * @LastEditors: Jianbinbing
  * @Description:
  */
-import request from '@/utils/request'
+import request from '@/utils/request';
+import {Decrypt,Encrypt,GetKey} from "@/api/common/cryptoJS";
+import {RSAencrypt,RSAdencrypt,getRSAKey} from "@/api/common/jsEncrypt";
+import {getEncryptedJson} from "@/api/common/data"
+
 
 const baseUrl = '/incomeSort/'
+
+export function getRSAPublicKey(){
+  return request({
+    url: baseUrl + 'getRSAPublicKey',
+    method: 'get',
+  })
+}
 
 export function getIncomeTree (data) {
   return request({
@@ -18,10 +29,17 @@ export function getIncomeTree (data) {
 }
 
 export function queryByCondition (data) {
+  //数据加密
+  data=getEncryptedJson(data)
   return request({
     url: baseUrl + 'pageQueryById',
     method: 'post',
     data
+    // data:{
+    //   data:data,
+    //   aesKey:"1",
+    //   publicKey:"233"
+    // }
   })
 }
 
@@ -41,6 +59,7 @@ export function add (data) {
 }
 
 export function update (data) {
+
   return request({
     url: baseUrl + 'update',
     method: 'post',
