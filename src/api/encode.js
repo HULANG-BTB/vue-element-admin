@@ -1,9 +1,17 @@
 import request from '@/utils/request'
 
-export function createCode (code) {
+export function createCode (data) {
   return request({
-    url: '/encode/createCode',
+    url: 'create/single',
     method: 'post',
-    code
+    data
+  })
+}
+
+export function createBatchCode (batchCode) {
+  return request({
+    url: 'create/batch',
+    method: 'post',
+    data: batchCode
   })
 }

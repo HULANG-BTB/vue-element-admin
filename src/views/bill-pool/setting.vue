@@ -9,7 +9,12 @@
           <div><h3>票据池-设置</h3></div>
         </el-col>
         <el-col :span="3" :push="2">
-          <el-button type="primary" icon="el-icon-circle-plus" @click="dialogFormVisible = true">
+          <el-button
+            type="primary"
+            icon="el-icon-circle-plus"
+            size="small"
+            @click="createDialogVisible = true"
+          >
             创建票据池
           </el-button>
         </el-col>
@@ -17,79 +22,58 @@
 
       <el-dialog
         title="创建票据池"
-        :visible.sync="dialogFormVisible"
+        :visible.sync="createDialogVisible"
         width="28%"
         center
       >
-        <el-form
-          :model="poolData"
-          class="divForm"
-        >
+        <el-form :model="createPoolData" class="divForm">
           <el-form-item
             label="票据池代码"
             :label-width="formLabelWidth"
             class="divForm"
           >
             <el-input
-              v-model="poolData.code"
+              v-model="createPoolData.billTypeCode"
               size="small"
               autocomplete="off"
-              maxlength="6"
+              maxlength="8"
+              minlength="8"
             />
           </el-form-item>
-          <el-form-item
-            label="票据池预警数量"
-            :label-width="formLabelWidth"
-          >
+          <el-form-item label="票据池预警数量" :label-width="formLabelWidth">
             <el-input
-              v-model="poolData.minNumber"
-              size="small"
-              autocomplete="off"
-            />
-          </el-form-item>
-          <el-form-item
-            label="每次推送数量"
-            :label-width="formLabelWidth"
-          >
-            <el-input
-              v-model="poolData.pushNumber"
+              v-model="createPoolData.minNumber"
               size="small"
               autocomplete="off"
             />
           </el-form-item>
-          <el-form-item
-            label="操作人"
-            :label-width="formLabelWidth"
-          >
+          <el-form-item label="每次推送数量" :label-width="formLabelWidth">
             <el-input
-              v-model="poolData.operator"
+              v-model="createPoolData.pushNumber"
               size="small"
               autocomplete="off"
             />
           </el-form-item>
-          <el-form-item
-            label="操作人ID"
-            :label-width="formLabelWidth"
-          >
+          <el-form-item label="操作人" :label-width="formLabelWidth">
             <el-input
-              v-model="poolData.operatorId"
+              v-model="createPoolData.operator"
+              size="small"
+              autocomplete="off"
+            />
+          </el-form-item>
+          <el-form-item label="操作人ID" :label-width="formLabelWidth">
+            <el-input
+              v-model="createPoolData.operatorID"
               size="small"
               autocomplete="off"
             />
           </el-form-item>
         </el-form>
-        <div
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="createPool"
-          >创建</el-button>
+        <div slot="footer" class="dialog-footer">
+          <el-button size="small" @click="createDialogVisible = false">取 消</el-button>
+          <el-button size="small" type="primary" :loading="createLoading" @click="createPool">创建</el-button>
         </div>
       </el-dialog>
-
     </el-header>
 
     <el-form
@@ -105,27 +89,27 @@
         class="form-item"
       >
         <el-input
-          v-model="poolData.code"
+          v-model="billTypeCode"
           type="text"
           size="15"
           placeholder="请输入票据编码"
-          maxlength="6"
+          maxlength="8"
           class="input"
         />
       </el-form-item>
       <el-form-item class="form-item-button">
-        <el-button type="primary" plain @click="query">查询</el-button>
+        <el-button size="small" type="primary" plain @click="query">查询</el-button>
       </el-form-item>
       <br />
       <br />
       <el-form-item label="票据池名称" class="form-item">
         <el-input
-          v-model="poolData[0].poolName"
+          v-model="poolData.poolName"
           :readonly="true"
           type="text"
           size="15"
           placeholder="票据池名称"
-          maxlength="6"
+          maxlength="8"
           class="input"
         />
       </el-form-item>
@@ -133,120 +117,208 @@
 
     <!-- <el-divider /> -->
 
-    <h2 style="margin-left: 100px">票据池信息</h2>
-    <el-table :data="poolData">
-      <el-table-column prop="code" label="票据编码" width="200" />
-      <el-table-column prop="minNumber" label="票据池预警数量" width="200" />
-      <el-table-column prop="pushNumber" label="每次推送数量" width="200" />
-      <el-table-column prop="available" label="是否可用" width="200" />
-      <el-table-column label="  操作" width="200">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="check(scope.row)">查看</el-button>
-          <el-button type="text" size="small" @click="editVisible = true">编辑</el-button>
-          <el-button type="text" size="small" @click="deletePool">删除</el-button>
-          <!-- <el-popconfirm
-            title="该操作会使票据池不可用，确认删除？"
-          >
-            <el-button slot="reference" type="text" size="small" @click="deletePool">删除</el-button>
-          </el-popconfirm> -->
-        </template>
-      </el-table-column>
-    </el-table>
-
+    <!-- 设置票据池 -->
     <el-dialog
       title="票据池设置"
-      :visible.sync="editVisible"
+      :visible.sync="editDialogVisible"
       width="30%"
       center
     >
-      <el-form
-        :model="poolData"
-        class="divForm"
-      >
+      <el-form :model="poolData" class="divForm">
         <el-form-item
           label="票据池代码"
           :label-width="formLabelWidth"
           class="divForm"
         >
           <el-input
-            v-model="poolData.code"
+            v-model="createPoolData.billTypeCode"
             size="small"
             autocomplete="off"
-            maxlength="6"
+            maxlength="8"
+            minlength="8"
           />
         </el-form-item>
-        <el-form-item
-          label="票据池预警数量"
-          :label-width="formLabelWidth"
-        >
+        <el-form-item label="票据池预警数量" :label-width="formLabelWidth">
           <el-input
-            v-model="poolData.operator"
+            v-model="createPoolData.minNumber"
             size="small"
             autocomplete="off"
           />
         </el-form-item>
-        <el-form-item
-          label="单次推送数量"
-          :label-width="formLabelWidth"
-        >
+        <el-form-item label="单次推送数量" :label-width="formLabelWidth">
           <el-input
-            v-model="poolData.operatorId"
+            v-model="createPoolData.pushNumber"
             size="small"
             autocomplete="off"
           />
         </el-form-item>
       </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="editVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="createPool"
-        >创建</el-button>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="editVisible = false">取 消</el-button>
+        <el-button type="primary" size="small" @click="createPool">设置</el-button>
       </div>
     </el-dialog>
+    <div>
+      <h2 style="margin-left: 100px">票据池信息</h2>
+      <el-table v-show="poolDataVisible" highlight-current-row :data="poolData" @current-change="handleCurrentChange">
+        <el-table-column
+          prop="billTypeCode"
+          label="票据编码"
+          width="200"
+        />
+        <el-table-column prop="minNumber" label="票据池预警数量" width="200" />
+        <el-table-column prop="pushNumber" label="每次推送数量" width="200" />
 
+        <el-table-column label="是否可用" width="200">
+          <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
+          <template slot-scope="scope">
+            <!--  -->
+            <el-tag v-if="scope.row.enable==1" type="" size="small">可用</el-tag>
+            <el-tag v-else type="danger" size="small">不可用</el-tag>
+          </template>
+        </el-table-column>
+
+        <!-- <el-table-column
+          label="是否可用"
+          width="200"
+          prop="enable"
+        >
+          <template>
+            <div v-if="prop==1"><el-tag type="">可用</el-tag></div>
+            <div v-if="prop==0"><el-tag type="danger">不可用</el-tag></div>
+          </template>
+          <el-tag :type="item.enable" />
+        </el-table-column> -->
+        <el-table-column label="  操作" width="200">
+          <template>
+            <el-button type="text" size="small" @click="check">查看</el-button>
+            <el-button
+              type="text"
+              size="small"
+              @click="editVisible = true"
+            >编辑</el-button>
+            <el-button type="text" size="small" @click="deletePool">删除</el-button>
+            <!-- <el-popconfirm
+            title="该操作会使票据池不可用，确认删除？"
+          >
+            <el-button slot="reference" type="text" size="small" @click="deletePool">删除</el-button>
+          </el-popconfirm> -->
+          </template>
+        </el-table-column>
+        <!-- <el-table-column:label="是否可用" /></el-table> -->
+      </el-table></div>
   </div>
 </template>
 
 <script>
+import { querySource, addSource, batchQuerySource } from '@/api/pool'
 export default {
   name: 'PoolSetting',
   data () {
     return {
+      poolDataVisible: false,
       dialogFormVisible: false,
-      editVisible: false,
+      createDialogVisible: false,
+      editDialogVisible: false,
+      createLoading: false,
       formLabelWidth: '120px',
-      poolData: [{
-        code: '350505',
-        poolName: '住院医疗票据',
-        available: '可用',
-        pushNumber: '500',
-        minNumber: '3000',
-        operator: '',
-        operatorId: ''
-      }],
+      poolAvailableIcon: 'el-icon-circle-check',
+      billTypeCode: '',
+      // 查找获得的票据池数据信息
+      poolData: [
+        {
+          billTypeCode: '',
+          billCode: '',
+          // name需要动态获取
+          poolName: '住院医疗票据',
+          enable: '',
+          pushNumber: '',
+          minNumber: ''
+          // alterCode: 1
+        }
+      ],
+      // 创建票据池数据
       createPoolData: {
-        code: '350505',
-        available: '',
+        alterCode: 1,
         pushNumber: '',
         minNumber: '',
         operator: '',
-        operatorId: ''
+        operatorID: '',
+        billTypeCode: '',
+        enable: 1,
+        success: true,
+        message: ''
       }
     }
   },
   methods: {
+    // 创建票据池
     createPool () {
-      this.dialogFormVisible = true
+      this.$confirm('此操作将创建新的票据池, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 表单验证
+        if (this.createPoolData.billTypeCode.length === 0 ||
+            this.createPoolData.minNumber.length === 0 ||
+            this.createPoolData.pushNumber.length === 0 ||
+            this.createPoolData.operator.length === 0 ||
+            this.createPoolData.operatorID.length === 0) {
+          this.$message.error('数据不能为空')
+        } else if (this.createPoolData.billTypeCode.length !== 8) {
+          this.$message.error('请正确输入8位票据池代码')
+        } else {
+          // 发送后端请求
+          this.createLoading = true
+          addSource(this.createPoolData).then(res => {
+            this.createPoolData.success = res.success
+            this.createPoolData.message = res.message
+            if (this.createPoolData.success === true) {
+              this.$message({
+                message: this.createPoolData.message,
+                type: 'success'
+              })
+            } else {
+              this.$message({
+                message: this.code.encodeMessage,
+                type: 'warning'
+              })
+            }
+            this.createDialogVisible = false
+            this.createLoading = false
+          })
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消创建'
+        })
+      })
     },
-    query (poolData) {
+    query () {
+      if (this.billTypeCode.length === 0) {
+        batchQuerySource().then(res => {
+          this.poolData = res.data
+        })
+        for (let i = 0; i < this.poolData.length; i++) {
+          this.poolData[i].poolAvailableIcon = this.poolData[i].enable === 1 ? 'el-icon-circle-check' : 'el-icon-circle-close'
+        }
+      }
+      this.poolDataVisible = true
       // 根据票据代码查询票据池
+      const billcode = {
+        billTypeCode: this.billTypeCode
+      }
+      // this.poolData.length = 0
+      this.poolData = null
+      querySource(billcode).then(res => {
+        this.poolData[0] = res.data
+        this.poolAvailableIcon = (res.data.enable === 1 ? 'el-icon-circle-check' : 'el-icon-circle-close')
+      })
     },
     check () {
-      // 查看票据池
+      // 查看票据池其他信息
     },
     editPool () {
       // 编辑票据池
@@ -257,25 +329,30 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
       })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    },
+    handleCurrentChange (val) {
+      this.currentRow = val
     }
   }
 }
 </script>
 
 <style scoped>
-.divForm{
-text-align: center;
+.divForm {
+  text-align: center;
 }
 .form {
   margin-top: 30px;

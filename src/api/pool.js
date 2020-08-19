@@ -1,17 +1,36 @@
 import request from '@/utils/request'
 
-export function settingPool (data) {
+export function settingSource (data) {
   return request({
-    url: 'pool/setting',
+    url: 'pool/setSource',
     method: 'post',
-    params: data
+    baseURL: 'http://localhost:8083',
+    data
   })
 }
 
-export function query (data) {
+export function addSource (data) {
   return request({
-    url: 'pool/setting',
+    url: 'pool/addSource',
     method: 'post',
-    params: data
+    baseURL: 'http://localhost:8083',
+    data
+  })
+}
+
+export function querySource (billTypeCode) {
+  return request({
+    url: 'pool/retrieveSetByCode',
+    method: 'get',
+    baseURL: 'http://localhost:8083',
+    params: billTypeCode
+  })
+}
+
+export function batchQuerySource () {
+  return request({
+    url: 'pool/retrieveSetList',
+    method: 'get',
+    baseURL: 'http://localhost:8083'
   })
 }
