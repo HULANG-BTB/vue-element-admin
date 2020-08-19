@@ -358,10 +358,6 @@ export default {
         fDestroyTypeToBool = 1
       }
 
-<<<<<<< HEAD
-      indexMethod(index){
-        return index+1;
-=======
       let fStatusToBool
       if (this.applyDto.fStatus === '未审核') {
         fStatusToBool = 0
@@ -384,7 +380,6 @@ export default {
           fAgenIdCode: '1314'
         },
         itemDtoList: this.itemDtoList
->>>>>>> 20fb2d9a2f26e6e65345eb942e1392643d7af1a9
       }
       this.$confirm('是否立即修改票据销毁申请信息, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -421,10 +416,6 @@ export default {
       } else {
         this.applyDto.fDestroyType = '核销票据销毁'
       }
-<<<<<<< HEAD
-  
-
-=======
       if (this.applyDto.fStatus === true) {
         this.applyDto.fStatus = '已审核'
       } else {
@@ -439,7 +430,6 @@ export default {
       // console.log(this.itemDtoList)
     }
   }
->>>>>>> 20fb2d9a2f26e6e65345eb942e1392643d7af1a9
 }
 </script>
 
