@@ -452,17 +452,17 @@ export default {
                     date: '01',
                     name: '王小虎',
                     address: '上海市'
-                }, 
+                },
                 {
                    date: '01',
                     name: '王小虎',
                     address: '上海市'
-                }, 
+                },
                 {
                    date: '01',
                     name: '王小虎',
                     address: '上海市'
-                }, 
+                },
                 {
                    date: '01',
                     name: '王小虎',

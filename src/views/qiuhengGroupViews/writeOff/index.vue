@@ -244,14 +244,12 @@ import InfoDialog from './billInfo'
 
 // 引入api
 import { receive, sendBack, getDetails, setResult, search } from '@/api/qiuhengGroupApi/writeOff/writeOff'
- 
+
 export default {
     components: {
        "dialog-info" : InfoDialog
     },
     data() {
-
-
         return {
             status: "",
             fileList: [],
@@ -263,7 +261,7 @@ export default {
             tableData : [],
             // dialog显示
             dialogVisible : false,
-            // 状态下拉列表 
+            // 状态下拉列表
             StatusOptions : [
             {key: '0', display_name : "全部"},
             {key: '1', display_name : "已审验"},
@@ -279,7 +277,7 @@ export default {
             fAgenName : "同福客栈",
             fAgenIdCode : 1,
             multipleSelection: [], //这里用multipleSelection存储勾选的数据
-            
+
             // 传给BillInfo数据
             billInfo : {
                 fAgenName: "",
@@ -315,7 +313,7 @@ export default {
             this.currentData = [],
             this.currentData = this.tableData.slice((this.currentPage-1)*this.pageSize, this.currentPage*this.pageSize)
         },
-        
+
         // 点击勾选，并保存勾选内容
         handleSelectionChange: function(row) {
             // 记录 Table 中的选择内容
@@ -360,7 +358,7 @@ export default {
                     this.currentData = this.tableData.slice(startIndex, endIndex+1)
                 }
             }
-             // 尚需完善   
+             // 尚需完善
         },
         async onDetailsBtn(row) {
             // 点击打开Dialog
