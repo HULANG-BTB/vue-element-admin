@@ -2,9 +2,16 @@ import request from '@/utils/request'
 
 export function getTemplateListByPage (query) {
   return request({
-    url: '/template/listByPage',
+    url: '/printTemplate/listPage',
     method: 'get',
     params: query
+  })
+}
+
+export function getTemplate (id) {
+  return request({
+    url: `/printTemplate/content/${id}.html`,
+    method: 'get'
   })
 }
 
@@ -28,6 +35,7 @@ export function deleteTemplate (id) {
     method: 'delete'
   })
 }
+
 export function deleteTemplateBatch (data) {
   return request({
     url: `/printTemplate/removeBatch`,
