@@ -21,7 +21,6 @@
         <el-button
           type="success"
           :disabled="deleteBatchDisable"
-          icon="el-icon-delete"
           size="small"
           @click="handleMultCheck"
         >批量审核</el-button>
@@ -54,8 +53,8 @@
       <el-table-column align="center" label="资金性质" prop="fundsnatureCode" />
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleLook(scope.row)">查看</el-button>
-          <el-button type="success" size="mini" @click="handleCheck(scope.row)">审核</el-button>
+          <el-button type="success" size="mini" @click="handleLook(scope.row)">审核</el-button>
+          <!-- <el-button type="success" size="mini" @click="handleCheck(scope.row)">审核</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -164,7 +163,7 @@ export default {
         paymode: ''
       },
       dialogVisible: false,
-      dialogType: '查看项目',
+      dialogType: '项目审核',
       formLabelWidth: '120px',
       selectedList: [],
       selectedids: []
@@ -223,8 +222,15 @@ export default {
         })
       })
     },
-    async handleCheck (simpData) {
-      this.project = Object.assign({}, simpData)
+    // 项目审核
+    async handleLook (rowData) {
+      this.dialogVisible = true
+      const res = await getIncomSortName(rowData.incomSortCode)
+      this.project = Object.assign({}, rowData)
+      this.project.incomSortCode = res.data.name
+    },
+    // 审核模态框确定
+    async confirmRole () {
       this.project.isenable = 1 // 单击审核就相当于让状态变为1
       await updateProject(this.project).then(res => {
         this.getTableData()
@@ -235,15 +241,6 @@ export default {
           type: 'success'
         })
       })
-    },
-    async handleLook (rowData) {
-      this.dialogVisible = true
-      const res = await getIncomSortName(rowData.incomSortCode)
-      this.project = Object.assign({}, rowData)
-      this.project.incomSortCode = res.data.name
-    },
-    confirmRole () {
-      this.dialogVisible = false
     },
     cancel () {
       this.dialogVisible = false
