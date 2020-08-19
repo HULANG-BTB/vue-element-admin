@@ -481,7 +481,7 @@ export default {
     resetQuery () {
       this.queryParams.keyword = ''
       this.queryParams.isenable = ''
-      this.queryParams.subjectCode = ''
+      // this.queryParams.subjectCode = ''
       this.getTableData()
     },
     // 新增按钮
@@ -655,7 +655,6 @@ export default {
               this.$set(this.standard, {}) // 更新视图
               this.dialogVisibleTow = false
               if (res.code === 5003) {
-                // alert(res.message)
                 this.$message({
                   showClose: true,
                   message: '项目标准已经存在，无法添加',

@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
-      <el-form-item label="标准名称" prop="keyword">
+      <el-form-item label="标准名称" prop="keyword.name">
         <el-input
-          v-model="queryParams.keyword"
+          v-model="queryParams.keyword.name"
           placeholder="请输入标准名称"
           clearable
           style="width: 140px"
@@ -11,7 +11,7 @@
         />
       </el-form-item>
       <el-form-item label="状态">
-        <el-select v-model="queryParams.isenable" placeholder="请选择标准状态" style="width: 150px">
+        <el-select v-model="queryParams.keyword.isenable" placeholder="请选择标准状态" style="width: 150px">
           <el-option label="已完成" value="1" />
           <el-option label="待审核" value="0" />
           <el-option label="全部" value="" />
@@ -165,8 +165,10 @@ export default {
     return {
     //   loading: true,
       queryParams: { // 查询参数
-        isenable: '',
-        keyword: '',
+        keyword: {
+          name: '',
+          isenable: ''
+        },
         page: 1,
         limit: 10
         // total: 0
@@ -272,8 +274,8 @@ export default {
     },
     // 重置
     resetQuery () {
-      // this.queryParams = {}
-      this.queryParams.keyword = ''
+      this.queryParams.keyword.name = ''
+      this.queryParams.keyword.isenable = ''
     },
     // 编辑按钮
     handleEdit (rowData) {
