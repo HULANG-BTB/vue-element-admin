@@ -225,7 +225,7 @@ module.exports = [
       const user = users[username]
       if (!user) {
         return {
-          code: 60204,
+          code: 40001,
           message: 'Account and password are incorrect.'
         }
       }
@@ -233,13 +233,13 @@ module.exports = [
       // mock error
       if (!token) {
         return {
-          code: 60204,
+          code: 40001,
           message: 'Account and password are incorrect.'
         }
       }
 
       return {
-        code: 20000,
+        code: 10000,
         data: { token }
       }
     }
@@ -263,13 +263,13 @@ module.exports = [
       // mock error
       if (info === {}) {
         return {
-          code: 50008,
+          code: 10000,
           message: 'Login failed, unable to get user details.'
         }
       }
 
       return {
-        code: 20000,
+        code: 10000,
         data: info
       }
     }
@@ -281,7 +281,7 @@ module.exports = [
     type: 'post',
     response: _ => {
       return {
-        code: 20000,
+        code: 10000,
         data: 'success'
       }
     }
