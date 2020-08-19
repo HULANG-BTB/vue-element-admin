@@ -54,7 +54,7 @@
           >重置</el-button>
         </el-form-item>
       </div>
-        <!-- <el-form-item label>
+      <!-- <el-form-item label>
           <el-button
             :disabled="deleteBatchDisable"
             type="danger"
@@ -262,10 +262,6 @@
         <el-table-column type="selection" align="center" width="55" />
         <!-- 从1开始，与数据库数据无关 -->
         <el-table-column type="index" align="center" label="序号" width="90%" />
-        <!-- 出库主键 -->
-        <el-table-column align="center" label="单号" width="165">
-          <template slot-scope="scope">{{ scope.row.id.toString().padStart(11, 'SI00000000') }}</template>
-        </el-table-column>
         <el-table-column align="center" label="票据代码" width="165">
           <template slot-scope="scope">
             <el-select v-model="scope.row.billPrecode" placeholder="请选择" @change="billPrecodeChange(scope)">

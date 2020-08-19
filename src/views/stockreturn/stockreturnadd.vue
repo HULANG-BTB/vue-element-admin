@@ -1,12 +1,16 @@
 <template>
   <div class="app-container">
     <el-form ref="ruleForm" :model="query" :rules="rules" label-width="120px" input-wdith="250px" class="demo-ruleForm">
-      <el-form-item label="业务单号" prop="no">
-        <el-input v-model="query.no" />
+      <el-form-item label="业务单号:">
+        <el-input
+          v-model="query.no"
+          placeholder="请输入业务单号"
+          clearable
+          size="small"
+        />
       </el-form-item>
       <el-form-item label="编制日期" prop="date">
         <div class="block">
-          <span class="demonstration">默认</span>
           <el-date-picker
             v-model="query.date"
             type="date"

@@ -18,6 +18,16 @@ export function getListStockReturnByDateOrNo (query) {
   })
 }
 
+export function addStockReturn (stockreturn) {
+  return request({
+    url: '/stock-return-po/addStockReturn',
+    method: 'post',
+    // params: { no: query.no, startTime: query.startTime, endTime: query.endTime }
+    // params: query
+    data: stockreturn
+  })
+}
+
 /* stoackteturnitem 相关 */
 export function getSmsList (query) {
   return request({
