@@ -1,257 +1,103 @@
 <template>
   <div class="app-container">
-    <el-form
-      :model="query"
-      :inline="true"
-      class="demo-form-inline"
-      @keyup.enter.native="handleSearch"
-    >
+    <el-form :model="query" :inline="true" class="demo-form-inline" @keyup.enter.native="handleSearch">
       <el-form-item label="搜索用户：">
-        <el-input
-          v-model="query.keyword"
-          placeholder="请输入用户ID或用户名"
-          clearable
-          size="small"
-        />
+        <el-input v-model="query.keyword" placeholder="请输入用户ID或用户名" clearable size="small" />
       </el-form-item>
       <el-form-item>
-        <el-button
-          icon="el-icon-search"
-          type="primary"
-          size="small"
-          @click="handleSearch"
-        >搜索</el-button>
+        <el-button icon="el-icon-search" type="primary" size="small" @click="handleSearch">搜索</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button
-          icon="el-icon-refresh"
-          type="default"
-          size="small"
-          @click="query.keyword = ''"
-        >重置</el-button>
+        <el-button icon="el-icon-refresh" type="default" size="small" @click="query.keyword = ''">重置</el-button>
       </el-form-item>
     </el-form>
 
     <el-row :gutter="10">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="small"
-          @click="handleAdd"
-        >新增用户</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="handleAdd">新增用户</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="small"
-          :disabled="deleteBatchDisable"
-          @click="handleDeleteBatch"
-        >批量删除</el-button>
+        <el-button type="danger" icon="el-icon-delete" size="small" :disabled="deleteBatchDisable" @click="handleDeleteBatch">批量删除</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-refresh"
-          size="small"
-          @click="getTableData"
-        >重载数据</el-button>
+        <el-button type="success" icon="el-icon-refresh" size="small" @click="getTableData">重载数据</el-button>
       </el-col>
     </el-row>
 
-    <el-table
-      v-loading.body="loading"
-      :data="tableData"
-      style="width: 100%; margin-top: 30px;"
-      border
-      @selection-change="handleOnSelectChange"
-    >
-      <el-table-column
-        type="selection"
-        align="center"
-        width="55"
-      />
-      <el-table-column
-        align="center"
-        label="用户Id"
-        width="80"
-      >
+    <el-table v-loading.body="loading" :data="tableData" style="width: 100%; margin-top: 30px;" border @selection-change="handleOnSelectChange">
+      <el-table-column type="selection" align="center" width="55" />
+      <el-table-column align="center" label="用户Id" width="80">
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
-      <el-table-column
-        align="center"
-        label="用户名"
-        width="220"
-      >
+      <el-table-column align="center" label="用户名" width="220">
         <template slot-scope="scope">{{ scope.row.username }}</template>
       </el-table-column>
-      <el-table-column
-        align="header-center"
-        label="昵称"
-      >
+      <el-table-column align="header-center" label="昵称">
         <template slot-scope="scope">{{ scope.row.nickname }}</template>
       </el-table-column>
-      <el-table-column
-        align="header-center"
-        label="单位"
-      >
+      <el-table-column align="header-center" label="单位">
         <template slot-scope="scope">{{ scope.row.agenCode }}</template>
       </el-table-column>
-      <el-table-column
-        align="header-center"
-        label="电话"
-      >
+      <el-table-column align="header-center" label="电话">
         <template slot-scope="scope">{{ scope.row.phone }}</template>
       </el-table-column>
-      <el-table-column
-        align="center"
-        label="最后修改"
-        width="170"
-      >
+      <el-table-column align="center" label="最后修改" width="170">
         <template slot-scope="scope">{{ parseTime(scope.row.updateTime) }}</template>
       </el-table-column>
-      <el-table-column
-        align="header-center"
-        label="操作人"
-      >
+      <el-table-column align="header-center" label="操作人">
         <template slot-scope="scope">{{ scope.row.operator }}</template>
       </el-table-column>
-      <el-table-column
-        align="center"
-        label="Operations"
-        width="260"
-      >
+      <el-table-column align="center" label="Operations" width="260">
         <template slot-scope="scope">
-          <el-button
-            type="success"
-            size="mini"
-            @click="handleReset(scope)"
-          >重置密码</el-button>
-          <el-button
-            type="primary"
-            size="mini"
-            @click="handleEdit(scope)"
-          >编辑</el-button>
-          <el-button
-            type="danger"
-            size="mini"
-            @click="handleDelete(scope)"
-          >删除</el-button>
+          <el-button type="success" size="mini" @click="handleReset(scope)">重置密码</el-button>
+          <el-button type="primary" size="mini" @click="handleEdit(scope)">编辑</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(scope)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-pagination
-      background
-      layout="prev, pager, next, sizes, total, jumper"
-      style="margin-top:20px;float:right;margin-right:20px;"
-      :total="query.total"
-      :current-page="query.page"
-      :page-sizes="[10, 20, 50, 100, 500, 1000]"
-      :page-size="query.limit"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+    <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="margin-top:20px;float:right;margin-right:20px;" :total="query.total" :current-page="query.page" :page-sizes="[10, 20, 50, 100, 500, 1000]" :page-size="query.limit" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
 
-    <el-dialog
-      :visible.sync="dialogVisible"
-      :title="dialogType === 'edit' ? '编辑用户' : '新建用户'"
-    >
-      <el-form
-        v-loading="dialogLoading"
-        :model="user"
-        label-width="80px"
-        label-position="right"
-      >
-        <el-form-item label="用户名">
-          <el-input
-            v-model="user.username"
-            placeholder="User Name"
-          />
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType === 'edit' ? '编辑用户' : '新建用户'">
+      <el-form ref="userForm" v-loading="dialogLoading" :model="user" label-width="80px" label-position="right" :rules="rules">
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="user.username" placeholder="User Name" />
         </el-form-item>
-        <el-form-item label="昵称">
-          <el-input
-            v-model="user.nickname"
-            placeholder="Nick Name"
-          />
+        <el-form-item label="昵称" prop="nickname">
+          <el-input v-model="user.nickname" placeholder="Nick Name" />
         </el-form-item>
-        <el-form-item label="单位">
+        <el-form-item label="单位" prop="unit">
           <el-select v-model="user.agenCode" placeholder="请选择" style="width: 100%">
             <el-option v-for="(item, index) in unitList" :key="index" :label="item.deptName" :value="item.agenCode" />
           </el-select>
         </el-form-item>
-        <el-form-item label="电话">
-          <el-input
-            v-model="user.phone"
-            placeholder="Phone Number"
-          />
+        <el-form-item label="电话" prop="phone">
+          <el-input v-model="user.phone" placeholder="Phone Number" />
         </el-form-item>
-        <el-form-item label="Role">
-          <el-select
-            v-model="user.roles"
-            multiple
-            value-key="id"
-            placeholder="Please select"
-            size="medium"
-            style="width: 100%;"
-          >
-            <el-option
-              v-for="(item, index) in roleList"
-              :key="index"
-              :label="item.name"
-              :value="item"
-            />
+        <el-form-item label="Role" prop="role">
+          <el-select v-model="user.roles" multiple value-key="id" placeholder="Please select" size="medium" style="width: 100%;">
+            <el-option v-for="(item, index) in roleList" :key="index" :label="item.name" :value="item" />
           </el-select>
         </el-form-item>
       </el-form>
       <div style="text-align: right;">
-        <el-button
-          type="danger"
-          @click="dialogVisible = false"
-        >Cancel</el-button>
-        <el-button
-          type="primary"
-          :loading="confirmLoading"
-          @click="confirmUser"
-        >Confirm</el-button>
+        <el-button type="danger" @click="dialogVisible = false">Cancel</el-button>
+        <el-button type="primary" :loading="confirmLoading" @click="confirmUser">Confirm</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog
-      :visible.sync="resetPasswordDialogVisible"
-      title="重置密码"
-    >
-      <el-form
-        :model="user"
-        label-width="80px"
-        label-position="right"
-      >
-        <el-form-item label="密码">
-          <el-input
-            v-model="user.password"
-            type="password"
-            placeholder="请输入新密码"
-          />
+    <el-dialog :visible.sync="resetPasswordDialogVisible" title="重置密码">
+      <el-form :model="user" label-width="80px" label-position="right" :rules="rules">
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="user.password" type="password" placeholder="请输入新密码" />
         </el-form-item>
-        <el-form-item label="重复密码">
-          <el-input
-            v-model="user.repassword"
-            type="password"
-            placeholder="请再次输入新密码"
-          />
+        <el-form-item label="重复密码" prop="repassword">
+          <el-input v-model="user.repassword" type="password" placeholder="请再次输入新密码" />
         </el-form-item>
       </el-form>
       <div style="text-align: right;">
-        <el-button
-          type="danger"
-          @click="resetPasswordDialogVisible = false"
-        >Cancel</el-button>
-        <el-button
-          type="primary"
-          :loading="confirmLoading"
-          @click="confirmPasswordReset"
-        >Confirm</el-button>
+        <el-button type="danger" @click="resetPasswordDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" :loading="confirmLoading" @click="confirmPasswordReset">Confirm</el-button>
       </div>
     </el-dialog>
   </div>
@@ -269,11 +115,12 @@ import {
 import { getRoleList, getRoleListByUserId } from '@/api/role'
 import { getUnitList } from '@/api/unitManager'
 import { parseTime, deepClone } from '@/utils/index'
+import { validatePhoneNumber } from '@/utils/validate'
 
 const defaultUser = {
   id: '',
   username: '',
-  nickaname: '',
+  nickname: '',
   password: '',
   repassword: '',
   agenCode: '',
@@ -283,11 +130,20 @@ const defaultUser = {
 
 export default {
   data () {
+    const validateRePassword = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.user.password) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
       user: {
         id: '',
         username: '',
-        nickaname: '',
+        nickname: '',
         password: '',
         repassword: '',
         agenCode: '',
@@ -302,6 +158,33 @@ export default {
       confirmLoading: false,
       dialogLoading: false,
       dialogVisible: false,
+      rules: {
+        username: [
+          { required: true, message: '用户名不能为空!', trigger: 'blur' },
+          { min: 5, max: 20, message: '用户名长度在5-20之间', trigger: 'blur' }
+        ],
+        nickname: [
+          { require: true, message: '用户昵称不能为空!', trigger: 'blur' },
+          { min: 2, max: 10, message: '昵称长度在2-10之间', trigger: 'blur' }
+        ],
+        unit: [
+          { require: true, message: '单位不能为空!', trigger: 'blur' }
+        ],
+        phone: [
+          { require: true, trigger: 'change', validator: validatePhoneNumber }
+        ],
+        role: [
+          { require: true, message: '单位不能为空!', trigger: 'blur' }
+        ],
+        password: [
+          { require: true, message: '密码不能为空！', trigger: 'blur' },
+          { min: 6, max: 15, message: '密码长度在6-15之间！', trigger: 'change' }
+        ],
+        repassword: [
+          { require: true, message: '密码不能为空！', trigger: 'change' },
+          { validator: validateRePassword, trigger: 'change' }
+        ]
+      },
       resetPasswordDialogVisible: false,
       dialogType: 'new',
       defaultProps: {
@@ -323,7 +206,7 @@ export default {
 
     tableData () {
       const data = deepClone(this.userList)
-      data.forEach(element => {
+      data.forEach((element) => {
         element.agenCode = this.computedUnit(element.agenCode)
       })
       return data
@@ -363,7 +246,7 @@ export default {
 
     // 根据单位编码获得单位名
     computedUnit (agenCode) {
-      const unit = this.unitList.filter(val => val.agenCode === agenCode)
+      const unit = this.unitList.filter((val) => val.agenCode === agenCode)
       // 避免数据计算的时候单位列表还未加载完成
       if (unit === undefined || unit.length === 0) {
         return ''
@@ -442,34 +325,38 @@ export default {
     },
 
     async confirmUser () {
-      const isEdit = this.dialogType === 'edit'
-      let successFlag = false
-      this.confirmLoading = true
-      if (isEdit) {
-        await updateUser(this.user).then((res) => {
-          successFlag = true
-        })
-      } else {
-        await addUser(this.user).then((res) => {
-          successFlag = true
-        })
-      }
-      this.confirmLoading = false
-      if (successFlag) {
-        const { id, username } = this.user
-        this.dialogVisible = false
-        this.$notify({
-          title: 'Success',
-          dangerouslyUseHTMLString: true,
-          message: `
+      this.$refs.userForm.validate(async valid => {
+        if (valid) {
+          const isEdit = this.dialogType === 'edit'
+          let successFlag = false
+          this.confirmLoading = true
+          if (isEdit) {
+            await updateUser(this.user).then((res) => {
+              successFlag = true
+            })
+          } else {
+            await addUser(this.user).then((res) => {
+              successFlag = true
+            })
+          }
+          this.confirmLoading = false
+          if (successFlag) {
+            const { id, username } = this.user
+            this.dialogVisible = false
+            this.$notify({
+              title: 'Success',
+              dangerouslyUseHTMLString: true,
+              message: `
             <div>User Id: ${id}</div>
             <div>User Name: ${username}</div>
           `,
-          type: 'success'
-        })
-        // 更新数据列表
-        await this.getTableData()
-      }
+              type: 'success'
+            })
+            // 更新数据列表
+            await this.getTableData()
+          }
+        }
+      })
     },
 
     // 批量删除

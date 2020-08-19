@@ -57,16 +57,16 @@
     <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="margin-top:20px;float:right;margin-right:20px;" :total="query.total" :current-page="query.page" :page-sizes="[10, 20, 50, 100, 500, 1000]" :page-size="query.limit" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑权限':'新建权限'">
-      <el-form v-loading="dialogLoading" :model="permission" label-width="120px" label-position="right">
-        <el-form-item label="父级权限">
+      <el-form ref="permissionForm" v-loading="dialogLoading" :model="permission" label-width="120px" label-position="right" :rules="rules">
+        <el-form-item label="父级权限" prop="parentId">
           <el-select v-model="permission.parentId" size="medium" filterable style="width: 100%" clearable placeholder="Request Method">
             <el-option v-for="(item, index) in permissionSelectList" :key="index" :label="item.name" :value="item.id">
-              <span>{{ item.name }}</span>
-              <span style="margin-left: 1.5rem; color: #8492a6; font-size: 13px">{{ item.url }}</span>
+              <span :style="{marginLeft: computedUrlMargin(item.url)}">{{ item.url }}</span>
+              <span style="margin-left: 1.5rem; color: #8492a6; font-size: 13px">{{ item.name }}</span>
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="名称">
+        <el-form-item label="名称" prop="name">
           <el-input v-model="permission.name" placeholder="Permission Name" />
         </el-form-item>
         <el-form-item label="方式">
@@ -76,7 +76,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="Url">
+        <el-form-item label="Url" prop="url">
           <el-input v-model="permission.url" placeholder="Request Url" />
         </el-form-item>
       </el-form>
@@ -112,6 +112,17 @@ export default {
       dialogLoading: false,
       dialogVisible: false,
       dialogType: 'new',
+      rules: {
+        parentId: [
+          { required: true, message: '父权限不能为空', trigger: 'blur' }
+        ],
+        name: [
+          { required: true, message: '权限名称不能为空', trigger: 'blur' }
+        ],
+        url: [
+          { required: true, message: '权限地址不能为空', trigger: 'blur' }
+        ]
+      },
       permission: {},
       requestMethod: [
         'GET',
@@ -244,35 +255,39 @@ export default {
 
     // 提交数据
     async confirmPermission () {
-      const isEdit = this.dialogType === 'edit'
-      this.confirmLoading = true
-      let successFlag = false
-      if (isEdit) {
-        await updatePermission(this.permission).then(res => {
-          successFlag = true
-        })
-      } else {
-        await savePermission(this.permission).then(res => {
-          successFlag = true
-        })
-      }
-      this.confirmLoading = false
-      this.dialogVisible = false
-      if (successFlag) {
-        const { method, name, url } = this.permission
-        this.$notify({
-          title: 'Success',
-          dangerouslyUseHTMLString: true,
-          message: `
+      this.$refs.permissionForm.validate(async valid => {
+        if (valid) {
+          const isEdit = this.dialogType === 'edit'
+          this.confirmLoading = true
+          let successFlag = false
+          if (isEdit) {
+            await updatePermission(this.permission).then(res => {
+              successFlag = true
+            })
+          } else {
+            await savePermission(this.permission).then(res => {
+              successFlag = true
+            })
+          }
+          this.confirmLoading = false
+          this.dialogVisible = false
+          if (successFlag) {
+            const { method, name, url } = this.permission
+            this.$notify({
+              title: 'Success',
+              dangerouslyUseHTMLString: true,
+              message: `
             <div>Method: ${method}</div>
             <div>Name: ${name}</div>
             <div>Url: ${url}</div>
           `,
-          type: 'success'
-        })
-        this.getTableData()
-        this.getPermissionList(true)
-      }
+              type: 'success'
+            })
+            this.getTableData()
+            this.getPermissionList(true)
+          }
+        }
+      })
     },
 
     // 批量删除
@@ -314,6 +329,16 @@ export default {
     // 格式化时间
     parseTime (time) {
       return parseTime(new Date())
+    },
+
+    // 计算Url 偏移
+    computedUrlMargin (str1) {
+      let count = 0
+      while (str1.indexOf('/') !== -1) {
+        str1 = str1.replace('/', '')
+        count++
+      }
+      return (count - 1) * 30 + 'px'
     }
   }
 }

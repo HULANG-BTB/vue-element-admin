@@ -34,3 +34,13 @@ export function validateDatePicker (rule, value, callback, source, option, other
   }
   callback()
 }
+
+export function validatePhoneNumber (rule, value, callback) {
+  if (value.length !== 11) {
+    callback(new Error('手机号码长度不正确!'))
+  } else if (!(/^1[3456789]\d{9}$/.test(value))) {
+    callback(new Error('手机号码格式错误!'))
+  } else {
+    callback()
+  }
+}
