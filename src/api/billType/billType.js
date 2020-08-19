@@ -1,7 +1,7 @@
 /*
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-09 23:42:58
+ * @lastTime: 2020-08-19 14:58:40
  * @LastEditors: Raiz
  * @Description:
  */
@@ -12,7 +12,7 @@ const baseUrl = '/billType/'
 export function queryBillTypeTree (data) {
   return request({
     url: baseUrl + 'queryBillTypeTree',
-    method: 'post',
+    method: 'get',
     data
   })
 }
@@ -28,7 +28,7 @@ export function queryByCondition (data) {
 export function queryAllBillSort () {
   return request({
     url: baseUrl + 'queryAllBillSort',
-    method: 'post'
+    method: 'get'
   })
 }
 
@@ -43,7 +43,7 @@ export function add (data) {
 export function update (data) {
   return request({
     url: baseUrl + 'update',
-    method: 'post',
+    method: 'put',
     data
   })
 }
@@ -51,7 +51,7 @@ export function update (data) {
 export function deleteBillTypeRequest (data) {
   return request({
     url: baseUrl + 'delete',
-    method: 'post',
+    method: 'delete',
     data
   })
 }
