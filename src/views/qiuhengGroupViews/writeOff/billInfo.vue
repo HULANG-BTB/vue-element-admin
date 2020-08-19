@@ -37,8 +37,8 @@
           >
             <el-form-item>
               <el-button
-                @click="onCancel()"
                 align="right"
+                @click="onCancel()"
               >不通过</el-button>
             </el-form-item>
           </el-col>
@@ -54,7 +54,7 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="单位ID">
-            <span>{{billInfo.fAgenIdCode}}</span>
+            <span>{{ billInfo.fAgenIdCode }}</span>
           </el-form-item>
         </el-col>
         <el-col
@@ -69,14 +69,14 @@
             :visible.sync="unitInfoDialogVisible"
             :append-to-body="true"
           >
-            <unit-dialog v-bind:unitInfo="unitInfo" />
+            <unit-dialog :unit-info="unitInfo" />
           </el-dialog>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="10">
           <el-form-item label="申请单位">
-            <span>{{billInfo.fAgenName}}</span>
+            <span>{{ billInfo.fAgenName }}</span>
           </el-form-item>
         </el-col>
         <el-col
@@ -85,11 +85,11 @@
         >
           <el-form-item label="审验时间">
             <el-date-picker
+              v-model="form.date"
               type="date"
               placeholder="审验时间"
-              v-model="form.date"
               style="width: 100%;"
-            ></el-date-picker>
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -98,12 +98,12 @@
           <el-input
             v-model="form.remarks"
             auto-complete="off"
-          ></el-input>
+          />
         </el-form-item>
       </el-row>
     </el-form>
 
-    <div class="tableTitle"></div>
+    <div class="tableTitle" />
 
     <el-tabs type="border-card">
 
@@ -121,44 +121,44 @@
             width="50"
           >
             <template slot-scope="scope">
-              <span>{{scope.$index + 1}}</span>
+              <span>{{ scope.$index + 1 }}</span>
             </template>
           </el-table-column>
           <el-table-column
             property="name"
             label="开票单位"
             width="230"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="票据编码"
             width="180"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="票据名称"
             width="220"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="计量单位"
             width="100"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="份数"
             width="120"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="开票份数"
             width="120"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="开票金额"
             width="160"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="操作"
@@ -167,7 +167,7 @@
             <i
               class="el-icon-delete"
               @click="onDelete()"
-            ></i>
+            />
           </el-table-column>
         </el-table>
       </el-tab-pane>
@@ -186,44 +186,44 @@
             width="50"
           >
             <template slot-scope="scope">
-              <span>{{scope.$index + 1}}</span>
+              <span>{{ scope.$index + 1 }}</span>
             </template>
           </el-table-column>
           <el-table-column
             property="name"
             label="开票单位"
             width="230"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="收费项目编码"
             width="180"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="收费项目名称"
             width="220"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="开票金额"
             width="145"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="应缴金额"
             width="145"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="已缴金额"
             width="145"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="欠费金额"
             width="145"
-          ></el-table-column>
+          />
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="开票明细">
@@ -240,44 +240,44 @@
             width="50"
           >
             <template slot-scope="scope">
-              <span>{{scope.$index + 1}}</span>
+              <span>{{ scope.$index + 1 }}</span>
             </template>
           </el-table-column>
           <el-table-column
             property="name"
             label="开票单位"
             width="160"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="票据批次编码"
             width="200"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="票据批次名称"
             width="200"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="份数"
             width="100"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="起始号"
             width="190"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="终止号"
             width="190"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="开票金额"
             width="160"
-          ></el-table-column>
+          />
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="预警记录">
@@ -294,39 +294,39 @@
             width="50"
           >
             <template slot-scope="scope">
-              <span>{{scope.$index + 1}}</span>
+              <span>{{ scope.$index + 1 }}</span>
             </template>
           </el-table-column>
           <el-table-column
             property="name"
             label="开票单位"
             width="200"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="预警日期"
             width="140"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="发送时间"
             width="140"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="监控事项"
             width="160"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="预警内容"
             width="370"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="处理状态"
             width="100"
-          ></el-table-column>
+          />
           <el-table-column
             property="address"
             label="查看"
@@ -335,7 +335,7 @@
             <i
               class="el-icon-tickets"
               @click="onCheck()"
-            ></i>
+            />
           </el-table-column>
         </el-table>
       </el-tab-pane>
@@ -345,10 +345,10 @@
       <el-form label-width="80px">
         <el-row>
           <el-col :span="6">
-            <el-form-item label="编制人: ">{{billInfo.author}}</el-form-item>
+            <el-form-item label="编制人: ">{{ billInfo.author }}</el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="编制日期: ">{{billInfo.date}}</el-form-item>
+            <el-form-item label="编制日期: ">{{ billInfo.date }}</el-form-item>
           </el-col>
         </el-row>
       </el-form>
@@ -362,7 +362,7 @@
 import UnitInfo from './unitInfo'
 
 // 引入api
-import { getUnitDetails, pass, unPass } from '@/api/qiuhengGroupApi/writeOff/writeOff'
+import { pass, unPass } from '@/api/qiuhengGroupApi/writeOff/writeOff'
 
 export default {
   components: {
@@ -436,68 +436,30 @@ export default {
     rowClass () {
       return 'text-align: center;'
     },
-    components:{
-        "unit-dialog" : UnitInfo
-    },
-    data(){
-        return {
-            form: {
-                id: this.billInfo.fAgenIdCode,
-                name: this.billInfo.fAgenName,
-                date: '',
-                remarks: ''
-            },
-            gridData: [
-                {
-                    date: '01',
-                    name: '王小虎',
-                    address: '上海市'
-                },
-                {
-                   date: '01',
-                    name: '王小虎',
-                    address: '上海市'
-                },
-                {
-                   date: '01',
-                    name: '王小虎',
-                    address: '上海市'
-                },
-                {
-                   date: '01',
-                    name: '王小虎',
-                    address: '上海市'
-                }
-            ],
-            labelPosition: "right",
-            unitInfoDialogVisible : false,
-            unitInfo:{
-                name: "111",
-                no: "222"
-            },
-        }
+    headClass () {
+      return 'text-align: center;'
     },
 
-        // 功能函数
-        async onCancel() {
-            // 不通过
-            let params = {}
-            const res = await unPass(params)
-            alert(res)
-            this.$emit('closeMoule', 'true')
-        },
-        async onSubmit() {
-            // 通过
-            let params = {}
-            const res = await pass(params)
-            alert(res)
-            this.$emit('closeMoule', 'true')
-        },
-        getUnitElectronicFile(){
-            // 获得单位电子档案
-            // 在生成Dialog前获取单位电子档案数据，传到子组件
-            this.unitInfo.name = "shhs"
-            this.unitInfo.no = 123
+    // 功能函数
+    async onCancel () {
+      // 不通过
+      const params = {}
+      const res = await unPass(params)
+      alert(res)
+      this.$emit('closeMoule', 'true')
+    },
+    async onSubmit () {
+      // 通过
+      const params = {}
+      const res = await pass(params)
+      alert(res)
+      this.$emit('closeMoule', 'true')
+    },
+    getUnitElectronicFile () {
+      // 获得单位电子档案
+      // 在生成Dialog前获取单位电子档案数据，传到子组件
+      this.unitInfo.name = 'shhs'
+      this.unitInfo.no = 123
 
       // 打开子组件 UnitInfoDialog
       this.unitInfoDialogVisible = true
