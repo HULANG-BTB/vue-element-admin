@@ -5,10 +5,10 @@
       :inline="true"
       class="demo-form-inline"
     >
-      <el-form-item label="查询PDF文件:">
+      <el-form-item label="查询模板文件:">
         <el-input
           v-model="query.keyword"
-          placeholder="输入PDF名称"
+          placeholder="输入模板名称"
           clearable
           size="small"
         />
@@ -22,6 +22,13 @@
       </el-form-item>
       <el-form-item>
         <el-button
+          icon="el-icon-circle-plus-outline"
+          size="small"
+          @click="handleShowFile"
+        >添加模板</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button
           :disabled="deleteBatchDisable"
           icon="el-icon-delete"
           size="small"
@@ -31,7 +38,7 @@
     </el-form>
 
     <el-pagination
-      layout="prev, pager, next, sizes, total, jumper"
+      layout="prev, pager, next, jumper"
       :page-size="query.pageSize"
       :total="query.currentTotal"
       :current-page="query.currentPage"
@@ -40,97 +47,165 @@
       @current-change="handleCurrentChange"
     />
 
-    <el-table
-      v-loading.body="loading"
-      :data="pdfTableData"
-      style="width: 100%; margin-top: 30px;"
-      border
-      @selection-change="handleOnSelectChange"
-    >
-      <el-table-column
-        type="selection"
-        align="center"
-        width="55px"
+    <div style="width: 650px;">
+      <el-table
+        v-loading.body="loading"
+        :data="templateTableData"
+        style="width: 100%; margin-top: 30px;"
+        border
+        @selection-change="handleOnSelectChange"
+      >
+        <el-table-column
+          type="selection"
+          align="center"
+          width="60"
+        />
+        <el-table-column
+          align="left"
+          label="模板ID"
+          width="100"
+        >
+          <template slot-scope="scope">{{ scope.row.id }}</template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="模板名称"
+          width="290"
+        >
+          <template slot-scope="scope">{{ scope.row.name }}</template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="操作"
+          width="200"
+        >
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleShow(scope)"
+            >查看</el-button>
+            <el-button
+              type="danger"
+              size="mini"
+              @click="handleDelete(scope)"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <el-card>
+      <div
+        id="continer"
+        style="width: 100%;margin: auto;"
       />
-      <el-table-column
-        align="left"
-        label="PDF-ID"
-        width="100"
-      >
-        <template slot-scope="scope">{{ scope.row.id }}</template>
-      </el-table-column>
-      <el-table-column
-        align="center"
-        label="PDF名称"
-        width="280"
-      >
-        <template slot-scope="scope">{{ scope.row.name }}</template>
-      </el-table-column>
-      <el-table-column
-        align="center"
-        label="操作"
-        width="200"
-      >
-        <template slot-scope="scope">
-          <el-button
-            type="primary"
-            size="mini"
-            @click="handleShow(scope)"
-          >查看</el-button>
-          <el-button
-            type="danger"
-            size="mini"
-            @click="handleDelete(scope)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <!-- 显示pdf信息 -->
+    </el-card>
+    <!-- 显示模板信息 -->
     <el-dialog
       :visible.sync="dialogVisible"
-      :data="pdfTableData"
+      :data="templateTableData"
     >
-      <template slot-scope="scope">
-        <pdf
-          :src="src"
-          :page="query.currentPage"
-          @loaded="handleLoadPdf(scope)"
-        />
-      </template>
+      <!--      <template slot-scope="scope">-->
+      <!--        <pdf-->
+      <!--          :src="src"-->
+      <!--          :page="query.currentPage"-->
+      <!--          @loaded="handleLoadPdf(scope)"-->
+      <!--        />-->
+      <!--        <div-->
+      <!--          id="continer"-->
+      <!--          style="width: 100%;margin: auto;"-->
+      <!--        />-->
+      <!--      </template>-->
+    </el-dialog>
+    <!-- 上传模板文件 -->
+    <el-dialog
+      title="添加模板文件"
+      :visible.sync="dialogAddFile"
+      width="500px"
+    >
+      <el-form
+        id="uploadTemplateFile"
+        label-width="150px"
+      >
+        <el-form-item label="票据代码:">
+          <el-input
+            v-model="billCode"
+            placeholder="billCode"
+            clearable
+            size="small"
+            class="input-width"
+          />
+        </el-form-item>
+        <el-form-item label="备注:">
+          <el-input
+            v-model="memo"
+            placeholder="memo"
+            clearable
+            size="small"
+            class="input-width"
+          />
+        </el-form-item>
+        <el-form-item label="模板名称:">
+          <el-input
+            v-model="templateName"
+            placeholder="templateName"
+            clearable
+            size="small"
+            class="input-width"
+          />
+        </el-form-item>
+        <el-form-item>
+          <input
+            type="file"
+            @change="getFile($event)"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            size="small"
+            @click="submitAddFile"
+          >上传</el-button>
+        </el-form-item>
+      </el-form>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import {
-  getPdfListByPage,
-  deletePdf,
-  deletePdfBatch
-} from '@/api/pdf'
-import pdf from 'vue-pdf'
+  // getPdfListByPage,
+  getTemplateByName,
+  deleteTemplate,
+  deleteTemplateBatch,
+  getAllTemplate
+} from '@/api/template'
+import axios from 'axios'
 
 export default {
-  name: 'ShowPdf',
-  components: {
-    pdf
-  },
+  name: 'ShowTemplate',
   data () {
     return {
-      pdf: {
-        billCode: '',
-        serialCode: ''
-      },
+      billCode: '',
+      memo: '',
+      templateName: '',
       src: '',
       loading: false,
       selectedList: '',
       dialogVisible: false,
-      pdfTableData: '',
+      dialogAddFile: false,
+      templateTableData: '',
+      addArr: [],
+      newFileName: '',
       query: {
         currentPage: 1,
         pageSize: 10,
         currentTotal: 0,
         keyword: ''
+      },
+      fileList: [],
+      token: {
+        accessToken: ''
       }
     }
   },
@@ -146,39 +221,55 @@ export default {
   mounted () {
   },
   methods: {
-    // 获取pdf列表
+    // 获取template列表
     async getTableData () {
       this.loading = true
-      const res = await getPdfListByPage(this.query)
-      this.pdfTableData = res.data.items
-      this.query.currentTotal = res.data.currentTotal
-      this.query.pageSize = res.data.pageSize
-      this.query.currentPage = res.data.currentPage
+      // const res = await getTemplateListByPage(this.query)
+      const res = await getAllTemplate()
+      this.templateTableData = res.data
+      // this.query.currentTotal = res.data.currentTotal
+      // this.query.pageSize = res.data.pageSize
+      // this.query.currentPage = res.data.currentPage
       this.selectedList = []
       this.loading = false
     },
 
     handleSearch () {
+      if (this.query.keyword === '') {
+        this.$message({
+          type: 'info',
+          message: '查询内容不为空'
+        })
+        return
+      }
       this.query.currentPage = 1
-      this.getTableData()
+      const res = getTemplateByName(this.query.keyword)
+      this.templateTableData = res.data
+      this.selectedList = []
+      // this.getTableData()
     },
 
-    // pdf显示框可视化，并展示对应pdf
+    handleShowFile () {
+      this.dialogAddFile = true
+    },
+
+    // template显示框可视化，并展示对应template
     handleShow (scope) {
-      this.dialogVisible = true
-      this.src = 'http://123.206.126.23:8080/pdf/output/' + scope.row.name + '.pdf'
-      // 解决跨域问题
-      this.src = pdf.createLoadingTask(this.src)
+      this.dialogVisible = false
+      document.getElementById('continer').innerHTML = scope.row.template
+      // this.src = 'http://123.206.126.23:8080/pdf/output/' + scope.row.name + '.pdf'
+      // // 解决跨域问题
+      // this.src = pdf.createLoadingTask(this.src)
     },
 
-    // 删除单个pdf文件
+    // 删除单个template文件
     handleDelete ({ $index, row }) {
-      this.$confirm('是否删除该PDF文件', '提示', {
+      this.$confirm('是否删除该模板文件', '提示', {
         confirmButtonText: '是',
         cancelButtonText: '否',
         type: 'warning'
       }).then(async () => {
-        deletePdf(row.id).then(res => {
+        deleteTemplate(row.id).then(res => {
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -195,14 +286,14 @@ export default {
       })
     },
 
-    // 批量删除pdf文件
+    // 批量删除template文件
     async handleDeleteBatch () {
-      this.$confirm('是否删除选中的PDF文件?', '提示', {
+      this.$confirm('是否删除选中的模板文件?', '提示', {
         confirmButtonText: '是',
         cancelButtonText: '否',
         type: 'warning'
       }).then(async () => {
-        deletePdfBatch(this.selectedList).then((res) => {
+        deleteTemplateBatch(this.selectedList).then((res) => {
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -219,8 +310,76 @@ export default {
       })
     },
 
-    handleLoadPdf (scope) {
-      console.log('hasLoaded')
+    getFile (event) {
+      const file = event.target.files
+      console.log(event)
+      console.log(file[0])
+      for (let i = 0; i < file.length; i++) {
+        // 上传类型判断
+        const imgName = file[i].name
+        const src = file[i].date
+        console.log('name:' + src + ':' + imgName)
+        const idx = imgName.lastIndexOf('.')
+        if (idx !== -1) {
+          let ext = imgName.substr(idx + 1).toUpperCase()
+          ext = ext.toLowerCase()
+          if (ext !== 'pdf' && ext !== 'ftl') {
+          } else {
+            this.addArr.push(file[i])
+            console.log(this.addArr[0])
+          }
+        } else {
+        }
+      }
+    },
+
+    submitAddFile () {
+      /**
+       * 添加的文件数量为0，返回提示信息
+       */
+      if (this.addArr.length === 0) {
+        this.$message({
+          type: 'info',
+          message: '请选择要上传的文件'
+        })
+        return
+      }
+      /**
+       * 设置传输的模板文件的信息
+       * @billCode 票据代码
+       * @memo 备注
+       * @templateName 模板名称
+       * @file 模板文件
+       * @type {FormData}
+       */
+      const formData = new FormData()
+      formData.append('billCode', this.billCode)
+      formData.append('memo', this.memo)
+      formData.append('templateName', this.templateName)
+      for (let i = 0; i < this.addArr.length; i++) {
+        formData.append('file', this.addArr[i])
+      }
+      console.log(this.addArr[0].name)
+      // const config = {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data',
+      //     'Authorization': this.token
+      //   }
+      // }
+      axios.post('http://pro.beanbang.cn:8080/printTemplate/uploadTemplate', formData)
+        .then((res) => {
+          if (res.data.success) {
+            this.$message({
+              type: 'success',
+              message: '附件上传成功!'
+            })
+          }
+        })
+      /**
+       * 上传结束后将上传表单清空
+       */
+      document.getElementById('uploadTemplateFile').reset()
+      this.dialogAddFile = false
     },
 
     handleOnSelectChange (selection) {
@@ -249,6 +408,9 @@ export default {
   }
   .permission-tree {
     margin-bottom: 30px;
+  }
+  .input-width {
+    width: 280px;
   }
 }
 </style>
