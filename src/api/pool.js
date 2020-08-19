@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function settingSource (data) {
+export function setSource (data) {
   return request({
     url: 'pool/setSource',
     method: 'post',
@@ -12,6 +12,15 @@ export function settingSource (data) {
 export function addSource (data) {
   return request({
     url: 'pool/addSource',
+    method: 'post',
+    baseURL: 'http://localhost:8083',
+    data
+  })
+}
+
+export function deleteSource (data) {
+  return request({
+    url: 'pool/removeSource',
     method: 'post',
     baseURL: 'http://localhost:8083',
     data
