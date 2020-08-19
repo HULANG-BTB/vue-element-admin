@@ -57,12 +57,12 @@
             <el-upload
               ref="upload"
               class="upload-demo"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              :on-preview="handlePreview"
-              :on-remove="handleRemove"
-              :file-list="fileList"
+              accept=".xlsx, .xls"
+              action=""
+              :on-success="onSuccess"
+              :before-upload="beforeUpload"
             >
-              <el-button slot="trigger" size="small" type="success" icon="el-icon-check" @click="submitUpload">导入</el-button>
+              <el-button slot="trigger" size="small" type="success" icon="el-icon-check">导入</el-button>
             </el-upload>
           </el-col>
         </el-row>
@@ -224,7 +224,7 @@
 </template>
 
 <script>
-import { getProjectListByPage, getBySubjectId, addProject, getSubjectTree, updateProject, deleteProject, deleteProjectBatch, addStd, updateStd, getItemStd } from '@/api/projectManager'
+import { getProjectListByPage, getBySubjectId, addProject, getSubjectTree, updateProject, deleteProject, deleteProjectBatch, addStd, updateStd, getItemStd, importExcel } from '@/api/projectManager'
 import { parseTime } from '@/utils/index'
 
 const defaultUser = {
@@ -446,6 +446,38 @@ export default {
     this.getTableTree()
   },
   methods: {
+    importExcel () {
+      return ''
+    },
+    // 上传之前的回调
+    beforeUpload (file) {
+      if (!/(?:xls|xlsx)$/.test(file.name)) {
+        this.$message.error('请上传Excel文件')
+        return false
+      }
+      const loading = this.$loading({
+        lock: true,
+        text: '正在上传',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.6)'
+      })
+      const form = new FormData()
+      form.append('file', file)
+      importExcel(form)
+        .then((res) => {
+          loading.close()
+        })
+      return false
+    },
+    // 上传成功的回调
+    onSuccess (res) {
+      this.loading.close()
+      if (res.code === '10000') {
+        this.$message.success('操作成功')
+      } else {
+        this.$message.error(res.message)
+      }
+    },
     // 格式化时间
     parseTime (time) {
       return parseTime(new Date(time), '{y}-{m}-{d}')
