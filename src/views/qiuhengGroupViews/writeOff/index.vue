@@ -241,7 +241,7 @@
 import InfoDialog from './billInfo'
 
 // 引入api
-import { receive, sendBack, getDetails, setResult, search } from '@/api/qiuhengGroupApi/writeOff/writeOff'
+import { receive, sendBack, getDetails } from '@/api/qiuhengGroupApi/writeOff/writeOff'
 
 export default {
   components: {
@@ -308,7 +308,7 @@ export default {
       this.setPageSize()
     },
     setPageData () {
-      this.currentData = [],
+      this.currentData = []
       this.currentData = this.tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
     },
 
@@ -325,14 +325,14 @@ export default {
         // 判断未空，则不做操作
       } else if (this.searchForm.orderNo === '' && this.searchForm.date === '') {
         this.setPageData()
-      } else if (this.searchForm.orderNo != '' && this.searchForm.date === '') {
+      } else if (this.searchForm.orderNo !== '' && this.searchForm.date === '') {
         for (let i = 0; i < this.tableData.length; i++) {
           if (this.tableData[i].no === this.searchForm.orderNo) {
             this.currentData = this.tableData.slice(i, i + 1)
             break
           }
         }
-      } else if (this.searchForm.orderNo === '' && this.searchForm.date[0] != '' && this.searchForm.date[1] != '') {
+      } else if (this.searchForm.orderNo === '' && this.searchForm.date[0] !== '' && this.searchForm.date[1] !== '') {
         let startIndex = 0
         let endIndex = 0
         alert(this.searchForm.date[0] + ',' + this.searchForm.date[1])
@@ -375,6 +375,7 @@ export default {
         fNo: row.no
       }
       const res = await getDetails(params)
+      console.log(res)
       // ### 将 res 存入一个对象中 prop 方法传给billInfo.vue
       // row.state = "已审验"
     },
@@ -383,7 +384,6 @@ export default {
       this.dialogVisible = false
     },
     async doReceive () {
-      var that = this
       // 接收核销请求
       const params = {
         fAgenIdCode: this.fAgenIdCode
@@ -398,6 +398,7 @@ export default {
       const params = this.multipleSelection
       this.doDelete()
       const res = await sendBack(params)
+      console.log(res)
       this.setPageData()
     },
     doManualImport () {
