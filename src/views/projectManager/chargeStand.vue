@@ -12,8 +12,9 @@
       </el-form-item>
       <el-form-item label="状态">
         <el-select v-model="queryParams.isenable" placeholder="请选择标准状态" style="width: 150px">
-          <el-option label="已完成" value="已完成" />
-          <el-option label="待审核" value="待审核" />
+          <el-option label="已完成" value="1" />
+          <el-option label="待审核" value="0" />
+          <el-option label="全部" value="" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -164,6 +165,7 @@ export default {
     return {
     //   loading: true,
       queryParams: { // 查询参数
+        isenable: '',
         keyword: '',
         page: 1,
         limit: 10
