@@ -436,46 +436,8 @@ export default {
     rowClass () {
       return 'text-align: center;'
     },
-    components: {
-      'unit-dialog': UnitInfo
-    },
-    data () {
-      return {
-        form: {
-          id: this.billInfo.fAgenIdCode,
-          name: this.billInfo.fAgenName,
-          date: '',
-          remarks: ''
-        },
-        gridData: [
-          {
-            date: '01',
-            name: '王小虎',
-            address: '上海市'
-          },
-          {
-            date: '01',
-            name: '王小虎',
-            address: '上海市'
-          },
-          {
-            date: '01',
-            name: '王小虎',
-            address: '上海市'
-          },
-          {
-            date: '01',
-            name: '王小虎',
-            address: '上海市'
-          }
-        ],
-        labelPosition: 'right',
-        unitInfoDialogVisible: false,
-        unitInfo: {
-          name: '111',
-          no: '222'
-        }
-      }
+    headClass () {
+      return 'text-align: center;'
     },
 
     // 功能函数

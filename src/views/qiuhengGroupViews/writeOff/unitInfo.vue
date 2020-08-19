@@ -22,6 +22,10 @@
 </template>
 
 <script>
+<<<<<<< HEAD
+=======
+
+>>>>>>> f1094634b6f4f2cc9be4a846ff9413dbf02cb4d5
 import { getUnitDetails } from '@/api/qiuhengGroupApi/writeOff/writeOff'
 
 export default {
@@ -29,11 +33,11 @@ export default {
     unitInfo: {
       name: {
         type: String,
-        default: ''
+        default: '单位名称'
       },
       no: {
         type: String,
-        default: ''
+        default: '单位编码'
       }
     }
   },
