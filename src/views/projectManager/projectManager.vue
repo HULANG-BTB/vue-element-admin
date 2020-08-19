@@ -53,6 +53,18 @@
               @click="handleMultDelete"
             >批量删除</el-button>
           </el-col>
+          <el-col :span="1.5">
+            <el-upload
+              ref="upload"
+              class="upload-demo"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :file-list="fileList"
+            >
+              <el-button slot="trigger" size="small" type="success" icon="el-icon-check" @click="submitUpload">导入</el-button>
+            </el-upload>
+          </el-col>
         </el-row>
 
         <el-table :data="projectList" style="width: 100%;margin-top:30px;" border @selection-change="handleSelectionChange">
@@ -449,6 +461,7 @@ export default {
       this.selectedList = []
       // this.loading = false
     },
+    // 获取树形菜单列表
     async getTableTree () {
       const res = await getSubjectTree()
       this.treeList = res.data
@@ -531,13 +544,21 @@ export default {
         this.selectedids = this.selectedList.map(item => {
           return { id: item.id }
         })
-        deleteProjectBatch(this.selectedids).then((res) => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+        deleteProjectBatch(this.selectedids)
+          .then((res) => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.getTableData()
           })
-          this.getTableData()
-        })
+          .catch((err) => {
+            this.$message({
+              type: 'error',
+              message: '删除失败!'
+            })
+            console.error(err)
+          })
       })
     },
     // 模态框提交
@@ -549,39 +570,35 @@ export default {
               this.$set(this.project, {})
               this.getTableData() // 重新渲染数据列表
               this.dialogVisible = false // 关闭模态框
-              // if (res.status === 200) {
               this.$message({
                 showClose: true,
                 message: '添加成功',
                 type: 'success'
               })
-              // } else {
-              //   this.$message({
-              //     showClose: true,
-              //     message: '添加失败',
-              //     type: 'error'
-              //   })
-              // }
+            }).catch((err) => {
+              this.$message({
+                type: 'error',
+                message: '添加失败!'
+              })
+              console.error(err)
             })
           } else { // 编辑
             this.project.isenable = 0 // 有修改就需要重新审核
             await updateProject(this.project).then(res => {
               this.getTableData()
               this.dialogVisible = false
-              // if (res.status === 200) {
               this.$set(this.project, {})
               this.$message({
                 showClose: true,
                 message: '编辑成功',
                 type: 'success'
               })
-              // } else {
-              //   this.$message({
-              //     showClose: true,
-              //     message: '编辑失败',
-              //     type: 'error'
-              //   }) // 或者弹出后台返回错误
-              // }
+            }).catch((err) => {
+              this.$message({
+                type: 'error',
+                message: '编辑失败!'
+              })
+              console.error(err)
             })
           }
         }
@@ -601,7 +618,9 @@ export default {
     // 模态框取消
     cancel () {
       this.dialogVisible = false
+      this.dialogVisibleTow = false
       this.resetForm('project')
+      this.resetForm('standard')
     },
     // 新增标准按钮
     handleAddStand (standData) {

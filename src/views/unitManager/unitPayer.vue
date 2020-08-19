@@ -302,7 +302,7 @@ export default {
       })
     },
     parseTime (time) {
-      return parseTime(new Date(time))
+      return parseTime(new Date(time), '{y}-{m}-{d}')
     }
   }
 }
