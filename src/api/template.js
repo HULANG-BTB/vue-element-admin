@@ -1,34 +1,34 @@
 import request from '@/utils/request'
 
-export function getPdfListByPage (query) {
+export function getTemplateListByPage (query) {
   return request({
-    url: '/pdf/listByPage',
+    url: '/template/listByPage',
     method: 'get',
     params: query
   })
 }
 
-export function getAllPdf () {
+export function getAllTemplate () {
   return request({
     url: '/printTemplate/list',
     method: 'get'
   })
 }
 
-export function getPdfByName (name) {
+export function getTemplateByName (name) {
   return request({
-    url: `/printTemplate/pdfByName/${name}`,
+    url: `/printTemplate/templateByName/${name}`,
     method: 'get'
   })
 }
 
-export function deletePdf (id) {
+export function deleteTemplate (id) {
   return request({
     url: `/printTemplate/remove/${id}`,
     method: 'delete'
   })
 }
-export function deletePdfBatch (data) {
+export function deleteTemplateBatch (data) {
   return request({
     url: `/printTemplate/removeBatch`,
     method: 'delete',
