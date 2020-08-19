@@ -29,8 +29,12 @@
       <el-table-column align="center" label="权限ID" width="80">
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
-      <el-table-column align="left" label="权限名称" width="220">
-        <template slot-scope="scope">{{ scope.row.name }}</template>
+      <el-table-column align="left" label="权限名称" min-width="220" show-overflow-tooltipnpm>
+        <template slot-scope="scope">
+          <span :style="{marginLeft: computedUrlMargin(scope.row.url)}">
+            <span v-if="scope.row.parentId">|-- </span> {{ scope.row.name }}
+          </span>
+        </template>
       </el-table-column>
       <el-table-column align="center" label="请求方式" width="220">
         <template slot-scope="scope">
@@ -63,7 +67,7 @@
         <el-form-item label="父级权限" prop="parentId">
           <el-select v-model="permission.parentId" size="medium" filterable style="width: 100%" clearable placeholder="Request Method">
             <el-option v-for="(item, index) in permissionSelectList" :key="index" :label="item.name" :value="item.id">
-              <span :style="{marginLeft: computedUrlMargin(item.url)}">{{ item.url }}</span>
+              <span :style="{marginLeft: item.parentId === 0 ? '0px': ''}">{{ item.url }}</span>
               <span style="margin-left: 1.5rem; color: #8492a6; font-size: 13px">{{ item.name }}</span>
             </el-option>
           </el-select>
@@ -154,6 +158,7 @@ export default {
     },
 
     deleteBatchDisable () {
+      this.apis
       return this.selectedList.length === 0
     }
   },
