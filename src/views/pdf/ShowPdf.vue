@@ -4,6 +4,8 @@
       :model="query"
       :inline="true"
       class="demo-form-inline"
+      label-width="110px"
+      label-position="right"
     >
       <el-form-item label="查询模板文件:">
         <el-input
@@ -15,6 +17,7 @@
       </el-form-item>
       <el-form-item>
         <el-button
+          type="primary"
           icon="el-icon-search"
           size="small"
           @click="handleSearch"
@@ -22,6 +25,18 @@
       </el-form-item>
       <el-form-item>
         <el-button
+          icon="el-icon-refresh"
+          size="small"
+          @click="handleReset"
+        >重置</el-button>
+      </el-form-item>
+    </el-form>
+    <el-form
+      :inline="true"
+    >
+      <el-form-item>
+        <el-button
+          type="primary"
           icon="el-icon-circle-plus-outline"
           size="small"
           @click="handleShowFile"
@@ -29,6 +44,7 @@
       </el-form-item>
       <el-form-item>
         <el-button
+          type="danger"
           :disabled="deleteBatchDisable"
           icon="el-icon-delete"
           size="small"
@@ -36,64 +52,66 @@
         >批量删除</el-button>
       </el-form-item>
     </el-form>
+    <div align="center">
+      <div style="width: 650px;">
+        <el-table
+          v-loading.body="loading"
+          :data="templateTableData"
+          style="width: 100%; margin-top: 30px;"
+          border
+          @selection-change="handleOnSelectChange"
+        >
+          <el-table-column
+            type="selection"
+            align="center"
+            width="60"
+          />
+          <el-table-column
+            align="left"
+            label="模板ID"
+            width="100"
+          >
+            <template slot-scope="scope">{{ scope.row.id }}</template>
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="模板名称"
+            width="290"
+          >
+            <template slot-scope="scope">{{ scope.row.name }}</template>
+          </el-table-column>
+          <el-table-column
+            align="center"
+            label="操作"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-button
+                type="primary"
+                size="small"
+                @click="handleShowTemplate(scope)"
+              >查看</el-button>
+              <el-button
+                type="danger"
+                size="small"
+                @click="handleDelete(scope)"
+              >删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
 
     <el-pagination
-      layout="prev, pager, next, jumper"
-      :page-size="query.pageSize"
-      :total="query.currentTotal"
-      :current-page="query.currentPage"
-      :page-sizes="[10, 20, 50, 100, 500, 1000]"
+      layout="prev, pager, next, sizes, jumper"
+      :page-size="query.size"
+      :total="query.total"
+      :current-page="query.current"
+      :page-sizes="[2, 5, 10, 20, 50, 100, 500, 1000]"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
 
-    <div style="width: 650px;">
-      <el-table
-        v-loading.body="loading"
-        :data="templateTableData"
-        style="width: 100%; margin-top: 30px;"
-        border
-        @selection-change="handleOnSelectChange"
-      >
-        <el-table-column
-          type="selection"
-          align="center"
-          width="60"
-        />
-        <el-table-column
-          align="left"
-          label="模板ID"
-          width="100"
-        >
-          <template slot-scope="scope">{{ scope.row.id }}</template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="模板名称"
-          width="290"
-        >
-          <template slot-scope="scope">{{ scope.row.name }}</template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="操作"
-          width="200"
-        >
-          <template slot-scope="scope">
-            <el-button
-              type="primary"
-              size="mini"
-              @click="handleShow(scope)"
-            >查看</el-button>
-            <el-button
-              type="danger"
-              size="mini"
-              @click="handleDelete(scope)"
-            >删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
     <el-card>
       <div
         id="continer"
@@ -104,19 +122,7 @@
     <el-dialog
       :visible.sync="dialogVisible"
       :data="templateTableData"
-    >
-      <!--      <template slot-scope="scope">-->
-      <!--        <pdf-->
-      <!--          :src="src"-->
-      <!--          :page="query.currentPage"-->
-      <!--          @loaded="handleLoadPdf(scope)"-->
-      <!--        />-->
-      <!--        <div-->
-      <!--          id="continer"-->
-      <!--          style="width: 100%;margin: auto;"-->
-      <!--        />-->
-      <!--      </template>-->
-    </el-dialog>
+    />
     <!-- 上传模板文件 -->
     <el-dialog
       title="添加模板文件"
@@ -156,6 +162,7 @@
         </el-form-item>
         <el-form-item>
           <input
+            id="uploadFileName"
             type="file"
             @change="getFile($event)"
           />
@@ -174,11 +181,12 @@
 
 <script>
 import {
-  // getPdfListByPage,
+  getTemplateListByPage,
+  getTemplate,
   getTemplateByName,
   deleteTemplate,
-  deleteTemplateBatch,
-  getAllTemplate
+  deleteTemplateBatch
+  // getAllTemplate
 } from '@/api/template'
 import axios from 'axios'
 
@@ -189,23 +197,17 @@ export default {
       billCode: '',
       memo: '',
       templateName: '',
-      src: '',
       loading: false,
       selectedList: '',
       dialogVisible: false,
       dialogAddFile: false,
       templateTableData: '',
       addArr: [],
-      newFileName: '',
       query: {
-        currentPage: 1,
-        pageSize: 10,
-        currentTotal: 0,
+        current: 1,
+        size: 2,
+        total: 15,
         keyword: ''
-      },
-      fileList: [],
-      token: {
-        accessToken: ''
       }
     }
   },
@@ -221,19 +223,24 @@ export default {
   mounted () {
   },
   methods: {
-    // 获取template列表
+    /**
+     * 获取template列表
+     */
     async getTableData () {
       this.loading = true
-      // const res = await getTemplateListByPage(this.query)
-      const res = await getAllTemplate()
-      this.templateTableData = res.data
-      // this.query.currentTotal = res.data.currentTotal
-      // this.query.pageSize = res.data.pageSize
-      // this.query.currentPage = res.data.currentPage
+      const res = await getTemplateListByPage(this.query)
+      // const res = await getAllTemplate()
+      this.templateTableData = res.data.records
+      this.query.total = res.data.total
+      this.query.size = res.data.size
+      this.query.current = res.data.current
       this.selectedList = []
       this.loading = false
     },
 
+    /**
+     * 查询模板信息
+     */
     handleSearch () {
       if (this.query.keyword === '') {
         this.$message({
@@ -249,20 +256,36 @@ export default {
       // this.getTableData()
     },
 
+    /**
+     * 重置查询信息
+     */
+    handleReset () {
+      this.query.keyword = ''
+      this.query.currentPage = 1
+      this.selectedList = []
+      this.getTableData()
+    },
+
     handleShowFile () {
       this.dialogAddFile = true
     },
 
-    // template显示框可视化，并展示对应template
+    /**
+     * template显示框可视化，并展示对应template
+     */
     handleShow (scope) {
       this.dialogVisible = false
       document.getElementById('continer').innerHTML = scope.row.template
-      // this.src = 'http://123.206.126.23:8080/pdf/output/' + scope.row.name + '.pdf'
-      // // 解决跨域问题
-      // this.src = pdf.createLoadingTask(this.src)
     },
 
-    // 删除单个template文件
+    handleShowTemplate (scope) {
+      this.dialogVisible = false
+      document.getElementById('continer').innerHTML = getTemplate(scope.row.id).data
+    },
+
+    /**
+     * 删除单个模板文件
+     */
     handleDelete ({ $index, row }) {
       this.$confirm('是否删除该模板文件', '提示', {
         confirmButtonText: '是',
@@ -286,7 +309,9 @@ export default {
       })
     },
 
-    // 批量删除template文件
+    /**
+     * 批量删除模板文件
+     */
     async handleDeleteBatch () {
       this.$confirm('是否删除选中的模板文件?', '提示', {
         confirmButtonText: '是',
@@ -317,18 +342,23 @@ export default {
       for (let i = 0; i < file.length; i++) {
         // 上传类型判断
         const imgName = file[i].name
-        const src = file[i].date
-        console.log('name:' + src + ':' + imgName)
+        console.log(imgName)
         const idx = imgName.lastIndexOf('.')
         if (idx !== -1) {
           let ext = imgName.substr(idx + 1).toUpperCase()
           ext = ext.toLowerCase()
           if (ext !== 'pdf' && ext !== 'ftl') {
+            this.$message({
+              type: 'info',
+              message: '文件类型错误'
+            })
+            return
           } else {
             this.addArr.push(file[i])
             console.log(this.addArr[0])
           }
         } else {
+          console.log(idx)
         }
       }
     },
@@ -360,12 +390,6 @@ export default {
         formData.append('file', this.addArr[i])
       }
       console.log(this.addArr[0].name)
-      // const config = {
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data',
-      //     'Authorization': this.token
-      //   }
-      // }
       axios.post('http://pro.beanbang.cn:8080/printTemplate/uploadTemplate', formData)
         .then((res) => {
           if (res.data.success) {
@@ -388,13 +412,13 @@ export default {
 
     // 每页数目改变
     handleSizeChange (val) {
-      this.query.pageSize = val
+      this.query.size = val
       this.getTableData()
     },
 
     // 当前页码改变
     handleCurrentChange (val) {
-      this.query.currentPage = val
+      this.query.current = val
       this.getTableData()
     }
   }
