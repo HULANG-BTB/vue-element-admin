@@ -16,6 +16,7 @@
 import { Navbar, Sidebar, AppMain, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
+import { getRSAPublicKey,addRSAPublicKey } from '@/api/common/encryption'
 
 export default {
   name: 'Layout',
@@ -48,10 +49,27 @@ export default {
       }
     }
   },
+  mounted () {
+    this.getPublicKey()
+  },
   methods: {
+    getPublicKey(){
+      console.log("login")
+      getRSAPublicKey().then(response => {
+        localStorage.setItem("publicKey",response.data)
+        addRSAPublicKey().then(response => {
+          this.$message({
+            message: '公钥发送成功',
+            type: 'success'
+          })
+          }
+        )
+      })
+    },
     handleClickOutside () {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
     }
+
   }
 }
 </script>

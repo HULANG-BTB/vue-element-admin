@@ -159,8 +159,10 @@
 import LeftTree from '@/components/leftTree'
 import FormTable from '@/components/formTable'
 import DialogBorder from '@/components/Dialog/dialog-border'
-import {Decrypt,Encrypt} from "@/api/incomeSort/cryptoJS";
-import { getIncomeTree, queryByCondition, queryAllBillSort, add, update, deleteBillTypeRequest } from '@/api/incomeSort/incomeSort'
+import {getRSAKey} from "@/api/common/jsEncrypt";
+import {Decrypt,Encrypt} from "@/api/common/cryptoJS";
+import {getDecryptJson} from "@/api/common/data"
+import { getIncomeTree, queryByCondition, queryAllBillSort, add, update, deleteBillTypeRequest,getRSAPublicKey } from '@/api/incomeSort/incomeSort'
 export default {
   components: {
     LeftTree,
@@ -353,6 +355,10 @@ export default {
     this.init()
   },
   methods: {
+    init () {
+      this.freshTreeAndTable()
+      this.searchFormData[2].options = this.formOptions.natureCodeOptions
+    },
     transfer (item, treeData) {
       item.forEach((element, key) => {
         treeData[key] = {
@@ -391,17 +397,17 @@ export default {
     },
     requestTableData (param) {
       queryByCondition(param).then(response => {
-        // response=JSON.parse(Decrypt(response))
         const data = response.data
-        this.total = data.total
-        this.tableData.bodyData = data.list
+        const aesKey=response.aseKey
+        const rs= getDecryptJson(data,aesKey)
+        console.log("rs:{}",rs)
+        this.total = rs.total
+
+        this.tableData.bodyData = rs.list
       })
     },
     getLeftTree () {
       getIncomeTree().then(response => {
-        // console.log("加密response{}",response)
-        // response=JSON.parse(Decrypt(response))
-        // console.log("解密response{}",response)
         response.data.list.forEach(tree => {
           tree.name = tree.code + ' ' + tree.name
           if (tree.incomeSortDTOList.length > 0) {
@@ -437,9 +443,7 @@ export default {
         this.updateDialog = true
         this.updateDialogData.headTitle = '编辑收入种类'
         this.updateDialogVisible = true
-        console.log('row', row)
         this.incomeSort = { ...row }
-        console.log('insort', this.incomeSort)
       }
 
       function deleteBillType () {
@@ -576,10 +580,7 @@ export default {
       this.incomeSort = {}
       this.$refs['updateForm'].resetFields()
     },
-    init () {
-      this.freshTreeAndTable()
-      this.searchFormData[2].options = this.formOptions.natureCodeOptions
-    },
+
     freshTreeAndTable () {
       this.getLeftTree()
       const param = this.page

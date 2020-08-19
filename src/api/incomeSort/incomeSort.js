@@ -6,10 +6,19 @@
  * @Description:
  */
 import request from '@/utils/request';
-import {Decrypt,Encrypt} from "@/api/incomeSort/cryptoJS";
+import {Decrypt,Encrypt,GetKey} from "@/api/common/cryptoJS";
+import {RSAencrypt,RSAdencrypt,getRSAKey} from "@/api/common/jsEncrypt";
+import {getEncryptedJson} from "@/api/common/data"
 
 
 const baseUrl = '/incomeSort/'
+
+export function getRSAPublicKey(){
+  return request({
+    url: baseUrl + 'getRSAPublicKey',
+    method: 'get',
+  })
+}
 
 export function getIncomeTree (data) {
   return request({
@@ -20,8 +29,8 @@ export function getIncomeTree (data) {
 }
 
 export function queryByCondition (data) {
-  // console.log("加密测试")
-  // data=Encrypt(JSON.stringify(data));
+  //数据加密
+  data=getEncryptedJson(data)
   return request({
     url: baseUrl + 'pageQueryById',
     method: 'post',
