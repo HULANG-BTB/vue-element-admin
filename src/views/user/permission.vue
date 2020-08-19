@@ -37,8 +37,10 @@
           <el-button :style="requestMethodStyle(scope.row.method)" type="text" size="mini">{{ scope.row.method }}</el-button>
         </template>
       </el-table-column>
-      <el-table-column align="header-center" label="请求路径">
-        <template slot-scope="scope">{{ scope.row.url }}</template>
+      <el-table-column align="header-center" label="请求路径" min-width="300px">
+        <template slot-scope="scope">
+          <span :style="{marginLeft: computedUrlMargin(scope.row.url)}">{{ scope.row.url }}</span>
+        </template>
       </el-table-column>
       <el-table-column align="center" label="最后修改" width="170">
         <template slot-scope="scope">{{ parseTime(scope.row.updateTime) }}</template>
@@ -46,7 +48,7 @@
       <el-table-column align="header-center" label="操作人">
         <template slot-scope="scope">{{ scope.row.operator }}</template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="220">
+      <el-table-column align="center" label="操作" width="220" fixed="right">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleEdit(scope)">编辑</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope)">删除</el-button>
