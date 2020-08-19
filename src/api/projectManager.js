@@ -71,6 +71,15 @@ export function projectCheck (data) {
     data: data
   })
 }
+
+export function importExcel (data) {
+  return request({
+    url: '/item/import',
+    method: 'post',
+    data: data
+  })
+}
+
 // 项目标准
 export function getStdListByPage (data) {
   return request({
