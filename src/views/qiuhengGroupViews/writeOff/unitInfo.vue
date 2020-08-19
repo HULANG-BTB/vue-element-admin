@@ -23,19 +23,18 @@
 
 <script>
 
-import  {getUnitDetails } from '@/api/qiuhengGroupApi/writeOff/writeOff'
-
+import { getUnitDetails } from '@/api/qiuhengGroupApi/writeOff/writeOff'
 
 export default {
   props: {
     unitInfo: {
       name: {
         type: String,
-        default: ''
+        default: '单位名称'
       },
       no: {
         type: String,
-        default: ''
+        default: '单位编码'
       }
     }
   },
@@ -48,7 +47,7 @@ export default {
     // 方法区
     async getData () {
       const params = {
-        unitId: unitInfo.no
+        unitId: this.unitInfo.no
       }
       const res = await getUnitDetails(params)
       alert(res)
