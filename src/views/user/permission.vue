@@ -67,7 +67,7 @@
         <el-form-item label="父级权限" prop="parentId">
           <el-select v-model="permission.parentId" size="medium" filterable style="width: 100%" clearable placeholder="Request Method">
             <el-option v-for="(item, index) in permissionSelectList" :key="index" :label="item.name" :value="item.id">
-              <span :style="{marginLeft: item.parentId === 0 ? '0px': ''}">{{ item.url }}</span>
+              <span :style="{marginLeft: item.parentId === 0 ? '0px': '20px'}"><span v-if="item.parentId">|-- </span> {{ item.url }}</span>
               <span style="margin-left: 1.5rem; color: #8492a6; font-size: 13px">{{ item.name }}</span>
             </el-option>
           </el-select>
