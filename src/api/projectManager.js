@@ -1,9 +1,11 @@
 import request from '@/utils/request'
 
+const BASE_URL = '/base'
+
 // 项目管理
 export function getProjectListByPage (data) {
   return request({
-    url: '/item/listByPage',
+    url: `${BASE_URL}/item/listByPage`,
     method: 'post',
     data: data
   })
@@ -11,14 +13,14 @@ export function getProjectListByPage (data) {
 
 export function getSubjectTree () {
   return request({
-    url: '/item/getItemTree',
+    url: `${BASE_URL}/item/getItemTree`,
     method: 'get'
   })
 }
 
 export function getIncomSortName (data) {
   return request({
-    url: '/item/getIncomSortName',
+    url: `${BASE_URL}/item/getIncomSortName`,
     method: 'get',
     params: { 'code': data }
   })
@@ -26,7 +28,7 @@ export function getIncomSortName (data) {
 
 export function getBySubjectId (data) {
   return request({
-    url: '/incomeSort/getBySubjectId',
+    url: `${BASE_URL}/incomeSort/getBySubjectId`,
     method: 'get',
     params: { 'subjectId': data }
   })
@@ -34,7 +36,7 @@ export function getBySubjectId (data) {
 
 export function addProject (data) {
   return request({
-    url: '/item/save',
+    url: `${BASE_URL}/item/save`,
     method: 'post',
     data: data
   })
@@ -42,7 +44,7 @@ export function addProject (data) {
 
 export function updateProject (user) {
   return request({
-    url: '/item/update',
+    url: `${BASE_URL}/item/update`,
     method: 'post',
     data: user
   })
@@ -50,7 +52,7 @@ export function updateProject (user) {
 
 export function deleteProject (data) {
   return request({
-    url: '/item/delete',
+    url: `${BASE_URL}/item/delete`,
     method: 'post',
     data: { id: data }
   })
@@ -58,7 +60,7 @@ export function deleteProject (data) {
 
 export function deleteProjectBatch (data) {
   return request({
-    url: '/item/batchDelete',
+    url: `${BASE_URL}/item/batchDelete`,
     method: 'post',
     data: data
   })
@@ -66,7 +68,7 @@ export function deleteProjectBatch (data) {
 
 export function projectCheck (data) {
   return request({
-    url: '/item/batchVerify',
+    url: `${BASE_URL}/item/batchVerify`,
     method: 'post',
     data: data
   })
@@ -74,7 +76,7 @@ export function projectCheck (data) {
 
 export function importExcel (data) {
   return request({
-    url: '/item/import',
+    url: `${BASE_URL}/item/import`,
     method: 'post',
     data: data
   })
@@ -83,7 +85,7 @@ export function importExcel (data) {
 // 项目标准
 export function getStdListByPage (data) {
   return request({
-    url: '/itemstd/listByPage',
+    url: `${BASE_URL}/itemstd/listByPage`,
     method: 'post',
     data: data
   })
@@ -91,7 +93,7 @@ export function getStdListByPage (data) {
 
 export function getItemStd (data) {
   return request({
-    url: '/itemstd/getItemStd',
+    url: `${BASE_URL}/itemstd/getItemStd`,
     method: 'post',
     data: { itemCode: data }
   })
@@ -99,7 +101,7 @@ export function getItemStd (data) {
 
 export function addStd (data) {
   return request({
-    url: '/itemstd/save',
+    url: `${BASE_URL}/itemstd/save`,
     method: 'post',
     data: data
   })
@@ -107,7 +109,7 @@ export function addStd (data) {
 
 export function updateStd (user) {
   return request({
-    url: '/itemstd/update',
+    url: `${BASE_URL}/itemstd/update`,
     method: 'post',
     data: user
   })
@@ -115,7 +117,7 @@ export function updateStd (user) {
 
 export function deleteStd (data) {
   return request({
-    url: '/itemstd/delete',
+    url: `${BASE_URL}/itemstd/delete`,
     method: 'post',
     data: { id: data }
   })
@@ -123,7 +125,7 @@ export function deleteStd (data) {
 
 export function deleteStdBatch (data) {
   return request({
-    url: '/itemstd/batchDelete',
+    url: `${BASE_URL}/itemstd/batchDelete`,
     method: 'post',
     data: data
   })
@@ -131,7 +133,7 @@ export function deleteStdBatch (data) {
 
 export function projectStdCheck (data) {
   return request({
-    url: '/itemstd/batchVerify',
+    url: `${BASE_URL}/itemstd/batchVerify`,
     method: 'post',
     data: data
   })
@@ -140,14 +142,14 @@ export function projectStdCheck (data) {
 // 项目管理
 export function getGroupListByPage (data) {
   return request({
-    url: '/group/listByPage',
+    url: `${BASE_URL}/group/listByPage`,
     method: 'post',
     data: data
   })
 }
 export function addGroup (data) {
   return request({
-    url: '/group/save',
+    url: `${BASE_URL}/group/save`,
     method: 'post',
     data: data
   })
@@ -155,7 +157,7 @@ export function addGroup (data) {
 
 export function deleteGroup (data) {
   return request({
-    url: '/group/delete',
+    url: `${BASE_URL}/group/delete`,
     method: 'post',
     data: { id: data }
   })
@@ -163,7 +165,7 @@ export function deleteGroup (data) {
 
 export function getItemList (data) {
   return request({
-    url: '/groupItem/getItemInfo',
+    url: `${BASE_URL}/groupItem/getItemInfo`,
     method: 'post',
     data: { groupCode: data }
   })
@@ -171,7 +173,7 @@ export function getItemList (data) {
 
 export function deleteItemFromGroup (data) {
   return request({
-    url: '/groupItem/delete',
+    url: `${BASE_URL}/groupItem/delete`,
     method: 'post',
     data: data
   })

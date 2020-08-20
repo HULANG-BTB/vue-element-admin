@@ -1,9 +1,11 @@
 import request from '@/utils/request'
 import qs from 'querystring'
 
+const BASE_URL = '/base'
+
 export function login (data) {
   return request({
-    url: '/user/login',
+    url: `${BASE_URL}/user/login`,
     method: 'post',
     data: qs.stringify(data),
     headers: {
@@ -14,7 +16,7 @@ export function login (data) {
 
 export function getInfo (token) {
   return request({
-    url: '/user/info',
+    url: `${BASE_URL}/user/info`,
     method: 'get',
     params: { token } // Todo 生产环境删除
   })
@@ -22,21 +24,21 @@ export function getInfo (token) {
 
 export function logout () {
   return request({
-    url: '/user/logout',
+    url: `${BASE_URL}/user/logout`,
     method: 'post'
   })
 }
 
 export function getUserList () {
   return request({
-    url: '/user/list',
+    url: `${BASE_URL}/user/list`,
     method: 'get'
   })
 }
 
 export function getUserListByPage (query) {
   return request({
-    url: '/user/listByPage',
+    url: `${BASE_URL}/user/listByPage`,
     method: 'get',
     params: query
   })
@@ -44,7 +46,7 @@ export function getUserListByPage (query) {
 
 export function updateUser (user) {
   return request({
-    url: '/user/update',
+    url: `${BASE_URL}/user/update`,
     method: 'put',
     data: user
   })
@@ -52,14 +54,14 @@ export function updateUser (user) {
 
 export function deleteUser (id) {
   return request({
-    url: `/user/remove/${id}`,
+    url: `${BASE_URL}/user/remove/${id}`,
     method: 'delete'
   })
 }
 
 export function deleteUserBatch (data) {
   return request({
-    url: `/user/removeBatch`,
+    url: `${BASE_URL}/user/removeBatch`,
     method: 'delete',
     data: data
   })
@@ -67,7 +69,7 @@ export function deleteUserBatch (data) {
 
 export function addUser (data) {
   return request({
-    url: `/user/save`,
+    url: `${BASE_URL}/user/save`,
     method: 'post',
     data
   })
@@ -75,7 +77,7 @@ export function addUser (data) {
 
 export function resetPassword (data) {
   return request({
-    url: '/user/resetPassword',
+    url: `${BASE_URL}/user/resetPassword`,
     method: 'put',
     data: data
   })
