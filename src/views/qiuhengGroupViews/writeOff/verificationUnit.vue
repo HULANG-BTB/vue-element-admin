@@ -209,7 +209,7 @@ export default {
     async getWriteOffApplyList () {
       // 获取数据
       const { data: res } = await getApplyList(this.queryInfo)
-      console.log(res)
+
       this.writeOffApply.list = res.list
       this.writeOffApply.total = res.total
       this.loading = false
@@ -261,11 +261,11 @@ export default {
       this.dialogVisible = true
       this.isNew = true
       this.row = {
-        fNo: '',
-        fChangeState: '',
-        fIsUpload: '',
-        fMemo: '',
-        fEndDate: ''
+        fno: '',
+        fchangeState: '',
+        fisUpload: '',
+        fmemo: '',
+        fendDate: ''
       }
     },
     // 修改申请对话框显示
@@ -285,10 +285,10 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        if (row.fIsUpload !== '已上报' && row.fChangeState !== '已审验') {
+        if (row.fisUpload !== '已上报' && row.fchangeState !== '已审验') {
           deleteApply(row.fNo)
             .then((res) => {
-              if (res.status === 10000) {
+              if (res.code === 10000) {
                 this.$message({
                   type: 'success',
                   message: '删除成功!'
@@ -337,18 +337,18 @@ export default {
       try {
         const list = []
         this.multipleSelection.forEach(item => {
-          if (item.fIsUpload === '已上报') {
+          if (item.fisUpload === '已上报') {
             this.$message({
               type: 'warning',
               message: '选中的申请中存在已经上报的申请'
             })
             throw new Error('hasUploadApply')
           }
-          list.push(item.fNo)
+          list.push(item.fno)
         })
         uploadApply(list)
           .then((res) => {
-            if (res.status === 10000) {
+            if (res.code === 10000) {
               this.$message({
                 type: 'success',
                 message: '上报成功!'
@@ -384,25 +384,25 @@ export default {
       try {
         const list = []
         this.multipleSelection.forEach(item => {
-          if (item.fChangeState === '已审验') {
+          if (item.fchangeState === '已审验') {
             this.$message({
               type: 'warning',
               message: '选中的申请中存在已经被审验'
             })
             throw new Error('err')
           }
-          if (item.fIsUpload === '未上报') {
+          if (item.fisUpload === '未上报') {
             this.$message({
               type: 'warning',
               message: '选中的申请中存在未上报的'
             })
             throw new Error('err')
           }
-          list.push(item.fNo)
+          list.push(item.fno)
         })
         rescindApply(list)
           .then((res) => {
-            if (res.status === 10000) {
+            if (res.code === 10000) {
               this.$message({
                 type: 'success',
                 message: '撤销成功!'

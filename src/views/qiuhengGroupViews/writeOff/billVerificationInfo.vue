@@ -21,7 +21,7 @@
       <!-- 按钮区 -->
       <div style="float: right;">
         <el-button
-          v-if="row.fIsUpload!=='已上报'"
+          v-if="row.fisUpload!=='已上报'"
           type="primary"
           size="small"
           icon="el-icon-document-checked"
@@ -45,8 +45,8 @@
           :offset="9"
           style="color: red; font-size: 15px"
         >
-          <span v-if="row.fChangeState==='已审验'">已审验</span>
-          <span v-if="row.fChangeState!=='已审验'&&row.fIsUpload==='已上报'">已上报</span>
+          <span v-if="row.fchangeState==='已审验'">已审验</span>
+          <span v-if="row.fchangeState!=='已审验'&&row.fisUpload==='已上报'">已上报</span>
         </el-col>
       </el-row>
       <el-row>
@@ -65,11 +65,11 @@
           />
         </el-col>
         <el-col
-          v-if="row.fChangeState==='已审验'"
+          v-if="row.fchangeState==='已审验'"
           :span="4"
           :offset="9"
           style="color: red; font-size: 15px; text-align: right; margin-top: 7px;"
-        >审验结果： {{ row.fCheckResult }}</el-col>
+        >审验结果： {{ row.fcheckResult }}</el-col>
       </el-row>
       <el-row>
         <el-col
@@ -94,7 +94,7 @@
         </el-col>
         <el-col :span="8">
           <el-date-picker
-            v-if="row.fIsUpload==='已上报'"
+            v-if="row.fisUpload==='已上报'"
             v-model="endDate"
             type="date"
             placeholder="选择日期"
@@ -102,7 +102,7 @@
             disabled
           />
           <el-date-picker
-            v-if="row.fIsUpload!=='已上报'"
+            v-if="row.fisUpload!=='已上报'"
             v-model="endDate"
             type="date"
             placeholder="选择日期"
@@ -251,12 +251,11 @@ export default {
       this.author = '杨乐乐'
       this.date = new Date().toLocaleDateString()
       this.unitName = '北京市海淀区交警大队'
-      this.memo = this.row.fMemo
-      if (this.row.fEndDate !== '') {
-        this.endDate = new Date()
-        this.endDate.setTime(this.row.fEndDate)
+      this.memo = this.row.fmemo
+      if (this.row.fendDate !== '') {
+        this.endDate = this.row.fendDate
       }
-      if (this.row.fNo !== '') {
+      if (this.row.fno !== '') {
         this.getWriteOffItems()
       } else {
         this.loading = false
