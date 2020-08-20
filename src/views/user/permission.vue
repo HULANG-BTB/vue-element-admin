@@ -31,7 +31,7 @@
       </el-table-column>
       <el-table-column align="left" label="权限名称" min-width="220" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span :style="{marginLeft: computedUrlMargin(scope.row.url)}">
+          <span :style="{marginLeft: computedUrlMargin(scope.row)}">
             <span v-if="scope.row.parentId">|-- </span> {{ scope.row.name }}
           </span>
         </template>
@@ -43,7 +43,7 @@
       </el-table-column>
       <el-table-column align="header-center" label="请求路径" min-width="300px">
         <template slot-scope="scope">
-          <span :style="{marginLeft: computedUrlMargin(scope.row.url)}">{{ scope.row.url }}</span>
+          <span :style="{marginLeft: computedUrlMargin(scope.row)}">{{ scope.row.url }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="最后修改" width="170">
@@ -338,12 +338,15 @@ export default {
     },
 
     // 计算Url 偏移
-    computedUrlMargin (str1) {
+    computedUrlMargin (row) {
       let count = 0
+      let str1 = row.url
       while (str1.indexOf('/') !== -1) {
         str1 = str1.replace('/', '')
         count++
       }
+      const hasParent = row.parentId === 0 ? 1 : 2
+      count = count > hasParent ? count : hasParent
       return (count - 1) * 30 + 'px'
     }
   }
