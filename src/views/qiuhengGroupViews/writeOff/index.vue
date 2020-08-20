@@ -266,7 +266,7 @@ export default {
         date: '',
         author: '',
         fNo: ''
-      },
+      }
     }
   },
   created () {

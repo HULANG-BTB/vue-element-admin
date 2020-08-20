@@ -59,11 +59,6 @@
             <span>{{ info.fAgenIdCode }}</span>
           </el-form-item>
         </el-col>
-        <el-col
-          :span="5.5"
-          style="float:right"
-        >
-        </el-col>
       </el-row>
       <el-row>
         <el-col :span="10">
