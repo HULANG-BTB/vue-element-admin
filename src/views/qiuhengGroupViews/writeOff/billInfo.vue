@@ -381,28 +381,30 @@ export default {
     billInfo: {
       // 申请单位
       fAgenName: {
-        type: String,
-        default: ''
+        type: String
       },
       // 单位ID
       fAgenIdCode: {
-        type: String,
-        default: ''
+        type: String
       },
       // 编制日期
       date: {
-        type: Date,
-        default: ''
+        type: Date
       },
       // 编制人
       author: {
-        type: String,
-        default: ''
+        type: String
       },
       fNo: {
-        type: String,
-        default: ''
+        type: String
       }
+    }
+  },
+
+  watch: {
+    billInfo(newVal, oldVal){
+      this.billInfo = newVal
+      console.log(this.billInfo.fNo)
     }
   },
 
@@ -410,12 +412,11 @@ export default {
     return {
       gridData: [
         {
-          name: "12",
-          address: "asd"
+          name: '12',
+          address: 'asd'
         }
       ],
 
-      // =============
       form: {
         id: this.billInfo.fAgenIdCode,
         name: this.billInfo.fAgenName,
@@ -424,9 +425,9 @@ export default {
         remarks: ''
       },
       tableData: {
-        date: "",
-        author: "",
-        fNo: ""
+        date: '',
+        author: '',
+        fNo: ''
       },
       datail: [],
       // 开票总览
@@ -443,17 +444,12 @@ export default {
       }
     }
   },
-  watch: {
-    billWatch(val){
-      console.log(this.val)
-    }
-  },
+
   created () {
-    console.log(this.billInfo.fNo)
     this.getData()
   },
+
   methods: {
-    // 样式函数
     rowClass () {
       return 'text-align: center;'
     },

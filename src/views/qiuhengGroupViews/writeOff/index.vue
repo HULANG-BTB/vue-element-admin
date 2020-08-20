@@ -227,7 +227,6 @@
             <dialog-info
               :bill-info="billInfo"
               @closeMoule="closeMoule"
-              :billWatch="billInfo.fNo"
             />
 
           </el-dialog>
@@ -242,7 +241,7 @@
 import InfoDialog from './billInfo'
 
 // 引入api
-import { receive, sendBack, getDetails, setResult, search } from '@/api/qiuhengGroupApi/writeOff/writeOff'
+import { receive, sendBack } from '@/api/qiuhengGroupApi/writeOff/writeOff'
 
 export default {
   components: {
@@ -284,7 +283,7 @@ export default {
         date: '',
         author: '',
         fNo: ''
-      },
+      }
     }
   },
   created () {
@@ -295,6 +294,7 @@ export default {
     rowClass () {
       return 'text-align: center;'
     },
+
     headClass () {
       return 'text-align: center;'
     },
@@ -305,10 +305,12 @@ export default {
       this.currentPage = 1
       this.setPageData()
     },
+
     handleCurrentChange (val) {
       this.currentPage = val
       this.setPageSize()
     },
+
     setPageData () {
       this.currentData = [],
       this.currentData = this.tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
@@ -327,14 +329,14 @@ export default {
         // 判断未空，则不做操作
       } else if (this.searchForm.orderNo === '' && this.searchForm.date === '') {
         this.setPageData()
-      } else if (this.searchForm.orderNo != '' && this.searchForm.date === '') {
+      } else if (this.searchForm.orderNo !== '' && this.searchForm.date === '') {
         for (let i = 0; i < this.tableData.length; i++) {
           if (this.tableData[i].no === this.searchForm.orderNo) {
             this.currentData = this.tableData.slice(i, i + 1)
             break
           }
         }
-      } else if (this.searchForm.orderNo === '' && this.searchForm.date[0] != '' && this.searchForm.date[1] != '') {
+      } else if (this.searchForm.orderNo === '' && this.searchForm.date[0] !== '' && this.searchForm.date[1] !== '') {
         let startIndex = 0
         let endIndex = 0
         alert(this.searchForm.date[0] + ',' + this.searchForm.date[1])
@@ -372,19 +374,18 @@ export default {
       this.billInfo.fNo = row.no
       // ### 将 res 存入一个对象中 prop 方法传给billInfo.vue
       // row.state = "已审验"
+      console.log('index : ' + this.billInfo.fNo)
     },
     closeMoule (e) {
       // 点击关闭的callback事件 e的值为false，这里直接赋值为false
       this.dialogVisible = false
     },
     async doReceive () {
-      var that = this
       // 接收核销请求
       const params = {
         fAgenIdCode: this.fAgenIdCode
       }
       const res = await receive(params)
-      // ### 将数据存在 multipleSelection 再去做分页
       this.tableData = res
       this.setPageData()
     },
@@ -393,6 +394,7 @@ export default {
       const params = this.multipleSelection
       this.doDelete()
       const res = await sendBack(params)
+      console.log(res)
       this.setPageData()
     },
     doManualImport () {
