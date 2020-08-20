@@ -1,6 +1,6 @@
 {
-  "name": "vue-admin-template",
-  "version": "4.4.0",
+  "name": "edcs",
+  "version": "1.0.0",
   "description": "A vue admin template with Element UI & axios & iconfont & permission control & lint",
   "author": "Pan <panfree23@gmail.com>",
   "scripts": {
@@ -19,15 +19,16 @@
     "element-ui": "2.13.2",
     "fuse.js": "^6.4.1",
     "js-cookie": "2.2.0",
+    "moment": "^2.27.0",
     "normalize.css": "7.0.0",
     "nprogress": "^0.2.0",
     "path-to-regexp": "2.4.0",
     "screenfull": "^5.0.2",
     "vue": "2.6.10",
-    "vue-router": "3.3.4",
-    "vuex": "3.1.0",
     "jwt-decode": "^2.2.0",
-    "js-base64": "^3.4.4"
+    "js-base64": "^3.4.4",
+    "vue-router": "3.0.2",
+    "vuex": "3.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "4.4.4",

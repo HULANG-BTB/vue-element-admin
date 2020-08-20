@@ -11,10 +11,26 @@ export function isExternal (path) {
 }
 
 /**
- * @param {string} str
- * @returns {Boolean}
+ * 验证是日期选择器
+ *
+ * @param {*} rule
+ * @param {*} value
+ * @param {*} callback
+ * @param {*} source
+ * @param {*} option
+ * @param {*} other
  */
-export function validUsername (str) {
-  const valid_map = ['admin', 'editor']
-  return valid_map.indexOf(str.trim()) >= 0
+export function validateDatePicker (rule, value, callback, source, option, other) {
+  const thisZero = new Date().setHours(0, 0, 0, 0)
+  const input = new Date(value).setHours(0, 0, 0, 0)
+  if (input < thisZero) {
+    callback(new Error('日期不能在今天之前'))
+  }
+  if (other) {
+    const otherDate = new Date(other).setHours(0, 0, 0, 0)
+    if (otherDate > input) {
+      callback(new Error('当前日期不能在开始日期之前'))
+    }
+  }
+  callback()
 }
