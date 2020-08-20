@@ -22,6 +22,7 @@ Vue.use(permission)
  * Currently MockJs will be used in the production environment,
  * please remove it before going online ! ! !
  */
+
 if (process.env.NODE_ENV !== 'production') {
   const { mockXHR } = require('../mock')
   mockXHR()
@@ -33,6 +34,12 @@ Vue.use(ElementUI, { locale: zhLocale })
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false
+
+import * as filters from '@/api/base/region/filter'
+
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
 
 new Vue({
   el: '#app',
