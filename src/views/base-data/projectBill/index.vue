@@ -211,15 +211,13 @@
             {
               prop: 'itemIsEnabled',
               label: '项目启用',
-              width: 80
+              
             },
-            {
-              prop: 'createTime',
-              label: '创建时间'
-            },
+
             {
               prop: 'updateTime',
-              label: '更新时间'
+              label: '更新时间',
+              width: 180
             }
           ],
           operation: [{

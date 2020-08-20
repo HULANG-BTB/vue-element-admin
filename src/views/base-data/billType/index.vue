@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: 2020-07-31 14:47:07
- * @lastTime: 2020-08-11 15:53:41
+ * @lastTime: 2020-08-20 16:12:41
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -92,6 +92,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="11" class="rightCol">
+            <el-form-item label="助记码" prop="memoryCode">
+              <el-input v-model="billType.memoryCode" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
             <el-form-item label="是否分类" prop="checkSort">
               <el-select v-model="billType.checkSort" placeholder="选择分类或者种类">
                 <el-option
@@ -103,24 +110,28 @@
               </el-select>
             </el-form-item>
           </el-col>
-
+          <el-col :span="11" class="rightCol">
+            <el-form-item v-if="billType.checkSort===0" label="父级分类" prop="pid">
+              <el-select v-model="billType.pid" placeholder="选择票据分类">
+                <el-option
+                  v-for="item in formOptions.billSortOptions"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
             <el-form-item label="票据编码" prop="code">
-              <el-input v-model="billType.code" />
+              <el-input v-model="billType.code" placeholder="票据种类以父类编码为前缀" />
             </el-form-item>
           </el-col>
           <el-col :span="11" class="rightCol">
-            <el-form-item label="票据性质" prop="natureCode">
-              <el-select v-model="billType.natureCode" placeholder="选择票据性质">
-                <el-option
-                  v-for="item in formOptions.natureCodeOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+            <el-form-item v-if="billType.checkSort===0" label="保存年限" prop="safeYear">
+              <el-input v-model="billType.safeYear" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -137,27 +148,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="11" class="rightCol">
-            <el-form-item label="助记码" prop="memoryCode">
-              <el-input v-model="billType.memoryCode" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="11">
-            <el-form-item v-if="billType.checkSort===0" label="父级票据分类" prop="pid">
-              <el-select v-model="billType.pid" placeholder="选择票据分类">
+            <el-form-item label="票据性质" prop="natureCode">
+              <el-select v-model="billType.natureCode" placeholder="选择票据性质">
                 <el-option
-                  v-for="item in formOptions.billSortOptions"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
+                  v-for="item in formOptions.natureCodeOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
                 />
               </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11" class="rightCol">
-            <el-form-item v-if="billType.checkSort===0" label="保存年限" prop="safeYear">
-              <el-input v-model="billType.safeYear" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -316,13 +315,15 @@ export default {
           { required: true, message: '请输入票据名称', trigger: 'blur' }
         ],
         code: [
-          { required: true, message: '请输入票据编码', trigger: 'blur' }
+          { required: true, message: '请输入票据编码', trigger: 'blur' },
+          { pattern: /^(\d{2}){1,2}$/, message: '票据编码为2位或者4位的数字' }
         ],
         billNature: [
           { required: true, message: '请选择票据用途', trigger: 'change' }
         ],
         memoryCode: [
-          { required: true, message: '请输入助记码', trigger: 'blur' }
+          { required: true, message: '请输入助记码', trigger: 'blur' },
+          { pattern: /^[A-Z]*$/, message: '助记码应由大写字母组成' }
         ],
         date: [
           { required: true, message: '请选择生效和失效日期', trigger: 'change' }
