@@ -77,11 +77,11 @@
               <el-button
                 type="primary"
                 size="small"
-                :disabled="submitAllButtonDisabled"
+                :disabled="isCheckBoxChecked"
                 @click="submitAll()"
               >通过</el-button>
               <el-button
-                :disabled="submitAllButtonDisabled"
+                :disabled="isCheckBoxChecked"
                 type="danger"
                 size="small"
                 @click="deleteAll()"
@@ -153,12 +153,6 @@
             size="mini"
             @click="handleEdit(scope); dialogFormVisible = true"
           >查看</el-button>
-          <el-button
-            v-if="!isSend"
-            type="primary"
-            size="mini"
-            @click="handleSubmit(scope)"
-          >提交</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -296,7 +290,7 @@
   </div>
 </template>
 <script>
-import { getAll, addOut, getItem, save, submit, submitAll, deleteAll, util } from '@/api/finanbill.js'
+import { getAll, getItem, check, checkAll, util } from '@/api/finanbill.js'
 
 export default {
   name: 'OutApp',
@@ -317,70 +311,16 @@ export default {
         altercode: '',
         outItemVos: []
       },
-      /**
-       * 领用人选择
-       */
-      useManOptions: [{
-        value: '虚拟领票单位',
-        label: '虚拟领票单位'
-      }, {
-        value: '单位1',
-        label: '单位1'
-      }, {
-        value: '单位2',
-        label: '单位2'
-      }],
       // 出库项展示
       StockoutTableData: [],
       // dialog弹出框可视控制
       dialogFormVisible: false,
-      // 仓库选择
-      warehouseOptions: [{
-        warehouseId: 1,
-        warehouseName: '仓库1'
-      }, {
-        warehouseId: 2,
-        warehouseName: '仓库2'
-      }],
-      // 区划选择
-      rgnCodeOptions: [{
-        rgnCode: '00'
-      }, {
-        rgnCode: '01'
-      }, {
-        rgnCode: '02'
-      }, {
-        rgnCode: '10'
-      }, {
-        rgnCode: '11'
-      }],
-      // 票据类别选择
-      billOptions: [{
-        billPrecode: '00000120',
-        billName: '票据1',
-        selected: false
-      }, {
-        billPrecode: '00000121',
-        billName: '票据2',
-        selected: false
-      }, {
-        billPrecode: '00000210',
-        billName: '票据3',
-        selected: false
-      }, {
-        billPrecode: '01000120',
-        billName: '票据4',
-        selected: false
-      }, {
-        billPrecode: '02000120',
-        billName: '票据5',
-        selected: false
-      }],
       // 对齐方式
       labelPosition: 'left',
+      // 当前展示列是否已经提交了
       isSend: false,
       // 提交多选按钮是否可用
-      submitAllButtonDisabled: true,
+      isCheckBoxChecked: true,
       // 多选的项
       selectedList: [],
       // loading转圈图标可视控制
@@ -488,100 +428,29 @@ export default {
       // this.loading = false
     },
 
-    // 进入出库新增界面
-    async handleAdd () {
+    /**
+     * 提交到审核
+     */
+    async handleCheck (val) {
       this.loading = true
-      const items = await addOut(this.outVo.author).catch(() => { this.loading = false })
-      this.outVo = items.data
-      this.outVo.altercode = 1
-      this.outVo.outItemVos = []
-      // 处理票据代码选择时的选项
-      this.loading = false
-    },
-
-    // 新增item
-    async itemAdd (tableData, pid) {
-      this.loading = true
-      tableData.push({
-        'pid': pid,
-        'billPrecode': '',
-        'billName': '',
-        'number': 0,
-        'billNo1': '0000000001',
-        'billNo2': '0000000000',
-        'id': 0
-      })
-      this.loading = false
-    },
-
-    // // 获取未被选择的
-    // async unselectedBill () {
-    //   var returns = []
-    //   this.outVo.outItemVos.forEach(item => {
-    //     this.billOptions.forEach(e => {
-    //       if (e.billPrecode === item.billPrecode) {
-    //         e.selected = true
-    //       }
-    //     })
-    //   })
-    //   console.log('length:' + this.outVo.outItemVos.length)
-    //   this.billOptions.forEach(item => {
-    //     if (item.selected) {
-    //       returns.push(item)
-    //     }
-    //   })
-    //   console.log(returns)
-    //   return returns
-    // },
-
-    // 详情页面，改变票据代码方法
-    async billPrecodeChange (scope) {
-      this.billOptions.forEach(e => {
-        e.selected = false
-        this.outVo.outItemVos.forEach(item => {
-          if (e.billPrecode === item.billPrecode) {
-            e.selected = true
-          }
-        })
-        if (e.billPrecode === scope.row.billPrecode) {
-          scope.row.billName = e.billName
-        }
-      })
-    },
-
-    // 删除item
-    async itemDelete (index, rows) {
-      this.loading = true
-      rows.splice(index, 1)
-      this.loading = false
-    },
-
-    // 处理保存请求
-    async handleSave () {
-      this.loading = true
-      console.log('save id:' + this.outVo.id)
-      console.log(this.outVo)
-      // 判断数据是否有误
-      // a
-      const subres = await save(this.outVo).catch(() => { this.loading = false })
-      console.log('提交结果：' + subres.data)
-      if (subres.data) {
-        this.$message.success('保存成功！')
+      this.outVo.changeState = val
+      const chkres = await check(this.outVo).catch(() => { this.loading = false })
+      console.log('提交结果：' + chkres.data)
+      if (chkres.data) {
+        this.$message.success('提交成功！')
       } else {
-        this.$message.error('保存失败！')
+        this.$message.error('提交失败！')
       }
       this.loading = false
       this.getTableData()
     },
 
-    // 提交到审核
-    async handleSubmit (scope) {
+    async checkAll (val) {
       this.loading = true
-      this.outVo = Object.assign(this.outVo, scope.row)
-      console.log('id:' + this.outVo.id)
-      const subres = await submit(this.outVo.id).catch(() => { this.loading = false })
-      console.log('提交结果：' + subres.data)
-      if (subres.data) {
+      this.outVo.changeState = val
+      const subAllres = await checkAll(this.selectedList).catch(() => { this.loading = false })
+      console.log('提交结果：' + subAllres.data)
+      if (subAllres.data) {
         this.$message.success('提交成功！')
       } else {
         this.$message.error('提交失败！')
@@ -596,16 +465,16 @@ export default {
     handleSelectionChange (val) {
       this.selectedList = val
       if (val !== undefined && val.length > 0) {
-        this.submitAllButtonDisabled = false
+        this.isCheckBoxChecked = false
       } else {
-        this.submitAllButtonDisabled = true
+        this.isCheckBoxChecked = true
       }
     },
 
-    // 提交到审核多选
+    // 批量处理审核请求
     async submitAll () {
       this.loading = true
-      const subAllres = await submitAll(this.selectedList).catch(() => { this.loading = false })
+      const subAllres = await checkAll(this.selectedList).catch(() => { this.loading = false })
       console.log('提交结果：' + subAllres.data)
       if (subAllres.data) {
         this.$message.success('提交成功！')
@@ -620,15 +489,15 @@ export default {
      * 删除多选
      */
     async deleteAll () {
-      this.loading = true
-      const delAllres = await deleteAll(this.selectedList).catch(() => { this.loading = false })
-      if (delAllres.data) {
-        this.$message.success('删除成功！')
-      } else {
-        this.$message.error('删除失败！')
-      }
-      this.loading = false
-      this.getTableData()
+      // this.loading = true
+      // const delAllres = await deleteAll(this.selectedList).catch(() => { this.loading = false })
+      // if (delAllres.data) {
+      //   this.$message.success('删除成功！')
+      // } else {
+      //   this.$message.error('删除失败！')
+      // }
+      // this.loading = false
+      // this.getTableData()
     },
 
     /**

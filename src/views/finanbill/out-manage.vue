@@ -82,11 +82,11 @@
               <el-button
                 type="primary"
                 size="small"
-                :disabled="submitAllButtonDisabled"
+                :disabled="isCheckBoxChecked"
                 @click="submitAll()"
               >提交</el-button>
               <el-button
-                v-if="!submitAllButtonDisabled"
+                v-if="!isCheckBoxChecked"
                 type="danger"
                 size="small"
                 @click="deleteAll()"
@@ -440,7 +440,7 @@ export default {
       labelPosition: 'left',
       isSend: false,
       // 提交多选按钮是否可用
-      submitAllButtonDisabled: true,
+      isCheckBoxChecked: true,
       // 多选的项
       selectedList: [],
       // loading转圈图标可视控制
@@ -656,9 +656,9 @@ export default {
     handleSelectionChange (val) {
       this.selectedList = val
       if (val !== undefined && val.length > 0) {
-        this.submitAllButtonDisabled = false
+        this.isCheckBoxChecked = false
       } else {
-        this.submitAllButtonDisabled = true
+        this.isCheckBoxChecked = true
       }
     },
 
