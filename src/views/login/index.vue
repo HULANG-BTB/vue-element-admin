@@ -64,6 +64,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
+import { getRSAPublicKey,addRSAPublicKey } from '@/utils/encryption'
 
 
 export default {
@@ -124,8 +125,18 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
+              getRSAPublicKey().then(response => {
+                localStorage.setItem("publicKey",response.data)
+                addRSAPublicKey().then(response => {
+                    this.$message({
+                      message: '公钥发送成功',
+                      type: 'success'
+                    })
+                  this.$router.push({ path: this.redirect || '/' })
+                  this.loading = false
+                  }
+                )
+              })
           }).catch(() => {
             this.loading = false
           })
