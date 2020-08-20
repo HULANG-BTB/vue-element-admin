@@ -29,6 +29,13 @@ export function getTemplateByName (name) {
   })
 }
 
+export function getTemplateById (id) {
+  return request({
+    url: `/printTemplate/templateById/${id}`,
+    method: 'get'
+  })
+}
+
 export function deleteTemplate (id) {
   return request({
     url: `/printTemplate/remove/${id}`,
