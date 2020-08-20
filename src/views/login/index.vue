@@ -126,6 +126,7 @@ export default {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
               getRSAPublicKey().then(response => {
+                console.log("publicKey",response.data)
                 localStorage.setItem("publicKey",response.data)
                 addRSAPublicKey().then(response => {
                     this.$message({
