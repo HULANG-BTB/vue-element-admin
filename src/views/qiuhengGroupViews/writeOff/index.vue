@@ -375,7 +375,7 @@ export default {
       // 退回核销请求
       const params = this.multipleSelection
       this.doDelete()
-      const res = await sendBack(params)
+      await sendBack(params)
       this.setPageData()
     },
     doManualImport () {

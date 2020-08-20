@@ -1,9 +1,9 @@
-import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import Config from '@/settings'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import axios from 'axios'
+import { Message, MessageBox } from 'element-ui'
 import NProgress from 'nprogress'
-import Config from '@/settings'
 
 // create an axios instance
 const service = axios.create({
@@ -18,8 +18,9 @@ service.interceptors.request.use(
     // 请求发送前修改
     NProgress.start()
     if (store.getters.token) {
+      config.headers['Content-Type'] = 'application/json;charset=UTF-8'
       // 请求头附带token
-      config.headers[Config.auth.header] = getToken()
+      config.headers[Config.auth.header] = `Basic ${getToken()}`
     }
     return config
   },
@@ -47,8 +48,8 @@ service.interceptors.response.use(
     NProgress.done()
     // 注释放弃了原本封装中的一切请求结果判断的逻辑 后期如需要使用可以自行概念加
 
-    //   // 401: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-    if (res.code === 401 || res.code === 402 || res.code === 403) {
+    // 40001 : 认证失败 用户登录认证失败 或认证失效
+    if (res.code === 40001) {
       // to re-login
       MessageBox.confirm('登录状态失效，点击取消保持在当前界面，点击重新登录进入登录界面', '确认登出', {
         confirmButtonText: '重新登录',
@@ -61,7 +62,15 @@ service.interceptors.response.use(
       })
       return Promise.reject(new Error(res.msg || 'Error'))
     }
-
+    // 操作不成功 返回失败信息
+    if (res.code !== 10000) {
+      Message({
+        message: res.message,
+        type: 'error',
+        duration: 5 * 1000
+      })
+      return Promise.reject(new Error(res.message || 'Error'))
+    }
     return res
   },
   error => {

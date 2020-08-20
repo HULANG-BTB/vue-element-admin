@@ -376,22 +376,27 @@ export default {
     info: {
       // 申请单位
       fAgenName: {
-        type: String
+        type: String,
+        default: ''
       },
       // 单位ID
       fAgenIdCode: {
-        type: String
+        type: String,
+        default: ''
       },
       // 编制日期
       date: {
-        type: Date
+        type: Date,
+        default: ''
       },
       // 编制人
       author: {
-        type: String
+        type: String,
+        default: ''
       },
       fNo: {
-        type: String
+        type: String,
+        default: ''
       }
     }
   },
@@ -417,7 +422,7 @@ export default {
         fAgenIdCode: '',
         date: '',
         author: '',
-        fNo: '',
+        fNo: ''
       },
       datail: [],
       // 开票总览
@@ -426,12 +431,12 @@ export default {
       incomeData: [],
       // 开票明细
       invoiceData: [],
-      labelPosition: 'right',
+      labelPosition: 'right'
     }
   },
   created () {
     this.tableData = this.info
-    this.$root.eventBus.$on('billNo', (val)=>{
+    this.$root.eventBus.$on('billNo', (val) => {
       this.tableData.fNo = val
       this.getData()
     })
