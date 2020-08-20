@@ -1,5 +1,7 @@
 import request from '@/utils/request'
 
+const BASE_URL = 'http://localhost:8080'
+
 /* 出库相关 */
 
 /**
@@ -8,7 +10,7 @@ import request from '@/utils/request'
  */
 export function getAll (query) {
   return request({
-    url: '/stock-out/showAll',
+    url: BASE_URL + '/stock-out/showAll',
     method: 'post',
     data: query
   })
@@ -20,7 +22,7 @@ export function getAll (query) {
  */
 export function getItem (pid) {
   return request({
-    url: '/stock-out/getItem',
+    url: BASE_URL + '/stock-out/getItem',
     // url: '/mail/updateStatus',
     method: 'get',
     params: { pid: pid }
@@ -33,7 +35,7 @@ export function getItem (pid) {
  */
 export function addOut (author) {
   return request({
-    url: '/stock-out/add',
+    url: BASE_URL + '/stock-out/add',
     method: 'get',
     params: { author: author }
   })
@@ -45,7 +47,7 @@ export function addOut (author) {
  */
 export function save (query) {
   return request({
-    url: '/stock-out/save',
+    url: BASE_URL + '/stock-out/save',
     method: 'post',
     data: query
   })
@@ -57,7 +59,7 @@ export function save (query) {
  */
 export function submit (id) {
   return request({
-    url: '/stock-out/submit',
+    url: BASE_URL + '/stock-out/submit',
     method: 'put',
     params: { id: id }
   })
@@ -69,7 +71,7 @@ export function submit (id) {
  */
 export function submitAll (query) {
   return request({
-    url: '/stock-out/submitAll',
+    url: BASE_URL + '/stock-out/submitAll',
     method: 'put',
     data: query
   })
@@ -80,7 +82,7 @@ export function submitAll (query) {
  */
 export function deleteAll (query) {
   return request({
-    url: '/stock-out/deleteAll',
+    url: BASE_URL + '/stock-out/deleteAll',
     method: 'put',
     data: query
   })
@@ -92,7 +94,7 @@ export function deleteAll (query) {
  */
 export function check (query) {
   return request({
-    url: '/stock-out/check',
+    url: BASE_URL + '/stock-out/check',
     method: 'post',
     data: query
   })
@@ -104,7 +106,7 @@ export function check (query) {
  */
 export function checkAll (query) {
   return request({
-    url: '/stock-out/checkAll',
+    url: BASE_URL + '/stock-out/checkAll',
     method: 'post',
     data: query
   })
