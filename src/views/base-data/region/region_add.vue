@@ -20,9 +20,9 @@
 
       <el-form-item label="区划树级次" prop="level">
         <el-radio-group v-model="regionForm.level" v-on:change="levelChange">
-          <el-radio class="radio" label="1">省</el-radio>
-          <el-radio class="radio" label="2">市</el-radio>
-          <el-radio class="radio" label="3">区/县</el-radio>
+          <el-radio class="radio" :label="1">省</el-radio>
+          <el-radio class="radio" :label="2">市</el-radio>
+          <el-radio class="radio" :label="3">区/县</el-radio>
         </el-radio-group>
       </el-form-item>
 
@@ -44,7 +44,7 @@
       </el-form-item>
       </template>
 
-      <template v-if=" !regionForm.assortment && regionForm.level ">
+      <template v-if="regionForm.assortment != null && regionForm.level && !regionForm.assortment">
       <el-form-item label="业务上级区划" prop="busParentId">
         <el-cascader
           expand-trigger="hover"
@@ -98,6 +98,8 @@
               children:'children'
             },
             parentId:'',
+            provinceList: [],
+            cityList: [],
             categoryList: [],
             categoryActive:[],
             busList: [],
@@ -171,121 +173,97 @@
           }
       },
     methods:{
-          save(){
-            this.$refs.regionForm.validate((valid) => {
-              if(valid){
-                if((!this.regionForm.assortment || this.regionForm.level != 1) && this.categoryActive.length == 0){
-                  alert("请选择所属区划")
-                  return
-                }
-                this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                  if(this.regionForm.assortment && this.regionForm.level == 1){
-                    this.regionForm.parentId = 0
-                  }else{
-                    this.regionForm.parentId = this.categoryActive[this.categoryActive.length-1]
-                  }
-                  if(!this.regionForm.assortment){
-                    this.regionForm.busParentId = this.busActive[this.busActive.length-1]
-                  }
-                  console.log(this.regionForm)
-                  regionApi.addRegion(this.regionForm).then(res => {
-                      if(res.success){
-                        this.$message.success("添加成功")
-                        this.regionForm = {};
-                      }else if(res.message){
-                        this.$message.error(res.message)
-                      }else{
-                        this.$message.error("提交失败")
-                      }
-                  })
-
-                })
+      queryCategory() {
+        regionApi.region_category().then(res => {
+          if(res.success){
+            this.busList = res.data
+          }else if(res.message){
+            this.$message.error(res.message)
+          }else{
+            this.$message.error("页面数据加载失败，请刷新重试！")
+          }
+        })
+        regionApi.region_province().then(res => {
+          if(res.success){
+            this.provinceList = res.data;
+          }
+        })
+        regionApi.region_city().then(res => {
+          if(res.success){
+            this.cityList = res.data;
+          }
+        })
+      },
+      save(){
+        this.$refs.regionForm.validate((valid) => {
+          if(valid){
+            if((!this.regionForm.assortment || this.regionForm.level != 1) && this.categoryActive.length == 0){
+              alert("请选择所属区划")
+              return
+            }
+            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+              if(this.regionForm.assortment && this.regionForm.level == 1){
+                this.regionForm.parentId = 0
+              }else{
+                this.regionForm.parentId = this.categoryActive[this.categoryActive.length-1]
               }
-            })
-          },
-          /*goBack(){
-            this.$router.push({
-              path:'/base-data/region/list',
-              query:{
-                parentId:this.parentId
+              this.regionForm.busParentId = ''
+              if(!this.regionForm.assortment){
+                this.regionForm.busParentId = this.busActive[this.busActive.length-1]
               }
-            })
-          },*/
-          levelChange(val){//树级次
-            if(val == 3){
-                this.regionForm.assortment = false
-                regionApi.region_city().then(res => {
+              regionApi.addRegion(this.regionForm).then(res => {
                   if(res.success){
-                    this.categoryList = res.data
+                    this.$message.success("添加成功")
+                    this.regionForm = {};
+                  }else if(res.message){
+                    this.$message.error(res.message)
+                  }else{
+                    this.$message.error("提交失败")
                   }
               })
-            }
-            if(this.regionForm.assortment){
-                if(val == 2){
-                  regionApi.region_province().then(res => {
-                    if(res.success){
-                      this.categoryList = res.data
-                    }
-                  })
-                }
-            }else if(!this.regionForm.assortment){
-                if(val == 1){
-                  regionApi.region_province().then(res => {
-                    if(res.success){
-                      this.categoryList = res.data
-                    }
-                  })
-                }else if(val == 2){
-                  regionApi.region_city().then(res => {
-                    if(res.success){
-                      this.categoryList = res.data
-                    }
-                  })
-                }
-            }
-            this.categoryActive = []
-          },
-          assortChange(val){//是否分类
-            if(val){
-                if(this.regionForm.level == 3){
-                  this.regionForm.assortment = false
-                  regionApi.region_city().then(res => {
-                    if(res.success){
-                      this.categoryList = res.data
-                    }
-                  })
-                }else if(this.regionForm.level == 2){
-                  regionApi.region_province().then(res => {
-                    if(res.success){
-                      this.categoryList = res.data
-                    }
-                  })
-                }
-            }else{
-                if(this.regionForm.level == 1){
-                  regionApi.region_province().then(res => {
-                    if(res.success){
-                      this.categoryList = res.data
-                    }
-                  })
-                }else  if(this.regionForm.level == 2){
-                  regionApi.region_city().then(res => {
-                    if(res.success){
-                      this.categoryList = res.data
-                    }
-                  })
-                }
-            }
-            this.categoryActive = []
+            })
           }
+        })
+      },
+      levelChange(val){
+        debugger
+        if(val === 3){
+          this.regionForm.assortment = false;
+          this.categoryList = this.cityList
+        }
+        if(this.regionForm.assortment){
+          if(val == 2){
+            this.categoryList = this.provinceList
+          }
+        }else if(!this.regionForm.assortment){
+          if(val === 1){
+            this.categoryList = this.provinceList
+          }else if(val === 2){
+            this.categoryList = this.cityList
+          }
+        }
+        this.categoryActive = [];
+      },
+      assortChange(val){
+        if(val){
+          if(this.regionForm.level === 3){
+            this.regionForm.assortment = false;
+            this.categoryList = this.cityList
+          }else if(this.regionForm.level === 2){
+            this.categoryList = this.provinceList
+          }
+        }else{
+          if(this.regionForm.level === 1){
+            this.categoryList = this.provinceList
+          }else  if(this.regionForm.level === 2){
+            this.categoryList = this.cityList
+          }
+        }
+        this.categoryActive = [];
+      }
     },
     created(){
-      regionApi.region_category().then(res => {
-          if (res.success) {
-              this.busList = res.data
-          }
-      })
-      this.parentId = this.$route.query.parentId
+      this.queryCategory()
     }
   }
 </script>
