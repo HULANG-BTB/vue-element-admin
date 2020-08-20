@@ -2,12 +2,12 @@
   <div>
     <el-header class="top">
       <el-row :gutter="20">
-        <el-col :span="2" :push="1">
+        <!-- <el-col :span="2" :push="1">
           <svg-icon class="icon" icon-class="setting" />
         </el-col>
         <el-col :span="13" class="grid-content" :push="1">
           <div><h3>票据池-设置</h3></div>
-        </el-col>
+        </el-col> -->
         <el-col :span="3" :push="2">
           <el-button
             type="primary"
@@ -15,13 +15,13 @@
             size="small"
             @click="createDialogVisible = true"
           >
-            创建票据池
+            新增票据池
           </el-button>
         </el-col>
       </el-row>
 
       <el-dialog
-        title="创建票据池"
+        title="新增票据池"
         :visible.sync="createDialogVisible"
         width="28%"
         center
@@ -322,20 +322,29 @@ export default {
     },
     // 包含精确查询和查询所有，根据票据编码有无查询
     query () {
+      console.log(this.poolData)
       if (this.billTypeCode.length === 0) {
         batchQuerySource().then(res => {
           this.poolData = res.data
         })
+      } else if (this.billTypeCode.length !== 8) {
+        // 票据代码长度错误
+        this.$message.error('请正确输入8位票据池代码')
+        this.billTypeCode = ''
       } else {
         // 根据票据代码查询票据池
         const billcode = {
           billTypeCode: this.billTypeCode
         }
-        // this.poolData.length = 0
         // this.poolData = null
         // 精确查询
         querySource(billcode).then(res => {
-          this.poolData[0] = res.data
+          const data = res.data
+          this.poolData = []
+          // this.poolData[0] = res.data
+          this.poolData[0] = data
+          console.log(this.poolData)
+          console.log(data)
         })
       }
       this.poolDataVisible = true
@@ -404,7 +413,7 @@ export default {
     },
     enablePool (rowData) {
       // 删除票据池
-      this.$confirm('此操作将启用该票据池不可用, 是否继续?', '提示', {
+      this.$confirm('此操作将启用该票据池, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
