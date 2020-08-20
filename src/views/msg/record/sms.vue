@@ -6,23 +6,22 @@
       class="demo-form-inline"
       @keyup.enter.native="handleSearch"
     >
-      <el-form-item label="邮件ID:">
+      <el-form-item label="短信ID:">
         <el-input
           v-model="query.id"
-          placeholder="请输入邮件ID"
+          placeholder="请输入短信ID"
           clearable
           size="small"
         />
       </el-form-item>
-      <el-form-item label="收件人:">
+      <el-form-item label="收信人:">
         <el-input
-          v-model="query.mailTo"
-          placeholder="请输入收件人"
+          v-model="query.smsTo"
+          placeholder="请输入收信人"
           clearable
           size="small"
         />
       </el-form-item>
-
       <el-form-item label="日期:">
         <div class="block">
           <el-date-picker
@@ -38,16 +37,13 @@
           />
         </div>
       </el-form-item>
-
-      <el-form-item :label="query.isSent ? '已发件':'未发件'">
+      <el-form-item :label="query.isSent ? '已发信':'未发信'">
         <el-switch
           v-model="query.isSent"
           active-color="#13ce66"
           inactive-color="#ff4949"
           @change="handleIsSentChange"
-        />
-      </el-form-item>
-
+        /></el-form-item>
       <el-form-item label>
         <el-button
           type="primary"
@@ -56,64 +52,55 @@
           @click="handleSearch"
         >搜索</el-button>
       </el-form-item>
-      <!-- <el-form-item label>
-        <el-button
-          :disabled="deleteBatchDisable"
-          type="danger"
-          size="small"
-          @click="handleDeleteBatch"
-        >批量删除</el-button>
-      </el-form-item> -->
-      <el-form-item label>
-        <el-button
-          type="success"
-          size="small"
-          @click="getTableData"
-        >重载数据</el-button>
-      </el-form-item>
     </el-form>
-
-    <el-pagination
-      background
-      layout="prev, pager, next, sizes, total, jumper"
-      :total="query.total"
-      :current-page="query.page"
-      :page-sizes="[10, 20, 50, 100, 500, 1000]"
-      :page-size="query.limit"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
 
     <el-table
       v-loading.body="loading"
-      :data="mailTableData"
-      style="width: 100%; margin-top: 30px;"
+      :data="smsTableData"
+      style="width: 100%;"
       border
       @selection-change="handleOnSelectChange"
     >
-      <el-table-column type="selection" align="center" width="55" />
-      <el-table-column align="center" label="邮件Id" width="165">
+      <el-table-column align="center" label="短信Id" width="165">
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
-      <el-table-column align="center" label="发件人" width="165">
-        <template slot-scope="scope">{{ scope.row.mailFrom }}</template>
+      <el-table-column align="center" label="发信人" width="165">
+        <template slot-scope="scope">{{ scope.row.smsFrom }}</template>
       </el-table-column>
-      <el-table-column align="center" label="收件人" width="165">
-        <template slot-scope="scope">{{ scope.row.mailTo }}</template>
+      <el-table-column align="center" label="收信人" width="165">
+        <template slot-scope="scope">{{ scope.row.smsTo }}</template>
       </el-table-column>
-      <el-table-column align="center" label="邮件主题">
-        <template slot-scope="scope">{{ scope.row.subject }}</template>
+      <el-table-column align="center" label="校验码">
+        <template slot-scope="scope">{{ scope.row.verifyCode }}</template>
       </el-table-column>
-      <el-table-column align="center" label="邮件内容">
-        <template slot-scope="scope">{{ util.jsonFormat(scope.row.content) }}</template>
+      <el-table-column align="center" label="短信内容">
+        <template slot-scope="scope"><el-popover
+          slot="reference"
+          placement="top-start"
+          title="短信内容"
+          width="300"
+          trigger="click"
+        >
+          <div class="popover-content" v-html="util.prettyJson(scope.row.content)" />
+          <el-button slot="reference" type="text">点击查看内容</el-button>
+
+        </el-popover></template>
       </el-table-column>
-      <el-table-column align="center" label="发件时间">
+      <el-table-column align="center" label="发信时间">
         <template slot-scope="scope">{{ scope.row.sentDate }}</template>
       </el-table-column>
       <el-table-column align="center" label="是否已发送">
-        <template slot-scope="scope">{{ scope.row.isSent ? '已发送' : '未发送' }}</template>
+        <template slot-scope="scope">
+          <el-tag
+            :key="scope.row.isSent ? '已发送' : '未发送'"
+            :type="scope.row.isSent ? 'success' : 'danger'"
+            effect="plain"
+          >
+            {{ scope.row.isSent ? '已发送' : '未发送' }}
+          </el-tag>
+        </template>
       </el-table-column>
-      <el-table-column align="center" label="发件详情" width="165">
+      <el-table-column align="center" label="发件详情">
         <template slot-scope="scope">{{ scope.row.error }}</template>
       </el-table-column>
       <el-table-column v-if="!query.isSent" align="center" label="操作">
@@ -126,27 +113,36 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      background
+      layout="prev, pager, next, sizes, total, jumper"
+      :total="query.total"
+      :current-page="query.page"
+      :page-sizes="[10, 20, 50, 100, 500, 1000]"
+      :page-size="query.limit"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
 
   </div>
 </template>
 
 <script>
-import { getMailList, updateStatus, util } from '@/api/msg.js'
+import { getSmsList, updateSmsStatus, util } from '@/api/msg.js'
 
 export default {
   data () {
     return {
-      mail: {
+      sms: {
         id: '',
-        mailFrom: '',
-        mailTo: '',
-        subject: '',
+        smsFrom: '',
+        smsTo: '',
         content: '',
         sentDate: '',
         isSent: '',
         error: ''
       },
-      mailTableData: [],
+      smsTableData: [],
       selectedList: [],
       loading: true,
       dialogLoading: false,
@@ -162,10 +158,10 @@ export default {
         limit: 10,
         total: 0,
 
-        id: '',
-        mailTo: '',
+        id: null,
+        smsTo: null,
         isSent: true,
-        period: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 90), new Date()]
+        period: null
 
       },
       pickerOptions: {
@@ -205,11 +201,11 @@ export default {
     this.getTableData()
   },
   methods: {
-    // 获取邮件列表
+    // 获取短信列表
     async getTableData () {
       this.loading = true
-      const res = await getMailList(this.query).catch(() => { this.loading = false })
-      this.mailTableData = res.data.row
+      const res = await getSmsList(this.query).catch(() => { this.loading = false })
+      this.smsTableData = res.data.row
       this.query.total = res.data.total
       this.query.limit = res.data.limit
       this.query.page = res.data.page
@@ -222,21 +218,21 @@ export default {
       this.getTableData()
     },
 
-    // 更新邮件为已发件
+    // 更新短信为已发件
     async handleEdit (scope) {
       this.loading = true
-      this.mail = Object.assign(this.mail, scope.row)
-      this.mail.isSent = true
-      await updateStatus(this.mail).catch(() => { this.loading = false })
+      this.sms = Object.assign(this.sms, scope.row)
+      this.sms.isSent = true
+      await updateSmsStatus(this.sms).catch(() => { this.loading = false })
       this.getTableData()
       this.loading = false
     },
 
     handleReset (scope) {
       this.resetsubjectDialogVisible = true
-      this.mail = Object.assign(this.mail, scope.row)
-      this.mail.subject = ''
-      this.mail.content = ''
+      this.sms = Object.assign(this.sms, scope.row)
+      this.sms.subject = ''
+      this.sms.content = ''
     },
 
     handleOnSelectChange (selection) {
@@ -270,6 +266,13 @@ export default {
     margin-top: 30px;
   }
   .permission-tree {
+    margin-bottom: 30px;
+  }
+  // 跳转页脚
+  .el-pagination {
+    float: right;
+    margin-right: 30px;
+    margin-top: 30px;
     margin-bottom: 30px;
   }
 }

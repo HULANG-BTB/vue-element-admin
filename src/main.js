@@ -1,3 +1,5 @@
+// import locale from 'element-ui/lib/locale/lang/en' // lang i18n
+import * as filters from '@/api/base/region/filter'
 import '@/assets/styles/index.scss' // global css
 import permission from '@/directive/permission/index.js'
 import '@/icons' // icon
@@ -22,6 +24,7 @@ Vue.use(permission)
  * Currently MockJs will be used in the production environment,
  * please remove it before going online ! ! !
  */
+
 if (process.env.NODE_ENV !== 'production') {
   const { mockXHR } = require('../mock')
   mockXHR()
@@ -33,6 +36,10 @@ Vue.use(ElementUI, { locale: zhLocale })
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false
+
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
 
 new Vue({
   el: '#app',
