@@ -1,10 +1,8 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://localhost:8001'
-
 export function savePermission (data) {
   return request({
-    url: `${BASE_URL}/permission/save`,
+    url: `/permission/save`,
     method: 'post',
     data
   })
@@ -12,14 +10,14 @@ export function savePermission (data) {
 
 export function removePermission (id) {
   return request({
-    url: `${BASE_URL}/permission/remove/${id}`,
+    url: `/permission/remove/${id}`,
     method: 'delete'
   })
 }
 
 export function removePermissionBatch (data) {
   return request({
-    url: `${BASE_URL}/permission/removeBatch`,
+    url: `/permission/removeBatch`,
     method: 'delete',
     data: data
   })
@@ -27,7 +25,7 @@ export function removePermissionBatch (data) {
 
 export function updatePermission (data) {
   return request({
-    url: BASE_URL + '/permission/update',
+    url: '/permission/update',
     method: 'put',
     data: data
   })
@@ -35,7 +33,7 @@ export function updatePermission (data) {
 
 export function getPermissionById (id) {
   return request({
-    url: BASE_URL + '/permission/getById',
+    url: '/permission/getById',
     method: 'get',
     params: { id }
   })
@@ -43,28 +41,28 @@ export function getPermissionById (id) {
 
 export function getPermissionByRid (id) {
   return request({
-    url: BASE_URL + '/permission/getByRid/' + id,
+    url: '/permission/getByRid/' + id,
     method: 'get'
   })
 }
 
 export function getPermissionList () {
   return request({
-    url: BASE_URL + '/permission/list',
+    url: '/permission/list',
     method: 'get'
   })
 }
 
 export function getPermissionListByTree () {
   return request({
-    url: BASE_URL + '/permission/listByTree',
+    url: '/permission/listByTree',
     method: 'get'
   })
 }
 
 export function getPermissionListByPage (query) {
   return request({
-    url: BASE_URL + '/permission/listByPage',
+    url: '/permission/listByPage',
     method: 'get',
     params: query
   })
