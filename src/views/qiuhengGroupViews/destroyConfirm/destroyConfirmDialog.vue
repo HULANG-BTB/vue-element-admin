@@ -1,20 +1,20 @@
 <template>
   <el-dialog
-    title="福州市Boss软件"
+    title="财政端票据销毁审核"
     :visible.sync="visible"
     width="70%"
   >
     <div class="verify">
-      <span class="bill">开票审验</span>
+      <span class="bill">票据销毁审核</span>
       <div>
         <el-button
           type="primary"
           size="small"
-        >审验通过</el-button>
+        >审核通过</el-button>
         <el-button
           type="primary"
           size="small"
-        >审验失败</el-button>
+        >审核失败</el-button>
       </div>
     </div>
     <el-divider />
@@ -81,43 +81,76 @@
         />
       </el-form-item>
     </el-form>
-    <el-card shadow="always" style="height: 400px">
+    <el-card shadow="always">
       <div style="height: 230px">
         <div
           class="subject"
           size="small"
         >
-          <span>票据信息</span>
+          <span>票据销毁申请明细</span>
         </div>
-        <el-divider content-position="left">开票审验</el-divider>
-        <div class="img">
-          <img :src="imgUrl" class="image" />
-        </div>
+        <el-divider content-position="left">票据销毁审核</el-divider>
+        <el-table
+          ref="multipleTable"
+          :data="tableData"
+          tooltip-effect="dark"
+          style="width: 100%"
+          class="infinite-list-wrapper"
+          size="small"
+          border
+        >
+          <el-table-column
+            type="index"
+            prop="no"
+            label="序号"
+          />
+          <el-table-column
+            prop="fBillName"
+            label="票据名称"
+          />
+          <el-table-column
+            prop="fBillBatchCode"
+            label="票据代码"
+          />
+          <el-table-column
+            prop="fWarehouseId"
+            label="仓库ID"
+          />
+          <el-table-column
+            prop="fWarehouseName"
+            label="仓库名"
+          />
+          <el-table-column
+            prop="fNumber"
+            label="数量"
+          />
+          <el-table-column
+            prop="fBillNo1"
+            label="起始号"
+          />
+          <el-table-column
+            prop="fBillNo2"
+            label="终止号"
+          />
+        </el-table>
       </div>
     </el-card>
   </el-dialog>
 </template>
 <script>
+import {
+  getItemListByDestroyNo
+} from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
 export default {
   data () {
     return {
       visible: false,
-      tableData: [{
-        no: 1,
-        status: '未审验',
-        type: '手工审核',
-        danwei: '福州市boss软件',
-        time: '20160101-20160131',
-        bill_number: 100,
-        payment: '888888.00',
-        existWarn: '是'
-      }
-      ],
+      tableData: [],
       ruleForm: {
         date1: '',
         date2: '',
         desc: '',
-        danwei: '福州市BOSS软件'
+        danwei: '博思软件股份有限公司'
       },
       rules: {
         date1: [
@@ -126,26 +159,24 @@ export default {
         date2: [
           { type: 'date', required: true, message: '请选择时间', triggr: 'change' }
         ]
-      },
-      imgUrl: 'https://gym-oss-test.oss-cn-shenzhen.aliyuncs.com/boss-bill/123456100.png?Expires=1597808962&OSSAccessKeyId=LTAI4G9QwvLCHMEmgYf2Jupe&Signature=qCgGFaaiTXHLTleEukBR9z8WPqE%3D'
+      }
     }
   },
   mounted () {},
   created () {
-    console.log(this.visible)
-    this.$root.eventBus.$on('visible', (val) => {
+    this.$root.eventBus.$on('fDestroyNoConfirm', (val) => {
+      this.getData(val)
+    })
+    this.$root.eventBus.$on('visibleDestroyConfirm', (val) => {
+      console.log(this.visible)
       this.visible = val
     })
   },
   methods: {
-    getData () {
-      var arr = this.multipleSelection
-      const multis = []
-      for (var i = 0; i < arr.length; i++) {
-        multis.push(arr[i])
-        this.$root.eventBus.$emit('data', multis)
-        this.dialogVisible = false
-      }
+    async getData (val) {
+      const res = await getItemListByDestroyNo(val)
+      console.log(res)
+      this.tableData = res
     }
   }
 }
@@ -153,7 +184,4 @@ export default {
 
 <style lang="scss" scoped>
 @import "~@/assets/scss/home.scss";
-.img {
-  align-content: center;
-}
 </style>
