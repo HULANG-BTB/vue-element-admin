@@ -414,7 +414,7 @@ export default {
           this.editPoolData.minNumber = rowData.minNumber
           this.editPoolData.pushNumber = rowData.pushNumber
           this.data = rowData.enable
-          this.editPoolData.enable = 0
+          this.editPoolData.enable = 1
           deleteSource(this.editPoolData).then(res => {
             if (res.success === true) {
               this.$message({
