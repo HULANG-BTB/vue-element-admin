@@ -36,6 +36,11 @@ export default [
         component: () => import('@/views/qiuhengGroupViews/bill-invoicing/Ticket.vue'),
         name: 'ticket',
         title: '新增开票'
+      },
+      {
+        path: '/paybook',
+        component: () => import('@/views/qiuhengGroupViews/bill-invoicing/PayBook.vue'),
+        name: 'paybook'
       }
     ]
   }
