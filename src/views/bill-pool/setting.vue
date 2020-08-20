@@ -125,7 +125,7 @@
             v-model="editPoolData.billTypeCode"
             size="small"
             autocomplete="off"
-            readonly="true"
+            :readonly="true"
             maxlength="8"
             minlength="8"
           />
@@ -171,17 +171,22 @@
         highlight-current-row
         :data="poolData"
         :border="true"
+        :default-sort="{prop:'billTypeCode',order:'ascending'}"
         @current-change="handleCurrentChange"
       >
         <el-table-column
           prop="billTypeCode"
           label="票据编码"
           width="200"
+          sortable
         />
         <el-table-column prop="minNumber" label="票据池预警数量" width="200" />
         <el-table-column prop="pushNumber" label="每次推送数量" width="200" />
 
-        <el-table-column label="是否可用" width="200">
+        <el-table-column
+          label="是否可用"
+          width="200"
+        >
           <!-- 数据的遍历  scope.row就代表数据的每一个对象-->
           <template slot-scope="scope">
             <el-tag v-if="scope.row.enable==1" type="" size="small">可用</el-tag>
@@ -194,7 +199,7 @@
             <el-button
               type="primary"
               size="mini"
-              @click="callEditDialog(scope.row)"
+              @click="callEditDialog(scope.row, scope.$index)"
             >编辑</el-button>
 
             <el-button type="danger" size="mini" @click="deletePool(scope.row)">删除</el-button>
@@ -249,7 +254,8 @@ export default {
         billTypeCode: '',
         enable: 1,
         success: true,
-        message: ''
+        message: '',
+        rowIndex: 0
       },
       deletePoolData: {
         alterCode: 3,
@@ -264,6 +270,7 @@ export default {
       }
     }
   },
+  // 页面加载时执行
   created () {
     this.query()
   },
@@ -312,6 +319,7 @@ export default {
         })
       })
     },
+    // 包含精确查询和查询所有，根据票据编码有无查询
     query () {
       if (this.billTypeCode.length === 0) {
         batchQuerySource().then(res => {
@@ -331,13 +339,14 @@ export default {
       }
       this.poolDataVisible = true
     },
-    callEditDialog (rowData) {
+    callEditDialog (rowData, index) {
       // 唤起设置票据池界面，需要在此时就传入设置的票据池信息
       this.editDialogVisible = true
       this.editPoolData.billTypeCode = rowData.billTypeCode
       this.editPoolData.minNumber = rowData.minNumber
       this.editPoolData.pushNumber = rowData.pushNumber
       this.data = rowData.enable
+      this.editPoolData.rowIndex = index
     },
     editPool () {
       // 编辑票据池
@@ -357,7 +366,8 @@ export default {
         }
       })
       this.editDialogVisible = false
-      // this.query()
+      // 更改后刷新
+      this.$set(this.poolData, this.poolData.rowIndex, this.poolData[this.poolData.rowIndex])
     },
     deletePool (rowData) {
       // 删除票据池

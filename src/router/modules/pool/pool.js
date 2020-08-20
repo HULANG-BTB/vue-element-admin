@@ -17,19 +17,6 @@ export default [
         component: () => import('@/views/bill-pool/setting'),
         name: 'setting',
         meta: { title: '票据池设置' }
-      },
-      {
-        path: 'delete',
-        component: () => import('@/views/user/user'),
-        name: 'other',
-        meta: { title: '待补充' }
-      },
-      {
-        path: 'add',
-        component: () => import('@/views/user/user'),
-        name: 'other',
-        meta: { title: '待补充' }
-      }
-    ]
+      }]
   }
 ]
