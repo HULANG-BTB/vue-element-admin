@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 const BASE_URL = "http://localhost:8888"
 
-export function receive (data) {
+export function receive(data) {
   return request({
     url: BASE_URL + '/financial/receive',
     method: 'post',
@@ -10,7 +10,7 @@ export function receive (data) {
   })
 }
 
-export function sendBack (data) {
+export function sendBack(data) {
   return request({
     url: BASE_URL + '/financial/sendBack',
     method: 'post',
@@ -18,7 +18,7 @@ export function sendBack (data) {
   })
 }
 
-export function getDetails (data) {
+export function getDetails(data) {
   return request({
     url: BASE_URL + '/financial/getDetails',
     method: 'post',
@@ -26,7 +26,7 @@ export function getDetails (data) {
   })
 }
 
-export function getUnitDetails (data) {
+export function getUnitDetails(data) {
   return request({
     url: BASE_URL + '/financial/getUnitDetails',
     method: 'post',
@@ -34,7 +34,7 @@ export function getUnitDetails (data) {
   })
 }
 
-export function setResult (data) {
+export function setResult(data) {
   return request({
     url: BASE_URL + '/financial/setResult',
     method: 'post',
@@ -42,9 +42,17 @@ export function setResult (data) {
   })
 }
 
-export function search (data) {
+export function pass(data) {
   return request({
-    url: BASE_URL + '/financial/search',
+    url: BASE_URL + '/financial/pass',
+    method: 'post',
+    data: data
+  })
+}
+
+export function unPass(data) {
+  return request({
+    url: BASE_URL + '/financial/unPass',
     method: 'post',
     data: data
   })

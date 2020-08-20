@@ -32,3 +32,11 @@ export function rescindApply (noList) {
     data: noList
   })
 }
+
+export function getItems (queryInfo) {
+  return request({
+    url: BASE_URL + '/unit/selectItem',
+    method: 'get',
+    params: queryInfo
+  })
+}

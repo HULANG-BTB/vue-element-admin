@@ -8,3 +8,13 @@ export function refresh () {
     method: 'get'
   })
 }
+
+export function getItemListByDestroyNo (fDestroyNo) {
+  return request({
+    url: BASE_URL + '/apply/getItemListByDestroyNo',
+    method: 'get',
+    params: {
+      fDestroyNo
+    }
+  })
+}

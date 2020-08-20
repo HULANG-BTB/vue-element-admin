@@ -1,6 +1,6 @@
 <template>
   <div class="destroy-confirm-container">
-    <el-header>
+    <el-header class="header">
       <el-form
         :model="destroySearch"
         label-width="100px"
@@ -11,6 +11,7 @@
             <el-form-item label="业务单号：">
               <el-input
                 v-model="destroySearch.no"
+                size="small"
                 placeholder="请输入需要查询的业务单号"
               />
             </el-form-item>
@@ -19,20 +20,24 @@
             <el-form-item label>
               <el-button
                 icon="el-icon-search"
+                size="small"
                 @click="handleSearch"
               >搜索</el-button>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="4">
             <el-button
+              size="small"
               type="success"
               @click="refreshButton()"
-            >刷新</el-button>
+            ><i class="el-icon-refresh el-icon--left" /> 刷新页面</el-button>
           </el-col>
         </el-row>
       </el-form>
     </el-header>
-    <el-pagination
+    <!-- <el-pagination
       background
       :current-page="page.currentPage"
       :page-sizes="[10,100, 200, 300, 400]"
@@ -41,12 +46,13 @@
       :total="400"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-    />
+    /> -->
 
     <el-table
       :data="tableData"
-      style="width: 100%"
+      style="width: 100%;margin-top:50px"
       :default-sort="{prop: 'id'}"
+      border
     >
       <el-table-column
         type="selection"
@@ -93,22 +99,23 @@
         prop="fStatus"
         label="审核状态"
         sortable
-        width="100"
+        width="120"
       />
       <el-table-column
         fixed="right"
         label="操作"
-        width="100"
+        width="130"
       >
         <template slot-scope="scope">
           <el-button
-            type="text"
+            type="success"
             size="small"
             @click="handleClick(scope.row)"
           >查看</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <destroy-confirm-dialog />
   </div>
 </template>
 
@@ -116,8 +123,13 @@
 import {
   refresh
 } from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
+import DestroyConfirmDialog from '@/views/qiuhengGroupViews/destroyConfirm/destroyConfirmDialog'
+
 export default {
 
+  components: {
+    'destroy-confirm-dialog': DestroyConfirmDialog
+  },
   data () {
     return {
       tableData: [],
@@ -142,6 +154,35 @@ export default {
         pageSize: 1,
         total: 0,
         keyword: ''
+<<<<<<< HEAD
+=======
+      },
+
+      visible: true,
+
+      async refreshButton () {
+        const res = await refresh()
+        // debugger
+        // console.log(res);
+        this.tableData = res
+        // console.log(this.tableData);
+        for (var i = 0; i < this.tableData.length; i++) {
+          if (this.tableData[i].fDestroyType) {
+            this.tableData[i].fDestroyType = '库存票据销毁'
+          } else {
+            this.tableData[i].fDestroyType = '核销票据销毁'
+          }
+        }
+        // eslint-disable-next-line no-redeclare
+        for (var i = 0; i < this.tableData.length; i++) {
+          if (this.tableData[i].fStatus) {
+            this.tableData[i].fStatus = '已审核'
+          } else {
+            this.tableData[i].fStatus = '未审核'
+          }
+        }
+        console.log(this.tableData)
+>>>>>>> 1051464fcaed94f55382915195bd471a6b242fe8
       }
     }
   },
@@ -152,9 +193,7 @@ export default {
     this.refreshButton()// 需要触发的函数
   },
   methods: {
-    handleClick (row) {
-      console.log(row)
-    },
+    // eslint-disable-next-line vue/no-dupe-keys
     async refreshButton () {
       const res = await refresh()
       // debugger
@@ -163,8 +202,19 @@ export default {
     },
     handleSearch () {},
     handleSizeChange () {},
-    handleCurrentChange () {}
+    handleCurrentChange () {},
+    handleClick (row) {
+      // console.log(row)
+      this.$root.eventBus.$emit('fDestroyNoConfirm', row.fDestroyNo)
+      // console.log(this.visible)
+      this.$root.eventBus.$emit('visibleDestroyConfirm', this.visible)
+    }
   }
 
 }
 </script>
+<style scoped>
+.header {
+  margin-top: 20px;
+}
+</style>
