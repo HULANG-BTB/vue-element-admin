@@ -67,7 +67,6 @@
     queryBillTypeTree,
     queryByCondition,
     turnenabled,
-    update,
     deleteItemBillRequest,
     queryItemByCondition,
     addBillItem
