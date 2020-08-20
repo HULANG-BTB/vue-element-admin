@@ -21,7 +21,7 @@
       <!-- 按钮区 -->
       <div style="float: right;">
         <el-button
-          v-if="row.fIsUpload!=='已上报'"
+          v-if="row.fisUpload!=='已上报'"
           type="primary"
           size="small"
           icon="el-icon-document-checked"
@@ -45,8 +45,8 @@
           :offset="9"
           style="color: red; font-size: 15px"
         >
-          <span v-if="row.fChangeState==='已审验'">已审验</span>
-          <span v-if="row.fChangeState!=='已审验'&&row.fIsUpload==='已上报'">已上报</span>
+          <span v-if="row.fchangeState==='已审验'">已审验</span>
+          <span v-if="row.fchangeState!=='已审验'&&row.fisUpload==='已上报'">已上报</span>
         </el-col>
       </el-row>
       <el-row>
@@ -65,58 +65,11 @@
           />
         </el-col>
         <el-col
-          v-if="row.fChangeState==='已审验'"
+          v-if="row.fchangeState==='已审验'"
           :span="4"
           :offset="9"
           style="color: red; font-size: 15px; text-align: right; margin-top: 7px;"
-        >审验结果： {{ row.fCheckResult }}</el-col>
-      </el-row>
-      <el-row
-        v-if="row.fIsUpload!=='已上报'"
-        :gutter="20"
-        style="margin-left:5px"
-      >
-        <el-col
-          :span="11"
-          :offset="1"
-        >
-          <span style="margin-right:8px">编制日期</span>
-          <el-date-picker
-            size="small"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="输入编制日期查询"
-            end-placeholder="输入编制日期查询"
-            :picker-options="pickerOptions"
-            unlink-panels
-          />
-        </el-col>
-        <el-col :span="9">
-          <label>票据种类</label>
-          <el-select
-            v-model="selectType"
-            clearable
-            placeholder="请选择票据种类"
-            style="margin-left:8px"
-            size="small"
-          >
-            <el-option
-              v-for="item in types"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-col>
-        <el-col
-          :span="2"
-          :offset="1.5"
-        >
-          <el-button
-            type="primary"
-            size="small"
-          >查询</el-button>
-        </el-col>
+        >审验结果： {{ row.fcheckResult }}</el-col>
       </el-row>
       <el-row>
         <el-col
@@ -132,12 +85,44 @@
           />
         </el-col>
       </el-row>
-
-      <div v-if="row.fIsUpload==='已上报'">
+      <el-row>
+        <el-col
+          :span="3"
+          style="text-align: right;margin-top: 9px;padding-right: 10px"
+        >
+          核销截止日期
+        </el-col>
+        <el-col :span="8">
+          <el-date-picker
+            v-if="row.fisUpload==='已上报'"
+            v-model="endDate"
+            type="date"
+            placeholder="选择日期"
+            size="small"
+            disabled
+          />
+          <el-date-picker
+            v-if="row.fisUpload!=='已上报'"
+            v-model="endDate"
+            type="date"
+            placeholder="选择日期"
+            size="small"
+            :picker-options="pickerOptions"
+          />
+        </el-col>
+        <el-col :span="3">
+          <el-button
+            type="primary"
+            size="small"
+          >确定</el-button>
+        </el-col>
+      </el-row>
+      <div v-loading="loading">
         <el-table
           :data="items.list"
           :header-cell-style="{'text-align':'center', 'background-color':'#EEF5FD'}"
           :cell-style="{'text-align':'center'}"
+          height="220"
           stripe
           border
         >
@@ -148,32 +133,28 @@
             width="60"
           />
           <el-table-column
-            label="票据种类"
-            prop="fType"
-          />
-          <el-table-column
-            label="票据编码"
-            prop="fBillCode"
+            label="票据批次号"
+            prop="fbatchNo"
           />
           <el-table-column
             label="票据名称"
-            prop="fBillName"
+            prop="fbillName"
           />
           <el-table-column
             label="份数"
-            prop="fNumber"
+            prop="fnumber"
           />
           <el-table-column
             label="起始号"
-            prop="fBillNo1"
+            prop="fbillNo1"
           />
           <el-table-column
             label="终止号"
-            prop="fBillNo2"
+            prop="fbillNo2"
           />
           <el-table-column
             label="金额"
-            prop="fAmt"
+            prop="famt"
           />
         </el-table>
 
@@ -195,31 +176,6 @@
           </el-col>
         </el-row>
       </div>
-
-      <div v-if="row.fIsUpload!=='已上报'">
-        <el-table
-          :data="bill"
-          style="margin-top:8px"
-          :header-cell-style="{'text-align':'center', 'background-color':'#EEF5FD'}"
-          :cell-style="{'text-align':'center'}"
-          stripe
-          border
-        >
-          <el-table-column type="selection" />
-          <el-table-column
-            label="序号"
-            type="index"
-            :index="table_index"
-            width="60"
-          />
-          <el-table-column label="票据种类" />
-          <el-table-column label="票据编码" />
-          <el-table-column label="开票日期" />
-          <el-table-column label="金额" />
-          <el-table-column label="状态" />
-        </el-table>
-      </div>
-
     </div>
     <div
       slot="footer"
@@ -232,7 +188,7 @@
 </template>
 
 <script>
-import { getItemList } from '@/api/qiuhengGroupApi/writeOff/wirteOffUnit'
+import { getItems } from '@/api/qiuhengGroupApi/writeOff/wirteOffUnit'
 export default {
   props: {
     dialogVisible: Boolean,
@@ -249,7 +205,7 @@ export default {
       // 限定时间选择不超过今天
       pickerOptions: {
         disabledDate (time) {
-          return time.getTime() > Date.now()
+          return time.getTime() > Date.now() - 86400000
         }
       },
       // 编制人
@@ -262,19 +218,8 @@ export default {
       unitName: '',
       // 备注
       memo: '',
-      // 下拉框相关数据
-      types: [
-        {
-          value: '1',
-          label: '医疗票据'
-        },
-        {
-          value: '2',
-          label: '教育票据'
-        }
-      ],
-      defaultType: '请选择票据种类',
-      selectType: '',
+      // 截止日期
+      endDate: '',
       // apply item
       items: {
         list: [],
@@ -282,11 +227,12 @@ export default {
       },
       // itemqueryInfo
       queryInfo: {
-        no: this.row.fNo,
+        no: this.row.fno,
         pageNum: 1,
         pageSize: 10
       },
-      bill: []
+      // 加载
+      loading: true
     }
   },
   mounted () {
@@ -305,38 +251,40 @@ export default {
       this.author = '杨乐乐'
       this.date = new Date().toLocaleDateString()
       this.unitName = '北京市海淀区交警大队'
-      this.memo = this.row.fMemo
-      if (this.row.fIsUpload === '已上报') {
-        this.getWriteOffItemList()
+      this.memo = this.row.fmemo
+      if (this.row.fendDate !== '') {
+        this.endDate = this.row.fendDate
+      }
+      if (this.row.fno !== '') {
+        this.getWriteOffItems()
+      } else {
+        this.loading = false
       }
     },
-    async getWriteOffItemList () {
-      const { data: res } = await getItemList(this.queryInfo)
+    async getWriteOffItems () {
+      const { data: res } = await getItems(this.queryInfo)
 
-      this.items.list = res.records
+      this.items.list = res.list
       this.items.total = res.total
-    },
-    // 处理下拉框点击事件
-    handleCommand (command) {
-      if (command !== this.defaultType) {
-        this.defaultType = command
-      }
+
+      this.loading = false
     },
     // 监听 pagesize 改变的事件
     handleSizeChange (newSize) {
       this.loading = true
       this.queryInfo.pageSize = newSize
-      this.getWriteOffItemList()
+      this.getWriteOffItems()
     },
     // 监听 页码值 改变的事件
     handleCurrentChange (newPage) {
       this.loading = true
       this.queryInfo.pageNum = newPage
-      this.getWriteOffItemList()
+      this.getWriteOffItems()
     },
     // 添加明细到数据库
     save () {
-      this.close()
+      this.clear()
+      console.log(this.items.list)
     }
   }
 }

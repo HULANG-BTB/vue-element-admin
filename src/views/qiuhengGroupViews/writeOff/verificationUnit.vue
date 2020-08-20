@@ -94,11 +94,11 @@
           />
           <el-table-column
             label="状态"
-            prop="fChangeState"
+            prop="fchangeState"
           />
           <el-table-column
             label="业务单号"
-            prop="fNo"
+            prop="fno"
           />
           <el-table-column
             label="日期"
@@ -106,15 +106,15 @@
           />
           <el-table-column
             label="合计份数"
-            prop="fNumber"
+            prop="fnumber"
           />
           <el-table-column
             label="金额"
-            prop="fTotalAmt"
+            prop="ftotalAmt"
           />
           <el-table-column
             label="备注"
-            prop="fMemo"
+            prop="fmemo"
           />
           <el-table-column label="操作">
             <template slot-scope="scope">
@@ -210,15 +210,8 @@ export default {
       // 获取数据
       const { data: res } = await getApplyList(this.queryInfo)
 
-      this.writeOffApply.list = res.records
+      this.writeOffApply.list = res.list
       this.writeOffApply.total = res.total
-
-      this.writeOffApply.list.forEach(item => {
-        const date = new Date()
-        date.setTime(item.fDate)
-        item.fDate = date.toLocaleDateString()
-      })
-
       this.loading = false
     },
     // 查询
@@ -268,10 +261,11 @@ export default {
       this.dialogVisible = true
       this.isNew = true
       this.row = {
-        fNo: '',
-        fChangeState: '',
-        fIsUpload: '',
-        fMemo: ''
+        fno: '',
+        fchangeState: '',
+        fisUpload: '',
+        fmemo: '',
+        fendDate: ''
       }
     },
     // 修改申请对话框显示
@@ -291,10 +285,10 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        if (row.fIsUpload !== '已上报' && row.fChangeState !== '已审验') {
+        if (row.fisUpload !== '已上报' && row.fchangeState !== '已审验') {
           deleteApply(row.fNo)
             .then((res) => {
-              if (res.status === 200) {
+              if (res.code === 10000) {
                 this.$message({
                   type: 'success',
                   message: '删除成功!'
@@ -333,21 +327,28 @@ export default {
     },
     // 上报申请
     upload () {
+      if (this.multipleSelection.length === 0) {
+        this.$message({
+          type: 'info',
+          message: '没有选中的申请'
+        })
+        return
+      }
       try {
         const list = []
         this.multipleSelection.forEach(item => {
-          if (item.fIsUpload === '已上报') {
+          if (item.fisUpload === '已上报') {
             this.$message({
               type: 'warning',
               message: '选中的申请中存在已经上报的申请'
             })
             throw new Error('hasUploadApply')
           }
-          list.push(item.fNo)
+          list.push(item.fno)
         })
         uploadApply(list)
           .then((res) => {
-            if (res.status === 200) {
+            if (res.code === 10000) {
               this.$message({
                 type: 'success',
                 message: '上报成功!'
@@ -373,28 +374,35 @@ export default {
     },
     // 撤销申请
     rescindApply () {
+      if (this.multipleSelection.length === 0) {
+        this.$message({
+          type: 'info',
+          message: '没有选中的申请'
+        })
+        return
+      }
       try {
         const list = []
         this.multipleSelection.forEach(item => {
-          if (item.fChangeState === '已审验') {
+          if (item.fchangeState === '已审验') {
             this.$message({
               type: 'warning',
               message: '选中的申请中存在已经被审验'
             })
             throw new Error('err')
           }
-          if (item.fIsUpload === '未上报') {
+          if (item.fisUpload === '未上报') {
             this.$message({
               type: 'warning',
               message: '选中的申请中存在未上报的'
             })
             throw new Error('err')
           }
-          list.push(item.fNo)
+          list.push(item.fno)
         })
         rescindApply(list)
           .then((res) => {
-            if (res.status === 200) {
+            if (res.code === 10000) {
               this.$message({
                 type: 'success',
                 message: '撤销成功!'
