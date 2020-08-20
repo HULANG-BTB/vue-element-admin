@@ -140,6 +140,13 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="收入编码" prop="code">
+              <el-input v-model="incomeSort.code" />
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <el-row>
           <el-col :span="22">
