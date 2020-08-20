@@ -12,17 +12,17 @@ import JsEncrypt from 'jsencrypt/bin/jsencrypt'
  * 生成rsa密钥对，并去除头尾
  * @returns {*}
  */
-export function getRSAKey() {
+export function getRSAKey () {
   var jse = new JsEncrypt({
-    default_key_size:1024,
+    default_key_size: 1024
   })
   // 公钥
   let publicKey = jse.getPublicKey()
   // 私钥
   let privateKey = jse.getPrivateKey()
-  publicKey=getNewKey(publicKey)
-  privateKey=getNewKey(privateKey)
-  localStorage.setItem('privateKey',privateKey)
+  publicKey = getNewKey(publicKey)
+  privateKey = getNewKey(privateKey)
+  localStorage.setItem('privateKey', privateKey)
   return publicKey
 }
 
@@ -32,9 +32,9 @@ export function getRSAKey() {
  * @returns {*}
  * @constructor
  */
-export function RSAencrypt(pas) {
+export function RSAencrypt (pas) {
   var jse = new JsEncrypt()
-  jse.setPublicKey(localStorage.getItem("publicKey"))
+  jse.setPublicKey(localStorage.getItem('publicKey'))
   return jse.encrypt(pas)
 }
 
@@ -44,7 +44,7 @@ export function RSAencrypt(pas) {
  * @returns {*}
  * @constructor
  */
-export function RSAdencrypt(pas) {
+export function RSAdencrypt (pas) {
   var jse = new JsEncrypt()
   jse.setPrivateKey(localStorage.getItem('privateKey'))
   return jse.decrypt(pas)
@@ -55,9 +55,9 @@ export function RSAdencrypt(pas) {
  * @param data
  * @returns {*}
  */
-export function getNewKey(data) {
-  data=data.replace(/\n/g,'')
-  data = data.replace('-----BEGIN PUBLIC KEY-----','')
-  data = data.replace('-----END PUBLIC KEY-----','')
+export function getNewKey (data) {
+  data = data.replace(/\n/g, '')
+  data = data.replace('-----BEGIN PUBLIC KEY-----', '')
+  data = data.replace('-----END PUBLIC KEY-----', '')
   return data
 }

@@ -5,18 +5,17 @@
  * @LastEditors: Jianbinbing
  * @Description:
  */
-import request from '@/utils/request';
-import {Decrypt,Encrypt,GetKey} from "@/utils/cryptoJS";
-import {RSAencrypt,RSAdencrypt,getRSAKey} from "@/utils/jsEncrypt";
-import {getEncryptedJson} from "@/utils/data"
-
+import request from '@/utils/request'
+import { Decrypt, Encrypt, GetKey } from '@/utils/cryptoJS'
+import { RSAencrypt, RSAdencrypt, getRSAKey } from '@/utils/jsEncrypt'
+import { getEncryptedJson } from '@/utils/data'
 
 const baseUrl = '/incomeSort/'
 
-export function getRSAPublicKey(){
+export function getRSAPublicKey () {
   return request({
     url: baseUrl + 'getRSAPublicKey',
-    method: 'get',
+    method: 'get'
   })
 }
 
@@ -46,8 +45,8 @@ export function queryAllIncomeSort () {
 }
 
 export function add (data) {
-  //数据加密
-  data=getEncryptedJson(data)
+  // 数据加密
+  data = getEncryptedJson(data)
   return request({
     url: baseUrl + 'insert',
     method: 'post',
@@ -56,8 +55,8 @@ export function add (data) {
 }
 
 export function update (data) {
-//数据加密
-  data=getEncryptedJson(data)
+// 数据加密
+  data = getEncryptedJson(data)
   return request({
     url: baseUrl + 'update',
     method: 'post',

@@ -1,7 +1,7 @@
 import query_string from 'querystring'
 import request from '@/utils/request'
 
-const baseUrl = '/region/'
+const baseUrl = '/base/region/'
 
 export const region_category = () => {
   return request({

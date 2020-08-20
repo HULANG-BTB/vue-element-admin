@@ -6,10 +6,9 @@
  * @Description:
  */
 
-import request from '@/utils/request';
-import {RSAencrypt,RSAdencrypt,getRSAKey} from "@/utils/jsEncrypt";
-import {getEncryptedJson} from "@/utils/data";
-
+import request from '@/utils/request'
+import { RSAencrypt, RSAdencrypt, getRSAKey } from '@/utils/jsEncrypt'
+import { getEncryptedJson } from '@/utils/data'
 
 const baseUrl = '/encryption/'
 
@@ -17,10 +16,10 @@ const baseUrl = '/encryption/'
  * 获取后端公钥
  * @param data
  */
-export function getRSAPublicKey(data){
+export function getRSAPublicKey (data) {
   return request({
     url: baseUrl + 'getRSAPublicKey',
-    method: 'get',
+    method: 'get'
   })
 }
 
@@ -28,19 +27,18 @@ export function getRSAPublicKey(data){
  * 发送前端公钥
  * @param data
  */
-export function addRSAPublicKey(data){
-  //获取前端公钥
-  let key= getRSAKey();
-  data={
-    "publicKey":key
+export function addRSAPublicKey (data) {
+  // 获取前端公钥
+  const key = getRSAKey()
+  data = {
+    'publicKey': key
   }
-  //用后端公钥加密
-  data=getEncryptedJson(data)
+  // 用后端公钥加密
+  data = getEncryptedJson(data)
   return request({
     url: baseUrl + 'addRSAPublicKey',
     method: 'post',
     data
   })
 }
-
 

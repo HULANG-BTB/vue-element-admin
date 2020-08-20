@@ -159,10 +159,10 @@
 import LeftTree from '@/components/leftTree'
 import FormTable from '@/components/formTable'
 import DialogBorder from '@/components/Dialog/dialog-border'
-import {getRSAKey} from "@/utils/jsEncrypt";
-import {Decrypt,Encrypt} from "@/utils/cryptoJS";
-import {getDecryptJson} from "@/utils/data"
-import { getIncomeTree, queryByCondition, queryAllIncomeSort, add, update, deleteIncomeSort,getRSAPublicKey } from '@/api/incomeSort/incomeSort'
+import { getRSAKey } from '@/utils/jsEncrypt'
+import { Decrypt, Encrypt } from '@/utils/cryptoJS'
+import { getDecryptJson } from '@/utils/data'
+import { getIncomeTree, queryByCondition, queryAllIncomeSort, add, update, deleteIncomeSort, getRSAPublicKey } from '@/api/incomeSort/incomeSort'
 export default {
   components: {
     LeftTree,
@@ -404,9 +404,7 @@ export default {
     },
     getLeftTree () {
       getIncomeTree().then(response => {
-        const data = response.data
-
-        data.list.forEach(tree => {
+        response.data.list.forEach(tree => {
           tree.name = tree.code + ' ' + tree.name
           if (tree.incomeSortDTOList.length > 0) {
             tree.incomeSortDTOList.forEach(child => {
@@ -418,7 +416,7 @@ export default {
           {
             id: 0,
             name: '所有',
-            incomeSortDTOList: data.list
+            incomeSortDTOList: response.data.list
           }
         ]
         this.leftSideData.showTreeData = treeRoot
