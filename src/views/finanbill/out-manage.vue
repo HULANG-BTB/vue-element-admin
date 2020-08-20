@@ -82,11 +82,11 @@
               <el-button
                 type="primary"
                 size="small"
-                :disabled="submitAllButtonDisabled"
+                :disabled="isCheckBoxChecked"
                 @click="submitAll()"
               >提交</el-button>
               <el-button
-                v-if="!submitAllButtonDisabled"
+                v-if="!isCheckBoxChecked"
                 type="danger"
                 size="small"
                 @click="deleteAll()"
@@ -440,7 +440,7 @@ export default {
       labelPosition: 'left',
       isSend: false,
       // 提交多选按钮是否可用
-      submitAllButtonDisabled: true,
+      isCheckBoxChecked: true,
       // 多选的项
       selectedList: [],
       // loading转圈图标可视控制
@@ -621,10 +621,10 @@ export default {
       console.log('save id:' + this.outVo.id)
       console.log(this.outVo)
       // 判断数据是否有误
-      // a
+      // 判断。。。。。
       const subres = await save(this.outVo).catch(() => { this.loading = false })
-      console.log('提交结果：' + subres.data)
-      if (subres.data) {
+      console.log('提交结果：' + subres)
+      if (subres) {
         this.$message.success('保存成功！')
       } else {
         this.$message.error('保存失败！')
@@ -639,8 +639,8 @@ export default {
       this.outVo = Object.assign(this.outVo, scope.row)
       console.log('id:' + this.outVo.id)
       const subres = await submit(this.outVo.id).catch(() => { this.loading = false })
-      console.log('提交结果：' + subres.data)
-      if (subres.data) {
+      console.log('提交结果：' + subres)
+      if (subres) {
         this.$message.success('提交成功！')
       } else {
         this.$message.error('提交失败！')
@@ -655,9 +655,9 @@ export default {
     handleSelectionChange (val) {
       this.selectedList = val
       if (val !== undefined && val.length > 0) {
-        this.submitAllButtonDisabled = false
+        this.isCheckBoxChecked = false
       } else {
-        this.submitAllButtonDisabled = true
+        this.isCheckBoxChecked = true
       }
     },
 
@@ -665,8 +665,8 @@ export default {
     async submitAll () {
       this.loading = true
       const subAllres = await submitAll(this.selectedList).catch(() => { this.loading = false })
-      console.log('提交结果：' + subAllres.data)
-      if (subAllres.data) {
+      console.log('提交结果：' + subAllres)
+      if (subAllres) {
         this.$message.success('提交成功！')
       } else {
         this.$message.error('提交失败！')
@@ -681,7 +681,7 @@ export default {
     async deleteAll () {
       this.loading = true
       const delAllres = await deleteAll(this.selectedList).catch(() => { this.loading = false })
-      if (delAllres.data) {
+      if (delAllres) {
         this.$message.success('删除成功！')
       } else {
         this.$message.error('删除失败！')

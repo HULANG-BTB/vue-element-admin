@@ -37,9 +37,8 @@
             size="small"
           />
         </div>
-
       </el-form-item>
-      <el-form-item label="">
+      <el-form-item label="查验结果：">
         <el-select v-model="query.result" clearable placeholder="请选择" size="small">
           <el-option
             label="查验为真"
@@ -60,38 +59,18 @@
           @click="handleSearch"
         >搜索</el-button>
       </el-form-item>
-      <el-form-item label>
-        <el-button
-          type="success"
-          size="small"
-          @click="getTableData"
-        >重载数据</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          :disabled="deleteBatchDisable"
-          type="danger"
-          size="small"
-          @click="handleDeleteBatch"
-        >批量删除</el-button>
-      </el-form-item>
+
     </el-form>
-
-    <el-pagination
-      background
-      layout="prev, pager, next, sizes, total, jumper"
-      :total="query.total"
-      :current-page="query.page"
-      :page-sizes="[10, 20, 50, 100, 500, 1000]"
-      :page-size="query.limit"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
-
+    <el-button
+      :disabled="deleteBatchDisable"
+      type="danger"
+      size="small"
+      @click="handleDeleteBatch"
+    >批量删除</el-button>
     <el-table
       v-loading.body="loading"
       :data="checkRecordTableData"
-      style="width: 100%; margin-top: 30px;"
+      style="width: 100%;margin-top:20px;"
       border
       @selection-change="handleOnSelectChange"
     >
@@ -125,7 +104,16 @@
         </template>
       </el-table-column>
     </el-table>
-
+    <el-pagination
+      background
+      layout="prev, pager, next, sizes, total, jumper"
+      :total="query.total"
+      :current-page="query.page"
+      :page-sizes="[10, 20, 50, 100, 500, 1000]"
+      :page-size="query.limit"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
   </div>
 </template>
 
@@ -208,7 +196,6 @@ export default {
     // 获取邮件列表
     async getTableData () {
       this.loading = true
-      this.query.page = 1
       this.checkRecordTableData = []
       await getCheckRecordList(this.query).then(res => {
         this.checkRecordTableData = res.data.row
@@ -222,18 +209,18 @@ export default {
 
     async handleSearch () {
       this.query.page = 1
-      this.getTableData()
+      await this.getTableData()
     },
 
     // 根据ID删除
-    async handleDelete ({ $index, row }) {
+    async handleDelete ({ row }) {
       this.$confirm('确定要删除此记录?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
         deleteCheckRecord(row.id)
-          .then((res) => {
+          .then(() => {
             this.$message({
               type: 'success',
               message: '删除成功!'
@@ -256,7 +243,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        deleteCheckRecordBatch(this.selectedList).then((res) => {
+        deleteCheckRecordBatch(this.selectedList).then(() => {
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -297,6 +284,13 @@ export default {
     margin-top: 30px;
   }
   .permission-tree {
+    margin-bottom: 30px;
+  }
+    // 跳转页脚
+  .el-pagination {
+    float: right;
+    margin-right: 30px;
+    margin-top: 30px;
     margin-bottom: 30px;
   }
 }

@@ -1,21 +1,20 @@
-import Vue from 'vue'
-
-import 'normalize.css/normalize.css' // A modern alternative to CSS resets
-
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
 // import locale from 'element-ui/lib/locale/lang/en' // lang i18n
-
+import * as filters from '@/api/base/region/filter'
 import '@/assets/styles/index.scss' // global css
-
-import App from './App'
-import store from './store'
-import router from './router'
-
+import permission from '@/directive/permission/index.js'
 import '@/icons' // icon
 import '@/permission' // permission control
+import ElementUI from 'element-ui'
+// import locale from 'element-ui/lib/locale/lang/en' // lang i18n
+import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
+import 'element-ui/lib/theme-chalk/index.css'
+import 'normalize.css/normalize.css' // A modern alternative to CSS resets
+import Vue from 'vue'
+import App from './App'
+import router from './router'
+import store from './store'
 
-import permission from '@/directive/permission/index.js'
+import moment from 'moment'
 
 Vue.use(permission)
 
@@ -27,25 +26,28 @@ Vue.use(permission)
  * Currently MockJs will be used in the production environment,
  * please remove it before going online ! ! !
  */
-if (process.env.NODE_ENV === 'production') {
+
+if (process.env.NODE_ENV !== 'production') {
   const { mockXHR } = require('../mock')
   mockXHR()
 }
 
-// 若是没有开启Devtools工具，在开发环境中开启，在生产环境中关闭
-// eslint-disable-next-line eqeqeq
-// if (process.env.NODE_ENV == 'development') {
-//   Vue.config.devtools = true
-// } else {
-//   Vue.config.devtools = false
-// }
-Vue.config.devtools = true
 // set ElementUI lang to EN
-// Vue.use(ElementUI, { locale })
+Vue.use(ElementUI, { locale: zhLocale })
 // 如果想要中文版 element-ui，按如下方式声明
-Vue.use(ElementUI)
+// Vue.use(ElementUI)
 
 Vue.config.productionTip = false
+
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
+
+Vue.filter('dateFmt', (input, formatString = "YYYY-MM-DD") => {
+   // moment(input) 把时间字符串转成时间对象
+   // format(formatString) 把时间对象，按照指定格式，格式化成符合条件的字符串
+  return moment(input).format(formatString)
+})
 
 new Vue({
   el: '#app',

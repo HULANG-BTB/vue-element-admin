@@ -1,0 +1,44 @@
+.home {
+    .graph{
+        margin-top: 20px;
+        display: flex;
+        .el-card {
+            width: 100%;
+        }
+        .subject{
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+    .down {
+        margin-top: 20px;
+    }
+    .txt {
+        margin-top: 10px;
+        display: flex;
+        .underTxt {
+            display: flex;
+        }
+    }
+    .user {
+        margin-top: 10px;
+        display: flex;
+        .i2{
+            margin-left: 50px;
+        }
+        .underTxt{
+            display: flex;
+        }
+    }
+}
+.verify {
+    display: flex;
+    justify-content: space-between;
+    .bill {
+        margin-top: 10px;
+    }
+}
+.verify-header {
+    display: flex;
+    justify-content: space-between;
+}
