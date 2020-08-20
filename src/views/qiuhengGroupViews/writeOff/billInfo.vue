@@ -26,6 +26,7 @@
             <el-form-item>
               <el-button
                 type="primary"
+                size="small"
                 @click="onSubmit()"
               >通 过</el-button>
             </el-form-item>
@@ -38,6 +39,7 @@
             <el-form-item>
               <el-button
                 align="right"
+                size="small"
                 @click="onCancel()"
               >不通过</el-button>
             </el-form-item>
@@ -54,29 +56,19 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="单位ID">
-            <span>{{ billInfo.fAgenIdCode }}</span>
+            <span>{{ info.fAgenIdCode }}</span>
           </el-form-item>
         </el-col>
         <el-col
           :span="5.5"
           style="float:right"
         >
-          <el-form-item>
-            <el-button @click="getUnitElectronicFile()">单位电子档案</el-button>
-          </el-form-item>
-          <!-- 单位电子信息 -->
-          <el-dialog
-            :visible.sync="unitInfoDialogVisible"
-            :append-to-body="true"
-          >
-            <unit-dialog :unit-info="unitInfo" />
-          </el-dialog>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="10">
           <el-form-item label="申请单位">
-            <span>{{ billInfo.fAgenName }}</span>
+            <span>{{ info.fAgenName }}</span>
           </el-form-item>
         </el-col>
         <el-col
@@ -109,6 +101,8 @@
 
       <el-tab-pane label="开票总览">
         <el-table
+          style="width: 100%; margin-top:30px;"
+          border
           class="main-el-table"
           stripe
           :data="overViewData"
@@ -129,7 +123,7 @@
             width="230"
           >
             <template>
-              {{ billInfo.fAgenIdCode }}
+              {{ info.fAgenIdCode }}
             </template>
           </el-table-column>
           <el-table-column
@@ -171,6 +165,8 @@
 
       <el-tab-pane label="收入情况">
         <el-table
+          style="width: 100%; margin-top:30px;"
+          border
           class="main-el-table"
           stripe
           :data="incomeData"
@@ -191,7 +187,7 @@
             width="200"
           >
             <template>
-              {{ billInfo.fAgenIdCode }}
+              {{ info.fAgenIdCode }}
             </template>
           </el-table-column>
           <el-table-column
@@ -234,6 +230,8 @@
       </el-tab-pane>
       <el-tab-pane label="开票明细">
         <el-table
+          style="width: 100%; margin-top:30px;"
+          border
           class="main-el-table"
           stripe
           :data="invoiceData"
@@ -254,7 +252,7 @@
             width="180"
           >
             <template>
-              {{ billInfo.fAgenIdCode }}
+              {{ info.fAgenIdCode }}
             </template>
           </el-table-column>
           <el-table-column
@@ -291,6 +289,8 @@
       </el-tab-pane>
       <el-tab-pane label="预警记录">
         <el-table
+          style="width: 100%; margin-top:30px;"
+          border
           class="main-el-table"
           stripe
           :data="gridData"
@@ -354,10 +354,10 @@
       <el-form label-width="80px">
         <el-row>
           <el-col :span="6">
-            <el-form-item label="编制人: ">{{ billInfo.author }}</el-form-item>
+            <el-form-item label="编制人: ">{{ info.author }}</el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="编制日期: ">{{ billInfo.date }}</el-form-item>
+            <el-form-item label="编制日期: ">{{ info.date }}</el-form-item>
           </el-col>
         </el-row>
       </el-form>
@@ -366,19 +366,14 @@
 </template>
 
 <script>
-
-// 引入单位信息的Dialog
-import UnitInfo from './unitInfo'
-
 // 引入api
 import { getDetails, pass, unPass } from '@/api/qiuhengGroupApi/writeOff/writeOff'
 
 export default {
   components: {
-    'unit-dialog': UnitInfo
   },
   props: {
-    billInfo: {
+    info: {
       // 申请单位
       fAgenName: {
         type: String
@@ -411,16 +406,18 @@ export default {
       ],
 
       form: {
-        id: this.billInfo.fAgenIdCode,
-        name: this.billInfo.fAgenName,
+        id: this.info.fAgenIdCode,
+        name: this.info.fAgenName,
         date1: '',
         date2: '',
         remarks: ''
       },
       tableData: {
+        fAgenName: '',
+        fAgenIdCode: '',
         date: '',
         author: '',
-        fNo: ''
+        fNo: '',
       },
       datail: [],
       // 开票总览
@@ -430,22 +427,14 @@ export default {
       // 开票明细
       invoiceData: [],
       labelPosition: 'right',
-      unitInfoDialogVisible: false,
-      unitInfo: {
-        name: '111',
-        no: '222'
-      }
     }
   },
-
-  watch: {
-    billInfo (newVal, oldVal) {
-      this.billInfo = newVal
-      console.log(this.billInfo.fNo)
-    }
-  },
-
   created () {
+    this.tableData = this.info
+    this.$root.eventBus.$on('billNo', (val)=>{
+      this.tableData.fNo = val
+      this.getData()
+    })
     this.getData()
   },
 
@@ -454,19 +443,20 @@ export default {
       return 'text-align: center;'
     },
     headClass () {
-      return 'text-align: center;'
+      return 'text-align: center; background-color: #EEF5FD'
     },
     async getData () {
       const params = {
         // 单位ID
-        fAgenIdCode: this.billInfo.fAgenIdCode,
+        fAgenIdCode: this.tableData.fAgenIdCode,
         // 业务单号
-        fNo: this.billInfo.fNo
+        fNo: this.tableData.fNo
       }
+      console.log(params.fNo)
       const res = await getDetails(params)
-      this.overViewData = res.writeOffInvoceDetailDTOList
-      this.incomeData = res.writeOffIncomeDetailDTOList
-      this.invoiceData = res.writeOffBillInvDetailDTOList
+      this.overViewData = res.data.writeOffInvoceDetailDTOList
+      this.incomeData = res.data.writeOffIncomeDetailDTOList
+      this.invoiceData = res.data.writeOffBillInvDetailDTOList
     },
     // 功能函数
     async onCancel () {
@@ -482,16 +472,6 @@ export default {
       const res = await pass(params)
       console.log(res)
       this.$emit('closeMoule', 'true')
-    },
-
-    getUnitElectronicFile () {
-      // 获得单位电子档案
-      // 在生成Dialog前获取单位电子档案数据，传到子组件
-      this.unitInfo.name = 'shhs'
-      this.unitInfo.no = 123
-
-      // 打开子组件 UnitInfoDialog
-      this.unitInfoDialogVisible = true
     },
     onDelete () {
       // 删除操作 -- 开票预览
