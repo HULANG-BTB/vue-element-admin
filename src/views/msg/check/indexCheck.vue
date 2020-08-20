@@ -279,7 +279,7 @@ export default {
         await billCheck(this.query).then(res => {
           if (res.code === 10000) {
             this.billDialogVisible = true
-            this.bill = res.data
+            this.bill = JSON.parse(res.data)
             this.loading = false
             this.loadTable()
             this.loading = false
