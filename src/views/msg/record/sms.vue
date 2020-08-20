@@ -52,42 +52,16 @@
           @click="handleSearch"
         >搜索</el-button>
       </el-form-item>
-      <!-- <el-form-item label>
-        <el-button
-          :disabled="deleteBatchDisable"
-          type="danger"
-          size="small"
-          @click="handleDeleteBatch"
-        >批量删除</el-button>
-      </el-form-item> -->
-      <el-form-item label>
-        <el-button
-          type="success"
-          size="small"
-          @click="getTableData"
-        >重载数据</el-button>
-      </el-form-item>
     </el-form>
-
-    <el-pagination
-      background
-      layout="prev, pager, next, sizes, total, jumper"
-      :total="query.total"
-      :current-page="query.page"
-      :page-sizes="[10, 20, 50, 100, 500, 1000]"
-      :page-size="query.limit"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
 
     <el-table
       v-loading.body="loading"
       :data="smsTableData"
-      style="width: 100%; margin-top: 30px;"
+      max-height="700px"
+      style="width: 100%;"
       border
       @selection-change="handleOnSelectChange"
     >
-      <el-table-column type="selection" align="center" width="55" />
       <el-table-column align="center" label="短信Id" width="165">
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
@@ -97,16 +71,37 @@
       <el-table-column align="center" label="收信人" width="165">
         <template slot-scope="scope">{{ scope.row.smsTo }}</template>
       </el-table-column>
-      <el-table-column align="center" label="短信内容" width="165">
-        <template slot-scope="scope">{{ util.jsonFormat(scope.row.content) }}</template>
+      <el-table-column align="center" label="校验码">
+        <template slot-scope="scope">{{ scope.row.verifyCode }}</template>
+      </el-table-column>
+      <el-table-column align="center" label="短信内容">
+        <template slot-scope="scope"><el-popover
+          slot="reference"
+          placement="top-start"
+          title="短信内容"
+          width="300"
+          trigger="click"
+        >
+          <div class="popover-content" v-html="util.prettyJson(scope.row.content)" />
+          <el-button slot="reference" type="text">点击查看内容</el-button>
+
+        </el-popover></template>
       </el-table-column>
       <el-table-column align="center" label="发信时间">
         <template slot-scope="scope">{{ scope.row.sentDate }}</template>
       </el-table-column>
       <el-table-column align="center" label="是否已发送">
-        <template slot-scope="scope">{{ scope.row.isSent ? '已发送' : '未发送' }}</template>
+        <template slot-scope="scope">
+          <el-tag
+            :key="scope.row.isSent ? '已发送' : '未发送'"
+            :type="scope.row.isSent ? 'success' : 'danger'"
+            effect="plain"
+          >
+            {{ scope.row.isSent ? '已发送' : '未发送' }}
+          </el-tag>
+        </template>
       </el-table-column>
-      <el-table-column align="center" label="发件详情" width="165">
+      <el-table-column align="center" label="发件详情">
         <template slot-scope="scope">{{ scope.row.error }}</template>
       </el-table-column>
       <el-table-column v-if="!query.isSent" align="center" label="操作">
@@ -119,6 +114,16 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      background
+      layout="prev, pager, next, sizes, total, jumper"
+      :total="query.total"
+      :current-page="query.page"
+      :page-sizes="[10, 20, 50, 100, 500, 1000]"
+      :page-size="query.limit"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
 
   </div>
 </template>
@@ -262,6 +267,13 @@ export default {
     margin-top: 30px;
   }
   .permission-tree {
+    margin-bottom: 30px;
+  }
+  // 跳转页脚
+  .el-pagination {
+    float: right;
+    margin-right: 30px;
+    margin-top: 30px;
     margin-bottom: 30px;
   }
 }
