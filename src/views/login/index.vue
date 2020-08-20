@@ -55,22 +55,31 @@
       >Login</el-button>
 
       <div class="tips">
+
         <div style="margin-right:20px;">管理员: admin</div>
         <div style="margin-right:20px;">财政端: financial</div>
         <div style="margin-right:20px;">财政端审核: financial_check</div>
         <div style="margin-right:20px;">单位端: unit</div>
         <div>密码: any</div>
       </div></el-form>
+      </div>
+    </el-form>
+
   </div>
 </template>
 
 <script>
 
+import { validUsername } from '@/utils/validate'
+import { getRSAPublicKey,addRSAPublicKey } from '@/utils/encryption'
+
+
+
 export default {
   name: 'Login',
   data () {
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 3) {
+      if (value.length < 6) {
         callback(new Error('The password can not be less than 6 digits'))
       } else {
         callback()
@@ -118,16 +127,25 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
-              this.$router.push({
-                path: this.redirect || '/',
-                query: this.otherQuery
+          this.$store.dispatch('user/login', this.loginForm).then(() => {
+              getRSAPublicKey().then(response => {
+                localStorage.setItem("publicKey",response.data)
+                addRSAPublicKey().then(response => {
+                    this.$message({
+                      message: '公钥发送成功',
+                      type: 'success'
+                    })
+                  this.$router.push({
+                    path: this.redirect || '/',
+                    query: this.otherQuery
+                  })
+                  this.loading = false
+                  }
+                )
               })
-              this.loading = false
-            }).catch(() => {
-              this.loading = false
-            })
+          }).catch(() => {
+            this.loading = false
+          })
         } else {
           console.log('error submit!!')
           return false

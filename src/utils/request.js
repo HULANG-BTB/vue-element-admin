@@ -5,6 +5,8 @@ import { getToken } from '@/utils/auth'
 import NProgress from 'nprogress'
 import Config from '@/settings'
 
+
+
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -18,6 +20,7 @@ service.interceptors.request.use(
     // 请求发送前修改
     NProgress.start()
     if (store.getters.token) {
+      config.headers['Content-Type'] = "application/json;charset=UTF-8";
       // 请求头附带token
       config.headers[Config.auth.header] = getToken()
     }
