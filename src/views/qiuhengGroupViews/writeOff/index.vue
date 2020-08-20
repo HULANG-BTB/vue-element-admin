@@ -227,6 +227,7 @@
             <dialog-info
               :bill-info="billInfo"
               @closeMoule="closeMoule"
+              :billWatch="billInfo.fNo"
             />
 
           </el-dialog>
@@ -281,8 +282,9 @@ export default {
         fAgenName: '',
         fAgenIdCode: '',
         date: '',
-        author: ''
-      }
+        author: '',
+        fNo: ''
+      },
     }
   },
   created () {
@@ -367,14 +369,7 @@ export default {
       this.billInfo.fAgenIdCode = this.fAgenIdCode
       this.billInfo.date = row.date
       this.billInfo.author = row.author
-      // 查询核销信息
-      const params = {
-        // 单位ID
-        fAgenIdCode: this.fAgenIdCode,
-        // 业务单号
-        fNo: row.no
-      }
-      const res = await getDetails(params)
+      this.billInfo.fNo = row.no
       // ### 将 res 存入一个对象中 prop 方法传给billInfo.vue
       // row.state = "已审验"
     },
