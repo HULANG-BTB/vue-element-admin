@@ -28,8 +28,6 @@ export function getIncomeTree (data) {
 }
 
 export function queryByCondition (data) {
-  // 数据加密
-  data = getEncryptedJson(data)
   return request({
     url: baseUrl + 'pageQueryById',
     method: 'post',
@@ -37,7 +35,7 @@ export function queryByCondition (data) {
   })
 }
 
-export function queryAllBillSort () {
+export function queryAllIncomeSort () {
   return request({
     url: baseUrl + 'getFirst',
     method: 'post'
@@ -64,7 +62,7 @@ export function update (data) {
   })
 }
 
-export function deleteBillTypeRequest (data) {
+export function deleteIncomeSort (data) {
   return request({
     url: baseUrl + 'delete',
     method: 'post',
