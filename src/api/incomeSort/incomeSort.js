@@ -10,7 +10,7 @@ import { Decrypt, Encrypt, GetKey } from '@/utils/cryptoJS'
 import { RSAencrypt, RSAdencrypt, getRSAKey } from '@/utils/jsEncrypt'
 import { getEncryptedJson } from '@/utils/data'
 
-const baseUrl = '/incomeSort/'
+const baseUrl = '/base/incomeSort/'
 
 export function getRSAPublicKey () {
   return request({
