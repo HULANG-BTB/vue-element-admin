@@ -53,7 +53,8 @@ export default [
         name: 'region',
         component: () => import('@/views/base-data/region/index'),
         meta: {
-          title: '区划管理'
+          title: '区划管理',
+          roles: ['unit', 'admin']
         },
         children: [
           { path: 'list',
