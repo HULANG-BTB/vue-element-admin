@@ -56,28 +56,24 @@
           @click="handleSearch"
         >搜索</el-button>
       </el-form-item>
-      <el-form-item label>
-        <el-button
-          type="primary"
-          size="small"
-          @click="handleAdd"
-        >新建邮件</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          :disabled="deleteBatchDisable"
-          type="danger"
-          size="small"
-          @click="handleDeleteBatch"
-        >批量删除</el-button>
-      </el-form-item>
     </el-form>
+    <el-button
+      type="primary"
+      size="small"
+      @click="handleAdd"
+    >新建记录</el-button>
+    <el-button
+      :disabled="deleteBatchDisable"
+      type="danger"
+      size="small"
+      @click="handleDeleteBatch"
+    >批量删除</el-button>
 
     <el-table
       v-loading.body="loading"
       :data="mailTableData"
-      style="width: 100%;"
-      max-height="800px"
+      style="width: 100%;margin-top:20px;"
+      max-height="700px"
       border
       @selection-change="handleOnSelectChange"
     >
@@ -125,7 +121,12 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="发件详情">
-        <template slot-scope="scope">{{ scope.row.error }}</template>
+        <template slot-scope="scope">
+          <!-- <el-button type="text" class="detail-button" @click="detailOver(scope)">
+            {{ (scope.row.error?scope.row.error:'').substring(0, 3) }}
+          </el-button> -->
+          {{ scope.row.error }}
+        </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="165px">
         <template slot-scope="scope">
@@ -163,44 +164,48 @@
         :model="mail"
         label-width="80px"
         label-position="left"
+        :rules="rules"
       >
-        <el-form-item label="发件人">
-          <el-input
-            v-model="mail.mailFrom"
-            placeholder="发件人"
-          />
-        </el-form-item><el-form-item label="收件人">
-          <el-input
-            v-model="mail.mailTo"
-            placeholder="收件人"
-          />
-        </el-form-item><el-form-item label="邮件主题">
-          <el-input
-            v-model="mail.subject"
-            placeholder="邮件主题"
-          />
-        </el-form-item><el-form-item label="邮件内容 ">
-          <el-input
-            v-model="mail.content"
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            placeholder="邮件内容"
-          />
+        <div>
+          <el-form-item label="发件人" prop="mailFrom">
+            <el-input
+              v-model="mail.mailFrom"
+              placeholder="发件人"
+            />
+          </el-form-item>
+          <el-form-item label="收件人" prop="mailTo">
+            <el-input
+              v-model="mail.mailTo"
+              placeholder="收件人"
+            />
+          </el-form-item>
+          <el-form-item label="邮件主题" prop="subject">
+            <el-input
+              v-model="mail.subject"
+              placeholder="邮件主题"
+            />
+          </el-form-item>
+          <el-form-item label="邮件内容" prop="content">
+            <el-input
+              v-model="mail.content"
+              type="textarea"
+              :autosize="{ minRows: 2, maxRows: 4}"
+              placeholder="邮件内容"
+            />
+          </el-form-item>
+          <el-form-item style="text-algin:center;" class="dialogButton">
+            <el-button
+              type="danger"
+              @click="dialogVisible = false"
+            >取消</el-button>
+            <el-button
+              type="primary"
+              @click="confirmMail"
+            >确定</el-button>
+          </el-form-item>
 
-        </el-form-item>
-
+        </div>
       </el-form>
-
-      <div style="text-align: right;">
-        <el-button
-          type="danger"
-          @click="dialogVisible = false"
-        >取消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmMail"
-        >确定</el-button>
-      </div>
     </el-dialog>
   </div>
 </template>
@@ -278,7 +283,36 @@ export default {
           }
         }]
       },
-      util
+      util,
+      rules: {
+        mailTo: [{
+          required: true,
+          message: '请输入收件人邮箱',
+          trigger: ['blur', 'change']
+        }, {
+          pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+          message: '无效邮箱'
+        }
+        ],
+        mailFrom: [{
+          required: true,
+          message: '请输入发件人信息',
+          trigger: ['blur', 'change']
+        }
+        ],
+        subject: [{
+          required: true,
+          message: '请输入邮件标题',
+          trigger: ['blur', 'change']
+        }
+        ],
+        content: [{
+          required: true,
+          message: '请输入邮件内容',
+          trigger: ['blur', 'change']
+        }
+        ] },
+      detail: null
     }
   },
   computed: {
@@ -386,7 +420,7 @@ export default {
           title: '成功',
           dangerouslyUseHTMLString: true,
           message: `
-          
+
             <div>发件人: ${mailFrom}</div>
             <div>收件人: ${mailTo}</div>
             <div>邮件主题: ${subject}</div>
@@ -418,6 +452,11 @@ export default {
     handleCurrentChange (val) {
       this.query.page = val
       this.getTableData()
+    },
+    detailOver (scope) {
+      console.log(scope)
+      this.detail = scope.row.error
+      console.log('123'.substring(0, 1))
     }
   }
 }
@@ -430,6 +469,9 @@ export default {
   }
   .permission-tree {
     margin-bottom: 30px;
+  }
+  .dialogButton {
+    text-align: right;
   }
   // 跳转页脚
   .el-pagination {

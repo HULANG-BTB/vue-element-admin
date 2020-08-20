@@ -57,6 +57,7 @@
     <el-table
       v-loading.body="loading"
       :data="smsTableData"
+      max-height="700px"
       style="width: 100%;"
       border
       @selection-change="handleOnSelectChange"

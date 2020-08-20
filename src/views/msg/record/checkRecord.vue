@@ -59,20 +59,18 @@
           @click="handleSearch"
         >搜索</el-button>
       </el-form-item>
-      <el-form-item>
-        <el-button
-          :disabled="deleteBatchDisable"
-          type="danger"
-          size="small"
-          @click="handleDeleteBatch"
-        >批量删除</el-button>
-      </el-form-item>
-    </el-form>
 
+    </el-form>
+    <el-button
+      :disabled="deleteBatchDisable"
+      type="danger"
+      size="small"
+      @click="handleDeleteBatch"
+    >批量删除</el-button>
     <el-table
       v-loading.body="loading"
       :data="checkRecordTableData"
-      style="width: 100%;"
+      style="width: 100%;margin-top:20px;"
       border
       @selection-change="handleOnSelectChange"
     >
@@ -211,18 +209,18 @@ export default {
 
     async handleSearch () {
       this.query.page = 1
-      this.getTableData()
+      await this.getTableData()
     },
 
     // 根据ID删除
-    async handleDelete ({ $index, row }) {
+    async handleDelete ({ row }) {
       this.$confirm('确定要删除此记录?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
         deleteCheckRecord(row.id)
-          .then((res) => {
+          .then(() => {
             this.$message({
               type: 'success',
               message: '删除成功!'
@@ -245,7 +243,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        deleteCheckRecordBatch(this.selectedList).then((res) => {
+        deleteCheckRecordBatch(this.selectedList).then(() => {
           this.$message({
             type: 'success',
             message: '删除成功!'
