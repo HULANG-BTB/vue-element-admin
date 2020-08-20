@@ -42,7 +42,7 @@
             @change="onSubmit"
           >
             <el-radio-button label="0">未审核</el-radio-button>
-            <el-radio-button label="1">已审核</el-radio-button>
+            <el-radio-button label="1">审核通过</el-radio-button>
             <el-radio-button label="2">审核不通过</el-radio-button>
           </el-radio-group>
         </el-form-item>
@@ -55,6 +55,14 @@
             <el-radio-button label="0">未入库</el-radio-button>
             <el-radio-button label="1">已入库</el-radio-button>
           </el-radio-group>
+        </el-form-item>
+        <el-form-item>
+          <router-link :to="'/stockIn/addStockIn'">
+            <el-button
+              size="small"
+              type="primary"
+            >新增</el-button>
+          </router-link>
         </el-form-item>
       </div>
     </el-form>
@@ -88,6 +96,12 @@
       />
       <el-table-column
         align="center"
+        prop="memo"
+        label="备注"
+        width="100%"
+      />
+      <el-table-column
+        align="center"
         label="审核状态"
         width="100%"
       >
@@ -106,12 +120,14 @@
         width="250"
       >
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="primary"
-            :disabled="scope.row.changeState === 1"
-            @click="handleEdit(scope.$index, scope.row)"
-          >编辑</el-button>
+          <!-- 点击编辑按钮跳转到编辑页面 -->
+          <router-link :to="'/stockIn/editStockIn/'+scope.row.no">
+            <el-button
+              size="mini"
+              type="primary"
+              :disabled="scope.row.changeState === 1"
+            >编辑</el-button>
+          </router-link>
           <el-button
             size="mini"
             type="danger"
@@ -141,7 +157,7 @@
 </template>
 
 <script>
-import { getStockListPage, deleteStockIn } from '@/api/stockIn.js'
+import { getStockListPage, deleteStockIn, store } from '@/api/stockIn.js'
 
 export default {
   data () {
@@ -188,6 +204,9 @@ export default {
       deleteDto: {
         id: '',
         changeMan: ''
+      },
+      storeDto: {
+        no: ''
       }
     }
   },
@@ -245,23 +264,61 @@ export default {
       this.getTableData()
     },
     async handleDelete (index, row) {
-      this.loading = true
-      this.deleteDto.id = row.no
-      console.log(this.deleteDto.id)
-      this.deleteDto.changeMan = 'test'
-      await deleteStockIn(this.deleteDto).catch(() => { this.loading = false })
-      this.loading = false
-      this.getTableData()
+      this.$confirm('此操作将永久删除该条记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.loading = true
+        this.deleteDto.id = row.no
+        console.log(this.deleteDto.id)
+        this.deleteDto.changeMan = 'test'
+        deleteStockIn(this.deleteDto).catch(() => { this.loading = false })
+        this.loading = false
+        this.getTableData()
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    handleSubmit (scope) {
+      this.$confirm('确定入库吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.loading = true
+        this.storeDto.no = scope.row.no
+        store(this.storeDto).then(response => {
+          this.$message({
+            type: 'success',
+            message: '入库成功!'
+          })
+          this.loading = false
+          this.getTableData()
+        }).catch(() => {
+          this.loading = false
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消入库'
+        })
+      })
     },
     handleCurrentChange (val) {
       this.stockInPageQuery.page = val
       this.getTableData()
-      console.log(val)
     },
     handleSizeChange (val) {
       this.stockInPageQuery.limit = val
       this.getTableData()
-      console.log(val)
     }
   }
 

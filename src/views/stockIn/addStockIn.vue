@@ -10,19 +10,23 @@
 
       <el-table
         :data="stockIn.addStockInItemDTOArray"
-        style="width: 100%"
+        style="width: 100%; margin-top: 30px;"
+        border
       >
         <el-table-column
           type="selection"
-          width="55"
+          width="50px"
+          align="center"
         />
         <el-table-column
           type="index"
-          width="50"
+          width="50px"
+          align="center"
         />
         <el-table-column
           label="票据编码"
-          width="120"
+          width="150%"
+          align="center"
         >
           <template slot-scope="scope">
             {{ scope.row.billCode }}
@@ -30,7 +34,8 @@
         </el-table-column>
         <el-table-column
           label="票据名称"
-          width="180"
+          width="150px"
+          align="center"
         >
           <template slot-scope="scope">
             {{ scope.row.billName }}
@@ -38,7 +43,8 @@
         </el-table-column>
         <el-table-column
           label="数量"
-          width="120"
+          width="100px"
+          align="center"
         >
           <template slot-scope="scope">
             {{ scope.row.number }}
@@ -46,7 +52,8 @@
         </el-table-column>
         <el-table-column
           label="起始号"
-          width="120"
+          width="180px"
+          align="center"
         >
           <template slot-scope="scope">
             {{ scope.row.billNo1 }}
@@ -54,13 +61,14 @@
         </el-table-column>
         <el-table-column
           label="终止号"
-          width="120"
+          width="180px"
+          align="center"
         >
           <template slot-scope="scope">
             {{ scope.row.billNo2 }}
           </template>
         </el-table-column>
-        <el-table-column width="180">
+        <el-table-column width="150px">
           <template slot="header" slot-scope="scope">
             <el-button
               size="mini"
@@ -86,10 +94,13 @@
         </el-table-column>
       </el-table>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+        <el-button type="primary" :disabled="submitable()" @click="submitForm('ruleForm')">立即创建</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
+
+    <!----------------新增明细对话框------------------->
+
     <el-dialog title="新增明细" :visible.sync="dialogFormVisible">
       <el-form :model="addItemDTO" :rules="rules" label-width="80px" class="demo-ruleForm" size="mini">
         <el-form-item label="票据编码" prop="billCode">
@@ -101,45 +112,29 @@
           <el-input v-model="addItemDTO.billName" readonly />
         </el-form-item>
         <el-form-item label="票据数量" prop="number">
-          <el-input v-model="addItemDTO.number" readonly />
+          <el-input v-model="addItemDTO.number" />
         </el-form-item>
         <el-form-item label="起始号" prop="billNo1">
-          <el-input v-model="addItemDTO.billNo1" @blur="billNo2Change" />
+          <el-input v-model="addItemDTO.billNo1" readonly />
         </el-form-item>
         <el-form-item label="终止号" prop="billNo2">
-          <el-input v-model="addItemDTO.billNo2" @blur="billNo2Change" />
+          <el-input v-model="addItemDTO.billNo2" readonly />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="setCode">保 存</el-button>
         <el-button type="primary" @click="okBtn">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-------------------新增明细对话框结束---------------------->
   </div>
 </template>
 <script>
-import { getBillNumber } from '@/api/stockIn.js'
+import { getBillNumber, getStockInInfo, getCodeFunction, updateStockIn, addStockIn } from '@/api/stockIn.js'
 export default {
   data () {
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入终止号'))
-      }
-      if (value.length > 10) {
-        callback(new Error('终止号长度小于等于十位'))
-      }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error('请输入数字值'))
-        } else {
-          if (value <= this.addItemDTO.billNo1) {
-            callback(new Error('终止号必须大于起始号'))
-          } else {
-            callback()
-          }
-        }
-      }, 1000)
-    }
     return {
       index: 0,
       isEdit: false,
@@ -147,6 +142,7 @@ export default {
         no: '',
         memo: '',
         author: 'test',
+        changeMan: 'test',
         billSource: '',
         addStockInItemDTOArray: []
       },
@@ -197,20 +193,21 @@ export default {
         ],
         billCode: [
           { required: true, message: '请选择票据代码', trigger: 'blur' }
-        ],
-        billNo1: [
-          { required: true, message: '请填写开始号码', trigger: 'blur' }
-        ],
-        billNo2: [
-          { validator: validatePass, trigger: 'blur' }
         ]
       },
       dialogFormVisible: false
     }
   },
   created () {
-    this.getId()
-    this.createTable()
+    console.log('create')
+    console.log(this.$route.params.id)
+    if (this.$route.params && this.$route.params.id) {
+      const id = this.$route.params.id
+      this.fetchDataById(id)
+    } else {
+      this.getId()
+      this.createTable()
+    }
   },
   methods: {
     async getId () {
@@ -222,13 +219,50 @@ export default {
     },
     createTable () {
     },
+    submitable () {
+      return this.stockIn.addStockInItemDTOArray.length === 0
+    },
+    // 根据id获取详细信息
+    fetchDataById (id) {
+      getStockInInfo(id)
+        .then(response => {
+          console.log(response.data)
+          this.stockIn = response.data
+          // 重要！！！ 设置修改人
+          this.stockIn.changeMan = 'test'
+        })
+        .catch()
+    },
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid && this.stockIn.addStockInItemDTOArray.length !== 0) {
-          // addStockIn(this.stockIn)
-          this.$router.push('stockInList')
+          if (this.$route.params.id) {
+            console.log('update')
+            updateStockIn(this.stockIn).then(response => {
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              })
+              this.$router.push('/stockIn/stockInList')
+            }).catch(response => {
+              this.$message.error('失败了，请稍后再试')
+            })
+          } else {
+            console.log('add')
+            addStockIn(this.stockIn).then(response => {
+              this.$message({
+                message: '新增成功',
+                type: 'success'
+              })
+              this.$router.push('/stockIn/stockInList')
+            }).catch(response => {
+              this.$message.error('失败了，请稍后再试')
+            })
+          }
+          // this.$router.push('stockInList')
         } else {
           console.log('error submit!!')
+          this.$message.error('失败了，请稍后再试')
           return false
         }
       })
@@ -246,6 +280,7 @@ export default {
     },
     handleDelete (index, row) {
       console.log(index, row)
+      // 从数组中删除本条记录
       this.stockIn.addStockInItemDTOArray.splice(index, 1)
     },
     handleAdd () {
@@ -264,6 +299,13 @@ export default {
         typecode: ''
       }
       this.dialogFormVisible = true
+    },
+    // 获取票号段
+    setCode () {
+      this.getCode.codeNum = this.addItemDTO.number
+      const result = getCodeFunction(this.getCode)
+      this.addItemDTO.billNo1 = result.beginCode
+      this.addItemDTO.billNo2 = result.endCode
     },
     okBtn () {
       this.dialogFormVisible = false

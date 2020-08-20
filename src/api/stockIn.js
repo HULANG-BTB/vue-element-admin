@@ -37,3 +37,38 @@ export function deleteStockIn (removeDto) {
     data: removeDto
   })
 }
+
+export function getStockInInfo (id) {
+  return request({
+    url: '/stockIn/getStockInInfo/' + id,
+    method: 'get'
+  })
+}
+
+export function updateStockIn (stockIn) {
+  return request({
+    url: '/stockIn/update',
+    method: 'post',
+    data: stockIn
+  })
+}
+
+export function getCodeFunction (getCode) {
+  return { 'beginCode': 2501, 'endCode': 3000 }
+}
+
+export function change (stockChangeDTO) {
+  return request({
+    url: '/stockIn/change',
+    method: 'post',
+    data: stockChangeDTO
+  })
+}
+
+export function store (deleteDto) {
+  return request({
+    url: '/stockIn/store',
+    method: 'post',
+    data: deleteDto
+  })
+}

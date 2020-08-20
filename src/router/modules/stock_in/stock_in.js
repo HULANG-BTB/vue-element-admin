@@ -5,7 +5,7 @@ export default [
   {
     path: '/stockIn',
     component: Layout,
-    redirect: '/stockIn/user',
+    redirect: '/stockIn/stockInList',
     name: 'User',
     meta: {
       title: '票据入库',
@@ -26,6 +26,16 @@ export default [
           title: '新建入库单',
           roles: ['role_manager', 'admin']
         }
+      },
+      {
+        path: 'editStockIn/:id',
+        component: () => import('@/views/stockIn/addStockIn'),
+        name: 'editStockIn',
+        meta: {
+          title: '编辑入库单',
+          roles: ['role_manager', 'admin']
+        },
+        hidden: true
       },
       {
         path: 'changeStockIn',
