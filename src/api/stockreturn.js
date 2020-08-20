@@ -18,12 +18,22 @@ export function getListStockReturnByDateOrNo (query) {
   })
 }
 
-/* stoackteturnitem 相关 */
-export function getSmsList (query) {
+export function addStockReturn (Stockreturn) {
   return request({
-    url: '/sms/list',
+    url: '/stock-return-po/addStockReturn',
     method: 'post',
-    data: query
+    // params: { no: query.no, startTime: query.startTime, endTime: query.endTime }
+    // params: query
+    data: Stockreturn
+  })
+}
+
+/* stoackteturnitem 相关 */
+export function getItem (no) {
+  return request({
+    url: '/stock-out/getStockReturnByNo/' + no,
+    // url: '/mail/updateStatus',
+    method: 'get'
   })
 }
 export function updateSmsStatus (sms) {

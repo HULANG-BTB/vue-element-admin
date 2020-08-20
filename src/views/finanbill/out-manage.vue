@@ -7,7 +7,7 @@
       @keyup.enter.native="handleSearch"
     >
       <div class="my-form-item">
-        <el-form-item label="单号:">
+        <el-form-item label="单号">
           <el-input
             v-model="query.id"
             placeholder="请输入业务单号"
@@ -15,7 +15,7 @@
             size="small"
           />
         </el-form-item>
-        <el-form-item label="编制人:">
+        <el-form-item label="编制人">
           <el-input
             v-model="query.author"
             placeholder="请输入编制人"
@@ -24,7 +24,7 @@
           />
         </el-form-item>
 
-        <el-form-item label="日期:">
+        <el-form-item label="日期">
           <div class="block">
             <el-date-picker
               v-model="query.period"
@@ -46,24 +46,22 @@
             size="small"
             @click="handleSearch"
           >搜索</el-button>
-        </el-form-item>
-        <!-- <el-form-item label>
           <el-button
-            :disabled="deleteBatchDisable"
-            type="danger"
-            size="small"
-            @click="handleDeleteBatch"
-          >批量删除</el-button>
-        </el-form-item> -->
-        <el-form-item label>
-          <el-button
-            type="success"
+            type=""
+            icon="el-icon-refresh"
             size="small"
             @click="getTableData"
           >重置</el-button>
         </el-form-item>
       </div>
-
+      <!-- <el-form-item label>
+        <el-button
+          :disabled="deleteBatchDisable"
+          type="danger"
+          size="small"
+          @click="handleDeleteBatch"
+        >批量删除</el-button>
+      </el-form-item> -->
       <!-- <el-form-item :label="query.changeState!=0 ? '已审核':'未审核'">
         <el-switch
           v-model="query.ischange"
@@ -72,19 +70,44 @@
           @change="handleIsSentChange"
         />
       </el-form-item> -->
-      <div>
-        <el-form-item label="审核状态">
-          <el-radio-group
-            v-model="query.changeState"
-            size="medium"
-            @change="handleSearch"
-          >
-            <el-radio-button label="1">保存</el-radio-button>
-            <el-radio-button label="2">待审核</el-radio-button>
-            <el-radio-button label="3">通过</el-radio-button>
-            <el-radio-button label="4">退回</el-radio-button>
-          </el-radio-group>
-        </el-form-item>
+      <div class="my-form-item">
+        <el-row>
+          <el-col :span="5">
+            <el-form-item label="操作">
+              <el-button
+                type="primary"
+                size="small"
+                @click="handleAdd(); dialogFormVisible = true"
+              >新增</el-button>
+              <el-button
+                type="primary"
+                size="small"
+                :disabled="submitAllButtonDisabled"
+                @click="submitAll()"
+              >提交</el-button>
+              <el-button
+                v-if="!submitAllButtonDisabled"
+                type="danger"
+                size="small"
+                @click="deleteAll()"
+              >删除</el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="审核状态">
+              <el-radio-group
+                v-model="query.changeState"
+                size="small"
+                @change="handleSearch"
+              >
+                <el-radio-button label="1">保存</el-radio-button>
+                <el-radio-button label="2">待审核</el-radio-button>
+                <el-radio-button label="3">通过</el-radio-button>
+                <el-radio-button label="4">退回</el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </div>
     </el-form>
 
@@ -93,30 +116,31 @@
       :data="StockoutTableData"
       style="width: 100%; margin-top: 30px;"
       border
+      @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" align="center" width="55" />
       <!-- 从1开始，与数据库数据无关 -->
-      <el-table-column type="index" align="center" label="序号" width="90%" />
+      <el-table-column type="index" align="center" label="序号" width="65" />
       <!-- 出库主键 -->
-      <el-table-column align="center" label="单号" width="100%">
+      <el-table-column align="center" label="单号" width="130">
         <template slot-scope="scope">{{ scope.row.id.toString().padStart(9, 'S0000000') }}</template>
       </el-table-column>
-      <el-table-column align="center" label="仓库ID" width="70%">
+      <el-table-column align="center" label="仓库ID" width="85">
         <template slot-scope="scope">{{ scope.row.warehouseId }}</template>
       </el-table-column>
-      <el-table-column align="center" label="领用人" width="200">
+      <el-table-column align="center" label="领用人" width="155">
         <template slot-scope="scope">{{ scope.row.useMan }}</template>
       </el-table-column>
-      <el-table-column align="center" label="申请日期" width="200%">
+      <el-table-column align="center" label="申请日期" width="155">
         <template slot-scope="scope">{{ dateFormat(scope.row.date) }}</template>
       </el-table-column>
-      <el-table-column align="center" label="编制人" width="165">
+      <el-table-column align="center" label="编制人" width="155">
         <template slot-scope="scope">{{ scope.row.author }}</template>
       </el-table-column>
       <el-table-column align="center" label="摘要" width="200">
         <template slot-scope="scope">{{ scope.row.abstact }}</template>
       </el-table-column>
-      <el-table-column align="center" label="审核状态" width="100">
+      <el-table-column align="center" label="审核状态" width="85">
         <template slot-scope="scope">
           <!-- <el-tag v-if="scope.row.changeState==0" type="info" effect="dark">{{ showCheckStr(scope.row.changeState) }}</el-tag> -->
           <el-tag
@@ -128,7 +152,7 @@
         </template>
       </el-table-column>
       <!-- <el-table-column v-if="!query.changeState" align="center" label="操作"> -->
-      <el-table-column align="center" fixed="right" label="操作" width="200">
+      <el-table-column align="center" fixed="right" label="操作" width="165">
         <template slot-scope="scope">
           <el-button
             type="primary"
@@ -136,7 +160,7 @@
             @click="handleEdit(scope); dialogFormVisible = true"
           >查看</el-button>
           <el-button
-            v-if="scope.row.changeState === 1"
+            v-if="!isSend"
             type="primary"
             size="mini"
             @click="handleSubmit(scope)"
@@ -163,31 +187,31 @@
       title="出库详情"
       :visible.sync="dialogFormVisible"
       :width="'80%'"
+      @closed="initVo()"
     >
       <el-form
         :model="outVo"
         :inline="true"
         :label-position="labelPosition"
-        label-width="100px"
+        label-width="120px"
         class="demo-form-inline"
       >
         <el-row>
-          <el-col :span="2" />
-          <el-col :span="11">
-            <el-form-item label="区划编码">
-              <el-select v-model="outVo.rgnCode" placeholder="请选择">
-                <el-option
-                  v-for="item in rgnCodeOptions"
-                  :key="item.rgnCode"
-                  :label="item.rgnCode"
-                  :value="item.rgnCode"
-                />
-              </el-select>
+          <el-col :span="10" :offset="3">
+            <el-form-item label="单号">
+              <el-input v-model="outVo.id" autocomplete="off" :disabled="true" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="10" :offset="3">
+            <el-form-item label="编制人">
+              <el-input v-model="outVo.author" autocomplete="off" :disabled="true" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="领用人/单位">
-              <el-select v-model="outVo.useMan" placeholder="请选择">
+              <el-select v-model="outVo.useMan" placeholder="请选择" :disabled="isSend">
                 <el-option
                   v-for="item in useManOptions"
                   :key="item.value"
@@ -199,10 +223,9 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="2" />
-          <el-col :span="11">
+          <el-col :span="10" :offset="3">
             <el-form-item label="仓库">
-              <el-select v-model="outVo.warehouseId" placeholder="请选择">
+              <el-select v-model="outVo.warehouseId" placeholder="请选择" :disabled="isSend">
                 <el-option
                   v-for="item in warehouseOptions"
                   :key="item.warehouseId"
@@ -213,21 +236,37 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="编制人">
-              <el-input v-model="outVo.author" autocomplete="off" :disabled="true" />
+            <el-form-item label="区划编码">
+              <el-select v-model="outVo.rgnCode" placeholder="请选择" :disabled="isSend">
+                <el-option
+                  v-for="item in rgnCodeOptions"
+                  :key="item.rgnCode"
+                  :label="item.rgnCode"
+                  :value="item.rgnCode"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="2" />
-          <el-col :span="22">
+        <el-row type="flex" align="bottom">
+          <el-col :span="3">
+            <el-button
+              type="primary"
+              size="small"
+              style="margin-bottom: 10px"
+              :disabled="isSend"
+              @click="itemAdd(outVo.outItemVos, outVo.id)"
+            >新增</el-button>
+          </el-col>
+          <el-col :span="21">
             <el-form-item label="摘要">
               <el-input
                 v-model="outVo.abstact"
                 placeholder="请输入备注/摘要："
                 type="textarea"
+                style="width: 310%"
                 :rows="3"
-                style="width: 800px"
+                :disabled="isSend"
                 resize="none"
               />
             </el-form-item>
@@ -238,10 +277,6 @@
       <!--
         item的table----------------------------------
       -->
-      <el-button
-        type="primary"
-        @click="itemAdd(outVo.outItemVos, outVo.id)"
-      >新增</el-button>
       <el-table
         v-loading.body="loading"
         :data="outVo.outItemVos"
@@ -250,14 +285,14 @@
       >
         <el-table-column type="selection" align="center" width="55" />
         <!-- 从1开始，与数据库数据无关 -->
-        <el-table-column type="index" align="center" label="序号" width="90%" />
+        <el-table-column type="index" align="center" label="序号" width="55" />
         <!-- 出库主键 -->
-        <el-table-column align="center" label="单号" width="165">
+        <el-table-column align="center" label="单号" width="130">
           <template slot-scope="scope">{{ scope.row.id.toString().padStart(11, 'SI00000000') }}</template>
         </el-table-column>
-        <el-table-column align="center" label="票据代码" width="165">
+        <el-table-column align="center" label="票据代码" width="160">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.billPrecode" placeholder="请选择" @change="billPrecodeChange(scope)">
+            <el-select v-model="scope.row.billPrecode" placeholder="请选择" :disabled="isSend" @change="billPrecodeChange(scope)">
               <el-option
                 v-for="item in billOptions"
                 :key="item.billPrecode"
@@ -269,64 +304,64 @@
             <!-- {{ scope.row.billPrecode }} -->
           </template>
         </el-table-column>
-        <el-table-column align="center" label="票据名称">
+        <el-table-column align="center" label="票据名称" width="155">
           <template slot-scope="scope">{{ scope.row.billName }}</template>
         </el-table-column>
-        <el-table-column align="center" label="数量">
+        <el-table-column align="center" label="数量" width="85">
           <template slot-scope="scope">
-            <el-input v-model="scope.row.number" size="mini" />
+            <el-input v-model="scope.row.number" size="mini" :disabled="isSend" />
             <!-- {{ scope.row.number }} -->
           </template>
         </el-table-column>
-        <el-table-column align="center" label="计量单位" width="100">
+        <el-table-column align="center" label="单位" width="55">
           <template> 张 </template>
         </el-table-column>
-        <el-table-column align="center" label="起始号" width="165">
+        <el-table-column align="center" label="起始号" width="130">
           <template slot-scope="scope">{{ scope.row.billNo1 }}</template>
         </el-table-column>
-        <el-table-column align="center" label="终止号" width="165">
+        <el-table-column align="center" label="终止号" width="130">
           <template slot-scope="scope">
             {{ scope.row.billNo2 = (parseInt(scope.row.billNo1)+parseInt(scope.row.number)-1).toString().padStart(10, '000000000') }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" width="100">
+        <el-table-column align="center" label="操作" width="85">
           <template slot-scope="scope">
             <el-button
               type="primary"
               size="mini"
+              :disabled="isSend"
               @click="itemDelete(scope.$index, outVo.outItemVos)"
             >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button
+          v-if="!isSend"
+          type="danger"
+          @click="dialogFormVisible = false"
+        >取 消</el-button>
+        <el-button
+          v-if="!isSend"
           type="primary"
-          @click="handleSave(scope); dialogFormVisible = false"
+          @click="handleSave(); dialogFormVisible = false"
         >保 存</el-button>
+        <el-button
+          v-if="isSend"
+          type="info"
+          @click="dialogFormVisible = false"
+        >关 闭</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
-import { getAll, getItem, save, submit, util } from '@/api/finanbill.js'
+import { getAll, addOut, getItem, save, submit, submitAll, deleteAll, util } from '@/api/finanbill.js'
 
 export default {
   name: 'OutApp',
   data () {
     return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
-
       /**
        * 出票项
        */
@@ -336,7 +371,7 @@ export default {
         warehouseId: '',
         useMan: '',
         date: '',
-        author: '',
+        author: 'defaultAuthor',
         changeState: '',
         abstact: '',
         altercode: '',
@@ -403,7 +438,11 @@ export default {
       }],
       // 对齐方式
       labelPosition: 'left',
-      // selectedList: [],
+      isSend: false,
+      // 提交多选按钮是否可用
+      submitAllButtonDisabled: true,
+      // 多选的项
+      selectedList: [],
       // loading转圈图标可视控制
       loading: true,
       dialogLoading: false,
@@ -422,7 +461,7 @@ export default {
         ischange: true,
         id: '',
         author: '',
-        changeState: 1,
+        changeState: '1',
         period: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 365), new Date()]
 
       },
@@ -473,17 +512,30 @@ export default {
       this.query.total = res.data.total
       this.query.limit = res.data.limit
       this.query.page = res.data.page
-      // this.selectedList = []
+      this.selectedList = []
+      // 确定明细项是否可改变
+      if (this.query.changeState === '1') {
+        this.isSend = false
+      } else {
+        this.isSend = true
+      }
       this.loading = false
     },
 
-    // 进入出库编辑界面(旧：更新邮件为已发件)
+    // 初始化数据，退出详情界面时强制要求调用
+    async initVo () {
+      Object.assign(this.$data.outVo, this.$options.data().outVo)
+      // this.getTableData()
+    },
+
+    // 进入出库编辑界面
     async handleEdit (scope) {
       this.loading = true
       this.outVo = Object.assign(this.outVo, scope.row)
       // console.log('pid:' + this.outVo.id)
       const items = await getItem(this.outVo.id).catch(() => { this.loading = false })
       this.outVo.outItemVos = items.data
+      this.outVo.altercode = 2
       // 处理票据代码选择时的选项
       this.billPrecodeChange(scope)
       this.loading = false
@@ -496,6 +548,17 @@ export default {
       // this.loading = false
     },
 
+    // 进入出库新增界面
+    async handleAdd () {
+      this.loading = true
+      const items = await addOut(this.outVo.author).catch(() => { this.loading = false })
+      this.outVo = items.data
+      this.outVo.altercode = 1
+      this.outVo.outItemVos = []
+      // 处理票据代码选择时的选项
+      this.loading = false
+    },
+
     // 新增item
     async itemAdd (tableData, pid) {
       this.loading = true
@@ -505,32 +568,33 @@ export default {
         'billName': '',
         'number': 0,
         'billNo1': '0000000001',
-        'billNo2': '0000000010',
+        'billNo2': '0000000000',
         'id': 0
       })
       this.loading = false
     },
 
-    // 获取未被选择的
-    async unselectedBill () {
-      var returns = []
-      this.outVo.outItemVos.forEach(item => {
-        this.billOptions.forEach(e => {
-          if (e.billPrecode === item.billPrecode) {
-            e.selected = true
-          }
-        })
-      })
-      console.log('length:' + this.outVo.outItemVos.length)
-      this.billOptions.forEach(item => {
-        if (item.selected) {
-          returns.push(item)
-        }
-      })
-      console.log(returns)
-      return returns
-    },
+    // // 获取未被选择的
+    // async unselectedBill () {
+    //   var returns = []
+    //   this.outVo.outItemVos.forEach(item => {
+    //     this.billOptions.forEach(e => {
+    //       if (e.billPrecode === item.billPrecode) {
+    //         e.selected = true
+    //       }
+    //     })
+    //   })
+    //   console.log('length:' + this.outVo.outItemVos.length)
+    //   this.billOptions.forEach(item => {
+    //     if (item.selected) {
+    //       returns.push(item)
+    //     }
+    //   })
+    //   console.log(returns)
+    //   return returns
+    // },
 
+    // 详情页面，改变票据代码方法
     async billPrecodeChange (scope) {
       this.billOptions.forEach(e => {
         e.selected = false
@@ -551,19 +615,19 @@ export default {
       rows.splice(index, 1)
       this.loading = false
     },
-
     // 处理保存请求
-    async handleSave (scope) {
+    async handleSave () {
       this.loading = true
       console.log('save id:' + this.outVo.id)
+      console.log(this.outVo)
       // 判断数据是否有误
       // a
       const subres = await save(this.outVo).catch(() => { this.loading = false })
       console.log('提交结果：' + subres.data)
       if (subres.data) {
-        this.$message.success('提交成功！')
+        this.$message.success('保存成功！')
       } else {
-        this.$message.error('提交失败！')
+        this.$message.error('保存失败！')
       }
       this.loading = false
       this.getTableData()
@@ -586,6 +650,47 @@ export default {
     },
 
     /**
+     * 多选的选择改变事件
+     */
+    handleSelectionChange (val) {
+      this.selectedList = val
+      if (val !== undefined && val.length > 0) {
+        this.submitAllButtonDisabled = false
+      } else {
+        this.submitAllButtonDisabled = true
+      }
+    },
+
+    // 提交到审核多选
+    async submitAll () {
+      this.loading = true
+      const subAllres = await submitAll(this.selectedList).catch(() => { this.loading = false })
+      console.log('提交结果：' + subAllres.data)
+      if (subAllres.data) {
+        this.$message.success('提交成功！')
+      } else {
+        this.$message.error('提交失败！')
+      }
+      this.loading = false
+      this.getTableData()
+    },
+
+    /**
+     * 删除多选
+     */
+    async deleteAll () {
+      this.loading = true
+      const delAllres = await deleteAll(this.selectedList).catch(() => { this.loading = false })
+      if (delAllres.data) {
+        this.$message.success('删除成功！')
+      } else {
+        this.$message.error('删除失败！')
+      }
+      this.loading = false
+      this.getTableData()
+    },
+
+    /**
      * 处理changeState审核状态在前端的展示
      * 注：case 0：新建实际不存在，因为新建未保存的默认不存在
      */
@@ -598,9 +703,9 @@ export default {
         case 2:
           return { type: 'info', label: '审核中', effect: 'plain' }
         case 3:
-          return { type: 'success', label: '通过', effect: 'dark' }
+          return { type: 'success', label: '通过', effect: 'plain' }
         case 4:
-          return { type: 'danger', label: '退回', effect: 'dark' }
+          return { type: 'danger', label: '退回', effect: 'plain' }
       }
     },
 
@@ -663,8 +768,9 @@ export default {
   }
 }
 .my-form-item {
+  margin-top: 0px;
   .el-form-item {
-    margin-right: 15px;
+    margin-right: 20px;
   }
 }
 .my-dialog {
@@ -673,12 +779,13 @@ export default {
     margin-right: 200px;
   }
 }
-.el-col {
-  min-height: 1px;
-}
+// .el-col {
+//   min-height: 1px;
+// }
 // 跳转页脚
 .el-pagination {
   float: right;
+  margin-top: 10px;
   margin-right: 30px;
 }
 </style>
