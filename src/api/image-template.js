@@ -1,7 +1,8 @@
 import request from '@/utils/request'
+import download from '@/utils/download'
 
 export function getImageTemplate () {
-  return request({
+  return download({
     url: `/image/template`,
     method: 'get',
     responseType: 'blob'
@@ -17,7 +18,7 @@ export function getRemoteAddress (data) {
 }
 
 export function generateImage (data) {
-  return request({
+  return download({
     url: `/image/genImage`,
     method: 'post',
     responseType: 'blob',

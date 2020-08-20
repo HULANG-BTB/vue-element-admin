@@ -123,7 +123,7 @@
     </div>
 
     <el-pagination
-      layout="prev, pager, next, sizes, jumper"
+      layout="prev, pager, next, sizes, total, jumper"
       align="right"
       :page-size="query.pageSize"
       :total="query.total"
@@ -358,31 +358,37 @@ export default {
       })
     },
 
+    /**
+     * 判断上传的文件类型，不符合返回-1
+     */
+    fileType (file) {
+      const fileName = file.name
+      const idx = fileName.lastIndexOf('.')
+      if (idx !== -1) {
+        let ext = fileName.substr(idx + 1).toUpperCase()
+        ext = ext.toLowerCase()
+        if (ext === 'ftl') {
+          return 'ftl'
+        } else if (ext === 'xlsx') {
+          return 'xlsx'
+        } else {
+          return -1
+        }
+      }
+    },
+
     getFile (event) {
       const file = event.target.files
-      console.log(event)
-      console.log(file[0])
       for (let i = 0; i < file.length; i++) {
-        // 上传类型判断
-        const imgName = file[i].name
-        console.log(imgName)
-        const idx = imgName.lastIndexOf('.')
-        if (idx !== -1) {
-          let ext = imgName.substr(idx + 1).toUpperCase()
-          ext = ext.toLowerCase()
-          if (ext !== 'pdf' && ext !== 'ftl') {
-            this.$message({
-              type: 'info',
-              message: '文件类型错误'
-            })
-            return
-          } else {
-            this.addArr.push(file[i])
-            console.log(this.addArr[0])
-          }
-        } else {
-          console.log(idx)
+        const type = this.fileType(file[i])
+        if (type === -1) {
+          this.$message({
+            type: 'info',
+            message: '文件类型错误'
+          })
+          return
         }
+        this.addArr.push(file[i])
       }
     },
 
@@ -405,23 +411,45 @@ export default {
        * @file 模板文件
        * @type {FormData}
        */
-      const formData = new FormData()
-      formData.append('billCode', this.billCode)
-      formData.append('memo', this.memo)
-      formData.append('templateName', this.templateName)
+      const formDataXSLX = new FormData()
+      formDataXSLX.append('billCode', this.billCode)
+      formDataXSLX.append('memo', this.memo)
+      formDataXSLX.append('templateName', this.templateName)
+      const formDataFTL = new FormData()
+      formDataFTL.append('billCode', this.billCode)
+      formDataFTL.append('memo', this.memo)
+      formDataFTL.append('templateName', this.templateName)
+      console.log(this.fileType(this.addArr[0]))
       for (let i = 0; i < this.addArr.length; i++) {
-        formData.append('file', this.addArr[i])
+        const type = this.fileType(this.addArr[i])
+        if (type === 'xslx') {
+          formDataXSLX.append('file', this.addArr[i])
+        } else if (type === 'ftl') {
+          formDataFTL.append('file', this.addArr[i])
+        }
       }
-      console.log(this.addArr[0].name)
-      axios.post('http://pro.beanbang.cn:8080/printTemplate/uploadTemplate', formData)
-        .then((res) => {
-          if (res.data.success) {
-            this.$message({
-              type: 'success',
-              message: '附件上传成功!'
-            })
-          }
-        })
+      if (formDataXSLX.get('file') !== null) {
+        axios.post('http://pro.beanbang.cn:8080/printTemplate/uploadExcel', formDataXSLX)
+          .then((res) => {
+            if (res.data.success) {
+              this.$message({
+                type: 'success',
+                message: '附件上传成功!'
+              })
+            }
+          })
+      }
+      if (formDataFTL.get('file') !== null) {
+        axios.post('http://pro.beanbang.cn:8080/printTemplate/uploadTemplate', formDataFTL)
+          .then((res) => {
+            if (res.data.success) {
+              this.$message({
+                type: 'success',
+                message: '附件上传成功!'
+              })
+            }
+          })
+      }
       /**
        * 上传结束后将上传表单清空
        */
