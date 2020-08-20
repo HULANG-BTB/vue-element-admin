@@ -10,7 +10,7 @@
       <el-form-item label="查询模板文件:">
         <el-input
           v-model="template.billCode"
-          placeholder="输入票据代码"
+          placeholder="输入票据代码(不含年度)"
           clearable
           size="small"
         />
@@ -82,10 +82,24 @@
         </el-table-column>
         <el-table-column
           align="center"
+          label="票据代码（不含年度）"
+          width="290"
+        >
+          <template slot-scope="scope">{{ scope.row.rgnCode + scope.row.typeId + scope.row.sortId }}</template>
+        </el-table-column>
+        <el-table-column
+          align="center"
           label="模板名称"
           width="290"
         >
           <template slot-scope="scope">{{ scope.row.name }}</template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="备注"
+          width="290"
+        >
+          <template slot-scope="scope">{{ scope.row.memo }}</template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -222,7 +236,9 @@ export default {
     }
   },
   computed: {
-    // 复选框数量等于0，将批量删除按钮的可点击属性置为false，否则置为true
+    /**
+     * 复选框数量等于0，将批量删除按钮的可点击属性置为false，否则置为true
+     */
     deleteBatchDisable () {
       return this.selectedList.length === 0
     }
