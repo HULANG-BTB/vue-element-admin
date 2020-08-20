@@ -15,35 +15,6 @@ export function updateStatus (mail) {
     data: mail
   })
 }
-/* 不提供自定义修改接口 */
-export function updateMail (mail) {
-  return request({
-    url: '/mail/updateMail',
-    method: 'put',
-    data: mail
-  })
-}
-export function addMail (mail) {
-  return request({
-    url: '/mail/addMail',
-    method: 'post',
-    data: mail
-  })
-}
-export function deleteMail (mailId) {
-  return request({
-    url: '/mail/deleteMail',
-    method: 'delete',
-    params: { id: mailId }
-  })
-}
-export function deleteMailBatch (mails) {
-  return request({
-    url: '/mail/deleteMailBatch',
-    method: 'delete',
-    data: mails
-  })
-}
 
 /* sms 相关 */
 export function getSmsList (query) {
@@ -67,54 +38,11 @@ export function getBill (query) {
     params: { tel: query.tel, verifyCode: query.verifyCode }
   })
 }
-/* 票据查验 */
-export function billCheck (query) {
-  return request({
-    url: '/check/billCheck',
-    method: 'get',
-    params: { billId: query.billId, checkCode: query.checkCode }
-  })
-}
-
-/* 查验记录相关  */
-export function getCheckRecordList (query) {
-  return request({
-    url: '/checkRecord/list',
-    method: 'post',
-    data: query
-  })
-}
-export function addCheckRecord (record) {
-  return request({
-    url: '#',
-    method: 'post'
-  })
-}
-export function updateCheckRecord (record) {
-  return request({
-    url: '#',
-    method: 'put'
-  })
-}
-export function deleteCheckRecordBatch (records) {
-  return request({
-    url: '/checkRecord/deleteCheckRecordBatch',
-    method: 'post',
-    data: records
-  })
-}
-export function deleteCheckRecord (recordId) {
-  return request({
-    url: '/checkRecord/deleteCheckRecord',
-    method: 'delete',
-    params: { id: recordId }
-  })
-}
 /* 统一方法 */
 export const util = {
   jsonFormat: function (src) {
     const jsonStr = src
-    return jsonStr.replace(new RegExp('"', 'g'), '').replace('{', '').replace('}', '')
+    return jsonStr.replace('"', '').replace('{', '').replace('}', '')
   },
   dateFormat: function (date) {
     const dateTime = new Date(date)

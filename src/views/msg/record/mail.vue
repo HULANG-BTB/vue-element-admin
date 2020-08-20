@@ -58,13 +58,6 @@
       </el-form-item>
       <el-form-item label>
         <el-button
-          type="success"
-          size="small"
-          @click="getTableData"
-        >重载数据</el-button>
-      </el-form-item>
-      <el-form-item label>
-        <el-button
           type="primary"
           size="small"
           @click="handleAdd"
@@ -80,21 +73,11 @@
       </el-form-item>
     </el-form>
 
-    <el-pagination
-      background
-      layout="prev, pager, next, sizes, total, jumper"
-      :total="query.total"
-      :current-page="query.page"
-      :page-sizes="[10, 20, 50, 100, 500, 1000]"
-      :page-size="query.limit"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
-
     <el-table
       v-loading.body="loading"
       :data="mailTableData"
-      style="width: 100%; margin-top: 30px;"
+      style="width: 100%;"
+      max-height="800px"
       border
       @selection-change="handleOnSelectChange"
     >
@@ -111,19 +94,40 @@
       <el-table-column align="center" label="邮件主题">
         <template slot-scope="scope">{{ scope.row.subject }}</template>
       </el-table-column>
-      <el-table-column align="center" label="邮件内容" width="165">
-        <template slot-scope="scope">{{ util.jsonFormat(scope.row.content) }}</template>
+      <el-table-column align="center" label="邮件内容">
+
+        <template slot-scope="scope">
+          <el-popover
+            slot="reference"
+            placement="top-start"
+            title="邮件内容"
+            width="300"
+            trigger="click"
+          >
+            <div class="popover-content" v-html="util.prettyJson(scope.row.content)" />
+            <el-button slot="reference" type="text">点击查看内容</el-button>
+
+          </el-popover>
+        </template>
       </el-table-column>
-      <el-table-column align="center" label="发件时间">
+      <el-table-column align="center" label="发件时间" prop="date" sortable>
         <template slot-scope="scope">{{ scope.row.sentDate }}</template>
       </el-table-column>
       <el-table-column align="center" label="是否已发送">
-        <template slot-scope="scope">{{ scope.row.isSent ? '已发送' : '未发送' }}</template>
+        <template slot-scope="scope">
+          <el-tag
+            :key="scope.row.isSent ? '已发送' : '未发送'"
+            :type="scope.row.isSent ? 'success' : 'danger'"
+            effect="plain"
+          >
+            {{ scope.row.isSent ? '已发送' : '未发送' }}
+          </el-tag>
+        </template>
       </el-table-column>
-      <el-table-column align="center" label="发件详情" width="165">
+      <el-table-column align="center" label="发件详情">
         <template slot-scope="scope">{{ scope.row.error }}</template>
       </el-table-column>
-      <el-table-column align="center" label="操作">
+      <el-table-column align="center" label="操作" width="165px">
         <template slot-scope="scope">
           <el-button
             v-if="!query.isSent"
@@ -140,7 +144,16 @@
         </template>
       </el-table-column>
     </el-table>
-
+    <el-pagination
+      background
+      layout="prev, pager, next, sizes, total, jumper"
+      :total="query.total"
+      :current-page="query.page"
+      :page-sizes="[10, 20, 50, 100, 500, 1000]"
+      :page-size="query.limit"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
     <el-dialog
       :visible.sync="dialogVisible"
       :title="dialogType === 'edit' ? '编辑邮件' : '新建邮件'"
@@ -177,6 +190,7 @@
         </el-form-item>
 
       </el-form>
+
       <div style="text-align: right;">
         <el-button
           type="danger"
@@ -280,10 +294,8 @@ export default {
     // 获取邮件列表
     async getTableData () {
       this.loading = true
-      this.query.page = 1
       this.mailTableData = []
       await getMailList(this.query).then(res => {
-        console.log(res.data.row)
         this.mailTableData = res.data.row
         this.query.total = res.data.total
         this.query.limit = res.data.limit
@@ -386,6 +398,7 @@ export default {
     },
 
     handleOnSelectChange (selection) {
+      console.log(selection)
       this.selectedList = selection
     },
 
@@ -416,6 +429,13 @@ export default {
     margin-top: 30px;
   }
   .permission-tree {
+    margin-bottom: 30px;
+  }
+  // 跳转页脚
+  .el-pagination {
+    float: right;
+    margin-right: 30px;
+    margin-top: 30px;
     margin-bottom: 30px;
   }
 }
