@@ -8,6 +8,7 @@
       <el-col :span="12">
         <el-form-item
           label="申请单号"
+          style="color: green"
           label-width="80px"
         >
           <el-input
@@ -76,18 +77,36 @@
           :index="indexMethod"
         />
         <el-table-column
-          label="票据名称"
-          width="180px"
+          label="票据代码"
+          width="160px"
         >
           <template slot-scope="scope">
             <el-select
-              v-model="applyDto.billName"
-              placeholder="选择销毁的票据种类"
+              v-model="scope.row.fBillBatchCode"
+              placeholder="选择票据代码"
             >
               <el-option
                 v-show="scope.row.show"
-                label="非税收入通用票据"
-                value="非税收入通用票据"
+                label="01160220"
+                value="01160220"
+              />
+            </el-select>
+            <span v-show="!scope.row.show">{{ scope.row.fBillBatchCode }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="票据名称"
+          width="220px"
+        >
+          <template slot-scope="scope">
+            <el-select
+              v-model="scope.row.fBillName"
+              placeholder="选择票据种类"
+            >
+              <el-option
+                v-show="scope.row.show"
+                label="中央非税收入统一票据"
+                value="中央非税收入统一票据"
               />
             </el-select>
             <!-- <el-input
@@ -98,42 +117,45 @@
             <span v-show="!scope.row.show">{{ scope.row.billName }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="票据代码">
-          <template slot-scope="scope">
-            <el-input
-              v-show="scope.row.show"
-              v-model="scope.row.fBillBatchCode"
-              placeholder="票据代码"
-            />
-            <span v-show="!scope.row.show">{{ scope.row.fBillBatchCode }}</span>
-          </template>
-        </el-table-column>
         <el-table-column
           label="仓库ID"
-          width="100px"
+          width="140px"
         >
           <template slot-scope="scope">
-            <el-input
-              v-show="scope.row.show"
+            <el-select
               v-model="scope.row.fWarehouseId"
-              placeholder="仓库ID"
-            />
+              placeholder="选择仓库ID"
+            >
+              <el-option
+                v-show="scope.row.show"
+                label="0001"
+                value="0001"
+              />
+            </el-select>
             <span v-show="!scope.row.show">{{ scope.row.fWarehouseId }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="仓库名称">
+        <el-table-column
+          label="仓库名称"
+          width="160px"
+        >
           <template slot-scope="scope">
-            <el-input
-              v-show="scope.row.show"
+            <el-select
               v-model="scope.row.fWarehouseName"
-              placeholder="仓库名称"
-            />
-            <span v-show="!scope.row.show">{{ scope.row.fWarehouseName }}</span>
+              placeholder="选择仓库名称"
+            >
+              <el-option
+                v-show="scope.row.show"
+                label="A仓库"
+                value="A仓库"
+              />
+              <span v-show="!scope.row.show">{{ scope.row.fWarehouseName }}</span>
+            </el-select>
           </template>
         </el-table-column>
         <el-table-column
           label="数量"
-          width="100px"
+          width="80px"
         >
           <template slot-scope="scope">
             <el-input
@@ -144,7 +166,10 @@
             <span v-show="!scope.row.show">{{ scope.row.fNumber }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="起始号">
+        <el-table-column
+          label="起始号"
+          width="140px"
+        >
           <template slot-scope="scope">
             <el-input
               v-show="scope.row.show"
@@ -154,7 +179,10 @@
             <span v-show="!scope.row.show">{{ scope.row.fBillNo1 }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="终止号">
+        <el-table-column
+          label="终止号"
+          width="140px"
+        >
           <template slot-scope="scope">
             <el-input
               v-show="scope.row.show"
@@ -166,7 +194,7 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="200px"
+          width="180px"
         >
           <template slot-scope="scope">
             <el-button @click="scope.row.show =true">编辑</el-button>
@@ -212,19 +240,29 @@
     </el-row>
 
     <el-form-item>
-      <el-button
-        type="primary"
-        @click="addDestroyApply()"
-      >立即申请</el-button>
-      <el-button @click="cancel()">取消</el-button>
+      <div v-if="operateType == '新增票据销毁申请'">
+        <el-button
+          type="primary"
+          @click="addDestroyApply()"
+        >立即申请</el-button>
+        <el-button @click="cancel()">取消</el-button>
+      </div>
+      <div v-if="operateType == '修改票据销毁申请信息'">
+        <el-button
+          type="primary"
+          @click="updateApplyInfo()"
+        >立即修改</el-button>
+        <el-button @click="cancel()">取消</el-button>
+      </div>
     </el-form-item>
   </el-form>
 </template>
 
 <script>
 import {
-  addDestroyApply
+  addDestroyApply, getApplyInfoByDestroyNo, updateApplyInfo
 } from '@/api/qiuhengGroupApi/destroy/destroyApply'
+import { getItemListByDestroyNo } from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
 export default {
   data () {
     return {
@@ -238,10 +276,11 @@ export default {
         fStatus: '未审核'
       },
       itemDtoList: [
-        { fBillBatchCode: '13412321', fWarehouseId: '213213', fWarehouseName: 'A仓库', fNumber: 100, fBillNo1: '00000001', fBillNo2: '00000100', show: true },
-        { fBillBatchCode: '13412321', fWarehouseId: '213213', fWarehouseName: 'A仓库', fNumber: 66, fBillNo1: '00000120', fBillNo2: '00000186', show: true }
+        { fBillName: '', fBillBatchCode: '', fWarehouseId: '', fWarehouseName: '', fNumber: 100, fBillNo1: '0000000001', fBillNo2: '0000000100', show: true },
+        { fBillName: '', fBillBatchCode: '', fWarehouseId: '', fWarehouseName: '', fNumber: 66, fBillNo1: '0000000120', fBillNo2: '0000000186', show: true }
       ],
-      dialogVisible: false
+      dialogVisible: false,
+      operateType: 'aa'
     }
   },
 
@@ -249,6 +288,14 @@ export default {
   created () {
     this.$root.eventBus.$on('fDestroyNo', (val) => {
       this.applyDto.fDestroyNo = val
+    })
+    this.$root.eventBus.$on('fDestroyNoUpdate', (val) => {
+      this.getApplyInfo(val)
+      this.getItemList(val)
+    })
+    this.$root.eventBus.$on('operateType', (val) => {
+      this.operateType = val
+      console.log(this.operateType)
     })
   },
   methods: {
@@ -288,9 +335,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        const res = await addDestroyApply(applyVo)
+        await addDestroyApply(applyVo)
         this.$root.eventBus.$emit('dialogVisible1', this.dialogVisible)
-        console.log(res)
+        // console.log(res)
         this.$router.push
         this.$message({
           type: 'success',
@@ -303,16 +350,86 @@ export default {
         })
       })
     },
+    async updateApplyInfo () {
+      let fDestroyTypeToBool
+      if (this.applyDto.fDestroyType === '核销票据销毁') {
+        fDestroyTypeToBool = 0
+      } else {
+        fDestroyTypeToBool = 1
+      }
 
+      let fStatusToBool
+      if (this.applyDto.fStatus === '未审核') {
+        fStatusToBool = 0
+      } else {
+        fStatusToBool = 1
+      }
+
+      const applyVo = {
+        applyDto: {
+          fDestroyNo: this.applyDto.fDestroyNo,
+          fUnitName: this.applyDto.fUnitName,
+          fDestroyType: fDestroyTypeToBool,
+          fDestroyMemo: this.applyDto.fDestroyMemo,
+          fApplyMan: this.applyDto.fApplyMan,
+          fApplyDate: this.applyDto.fApplyDate,
+          fStatus: fStatusToBool,
+          fOperatorId: '66623214',
+          fOperatorName: '李四',
+          fRgnCode: '42',
+          fAgenIdCode: '1314'
+        },
+        itemDtoList: this.itemDtoList
+      }
+      this.$confirm('是否立即修改票据销毁申请信息, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        await updateApplyInfo(applyVo)
+        this.$root.eventBus.$emit('dialogVisible1', this.dialogVisible)
+        // console.log(res)
+        this.$router.push
+        this.$message({
+          type: 'success',
+          message: '修改票据销毁申请信息成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
+    },
     indexMethod (index) {
       return index + 1
+    },
+    cancel () {
+      this.$root.eventBus.$emit('dialogVisibleCancel', this.dialogVisible)
+    },
+    async getApplyInfo (val) {
+      const res = await getApplyInfoByDestroyNo(val)
+      // console.log(res)
+      this.applyDto = res
+      if (this.applyDto.fDestroyType === true) {
+        this.applyDto.fDestroyType = '库存票据销毁'
+      } else {
+        this.applyDto.fDestroyType = '核销票据销毁'
+      }
+      if (this.applyDto.fStatus === true) {
+        this.applyDto.fStatus = '已审核'
+      } else {
+        this.applyDto.fStatus = '未审核'
+      }
+      // console.log(this.applyDto)
+    },
+    async getItemList (val) {
+      const res1 = await getItemListByDestroyNo(val)
+      // console.log(res1)
+      this.itemDtoList = res1
+      // console.log(this.itemDtoList)
     }
-  },
-
-  cancel () {
-    this.$root.eventBus.$emit('dialogVisibleCancel', this.dialogVisible)
   }
-
 }
 </script>
 
