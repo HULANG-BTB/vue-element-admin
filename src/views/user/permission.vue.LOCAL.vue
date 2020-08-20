@@ -97,14 +97,7 @@
 <script>
 import { deepClone } from '@/utils'
 import { parseTime } from '@/utils/index'
-import {
-  savePermission,
-  updatePermission,
-  removePermission,
-  removePermissionBatch,
-  getPermissionListByPage,
-  getPermissionList
-} from '@/api/permission'
+import { savePermission, updatePermission, removePermission, removePermissionBatch, getPermissionListByPage, getPermissionList } from '@/api/permission'
 
 const defaultPermission = {
   id: null,
@@ -137,7 +130,13 @@ export default {
         ]
       },
       permission: {},
-      requestMethod: ['GET', 'POST', 'PUT', 'DELETE', 'ALL'],
+      requestMethod: [
+        'GET',
+        'POST',
+        'PUT',
+        'DELETE',
+        'ALL'
+      ],
       query: {
         page: 1,
         limit: 10,
@@ -242,23 +241,22 @@ export default {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
         type: 'warning'
-      }).then(async () => {
-        removePermission(row.id)
-          .then((res) => {
+      })
+        .then(async () => {
+          removePermission(row.id).then(res => {
             this.$message({
               type: 'success',
               message: 'Delete succed!'
             })
             this.getTableData()
-          })
-          .catch((err) => {
+          }).catch(err => {
             this.$message({
               type: 'error',
               message: 'Delete failed!'
             })
             console.error(err)
           })
-      })
+        })
     },
 
     // 提交数据
@@ -304,16 +302,17 @@ export default {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
         type: 'warning'
-      }).then(async () => {
-        removePermissionBatch(this.selectedList).then((res) => {
-          this.$message({
-            type: 'success',
-            message: 'Delete succed!'
-          })
-          this.getTableData()
-          this.getPermissionList(true)
-        })
       })
+        .then(async () => {
+          removePermissionBatch(this.selectedList).then(res => {
+            this.$message({
+              type: 'success',
+              message: 'Delete succed!'
+            })
+            this.getTableData()
+            this.getPermissionList(true)
+          })
+        })
     },
 
     // 批量选择改变

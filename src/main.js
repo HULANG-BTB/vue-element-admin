@@ -1,22 +1,16 @@
-import Vue from 'vue'
-
-import 'normalize.css/normalize.css' // A modern alternative to CSS resets
-
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-// import locale from 'element-ui/lib/locale/lang/en' // lang i18n
-import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
-
 import '@/assets/styles/index.scss' // global css
-
-import App from './App'
-import store from './store'
-import router from './router'
-
+import permission from '@/directive/permission/index.js'
 import '@/icons' // icon
 import '@/permission' // permission control
-
-import permission from '@/directive/permission/index.js'
+import ElementUI from 'element-ui'
+// import locale from 'element-ui/lib/locale/lang/en' // lang i18n
+import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
+import 'element-ui/lib/theme-chalk/index.css'
+import 'normalize.css/normalize.css' // A modern alternative to CSS resets
+import Vue from 'vue'
+import App from './App'
+import router from './router'
+import store from './store'
 
 Vue.use(permission)
 
