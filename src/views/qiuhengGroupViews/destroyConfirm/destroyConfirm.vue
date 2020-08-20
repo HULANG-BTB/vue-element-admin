@@ -20,6 +20,7 @@
             <el-form-item label>
               <el-button
                 icon="el-icon-search"
+                type="primary"
                 size="small"
                 @click="handleSearch"
               >搜索</el-button>

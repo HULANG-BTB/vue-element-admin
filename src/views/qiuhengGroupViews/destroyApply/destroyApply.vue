@@ -20,6 +20,7 @@
             <el-form-item label>
               <el-button
                 icon="el-icon-search"
+                type="primary"
                 size="small"
                 @click="handleSearch"
               >搜索</el-button>
@@ -110,12 +111,12 @@
         prop="fApplyMan"
         label="申请人"
         sortable
-        width="100"
+        width="130"
       />
       <el-table-column
         fixed="right"
         label="操作"
-        width="300"
+        width="280"
       >
         <template slot-scope="scope">
           <el-button
