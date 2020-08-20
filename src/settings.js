@@ -20,10 +20,10 @@ module.exports = {
     tokenExpires: 1,
 
     // 请求提交时附带token的请求头
-    header: 'Authenticate'
+    header: 'Authorization'
   },
 
   // 请求超时时间 单位毫秒
-  requestTimeout: 10000
+  requestTimeout: 30 * 1000
 
 }

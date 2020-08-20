@@ -89,7 +89,7 @@
               <el-button
                 type="primary"
                 size="small"
-                @click="handleShowTemplate(scope)"
+                @click="handleShowTemplate(scope.row.id)"
               >查看</el-button>
               <el-button
                 type="danger"
@@ -104,9 +104,10 @@
 
     <el-pagination
       layout="prev, pager, next, sizes, jumper"
-      :page-size="query.size"
+      align="right"
+      :page-size="query.pageSize"
       :total="query.total"
-      :current-page="query.current"
+      :current-page="query.currentPage"
       :page-sizes="[2, 5, 10, 20, 50, 100, 500, 1000]"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -183,10 +184,9 @@
 import {
   getTemplateListByPage,
   getTemplate,
-  getTemplateByName,
+  getTemplateById,
   deleteTemplate,
   deleteTemplateBatch
-  // getAllTemplate
 } from '@/api/template'
 import axios from 'axios'
 
@@ -203,9 +203,10 @@ export default {
       dialogAddFile: false,
       templateTableData: '',
       addArr: [],
+      contents: '',
       query: {
-        current: 1,
-        size: 2,
+        currentPage: 1,
+        pageSize: 5,
         total: 15,
         keyword: ''
       }
@@ -229,11 +230,10 @@ export default {
     async getTableData () {
       this.loading = true
       const res = await getTemplateListByPage(this.query)
-      // const res = await getAllTemplate()
       this.templateTableData = res.data.records
       this.query.total = res.data.total
-      this.query.size = res.data.size
-      this.query.current = res.data.current
+      this.query.pageSize = res.data.size
+      this.query.currentPage = res.data.current
       this.selectedList = []
       this.loading = false
     },
@@ -250,8 +250,8 @@ export default {
         return
       }
       this.query.currentPage = 1
-      const res = getTemplateByName(this.query.keyword)
-      this.templateTableData = res.data
+      const res = getTemplateById(this.query.keyword)
+      this.templateTableData = res.data.records
       this.selectedList = []
       // this.getTableData()
     },
@@ -278,9 +278,42 @@ export default {
       document.getElementById('continer').innerHTML = scope.row.template
     },
 
-    handleShowTemplate (scope) {
+    handleShowTemplate (id) {
       this.dialogVisible = false
-      document.getElementById('continer').innerHTML = getTemplate(scope.row.id).data
+      getTemplate(id).then(res => {
+        const blob = new Blob([res])
+        const reader = new FileReader()
+        reader.onload = function (event) {
+          const contents = reader.result
+          console.log('file contents:' + contents)
+          document.getElementById('continer').innerHTML = contents
+        }
+        reader.readAsText(blob)
+      })
+    },
+
+    byteToString (arr) {
+      if (typeof arr === 'string') {
+        return arr
+      }
+      let str = ''
+      const _arr = arr
+      for (let i = 0; i < _arr.length; i++) {
+        const one = _arr[i].toString(2)
+        const v = one.match(/^1+?(?=0)/)
+        if (v && one.length === 8) {
+          const bytesLength = v[0].length
+          let store = _arr[i].toString(2).slice(7 - bytesLength)
+          for (let st = 1; st < bytesLength; st++) {
+            store += _arr[st + i].toString(2).slice(2)
+          }
+          str += String.fromCharCode(parseInt(store, 2))
+          i += bytesLength - 1
+        } else {
+          str += String.fromCharCode(_arr[i])
+        }
+      }
+      return str
     },
 
     /**
@@ -412,13 +445,13 @@ export default {
 
     // 每页数目改变
     handleSizeChange (val) {
-      this.query.size = val
+      this.query.pageSize = val
       this.getTableData()
     },
 
     // 当前页码改变
     handleCurrentChange (val) {
-      this.query.current = val
+      this.query.currentPage = val
       this.getTableData()
     }
   }
