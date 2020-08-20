@@ -28,8 +28,6 @@ export function getIncomeTree (data) {
 }
 
 export function queryByCondition (data) {
-  //数据加密
-  // data=getEncryptedJson(data)
   return request({
     url: baseUrl + 'pageQueryById',
     method: 'post',
