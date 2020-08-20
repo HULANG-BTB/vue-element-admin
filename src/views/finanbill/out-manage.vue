@@ -621,10 +621,10 @@ export default {
       console.log('save id:' + this.outVo.id)
       console.log(this.outVo)
       // 判断数据是否有误
-      // a
+      // 判断。。。。。
       const subres = await save(this.outVo).catch(() => { this.loading = false })
-      console.log('提交结果：' + subres.data)
-      if (subres.data) {
+      console.log('提交结果：' + subres)
+      if (subres) {
         this.$message.success('保存成功！')
       } else {
         this.$message.error('保存失败！')
@@ -639,8 +639,8 @@ export default {
       this.outVo = Object.assign(this.outVo, scope.row)
       console.log('id:' + this.outVo.id)
       const subres = await submit(this.outVo.id).catch(() => { this.loading = false })
-      console.log('提交结果：' + subres.data)
-      if (subres.data) {
+      console.log('提交结果：' + subres)
+      if (subres) {
         this.$message.success('提交成功！')
       } else {
         this.$message.error('提交失败！')
@@ -665,8 +665,8 @@ export default {
     async submitAll () {
       this.loading = true
       const subAllres = await submitAll(this.selectedList).catch(() => { this.loading = false })
-      console.log('提交结果：' + subAllres.data)
-      if (subAllres.data) {
+      console.log('提交结果：' + subAllres)
+      if (subAllres) {
         this.$message.success('提交成功！')
       } else {
         this.$message.error('提交失败！')
@@ -681,7 +681,7 @@ export default {
     async deleteAll () {
       this.loading = true
       const delAllres = await deleteAll(this.selectedList).catch(() => { this.loading = false })
-      if (delAllres.data) {
+      if (delAllres) {
         this.$message.success('删除成功！')
       } else {
         this.$message.error('删除失败！')

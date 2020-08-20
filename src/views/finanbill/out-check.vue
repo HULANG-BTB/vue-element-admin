@@ -273,7 +273,7 @@
         <el-button
           v-if="!isSend"
           type="warning"
-          @click="handleSave(); dialogFormVisible = false"
+          @click="handleCheck(checkResult.fail); dialogFormVisible = false"
         >退 回</el-button>
         <el-button
           v-if="!isSend"
@@ -283,7 +283,7 @@
         <el-button
           v-if="!isSend"
           type="success"
-          @click="handleSave(); dialogFormVisible = false"
+          @click="handleCheck(checkResult.pass); dialogFormVisible = false"
         >通 过</el-button>
         <el-button
           v-if="isSend"
@@ -326,6 +326,11 @@ export default {
       isSend: false,
       // 提交多选按钮是否可用
       isCheckBoxChecked: true,
+      // 审核结果，3通过，4退回
+      checkResult: {
+        pass: '3',
+        fail: '4'
+      },
       // 多选的项
       selectedList: [],
       // loading转圈图标可视控制
@@ -437,13 +442,14 @@ export default {
      */
     async handleCheck (val) {
       this.loading = true
+      console.log('val:' + val)
       this.outVo.changeState = val
       const chkres = await check(this.outVo).catch(() => { this.loading = false })
-      console.log('提交结果：' + chkres.data)
-      if (chkres.data) {
-        this.$message.success('提交成功！')
+      console.log('提交结果：' + chkres)
+      if (chkres) {
+        this.$message.success('审核成功！')
       } else {
-        this.$message.error('提交失败！')
+        this.$message.error('审核失败！')
       }
       this.loading = false
       this.getTableData()
