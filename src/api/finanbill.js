@@ -6,7 +6,7 @@ import request from '@/utils/request'
  * 获得出库列表
  * @param {*} query 出库vo，包含编制人，审核状态等信息
  */
-export function getAllList (query) {
+export function getAll (query) {
   return request({
     url: '/stock-out/showAll',
     method: 'post',
@@ -16,20 +16,32 @@ export function getAllList (query) {
 
 /**
  * 获得出库中的明细
- * @param {*} pid 父id，即出库id
+ * @param {pid} pid 父id，即出库id
  */
 export function getItem (pid) {
   return request({
     url: '/stock-out/getItem',
     // url: '/mail/updateStatus',
-    method: 'post',
-    data: { 'pid': pid }
+    method: 'get',
+    params: { pid: pid }
+  })
+}
+
+/**
+ * 新增出库记录
+ * @param {*} author 编制人
+ */
+export function addOut (author) {
+  return request({
+    url: '/stock-out/add',
+    method: 'get',
+    params: { author: author }
   })
 }
 
 /**
  * 提交保存请求
- * @param {*} query 保存的信息map，key=出库，value=明细list
+ * @param {*} query 出库即其明细
  */
 export function save (query) {
   return request({
@@ -41,38 +53,63 @@ export function save (query) {
 
 /**
  * 提交请求，即：将保存状态变更为待审核状态checkState
- * @param {*} query 提交vo
+ * @param {*} id 提交id
  */
-export function submit (query) {
+export function submit (id) {
   return request({
     url: '/stock-out/submit',
+    method: 'put',
+    params: { id: id }
+  })
+}
+
+/**
+ * 提交请求，即：将保存状态变更为待审核状态checkState
+ * @param {*} query 提交id
+ */
+export function submitAll (query) {
+  return request({
+    url: '/stock-out/submitAll',
+    method: 'put',
+    data: query
+  })
+}
+
+/**
+ * 删除多选
+ */
+export function deleteAll (query) {
+  return request({
+    url: '/stock-out/deleteAll',
+    method: 'put',
+    data: query
+  })
+}
+
+/**
+ * 审核出库
+ * @param {*} query 要审核的出库vo
+ */
+export function check (query) {
+  return request({
+    url: '/stock-out/check',
     method: 'post',
     data: query
   })
 }
 
-/* sms 相关 */
-export function getSmsList (query) {
+/**
+ * 批量审核出库
+ * @param {*} query 被审核的vo的list
+ */
+export function checkAll (query) {
   return request({
-    url: '/sms/list',
+    url: '/stock-out/checkAll',
     method: 'post',
     data: query
   })
 }
-export function updateSmsStatus (sms) {
-  return request({
-    url: '/sms/updateStatus',
-    method: 'put',
-    data: sms
-  })
-}
-export function getBill (query) {
-  return request({
-    url: '/sms/getBill',
-    method: 'get',
-    params: { tel: query.tel, verifyCode: query.verifyCode }
-  })
-}
+
 /* 统一方法 */
 export const util = {
   jsonFormat: function (src) {

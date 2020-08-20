@@ -55,7 +55,7 @@
             <el-table-column prop="status" label="状态" />
             <el-table-column prop="type" label="审验类型" />
             <el-table-column prop="danwei" label="开票单位" />
-            <el-table-column prop="time" label="审验期间" />
+            <el-table-column prop="time" label="开票时间" />
             <el-table-column prop="bill_number" label="开票份数" />
             <el-table-column prop="payment" label="开票金额" />
             <el-table-column prop="existWarn" label="是否存在预警记录" />
@@ -93,7 +93,7 @@ export default {
         status: '未审验',
         type: '手工审核',
         danwei: '福州市boss软件',
-        time: '20160101-20160131',
+        time: '2020-08-13 08:19:50',
         bill_number: 100,
         payment: '888888.00',
         existWarn: '是'
