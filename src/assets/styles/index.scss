@@ -63,3 +63,17 @@ div:focus {
 .app-container {
   padding: 20px;
 }
+
+// 滚动条样式
+::-webkit-scrollbar {
+  width: 6px;
+  height: 8px;
+  top: 4px;
+  z-index: 99999;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(144,147,153,.3);
+  opacity: 0;
+  border-radius: 3px;
+}

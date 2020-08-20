@@ -33,7 +33,7 @@ export default [
       path: 'dashboard',
       name: 'dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '控制台', icon: 'dashboard', affix: true }
+      meta: { title: '控制台', icon: 'dashboard', affix: false }
     }]
   }
 ]
