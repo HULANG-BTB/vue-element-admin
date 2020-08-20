@@ -5,8 +5,8 @@
  * @LastEditors: Jianbinbing
  * @Description:
  */
-import {Decrypt,Encrypt,GetKey} from "@/api/common/cryptoJS";
-import {RSAencrypt,RSAdencrypt,getRSAKey} from "@/api/common/jsEncrypt";
+import {Decrypt,Encrypt,GetKey} from "@/utils/cryptoJS";
+import {RSAencrypt,RSAdencrypt,getRSAKey} from "@/utils/jsEncrypt";
 
 /**
  * 将请求数据使用rsa+ase混合加密

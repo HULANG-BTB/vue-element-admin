@@ -7,8 +7,8 @@
  */
 
 import request from '@/utils/request';
-import {RSAencrypt,RSAdencrypt,getRSAKey} from "@/api/common/jsEncrypt";
-import {getEncryptedJson} from "@/api/common/data";
+import {RSAencrypt,RSAdencrypt,getRSAKey} from "@/utils/jsEncrypt";
+import {getEncryptedJson} from "@/utils/data";
 
 
 const baseUrl = '/encryption/'

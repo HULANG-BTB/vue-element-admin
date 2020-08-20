@@ -6,9 +6,9 @@
  * @Description:
  */
 import request from '@/utils/request';
-import {Decrypt,Encrypt,GetKey} from "@/api/common/cryptoJS";
-import {RSAencrypt,RSAdencrypt,getRSAKey} from "@/api/common/jsEncrypt";
-import {getEncryptedJson} from "@/api/common/data"
+import {Decrypt,Encrypt,GetKey} from "@/utils/cryptoJS";
+import {RSAencrypt,RSAdencrypt,getRSAKey} from "@/utils/jsEncrypt";
+import {getEncryptedJson} from "@/utils/data"
 
 
 const baseUrl = '/incomeSort/'
@@ -35,11 +35,6 @@ export function queryByCondition (data) {
     url: baseUrl + 'pageQueryById',
     method: 'post',
     data
-    // data:{
-    //   data:data,
-    //   aesKey:"1",
-    //   publicKey:"233"
-    // }
   })
 }
 
@@ -51,6 +46,8 @@ export function queryAllBillSort () {
 }
 
 export function add (data) {
+  //数据加密
+  data=getEncryptedJson(data)
   return request({
     url: baseUrl + 'insert',
     method: 'post',
@@ -59,7 +56,8 @@ export function add (data) {
 }
 
 export function update (data) {
-
+//数据加密
+  data=getEncryptedJson(data)
   return request({
     url: baseUrl + 'update',
     method: 'post',
