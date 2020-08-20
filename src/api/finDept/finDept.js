@@ -7,7 +7,7 @@
  */
 import request from '@/utils/request'
 
-const baseUrl = '/fabFinDept/'
+const baseUrl = '/ecds-base/fabFinDept/'
 
 export function queryFinDept (data) {
   return request({
