@@ -2,23 +2,6 @@
   <div>
     <el-container style="height:100%;" >
       <el-aside width="250px"  style="height:100vh">
-        <!--<el-menu  >
-          <template v-for="province in category">
-            <el-submenu v-if="province.assortment" :index="province.id.toString()">
-              <template slot="title" ><p @click="show(province.id)"><i class="el-icon-menu" ></i>{{province.name}}</p></template>
-              <template v-for="city in province.children">
-                <el-submenu v-if="city.assortment" :index="city.id.toString()">
-                <template slot="title"><p @click="show(city.id)"><i class="el-icon-menu" ></i>{{city.name}}</p></template>
-                <template v-for="area in city.children">
-                 <el-menu-item @click="show(area.id)" :index="area.id.toString()"><i class="el-icon-document" ></i>{{area.name}}</el-menu-item>
-                </template>
-              </el-submenu>
-                <el-menu-item v-else :index="city.id.toString()" @click="show(city.id)"><i class="el-icon-document" ></i>{{city.name}}</el-menu-item>
-              </template>
-            </el-submenu>
-            <el-menu-item v-else :index="province.id.toString()" @click="show(province.id)"><i class="el-icon-document" ></i>{{province.name}}</el-menu-item>
-          </template>
-        </el-menu>-->
         <left-tree :left-side-data="leftSideData"  @treeNodeSearch="treeNodeSearch" />
       </el-aside>
         <el-main style=" border: 1px solid #eee">
@@ -256,6 +239,8 @@
           label:'name',
           children:'children'
         },
+        provinceList: [],
+        cityList: [],
         categoryList: [],
         categoryActive:[],
         busList: [],
@@ -336,11 +321,22 @@
         queryCategory() {
           regionApi.region_category().then(res => {
             if(res.success){
-              this.leftSideData.showTreeData = res.data;
+              this.leftSideData.showTreeData = res.data
+              this.busList = res.data
             }else if(res.message){
               this.$message.error(res.message)
             }else{
               this.$message.error("页面数据加载失败，请刷新重试！")
+            }
+          })
+          regionApi.region_province().then(res => {
+            if(res.success){
+              this.provinceList = res.data;
+            }
+          })
+          regionApi.region_city().then(res => {
+            if(res.success){
+              this.cityList = res.data;
             }
           })
         },
@@ -384,20 +380,12 @@
           let assort = this.regionForm.assortment
 
           this.busActive = []
-          if(assort || (!assort && level == 1) ){
-            regionApi.region_province().then(res => {
-              if(res.success){
-                this.categoryList = res.data;
-              }
-              this.categoryActive = []
-              this.categoryActive.push(this.regionForm.parentId)
-            })
+          if(assort || (!assort && level === 1) ){
+            this.categoryList = this.provinceList
+            this.categoryActive = []
+            this.categoryActive.push(this.regionForm.parentId)
           }else{
-            regionApi.region_city().then(res => {
-              if(res.success){
-                this.categoryList = res.data;
-              }
-            })
+            this.categoryList = this.cityList
             regionApi.getGrandId(this.regionForm.parentId).then(res => {
               if(res.success){
                 this.categoryActive = []
@@ -406,81 +394,46 @@
               }
             })
           }
-          regionApi.region_category().then(res => {
-            if (res.success) {
-              this.busList = res.data
-            }
-          })
-          regionApi.getBusIds(this.regionForm.busParentId).then(res => {
-            if (res.success) {
-              this.busActive = res.data
-            }
-          })
-          this.editDialogVisible = true;
-        },
-        levelChange(val){//树级次
-          if(val == 3){
-            this.regionForm.assortment = false;
-            regionApi.region_city().then(res => {
-              if(res.success){
-                this.categoryList = res.data;
+          if(!assort){
+            regionApi.getBusIds(this.regionForm.busParentId).then(res => {
+              if (res.success) {
+                this.busActive = res.data
               }
             })
           }
+          this.editDialogVisible = true;
+        },
+        levelChange(val){
+          if(val === 3){
+            this.regionForm.assortment = false;
+            this.categoryList = this.cityList
+          }
           if(this.regionForm.assortment){
-            if(val == 2){
-              regionApi.region_province().then(res => {
-                if(res.success){
-                  this.categoryList = res.data;
-                }
-              })
+            if(val === 2){
+              this.categoryList = this.provinceList
             }
           }else if(!this.regionForm.assortment){
-            if(val == 1){
-              regionApi.region_province().then(res => {
-                if(res.success){
-                  this.categoryList = res.data;
-                }
-              })
-            }else if(val == 2){
-              regionApi.region_city().then(res => {
-                if(res.success){
-                  this.categoryList = res.data;
-                }
-              })
+            if(val === 1){
+              this.categoryList = this.provinceList
+            }else if(val === 2){
+              this.categoryList = this.cityList
             }
           }
           this.categoryActive = [];
         },
-        assortChange(val){//是否分类
+        assortChange(val){
           if(val){
-            if(this.regionForm.level == 3){
+            if(this.regionForm.level === 3){
               this.regionForm.assortment = false;
-              regionApi.region_city().then(res => {
-                if(res.success){
-                  this.categoryList = res.data;
-                }
-              })
-            }else if(this.regionForm.level == 2){
-              regionApi.region_province().then(res => {
-                if(res.success){
-                  this.categoryList = res.data;
-                }
-              })
+              this.categoryList = this.cityList
+            }else if(this.regionForm.level === 2){
+              this.categoryList = this.provinceList
             }
           }else{
-            if(this.regionForm.level == 1){
-              regionApi.region_province().then(res => {
-                if(res.success){
-                  this.categoryList = res.data;
-                }
-              })
-            }else  if(this.regionForm.level == 2){
-              regionApi.region_city().then(res => {
-                if(res.success){
-                  this.categoryList = res.data;
-                }
-              })
+            if(this.regionForm.level === 1){
+              this.categoryList = this.provinceList
+            }else  if(this.regionForm.level === 2){
+              this.categoryList = this.cityList
             }
           }
           this.categoryActive = [];
@@ -496,8 +449,9 @@
                 if(this.regionForm.assortment && this.regionForm.level == 1){
                   this.regionForm.parentId = 0
                 }else{
-                  this.regionForm.parentId = this.categoryActive[this.categoryActive.length-1]
+                  this.regionForm.parentId = this.categoryActive.pop()
                 }
+                this.regionForm.busParentId = ''
                 if(!this.regionForm.assortment){
                   this.regionForm.busParentId = this.busActive.pop();
                 }
