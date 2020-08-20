@@ -94,11 +94,11 @@
           />
           <el-table-column
             label="状态"
-            prop="fChangeState"
+            prop="fchangeState"
           />
           <el-table-column
             label="业务单号"
-            prop="fNo"
+            prop="fno"
           />
           <el-table-column
             label="日期"
@@ -106,15 +106,15 @@
           />
           <el-table-column
             label="合计份数"
-            prop="fNumber"
+            prop="fnumber"
           />
           <el-table-column
             label="金额"
-            prop="fTotalAmt"
+            prop="ftotalAmt"
           />
           <el-table-column
             label="备注"
-            prop="fMemo"
+            prop="fmemo"
           />
           <el-table-column label="操作">
             <template slot-scope="scope">
@@ -209,16 +209,9 @@ export default {
     async getWriteOffApplyList () {
       // 获取数据
       const { data: res } = await getApplyList(this.queryInfo)
-
-      this.writeOffApply.list = res.records
+      console.log(res)
+      this.writeOffApply.list = res.list
       this.writeOffApply.total = res.total
-
-      this.writeOffApply.list.forEach(item => {
-        const date = new Date()
-        date.setTime(item.fDate)
-        item.fDate = date.toLocaleDateString()
-      })
-
       this.loading = false
     },
     // 查询
@@ -271,7 +264,8 @@ export default {
         fNo: '',
         fChangeState: '',
         fIsUpload: '',
-        fMemo: ''
+        fMemo: '',
+        fEndDate: ''
       }
     },
     // 修改申请对话框显示
@@ -294,7 +288,7 @@ export default {
         if (row.fIsUpload !== '已上报' && row.fChangeState !== '已审验') {
           deleteApply(row.fNo)
             .then((res) => {
-              if (res.status === 200) {
+              if (res.status === 10000) {
                 this.$message({
                   type: 'success',
                   message: '删除成功!'
@@ -333,6 +327,13 @@ export default {
     },
     // 上报申请
     upload () {
+      if (this.multipleSelection.length === 0) {
+        this.$message({
+          type: 'info',
+          message: '没有选中的申请'
+        })
+        return
+      }
       try {
         const list = []
         this.multipleSelection.forEach(item => {
@@ -347,7 +348,7 @@ export default {
         })
         uploadApply(list)
           .then((res) => {
-            if (res.status === 200) {
+            if (res.status === 10000) {
               this.$message({
                 type: 'success',
                 message: '上报成功!'
@@ -373,6 +374,13 @@ export default {
     },
     // 撤销申请
     rescindApply () {
+      if (this.multipleSelection.length === 0) {
+        this.$message({
+          type: 'info',
+          message: '没有选中的申请'
+        })
+        return
+      }
       try {
         const list = []
         this.multipleSelection.forEach(item => {
@@ -394,7 +402,7 @@ export default {
         })
         rescindApply(list)
           .then((res) => {
-            if (res.status === 200) {
+            if (res.status === 10000) {
               this.$message({
                 type: 'success',
                 message: '撤销成功!'

@@ -241,7 +241,7 @@ export default {
         { fBillBatchCode: '13412321', fWarehouseId: '213213', fWarehouseName: 'A仓库', fNumber: 100, fBillNo1: '00000001', fBillNo2: '00000100', show: true },
         { fBillBatchCode: '13412321', fWarehouseId: '213213', fWarehouseName: 'A仓库', fNumber: 66, fBillNo1: '00000120', fBillNo2: '00000186', show: true }
       ],
-      dialogVisible:false
+      dialogVisible: false
     }
   },
 
@@ -281,48 +281,38 @@ export default {
           fRgnCode: '42',
           fAgenIdCode: '1314'
         },
-          itemDtoList: this.itemDtoList
-        };
-        this.$confirm('是否立即创建票据销毁申请, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async () => {
-          const res = await addDestroyApply(applyVo);
-          this.$root.eventBus.$emit('dialogVisible1', this.dialogVisible)
-          console.log(res);
-          this.$router.push;
-          this.$message({
-            type: 'success',
-            message: '创建票据销毁申请成功!'
-          });
-
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
-      },
-
-      indexMethod(index){
-        return index+1;
-<<<<<<< HEAD
-      },
-      cancel(){
-         this.$root.eventBus.$emit('dialogVisibleCancel', this.dialogVisible)
+        itemDtoList: this.itemDtoList
       }
-  }
-=======
-      }
+      this.$confirm('是否立即创建票据销毁申请, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const res = await addDestroyApply(applyVo)
+        this.$root.eventBus.$emit('dialogVisible1', this.dialogVisible)
+        console.log(res)
+        this.$router.push
+        this.$message({
+          type: 'success',
+          message: '创建票据销毁申请成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
-  
-      cancel(){
-         this.$root.eventBus.$emit('dialogVisibleCancel', this.dialogVisible)
-      }
-  
 
->>>>>>> 4d5742a2a6f259490e77af84a9f5ec323cb8a48e
+    indexMethod (index) {
+      return index + 1
+    }
+  },
+
+  cancel () {
+    this.$root.eventBus.$emit('dialogVisibleCancel', this.dialogVisible)
+  }
+
 }
 </script>
 
