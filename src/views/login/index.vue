@@ -55,28 +55,29 @@
       >Login</el-button>
 
       <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span>password: any</span>
+
+        <div style="margin-right:20px;">管理员: admin</div>
+        <div style="margin-right:20px;">财政端: financial</div>
+        <div style="margin-right:20px;">财政端审核: financial_check</div>
+        <div style="margin-right:20px;">单位端: unit</div>
+        <div>密码: any</div>
+      </div></el-form>
       </div>
     </el-form>
+
   </div>
 </template>
 
 <script>
+
 import { validUsername } from '@/utils/validate'
 import { getRSAPublicKey,addRSAPublicKey } from '@/utils/encryption'
+
 
 
 export default {
   name: 'Login',
   data () {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
         callback(new Error('The password can not be less than 6 digits'))
@@ -86,27 +87,31 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
+        username: '',
         password: '111111'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        username: [{ required: true, trigger: 'blur' }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
       passwordType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      otherQuery: {}
     }
   },
   watch: {
     $route: {
       handler: function (route) {
-        this.redirect = route.query && route.query.redirect
+        const query = route.query
+        if (query) {
+          this.redirect = query.redirect
+          this.otherQuery = this.getOtherQuery(query)
+        }
       },
       immediate: true
     }
   },
-
   methods: {
     showPwd () {
       if (this.passwordType === 'password') {
@@ -118,8 +123,6 @@ export default {
         this.$refs.password.focus()
       })
     },
-
-
     handleLogin () {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
@@ -133,7 +136,10 @@ export default {
                       message: '公钥发送成功',
                       type: 'success'
                     })
-                  this.$router.push({ path: this.redirect || '/' })
+                  this.$router.push({
+                    path: this.redirect || '/',
+                    query: this.otherQuery
+                  })
                   this.loading = false
                   }
                 )
@@ -142,10 +148,17 @@ export default {
             this.loading = false
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })
+    },
+    getOtherQuery (query) {
+      return Object.keys(query).reduce((acc, cur) => {
+        if (cur !== 'redirect') {
+          acc[cur] = query[cur]
+        }
+        return acc
+      }, {})
     }
   }
 }

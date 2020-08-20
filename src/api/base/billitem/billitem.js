@@ -12,7 +12,7 @@ const treebaseUrl = '/billType/'
 export function queryBillTypeTree (data) {
   return request({
     url: treebaseUrl + 'queryBillTypeTree',
-    method: 'post',
+    method: 'get',
     data
   })
 }
