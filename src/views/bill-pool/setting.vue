@@ -199,10 +199,23 @@
             <el-button
               type="primary"
               size="mini"
-              @click="callEditDialog(scope.row, scope.$index)"
+              @click="callEditDialog(scope.row)"
             >编辑</el-button>
 
-            <el-button type="danger" size="mini" @click="deletePool(scope.row)">删除</el-button>
+            <el-button
+              v-if="scope.row.enable==1"
+              type="danger"
+              size="mini"
+              @click="deletePool(scope.row)"
+            >删除</el-button>
+
+            <el-button
+              v-if="scope.row.enable==0"
+              type="success"
+              size="mini"
+              @click="enablePool(scope.row)"
+            >启用</el-button>
+
           </template>
         </el-table-column>
         <!-- <el-table-column:label="是否可用" /></el-table> -->
@@ -247,18 +260,6 @@ export default {
       },
       editPoolData: {
         alterCode: 2,
-        pushNumber: '',
-        minNumber: '',
-        operator: '',
-        operatorID: '',
-        billTypeCode: '',
-        enable: 1,
-        success: true,
-        message: '',
-        rowIndex: 0
-      },
-      deletePoolData: {
-        alterCode: 3,
         pushNumber: '',
         minNumber: '',
         operator: '',
@@ -339,14 +340,13 @@ export default {
       }
       this.poolDataVisible = true
     },
-    callEditDialog (rowData, index) {
+    callEditDialog (rowData) {
       // 唤起设置票据池界面，需要在此时就传入设置的票据池信息
       this.editDialogVisible = true
       this.editPoolData.billTypeCode = rowData.billTypeCode
       this.editPoolData.minNumber = rowData.minNumber
       this.editPoolData.pushNumber = rowData.pushNumber
       this.data = rowData.enable
-      this.editPoolData.rowIndex = index
     },
     editPool () {
       // 编辑票据池
@@ -358,6 +358,7 @@ export default {
             message: '编辑成功',
             type: 'success'
           })
+          this.query()
         } else {
           this.$message({
             message: '编辑失败',
@@ -367,7 +368,7 @@ export default {
       })
       this.editDialogVisible = false
       // 更改后刷新
-      this.$set(this.poolData, this.poolData.rowIndex, this.poolData[this.poolData.rowIndex])
+      // this.query()
     },
     deletePool (rowData) {
       // 删除票据池
@@ -388,6 +389,7 @@ export default {
                 type: 'success',
                 message: '删除成功!'
               })
+              this.query()
             } else {
               this.$message.error('删除失败')
             }
@@ -397,6 +399,38 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消删除'
+          })
+        })
+    },
+    enablePool (rowData) {
+      // 删除票据池
+      this.$confirm('此操作将启用该票据池不可用, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.editPoolData.billTypeCode = rowData.billTypeCode
+          this.editPoolData.minNumber = rowData.minNumber
+          this.editPoolData.pushNumber = rowData.pushNumber
+          this.data = rowData.enable
+          this.editPoolData.enable = 0
+          deleteSource(this.editPoolData).then(res => {
+            if (res.success === true) {
+              this.$message({
+                type: 'success',
+                message: '启用成功!'
+              })
+              this.query()
+            } else {
+              this.$message.error('启用失败')
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
           })
         })
     },
