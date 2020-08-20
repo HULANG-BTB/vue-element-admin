@@ -216,7 +216,7 @@
           </el-col>
         </el-row>
         <el-row type="flex" align="bottom">
-          <el-col :span="21" offset="3">
+          <el-col :span="21" :offset="3">
             <el-form-item label="摘要">
               <el-input
                 v-model="outVo.abstact"
@@ -272,14 +272,19 @@
       <div slot="footer" class="dialog-footer">
         <el-button
           v-if="!isSend"
+          type="warning"
+          @click="handleSave(); dialogFormVisible = false"
+        >退 回</el-button>
+        <el-button
+          v-if="!isSend"
           type="danger"
           @click="dialogFormVisible = false"
         >取 消</el-button>
         <el-button
           v-if="!isSend"
-          type="primary"
+          type="success"
           @click="handleSave(); dialogFormVisible = false"
-        >保 存</el-button>
+        >通 过</el-button>
         <el-button
           v-if="isSend"
           type="info"
@@ -394,7 +399,7 @@ export default {
       this.query.page = res.data.page
       this.selectedList = []
       // 确定明细项是否可改变
-      if (this.query.changeState === '1') {
+      if (this.query.changeState <= '2') {
         this.isSend = false
       } else {
         this.isSend = true
@@ -405,6 +410,7 @@ export default {
     // 初始化数据，退出详情界面时强制要求调用
     async initVo () {
       Object.assign(this.$data.outVo, this.$options.data().outVo)
+      console.log('初始化完成.')
       // this.getTableData()
     },
 
@@ -416,8 +422,6 @@ export default {
       const items = await getItem(this.outVo.id).catch(() => { this.loading = false })
       this.outVo.outItemVos = items.data
       this.outVo.altercode = 2
-      // 处理票据代码选择时的选项
-      this.billPrecodeChange(scope)
       this.loading = false
 
       // this.loading = true
