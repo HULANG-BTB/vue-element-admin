@@ -145,6 +145,7 @@ export default {
     this.getPermissionList()
   },
   methods: {
+
     // 获取角色列表
     async getTableData () {
       this.loading = true
