@@ -43,6 +43,11 @@ Object.keys(filters).forEach(key => {
 
 new Vue({
   el: '#app',
+  data () {
+    return {
+      eventBus: new Vue()
+    }
+  },
   router,
   store,
   render: h => h(App)

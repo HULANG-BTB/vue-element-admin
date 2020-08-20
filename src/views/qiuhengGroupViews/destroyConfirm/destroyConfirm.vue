@@ -163,7 +163,7 @@ export default {
         const res = await refresh()
         // debugger
         // console.log(res);
-        this.tableData = res
+        this.tableData = res.data
         // console.log(this.tableData);
         for (var i = 0; i < this.tableData.length; i++) {
           if (this.tableData[i].fDestroyType) {
@@ -174,10 +174,14 @@ export default {
         }
         // eslint-disable-next-line no-redeclare
         for (var i = 0; i < this.tableData.length; i++) {
-          if (this.tableData[i].fStatus) {
-            this.tableData[i].fStatus = '已审核'
-          } else {
+          if (this.tableData[i].fStatus === 0) {
             this.tableData[i].fStatus = '未审核'
+          }
+          if (this.tableData[i].fStatus === 1) {
+            this.tableData[i].fStatus = '已审核但未通过'
+          }
+          if (this.tableData[i].fStatus === 2) {
+            this.tableData[i].fStatus = '已审核并通过'
           }
         }
         console.log(this.tableData)
@@ -195,8 +199,8 @@ export default {
     async refreshButton () {
       const res = await refresh()
       // debugger
-      console.log(res)
-      this.tableData = res
+      // console.log(res)
+      this.tableData = res.data
     },
     handleSearch () {},
     handleSizeChange () {},
