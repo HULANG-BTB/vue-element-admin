@@ -122,6 +122,7 @@
       title="退票明细"
       :visible.sync="dialogFormVisible"
       :width="'80%'"
+      @closed="initVo()"
     >
       <el-form
         :model="Stockreturn"
@@ -240,17 +241,17 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false; initVo()">取 消</el-button>
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="handleSave(); dialogFormVisible = false; initVo()"
+          @click="handleSave(); dialogFormVisible = false"
         >保 存</el-button>
       </div></el-dialog>
   </div>
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getStockReturnList, getListStockReturnByDateOrNo, addStockReturn } from '@/api/stockreturn.js'
+import { getStockReturnList, getListStockReturnByDateOrNo, addStockReturn, getItem } from '@/api/stockreturn.js'
 
 export default {
   data () {
@@ -403,7 +404,16 @@ export default {
       // this.getTableData()
     },
     async handleEdit (index, row) {
-      console.log(index, row)
+      this.loading = true
+      this.Stockreturn = Object.assign(this.Stockreturn, row)
+      // console.log('pid:' + this.outVo.id)
+      // eslint-disable-next-line no-unused-vars
+      const items = await getItem(this.Stockreturn.no).catch(() => { this.loading = false })
+      // this.Stockreturn.stockReturnItemVOList = items.stockReturnItemVOList
+      // this.outVo.altercode = 2
+      // 处理票据代码选择时的选项
+      // this.billPrecodeChange(row)
+      this.loading = false
     },
     async handleDelete (index, row) {
       console.log(index, row)
