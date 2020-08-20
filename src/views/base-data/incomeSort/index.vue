@@ -1,8 +1,8 @@
 <!--
- * @Author: Raiz
- * @since: 2020-07-31 14:47:07
+ * @Author: Jianbinbing
+ * @since: 2020-08-01 15:47:07
  * @lastTime: 2020-08-11 16:21:06
- * @LastEditors: Raiz
+ * @LastEditors: Jianbinbing
  * @Description:
 -->
 <template>
@@ -31,8 +31,8 @@
     >
       <div class="detailClass">
         <el-row>
-          <el-col :span="9">收入类别编码:{{ showDetailData.code }}</el-col>
-          <el-col :span="11" class="rightCol">上级编码:{{ showDetailData.parentId }}</el-col>
+          <el-col :span="9">收入编码:{{ showDetailData.code }}</el-col>
+          <el-col :span="11" class="rightCol">上级ID:{{ showDetailData.parentId }}</el-col>
         </el-row>
         <el-row>
           <el-col :span="9">级次:{{ showDetailData.level }}</el-col>
@@ -159,7 +159,10 @@
 import LeftTree from '@/components/leftTree'
 import FormTable from '@/components/formTable'
 import DialogBorder from '@/components/Dialog/dialog-border'
-import { getIncomeTree, queryByCondition, queryAllBillSort, add, update, deleteBillTypeRequest } from '@/api/incomeSort/incomeSort'
+import { getRSAKey } from '@/utils/jsEncrypt'
+import { Decrypt, Encrypt } from '@/utils/cryptoJS'
+import { getDecryptJson } from '@/utils/data'
+import { getIncomeTree, queryByCondition, queryAllBillSort, add, update, deleteBillTypeRequest, getRSAPublicKey } from '@/api/incomeSort/incomeSort'
 export default {
   components: {
     LeftTree,
@@ -352,6 +355,10 @@ export default {
     this.init()
   },
   methods: {
+    init () {
+      this.freshTreeAndTable()
+      this.searchFormData[2].options = this.formOptions.natureCodeOptions
+    },
     transfer (item, treeData) {
       item.forEach((element, key) => {
         treeData[key] = {
@@ -391,8 +398,12 @@ export default {
     requestTableData (param) {
       queryByCondition(param).then(response => {
         const data = response.data
-        this.total = data.total
-        this.tableData.bodyData = data.list
+        const aesKey = response.aseKey
+        const rs = getDecryptJson(data, aesKey)
+        console.log('rs:{}', rs)
+        this.total = rs.total
+
+        this.tableData.bodyData = rs.list
       })
     },
     getLeftTree () {
@@ -432,9 +443,7 @@ export default {
         this.updateDialog = true
         this.updateDialogData.headTitle = '编辑收入种类'
         this.updateDialogVisible = true
-        console.log('row', row)
         this.incomeSort = { ...row }
-        console.log('insort', this.incomeSort)
       }
 
       function deleteBillType () {
@@ -446,13 +455,13 @@ export default {
           const param = {
             id: row.id
           }
-          // deleteBillTypeRequest(param).then(response => {
-          //   this.freshTreeAndTable()
-          //   this.$message({
-          //     message: '删除成功',
-          //     type: 'success'
-          //   })
-          // })
+          deleteBillTypeRequest(param).then(response => {
+            this.freshTreeAndTable()
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+          })
         })
       }
     },
@@ -482,7 +491,6 @@ export default {
         this.$refs['form'].validate((valid) => {
           if (valid) {
             const form = { ...this.incomeSort }
-            console.log('add', form)
             if (this.addDialog === true) {
               add(form).then(response => {
                 this.freshTreeAndTable()
@@ -517,7 +525,6 @@ export default {
           if (valid) {
             const form = { ...this.incomeSort }
             if (this.updateDialog === true) {
-              console.log('update', form)
               update(form).then(response => {
                 this.freshTreeAndTable()
                 this.updateDialogVisible = false
@@ -559,7 +566,6 @@ export default {
         response.data.list.forEach(element => {
           element.name = element.code + ' ' + element.name
         })
-        console.log('list', response.data.list)
         this.formOptions.parentIncomeSorts = response.data.list
       })
     },
@@ -573,10 +579,7 @@ export default {
       this.incomeSort = {}
       this.$refs['updateForm'].resetFields()
     },
-    init () {
-      this.freshTreeAndTable()
-      this.searchFormData[2].options = this.formOptions.natureCodeOptions
-    },
+
     freshTreeAndTable () {
       this.getLeftTree()
       const param = this.page

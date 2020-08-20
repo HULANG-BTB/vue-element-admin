@@ -32,7 +32,7 @@
                 index="3"
                 class="el-icon-paperclip"
                 @click="insertBill"
-              >保存</el-menu-item>
+              >提交</el-menu-item>
               <el-submenu index="2">
                 <template slot="title">开票通知</template>
                 <el-menu-item
@@ -260,7 +260,7 @@ export default {
       uneCbillDto: {
         fBillId: '201700000001',
         fBillNo: 'NO.6666666',
-        fType: '',
+        fType: '福州市非税收入票据（电子）',
         checkCode: ''
       },
       // 项目组模块
@@ -308,9 +308,12 @@ export default {
       batchPojo.fAmt = this.amt
       console.log(batchPojo.fAmt)
       console.log(batchPojo.itemDtos)
+      this.$root.eventBus.$emit('batchPojo', batchPojo)
       const res = await addBill(batchPojo)
-      alert(res.msg)
-      this.$router.push({ name: 'bill' })
+      if (res.msg === 'OK') {
+        this.$message('已提交开票请求')
+      }
+      this.$router.push({ name: 'paybook' })
     },
     // 移除项目
     deleteRow (index, rows) {

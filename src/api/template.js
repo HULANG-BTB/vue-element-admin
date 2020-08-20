@@ -22,6 +22,14 @@ export function getAllTemplate () {
   })
 }
 
+export function searchList (data) {
+  return request({
+    url: '/printTemplate/searchList',
+    method: 'get',
+    params: data
+  })
+}
+
 export function getTemplateByName (name) {
   return request({
     url: `/printTemplate/templateByName/${name}`,

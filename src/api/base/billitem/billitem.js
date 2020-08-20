@@ -16,15 +16,15 @@ export function queryBillTypeTree (data) {
     data
   })
 }
-//查询与票据无关联的项目
-export function  queryItemByCondition(data){
+// 查询与票据无关联的项目
+export function queryItemByCondition (data) {
   return request({
     url: baseUrl + 'getnocontactitem',
     method: 'post',
     data
   })
 }
-//查询与票据有关联的项目
+// 查询与票据有关联的项目
 export function queryByCondition (data) {
   return request({
     url: baseUrl + 'getitemwithbillcode',
@@ -32,7 +32,7 @@ export function queryByCondition (data) {
     data
   })
 }
-//添加或批量添加关联
+// 添加或批量添加关联
 export function addBillItem (data) {
   return request({
     url: baseUrl + 'insertbatch',
@@ -40,7 +40,6 @@ export function addBillItem (data) {
     data
   })
 }
-
 
 export function turnenabled (data) {
   return request({
@@ -57,7 +56,7 @@ export function update (data) {
     data
   })
 }
-//删除票据项目关系
+// 删除票据项目关系
 export function deleteItemBillRequest (data) {
   return request({
     url: baseUrl + 'delete',

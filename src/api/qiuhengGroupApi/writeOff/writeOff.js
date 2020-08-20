@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const BASE_URL = "http://localhost:8888"
+const BASE_URL = 'http://localhost:8888'
 
 export function receive (data) {
   return request({
@@ -42,9 +42,17 @@ export function setResult (data) {
   })
 }
 
-export function search (data) {
+export function pass (data) {
   return request({
-    url: BASE_URL + '/financial/search',
+    url: BASE_URL + '/financial/pass',
+    method: 'post',
+    data: data
+  })
+}
+
+export function unPass (data) {
+  return request({
+    url: BASE_URL + '/financial/unPass',
     method: 'post',
     data: data
   })

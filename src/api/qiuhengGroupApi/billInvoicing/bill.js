@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://localhost:8080'
+const BASE_URL = 'http://localhost:9123'
 
 export function getBillListByPage (query) {
   return request({
@@ -11,7 +11,7 @@ export function getBillListByPage (query) {
 }
 export function getOneBill (billId) {
   return request({
-    url: BASE_URL + '/billInvoicing/getOne',
+    url: BASE_URL + '/billInvoicing/getUneCbillById',
     method: 'get',
     params: { billId }
   })
