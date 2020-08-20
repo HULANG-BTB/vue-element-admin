@@ -136,36 +136,12 @@ export default {
       destroySearch: {
         no: ''
       },
-<<<<<<< HEAD
       // 分页
       page: {
         currentPage: 1,
         pageSize: 1,
         total: 0,
         keyword: ''
-=======
-      async refreshButton(){
-        const res = await refresh();
-        // debugger
-        console.log(res);
-        this.tableData = res;
-        console.log(this.tableData);
-        for(var i = 0; i < this.tableData.length; i++){
-          if(this.tableData[i].fDestroyType){
-          this.tableData[i].fDestroyType="库存票据销毁";
-          }else{
-          this.tableData[i].fDestroyType="核销票据销毁";
-          }
-        }
-        for(var i = 0; i < this.tableData.length; i++){
-          if(this.tableData[i].fStatus){
-          this.tableData[i].fStatus="已审核";
-          }else{
-          this.tableData[i].fStatus="未审核";
-          }
-        }
-        console.log(this.tableData);
->>>>>>> a67698114e47e74c4840fc02b532aff2461354ea
       }
     }
   },
