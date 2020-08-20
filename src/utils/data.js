@@ -36,6 +36,5 @@ export function getEncryptedJson(object) {
 export function getDecryptJson(data,key) {
   let aseKey=RSAdencrypt(key);
   let rs=JSON.parse(Decrypt(data,aseKey))
-  console.log('rs', rs)
   return rs.data
 }

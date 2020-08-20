@@ -162,7 +162,7 @@ import DialogBorder from '@/components/Dialog/dialog-border'
 import {getRSAKey} from "@/utils/jsEncrypt";
 import {Decrypt,Encrypt} from "@/utils/cryptoJS";
 import {getDecryptJson} from "@/utils/data"
-import { getIncomeTree, queryByCondition, queryAllBillSort, add, update, deleteBillTypeRequest,getRSAPublicKey } from '@/api/incomeSort/incomeSort'
+import { getIncomeTree, queryByCondition, queryAllIncomeSort, add, update, deleteIncomeSort,getRSAPublicKey } from '@/api/incomeSort/incomeSort'
 export default {
   components: {
     LeftTree,
@@ -398,17 +398,15 @@ export default {
     requestTableData (param) {
       queryByCondition(param).then(response => {
         const data = response.data
-        const aesKey=response.aseKey
-        const rs= getDecryptJson(data,aesKey)
-        console.log("rs:{}",rs)
-        this.total = rs.total
-
-        this.tableData.bodyData = rs.list
+        this.total = data.total
+        this.tableData.bodyData = data.list
       })
     },
     getLeftTree () {
       getIncomeTree().then(response => {
-        response.data.list.forEach(tree => {
+        const data = response.data
+
+        data.list.forEach(tree => {
           tree.name = tree.code + ' ' + tree.name
           if (tree.incomeSortDTOList.length > 0) {
             tree.incomeSortDTOList.forEach(child => {
@@ -420,7 +418,7 @@ export default {
           {
             id: 0,
             name: '所有',
-            incomeSortDTOList: response.data.list
+            incomeSortDTOList: data.list
           }
         ]
         this.leftSideData.showTreeData = treeRoot
@@ -455,7 +453,7 @@ export default {
           const param = {
             id: row.id
           }
-          deleteBillTypeRequest(param).then(response => {
+          deleteIncomeSort(param).then(response => {
             this.freshTreeAndTable()
             this.$message({
               message: '删除成功',
@@ -563,7 +561,7 @@ export default {
 
     },
     addDialogOpen () {
-      queryAllBillSort().then(response => {
+      queryAllIncomeSort().then(response => {
         response.data.list.forEach(element => {
           element.name = element.code + ' ' + element.name
         })
