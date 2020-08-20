@@ -1,28 +1,28 @@
 <template>
   <div class="app-container">
     <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
-      <el-form-item label="部门编码" prop="keyword">
+      <el-form-item label="部门编码" prop="keyword.deptCode">
         <el-input
-          v-model="queryParams.keyword"
+          v-model="queryParams.keyword.deptCode"
           placeholder="请输入部门编码"
           clearable
           style="width: 140px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="部门名称" prop="keyword">
+      <el-form-item label="部门名称" prop="keyword.deptName">
         <el-input
-          v-model="queryParams.keyword"
+          v-model="queryParams.keyword.deptName"
           placeholder="请输入部门名称"
           clearable
           style="width: 140px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="是否启用">
-        <el-select v-model="queryParams.isenable" placeholder="请选择部门状态" style="width: 150px">
-          <el-option label="启用" value="success" />
-          <el-option label="停用" value="stop" />
+      <el-form-item label="是否启用" prop="keyword.isenable">
+        <el-select v-model="queryParams.keyword.isenable" placeholder="请选择部门状态" style="width: 150px">
+          <el-option label="启用" value="true" />
+          <el-option label="停用" value="false" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -157,10 +157,11 @@ export default {
     return {
     //   loading: true,
       queryParams: { // 查询参数
-        // deptCode: '',
-        // deptName: '',
-        // isEnable: '',
-        keyword: '',
+        keyword: {
+          deptCode: '',
+          deptName: '',
+          isenable: ''
+        },
         page: 1,
         limit: 10
         // total: 0
@@ -227,7 +228,7 @@ export default {
     // },
     // 格式化时间
     parseTime (time) {
-      return parseTime(new Date())
+      return parseTime(new Date(time), '{y}-{m}-{d}')
     },
     // 获取资源列表
     async getTableData () {
@@ -253,9 +254,7 @@ export default {
     },
     // 重置
     resetQuery () {
-      // this.resetForm('queryParams')
-      // this.queryParams = {}
-      this.queryParams.keyword = ''
+      this.queryParams.keyword = {}
     },
     // 新增按钮
     handleAdd () {
@@ -343,20 +342,11 @@ export default {
             await updateDapart(this.project).then(res => {
               this.getTableData()
               this.dialogVisible = false
-              if (res.status === 200) {
-              // this.$set(this.project, {})
-                this.$message({
-                  showClose: true,
-                  message: '编辑成功',
-                  type: 'success'
-                })
-              } else {
-                this.$message({
-                  showClose: true,
-                  message: '编辑失败',
-                  type: 'error'
-                }) // 或者弹出后台返回错误
-              }
+              this.$message({
+                showClose: true,
+                message: '编辑成功',
+                type: 'success'
+              })
             })
           }
         }

@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
-      <el-form-item label="标准名称" prop="keyword">
+      <el-form-item label="标准名称" prop="keyword.name">
         <el-input
-          v-model="queryParams.keyword"
+          v-model="queryParams.keyword.name"
           placeholder="请输入标准名称"
           clearable
           style="width: 140px"
@@ -11,9 +11,10 @@
         />
       </el-form-item>
       <el-form-item label="状态">
-        <el-select v-model="queryParams.isenable" placeholder="请选择标准状态" style="width: 150px">
-          <el-option label="已完成" value="已完成" />
-          <el-option label="待审核" value="待审核" />
+        <el-select v-model="queryParams.keyword.isenable" placeholder="请选择标准状态" style="width: 150px">
+          <el-option label="已完成" value="1" />
+          <el-option label="待审核" value="0" />
+          <el-option label="全部" value="" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -56,8 +57,8 @@
       </el-table-column>
       <el-table-column align="center" label="标准编码" prop="itemstdCode" />
       <el-table-column align="center" label="标准名称" prop="itemstdName" :show-overflow-tooltip="true" />
-      <el-table-column align="center" label="标准下线" prop="minCharge" />
-      <el-table-column align="center" label="标准上线" prop="maxCharge" />
+      <el-table-column align="center" label="标准下限" prop="minCharge" />
+      <el-table-column align="center" label="标准上限" prop="maxCharge" />
       <el-table-column align="center" label="计量单位" prop="units" />
       <el-table-column align="center" label="生效日期" prop="itemstdEffdate">
         <template slot-scope="scope">
@@ -97,22 +98,16 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="标准编码" :label-width="formLabelWidth" prop="itemstdCode">
-              <el-input v-model="standard.itemstdCode" placeholder="标准编码" />
+              <el-input v-model="standard.itemstdCode" placeholder="标准编码" readonly />
             </el-form-item>
             <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemCode ">
-              <el-input v-model="standard.itemCode " placeholder="项目编码" :disabled="true" />
+              <el-input v-model="standard.itemCode " placeholder="项目编码" readonly />
             </el-form-item>
             <el-form-item label="标准下限" :label-width="formLabelWidth" prop="minCharge">
               <el-input v-model="standard.minCharge" placeholder="标准下限" />
             </el-form-item>
             <el-form-item label="生效日期" :label-width="formLabelWidth" prop="itemstdEffdate">
               <el-date-picker v-model="standard.itemstdEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
-            <el-form-item label="经办人" :label-width="formLabelWidth" prop="operator">
-              <el-input v-model="standard.operator" placeholder="经办人" />
-            </el-form-item>
-            <el-form-item label="生效日期" :label-width="formLabelWidth" prop="createTime">
-              <el-date-picker v-model="standard.createTime" type="date" placeholder="选择日期" style="width: 100%;" />
             </el-form-item>
             <el-form-item label="计量单位" :label-width="formLabelWidth" prop="units">
               <el-input v-model="standard.units" placeholder="计量单位" />
@@ -131,14 +126,8 @@
             <el-form-item label="失效日期" :label-width="formLabelWidth" prop="itemstdExpdate">
               <el-date-picker v-model="standard.itemstdExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
             </el-form-item>
-            <el-form-item label="经办人ID" :label-width="formLabelWidth" prop="operatorId">
-              <el-input v-model="standard.operatorId" placeholder="经办人ID" />
-            </el-form-item>
-            <el-form-item label="最后修改时间" :label-width="formLabelWidth" prop="updateTime">
-              <el-date-picker v-model="standard.updateTime" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
-            <el-form-item label="备注" :label-width="formLabelWidth">
-              <el-input v-model="standard.note" placeholder="备注" />
+            <el-form-item label="标准金额" :label-width="formLabelWidth">
+              <el-input v-model="standard.charge" placeholder="标准金额" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -160,12 +149,14 @@ export default {
     const validateDatePicker = (rule, value, callback, source, option, other) => {
       const thisZero = new Date().setHours(0, 0, 0, 0)
       const input = new Date(value).setHours(0, 0, 0, 0)
-      if (input < thisZero && !other) {
+      if (input < thisZero && !other && this.dialogType !== 'edit') {
         callback(new Error('日期不能早于今天'))
-      } else if (other) {
+      } else if (other || this.dialogType === 'edit') {
         const otherStdData = new Date(this.standard[other]).setHours(0, 0, 0, 0)
         if (otherStdData > input) {
           callback(new Error('当前日期不能在开始日期之前'))
+        } else {
+          callback()
         }
       } else {
         callback()
@@ -174,10 +165,10 @@ export default {
     return {
     //   loading: true,
       queryParams: { // 查询参数
-        // deptCode: '',
-        // deptName: '',
-        // isEnable: '',
-        keyword: '',
+        keyword: {
+          name: '',
+          isenable: ''
+        },
         page: 1,
         limit: 10
         // total: 0
@@ -189,6 +180,7 @@ export default {
         mnem: '',
         maxCharge: '',
         minCharge: '',
+        charge: '',
         units: '',
         itemstdEffdate: '',
         itemstdExpdate: '',
@@ -256,7 +248,7 @@ export default {
   methods: {
     // 格式化时间
     parseTime (time) {
-      return parseTime(new Date())
+      return parseTime(new Date(time), '{y}-{m}-{d}')
     },
     // 获取资源列表
     async getTableData () {
@@ -282,8 +274,8 @@ export default {
     },
     // 重置
     resetQuery () {
-      // this.queryParams = {}
-      this.queryParams.keyword = ''
+      this.queryParams.keyword.name = ''
+      this.queryParams.keyword.isenable = ''
     },
     // 编辑按钮
     handleEdit (rowData) {

@@ -1,236 +1,230 @@
 <template>
   <div class="app-container">
-    <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
-      <el-form-item label="项目名称" prop="keyword">
-        <el-input
-          v-model="queryParams.keyword"
-          placeholder="请输入项目名称"
-          clearable
-          style="width: 140px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="项目用途" prop="useType">
-        <el-select v-model="queryParams.useType" placeholder="请选择项目用途" style="width: 150px">
-          <el-option label="非税收入" value="非税收入" />
-          <el-option label="医疗项目" value="医疗项目" />
-          <el-option label="其他项目" value="其他项目" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="项目状态" prop="isenable">
-        <el-select v-model="queryParams.isenable" placeholder="请选择项目状态" style="width: 150px">
-          <el-option label="待审核" value="doing" />
-          <el-option label="已完成" value="success" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="small"
-          @click="handleAdd"
-        >新增项目</el-button>
+    <el-row :gutter="20">
+      <el-col :span="6">
+        <el-card class="box-card">
+          <el-tree ref="tree" :data="treeList" node-key="id" :props="defaultProps" style="font-size:10px;" @node-click="handleNodeClick">
+            <span slot-scope="{ node, data }" class="custom-tree-node">
+              <span>{{ data.code }} {{ node.label }}</span>
+            </span>
+          </el-tree>
+        </el-card>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          :disabled="deleteBatchDisable"
-          icon="el-icon-delete"
-          size="small"
-          @click="handleMultDelete"
-        >批量删除</el-button>
+      <el-col :span="18">
+        <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
+          <el-form-item label="项目名称" prop="keyword">
+            <el-input
+              v-model="queryParams.keyword"
+              placeholder="请输入项目名称"
+              clearable
+              style="width: 140px"
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
+          <el-form-item label="项目状态" prop="isenable">
+            <el-select v-model="queryParams.isenable" placeholder="请选择项目状态" style="width: 150px">
+              <el-option label="待审核" value="0" />
+              <el-option label="已完成" value="1" />
+              <el-option label="全部" value="" />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
+            <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
+
+        <el-row :gutter="10" class="mb8">
+          <el-col :span="1.5">
+            <el-button
+              type="primary"
+              icon="el-icon-plus"
+              size="small"
+              :disabled="isleaf"
+              @click="handleAdd"
+            >新增项目</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              type="danger"
+              :disabled="deleteBatchDisable"
+              icon="el-icon-delete"
+              size="small"
+              @click="handleMultDelete"
+            >批量删除</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-upload
+              ref="upload"
+              class="upload-demo"
+              accept=".xlsx, .xls"
+              action=""
+              :on-success="onSuccess"
+              :before-upload="beforeUpload"
+            >
+              <el-button slot="trigger" size="small" type="success" icon="el-icon-check">导入</el-button>
+            </el-upload>
+          </el-col>
+        </el-row>
+
+        <el-table :data="projectList" style="width: 100%;margin-top:30px;" border @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55" align="center" />
+          <el-table-column align="center" label="状态" prop="isenable">
+            <template slot-scope="scope">
+              <el-tag
+                :type="scope.row.isenable ? 'success' : 'info'"
+                disable-transitions
+              >{{ scope.row.isenable ? '已完成' : '待审核' }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="项目编码" prop="itemId" />
+          <el-table-column align="center" label="项目名称" prop="itemName" :show-overflow-tooltip="true" />
+          <el-table-column align="center" label="项目生效日期" prop="itemEffdate" width="110">
+            <template slot-scope="scope">
+              {{ parseTime(scope.row.itemEffdate) }}
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="项目失效日期" prop="itemExpdate" width="110">
+            <template slot-scope="scope">
+              {{ parseTime(scope.row.itemExpdate) }}
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="资金性质" prop="fundsnatureCode" />
+          <el-table-column align="center" label="项目操作" width="150" fixed="right">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="handleEdit(scope.row)">修改</el-button>
+              <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="标准管理" width="210" fixed="right">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="handleAddStand(scope.row)">新增</el-button>
+              <el-button type="primary" size="mini" @click="handleEditStand(scope.row)">修改</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <el-pagination
+          style="margin-top:20px;float:right;margin-right:20px;"
+          center
+          background
+          margin-top="10"
+          layout="prev, pager, next, sizes, total, jumper"
+          :page-sizes="[10,20,50,100]"
+          :page-size="queryParams.limit"
+          :total="queryParams.total"
+          :current-page="queryParams.page"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
+        />
+
+        <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'项目变动':'新增项目'">
+          <el-form ref="project" :model="project" :rules="rules" label-width="80px" label-position="right" style="padding-right:25px;">
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemId">
+                  <el-input v-model="project.itemId" placeholder="项目编码" readonly />
+                </el-form-item>
+                <el-form-item label="项目生效日期" :label-width="formLabelWidth" prop="itemEffdate">
+                  <el-date-picker v-model="project.itemEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
+                </el-form-item>
+                <el-form-item label="记录生效日期" :label-width="formLabelWidth" prop="effdate">
+                  <el-date-picker v-model="project.effdate" type="date" placeholder="选择日期" style="width: 100%;" />
+                </el-form-item>
+                <el-form-item label="收入类别" :label-width="formLabelWidth" prop="name ">
+                  <el-input v-model="incomeSort.name" placeholder="收入类别" readonly />
+                </el-form-item>
+                <el-form-item label="收缴方式" :label-width="formLabelWidth">
+                  <el-select v-model="project.paymode" placeholder="请选择收缴方式">
+                    <el-option label="直缴" value="直缴" />
+                    <el-option label="汇缴" value="汇缴" />
+                    <el-option label="代缴" value="代缴" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="资金性质" :label-width="formLabelWidth" prop="name">
+                  <el-input v-model="fund" placeholder="资金性质" readonly />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="项目名称" :label-width="formLabelWidth" prop="itemName">
+                  <el-input v-model="project.itemName" placeholder="项目名称" />
+                </el-form-item>
+                <el-form-item label="项目失效日期" :label-width="formLabelWidth" prop="itemExpdate">
+                  <el-date-picker v-model="project.itemExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
+                </el-form-item>
+                <el-form-item label="记录截止日期" :label-width="formLabelWidth" prop="expdate">
+                  <el-date-picker v-model="project.expdate" type="date" placeholder="选择日期" style="width: 100%;" />
+                </el-form-item>
+                <el-form-item label="助记码" :label-width="formLabelWidth" prop="mnen">
+                  <el-input v-model="project.mnen" placeholder="助记码" />
+                </el-form-item>
+                <el-form-item label="预算科目" :label-width="formLabelWidth">
+                  <el-input v-model="project.subjectName" placeholder="预算科目" readonly />
+                </el-form-item>
+                <el-form-item label="备注" :label-width="formLabelWidth">
+                  <el-input v-model="project.note" placeholder="备注" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+          <div style="text-align:right;">
+            <el-button type="danger" @click="cancel">取消</el-button>
+            <el-button type="primary" @click="confirmRole">确认</el-button>
+          </div>
+        </el-dialog>
+
+        <el-dialog :visible.sync="dialogVisibleTow" :title="dialogTypeTow==='edit'?'编辑标准':'新增标准'">
+          <el-form ref="standard" :model="standard" :rules="standRules" label-width="80px" label-position="right" style="padding-right:25px;">
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-form-item label="标准编码" :label-width="formLabelWidth" prop="itemstdCode">
+                  <el-input v-model="standard.itemstdCode" placeholder="标准编码" readonly />
+                </el-form-item>
+                <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemCode ">
+                  <el-input v-model="standard.itemCode " placeholder="项目编码" readonly />
+                </el-form-item>
+                <el-form-item label="标准下限" :label-width="formLabelWidth" prop="minCharge">
+                  <el-input v-model="standard.minCharge" placeholder="标准下限" />
+                </el-form-item>
+                <el-form-item label="生效日期" :label-width="formLabelWidth" prop="itemstdEffdate">
+                  <el-date-picker v-model="standard.itemstdEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
+                </el-form-item>
+                <el-form-item label="计量单位" :label-width="formLabelWidth" prop="units">
+                  <el-input v-model="standard.units" placeholder="计量单位" readonly />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="标准名称" :label-width="formLabelWidth" prop="itemstdName">
+                  <el-input v-model="standard.itemstdName" placeholder="标准名称" />
+                </el-form-item>
+                <el-form-item label="助记码" :label-width="formLabelWidth" prop="mnem">
+                  <el-input v-model="standard.mnem" placeholder="助记码" />
+                </el-form-item>
+                <el-form-item label="标准上限" :label-width="formLabelWidth" prop="maxCharge">
+                  <el-input v-model="standard.maxCharge" placeholder="标准上限" />
+                </el-form-item>
+                <el-form-item label="失效日期" :label-width="formLabelWidth" prop="itemstdExpdate">
+                  <el-date-picker v-model="standard.itemstdExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
+                </el-form-item>
+                <el-form-item label="标准金额" :label-width="formLabelWidth" prop="charge">
+                  <el-input v-model="standard.charge" placeholder="标准金额" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+          <div style="text-align:right;">
+            <el-button type="danger" @click="cancel">取消</el-button>
+            <el-button type="primary" @click="confirmStand">确认</el-button>
+          </div>
+        </el-dialog>
       </el-col>
     </el-row>
-
-    <el-table :data="projectList" style="width: 100%;margin-top:30px;" border @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column align="center" label="状态" prop="isenable">
-        <template slot-scope="scope">
-          <el-tag
-            :type="scope.row.isenable ? 'success' : 'info'"
-            disable-transitions
-          >{{ scope.row.isenable ? '已完成' : '待审核' }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="项目编码" prop="itemId" />
-      <el-table-column align="center" label="项目名称" prop="itemName" :show-overflow-tooltip="true" />
-      <el-table-column align="center" label="项目生效日期" prop="itemEffdate">
-        <template slot-scope="scope">
-          {{ parseTime(scope.row.itemEffdate) }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="项目失效日期" prop="itemExpdate">
-        <template slot-scope="scope">
-          {{ parseTime(scope.row.itemExpdate) }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="资金性质" prop="fundsnatureCode" />
-      <el-table-column align="center" label="操作" width="150">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleEdit(scope.row)">修改</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="标准管理" width="210">
-        <template slot-scope="scope">
-          <el-button type="warning" size="mini" @click="handleAddStand(scope.row)">新增标准</el-button>
-          <el-button type="success" size="mini" @click="handleEditStand(scope.row)">修改标准</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <el-pagination
-      style="margin-top:20px;float:right;margin-right:20px;"
-      center
-      background
-      margin-top="10"
-      layout="prev, pager, next, sizes, total, jumper"
-      :page-sizes="[10,20,50,100]"
-      :page-size="queryParams.limit"
-      :total="queryParams.total"
-      :current-page="queryParams.page"
-      @current-change="handleCurrentChange"
-      @size-change="handleSizeChange"
-    />
-
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'项目变动':'新增项目'">
-      <el-form ref="project" :model="project" :rules="rules" label-width="80px" label-position="right" style="padding-right:25px;">
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="区划id" :label-width="formLabelWidth" prop="rgnId">
-              <el-input v-model="project.rgnId" placeholder="区划id" />
-            </el-form-item>
-            <el-form-item label="项目分类编码" :label-width="formLabelWidth" prop="itemSortId">
-              <el-input v-model="project.itemSortId" placeholder="项目分类编码" />
-            </el-form-item>
-            <el-form-item label="项目生效日期" :label-width="formLabelWidth" prop="itemEffdate">
-              <el-date-picker v-model="project.itemEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
-            <el-form-item label="记录生效日期" :label-width="formLabelWidth" prop="effdate">
-              <el-date-picker v-model="project.effdate" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
-            <el-form-item label="收入类别" :label-width="formLabelWidth" prop="incomSortCode ">
-              <el-select v-model="project.incomSortCode " placeholder="根据实际情况选择">
-                <el-option label="直缴" value="直缴" />
-                <el-option label="汇缴" value="汇缴" />
-                <el-option label="代缴" value="代缴" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="收缴方式" :label-width="formLabelWidth">
-              <el-select v-model="project.paymode" placeholder="请选择收缴方式">
-                <el-option label="直缴" value="直缴" />
-                <el-option label="汇缴" value="汇缴" />
-                <el-option label="代缴" value="代缴" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="资金性质" :label-width="formLabelWidth" prop="fundsnatureCode">
-              <el-select v-model="project.fundsnatureCode" placeholder="根据实际情况选择">
-                <el-option label="直缴" value="直缴" />
-                <el-option label="汇缴" value="汇缴" />
-                <el-option label="代缴" value="代缴" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemId">
-              <el-input v-model="project.itemId" placeholder="项目编码" :disabled="true" />
-            </el-form-item>
-            <el-form-item label="项目名称" :label-width="formLabelWidth" prop="itemName">
-              <el-input v-model="project.itemName" placeholder="项目名称" />
-            </el-form-item>
-            <el-form-item label="项目失效日期" :label-width="formLabelWidth" prop="itemExpdate">
-              <el-date-picker v-model="project.itemExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
-            <el-form-item label="记录截止日期" :label-width="formLabelWidth" prop="expdate">
-              <el-date-picker v-model="project.expdate" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
-            <el-form-item label="助记码" :label-width="formLabelWidth" prop="mnen">
-              <el-input v-model="project.mnen" placeholder="助记码" />
-            </el-form-item>
-            <el-form-item label="预算科目" :label-width="formLabelWidth">
-              <el-input v-model="project.subject" placeholder="根据实际情况填写" />
-            </el-form-item>
-            <el-form-item label="备注" :label-width="formLabelWidth">
-              <el-input v-model="project.note" placeholder="备注" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <div style="text-align:right;">
-        <el-button type="danger" @click="cancel">取消</el-button>
-        <el-button type="primary" @click="confirmRole">确认</el-button>
-      </div>
-    </el-dialog>
-
-    <el-dialog :visible.sync="dialogVisibleTow" :title="dialogTypeTow==='edit'?'编辑标准':'新增标准'">
-      <el-form ref="standard" :model="standard" :rules="standRules" label-width="80px" label-position="right" style="padding-right:25px;">
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="标准编码" :label-width="formLabelWidth" prop="itemstdCode">
-              <el-input v-model="standard.itemstdCode" placeholder="标准编码" />
-            </el-form-item>
-            <el-form-item label="项目编码" :label-width="formLabelWidth" prop="itemCode ">
-              <el-input v-model="standard.itemCode " placeholder="项目编码" :disabled="true" />
-            </el-form-item>
-            <el-form-item label="标准下限" :label-width="formLabelWidth" prop="minCharge">
-              <el-input v-model="standard.minCharge" placeholder="标准下限" />
-            </el-form-item>
-            <el-form-item label="生效日期" :label-width="formLabelWidth" prop="itemstdEffdate">
-              <el-date-picker v-model="standard.itemstdEffdate" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
-            <el-form-item label="经办人" :label-width="formLabelWidth" prop="operator">
-              <el-input v-model="standard.operator" placeholder="经办人" />
-            </el-form-item>
-            <el-form-item label="创建日期" :label-width="formLabelWidth" prop="createTime">
-              <el-date-picker v-model="standard.createTime" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
-            <el-form-item label="计量单位" :label-width="formLabelWidth" prop="units">
-              <el-input v-model="standard.units" placeholder="计量单位" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="标准名称" :label-width="formLabelWidth" prop="itemstdName">
-              <el-input v-model="standard.itemstdName" placeholder="标准名称" />
-            </el-form-item>
-            <el-form-item label="助记码" :label-width="formLabelWidth" prop="mnem">
-              <el-input v-model="standard.mnem" placeholder="助记码" />
-            </el-form-item>
-            <el-form-item label="标准上限" :label-width="formLabelWidth" prop="maxCharge">
-              <el-input v-model="standard.maxCharge" placeholder="标准上限" />
-            </el-form-item>
-            <el-form-item label="失效日期" :label-width="formLabelWidth" prop="itemstdExpdate">
-              <el-date-picker v-model="standard.itemstdExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
-            <el-form-item label="经办人ID" :label-width="formLabelWidth" prop="operatorId">
-              <el-input v-model="standard.operatorId" placeholder="经办人ID" />
-            </el-form-item>
-            <el-form-item label="最后修改时间" :label-width="formLabelWidth" prop="updateTime">
-              <el-date-picker v-model="standard.updateTime" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
-            <el-form-item label="备注" :label-width="formLabelWidth">
-              <el-input v-model="standard.note" placeholder="备注" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <div style="text-align:right;">
-        <el-button type="danger" @click="cancel">取消</el-button>
-        <el-button type="primary" @click="confirmStand">确认</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getProjectListByPage, addProject, updateProject, deleteProject, deleteProjectBatch, addStd, updateStd, getItemStd } from '@/api/projectManager'
+import { getProjectListByPage, getBySubjectId, addProject, getSubjectTree, updateProject, deleteProject, deleteProjectBatch, addStd, updateStd, getItemStd, importExcel } from '@/api/projectManager'
 import { parseTime } from '@/utils/index'
 
 const defaultUser = {
@@ -243,6 +237,7 @@ const defaultUser = {
   effdate: '',
   expdate: '',
   subject: '',
+  subjectName: '',
   // note: '',
   mnen: '',
   incomSortCode: '',
@@ -255,7 +250,8 @@ const defaultStand = {
   mnem: '',
   maxCharge: '',
   minCharge: '',
-  units: '',
+  chargr: '',
+  units: '元',
   itemstdEffdate: '',
   itemstdExpdate: '',
   note: '',
@@ -269,30 +265,59 @@ const defaultStand = {
 }
 export default {
   data () {
+    const chargeMethod = (rule, value, callback) => {
+      if (value > this.standard.maxCharge) {
+        callback(new Error('金额必须低于标准上限'))
+      } else if (value < this.standard.minCharge) {
+        callback(new Error('金额必须高于标准下限'))
+      } else {
+        callback()
+      }
+    }
     const validateDatePicker = (rule, value, callback, source, option, other) => {
       const thisZero = new Date().setHours(0, 0, 0, 0)
       const input = new Date(value).setHours(0, 0, 0, 0)
-      if (input < thisZero && !other) {
+      if (input < thisZero && !other && this.dialogType !== 'edit') {
         callback(new Error('日期不能早于今天'))
-      } else if (other) {
+      } else if (other || this.dialogType === 'edit') {
         const otherDate = new Date(this.project[other]).setHours(0, 0, 0, 0)
         const otherStdData = new Date(this.standard[other]).setHours(0, 0, 0, 0)
         if (otherDate > input || otherStdData > input) {
           callback(new Error('当前日期不能在开始日期之前'))
+        } else {
+          callback()
         }
       } else {
         callback()
       }
     }
     return {
-      //   loading: true,
       queryParams: { // 查询参数
         keyword: '',
-        // useType: '',
-        // isenable: '',
+        subjectCode: '',
+        isenable: '',
         page: 1,
         limit: 10,
+        state: 1,
         total: 0
+      },
+      isleaf: true,
+      treeList: [],
+      defaultProps: {
+        children: 'subjectVOS',
+        label: 'name',
+        level: 'level'
+      },
+      incomeSort: {
+        code: '',
+        name: ''
+      },
+      fund: '',
+      subjectList: {
+        id: '',
+        year: '',
+        code: '',
+        name: ''
       },
       projectList: [],
       project: {
@@ -306,6 +331,7 @@ export default {
         expdate: '',
         subject: '',
         // note: '',
+        subjectName: '',
         mnen: '',
         incomSortCode: '',
         fundsnatureCode: '',
@@ -317,7 +343,8 @@ export default {
         mnem: '',
         maxCharge: '',
         minCharge: '',
-        units: '',
+        charge: '',
+        units: '元',
         itemstdEffdate: '',
         itemstdExpdate: '',
         note: '',
@@ -368,6 +395,9 @@ export default {
 
       },
       standRules: {
+        charge: [
+          { validator: chargeMethod, trigger: 'blur' }
+        ],
         itemstdCode: [
           { required: true, message: '标准编码不能为空', trigger: 'blur' }
         ],
@@ -381,7 +411,7 @@ export default {
           { required: true, message: '标准下线不能为空', trigger: 'blur' }
         ],
         units: [
-          { required: true, message: '计量单位不能为空', trigger: 'blur' }
+          { required: true, message: '计量单位不能修改', trigger: 'change' }
         ],
         itemstdEffdate: [
           { trigger: 'blur', validator: validateDatePicker }
@@ -413,15 +443,44 @@ export default {
     }
   },
   created () {
-    this.getTableData()
+    this.getTableTree()
   },
   methods: {
-    // validateDatePicker (rule, value, callback, source, option, this.project.itemEffdate) {
-
-    // },
+    importExcel () {
+      return ''
+    },
+    // 上传之前的回调
+    beforeUpload (file) {
+      if (!/(?:xls|xlsx)$/.test(file.name)) {
+        this.$message.error('请上传Excel文件')
+        return false
+      }
+      const loading = this.$loading({
+        lock: true,
+        text: '正在上传',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.6)'
+      })
+      const form = new FormData()
+      form.append('file', file)
+      importExcel(form)
+        .then((res) => {
+          loading.close()
+        })
+      return false
+    },
+    // 上传成功的回调
+    onSuccess (res) {
+      this.loading.close()
+      if (res.code === '10000') {
+        this.$message.success('操作成功')
+      } else {
+        this.$message.error(res.message)
+      }
+    },
     // 格式化时间
     parseTime (time) {
-      return parseTime(new Date())
+      return parseTime(new Date(time), '{y}-{m}-{d}')
     },
     // 获取资源列表
     async getTableData () {
@@ -433,6 +492,11 @@ export default {
       this.queryParams.page = res.data.page
       this.selectedList = []
       // this.loading = false
+    },
+    // 获取树形菜单列表
+    async getTableTree () {
+      const res = await getSubjectTree()
+      this.treeList = res.data
     },
     // 搜索
     handleQuery () {
@@ -448,10 +512,23 @@ export default {
     // 重置
     resetQuery () {
       this.queryParams.keyword = ''
+      this.queryParams.isenable = ''
+      // this.queryParams.subjectCode = ''
+      this.getTableData()
     },
     // 新增按钮
     handleAdd () {
       this.project = Object.assign({}, defaultUser)
+      this.project.subject = this.subjectList.code
+      this.project.subjectName = this.subjectList.name
+      this.project.incomSortCode = this.incomeSort.code
+      this.project.fundsnatureCode = this.incomeSort.name + '收入'
+      if (this.projectList.length === 0) {
+        this.project.itemId = this.subjectList.code + '01'
+      } else {
+        const val = parseInt(this.projectList[this.projectList.length - 1].itemId) + 1
+        this.project.itemId = val + ''
+      }
       this.dialogType = 'new'
       this.dialogVisible = true
     },
@@ -499,13 +576,21 @@ export default {
         this.selectedids = this.selectedList.map(item => {
           return { id: item.id }
         })
-        deleteProjectBatch(this.selectedids).then((res) => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+        deleteProjectBatch(this.selectedids)
+          .then((res) => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.getTableData()
           })
-          this.getTableData()
-        })
+          .catch((err) => {
+            this.$message({
+              type: 'error',
+              message: '删除失败!'
+            })
+            console.error(err)
+          })
       })
     },
     // 模态框提交
@@ -517,53 +602,63 @@ export default {
               this.$set(this.project, {})
               this.getTableData() // 重新渲染数据列表
               this.dialogVisible = false // 关闭模态框
-              // if (res.status === 200) {
               this.$message({
                 showClose: true,
                 message: '添加成功',
                 type: 'success'
               })
-              // } else {
-              //   this.$message({
-              //     showClose: true,
-              //     message: '添加失败',
-              //     type: 'error'
-              //   })
-              // }
+            }).catch((err) => {
+              this.$message({
+                type: 'error',
+                message: '添加失败!'
+              })
+              console.error(err)
             })
           } else { // 编辑
             this.project.isenable = 0 // 有修改就需要重新审核
             await updateProject(this.project).then(res => {
               this.getTableData()
               this.dialogVisible = false
-              // if (res.status === 200) {
               this.$set(this.project, {})
               this.$message({
                 showClose: true,
                 message: '编辑成功',
                 type: 'success'
               })
-              // } else {
-              //   this.$message({
-              //     showClose: true,
-              //     message: '编辑失败',
-              //     type: 'error'
-              //   }) // 或者弹出后台返回错误
-              // }
+            }).catch((err) => {
+              this.$message({
+                type: 'error',
+                message: '编辑失败!'
+              })
+              console.error(err)
             })
           }
         }
       })
     },
+    async handleNodeClick (data) {
+      if (data.level === 2) {
+        this.isleaf = false
+        this.queryParams.subjectCode = data.code
+        this.subjectList = data
+        const res = await getBySubjectId(data.id)
+        this.incomeSort = res.data
+        this.fund = this.incomeSort.name + '收入'
+        this.getTableData()
+      }
+    },
     // 模态框取消
     cancel () {
       this.dialogVisible = false
+      this.dialogVisibleTow = false
       this.resetForm('project')
+      this.resetForm('standard')
     },
     // 新增标准按钮
     handleAddStand (standData) {
       defaultStand.itemCode = standData.itemId
       this.standard = Object.assign({}, defaultStand)
+      this.standard.itemstdCode = standData.itemId + '01'
       this.dialogVisibleTow = true
       this.dialogTypeTow = 'new'
     },
@@ -592,7 +687,6 @@ export default {
               this.$set(this.standard, {}) // 更新视图
               this.dialogVisibleTow = false
               if (res.code === 5003) {
-                // alert(res.message)
                 this.$message({
                   showClose: true,
                   message: '项目标准已经存在，无法添加',

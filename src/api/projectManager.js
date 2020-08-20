@@ -9,6 +9,29 @@ export function getProjectListByPage (data) {
   })
 }
 
+export function getSubjectTree () {
+  return request({
+    url: '/item/getItemTree',
+    method: 'get'
+  })
+}
+
+export function getIncomSortName (data) {
+  return request({
+    url: '/item/getIncomSortName',
+    method: 'get',
+    params: { 'code': data }
+  })
+}
+
+export function getBySubjectId (data) {
+  return request({
+    url: '/incomeSort/getBySubjectId',
+    method: 'get',
+    params: { 'subjectId': data }
+  })
+}
+
 export function addProject (data) {
   return request({
     url: '/item/save',
@@ -48,6 +71,15 @@ export function projectCheck (data) {
     data: data
   })
 }
+
+export function importExcel (data) {
+  return request({
+    url: '/item/import',
+    method: 'post',
+    data: data
+  })
+}
+
 // 项目标准
 export function getStdListByPage (data) {
   return request({
@@ -100,6 +132,46 @@ export function deleteStdBatch (data) {
 export function projectStdCheck (data) {
   return request({
     url: '/itemstd/batchVerify',
+    method: 'post',
+    data: data
+  })
+}
+
+// 项目管理
+export function getGroupListByPage (data) {
+  return request({
+    url: '/group/listByPage',
+    method: 'post',
+    data: data
+  })
+}
+export function addGroup (data) {
+  return request({
+    url: '/group/save',
+    method: 'post',
+    data: data
+  })
+}
+
+export function deleteGroup (data) {
+  return request({
+    url: '/group/delete',
+    method: 'post',
+    data: { id: data }
+  })
+}
+
+export function getItemList (data) {
+  return request({
+    url: '/groupItem/getItemInfo',
+    method: 'post',
+    data: { groupCode: data }
+  })
+}
+
+export function deleteItemFromGroup (data) {
+  return request({
+    url: '/groupItem/delete',
     method: 'post',
     data: data
   })

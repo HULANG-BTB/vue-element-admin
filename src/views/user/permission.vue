@@ -14,7 +14,7 @@
 
     <el-row :gutter="10">
       <el-col :span="1.5">
-        <el-button type="primary" icon="el-icon-plus" size="small" @click="handleAdd">新增角色</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="handleAdd">新增权限</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="danger" icon="el-icon-delete" size="small" :disabled="deleteBatchDisable" @click="handleDeleteBatch">批量删除</el-button>
@@ -29,16 +29,22 @@
       <el-table-column align="center" label="权限ID" width="80">
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
-      <el-table-column align="left" label="权限名称" width="220">
-        <template slot-scope="scope">{{ scope.row.name }}</template>
+      <el-table-column align="left" label="权限名称" min-width="220" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span :style="{marginLeft: computedUrlMargin(scope.row)}">
+            <span v-if="scope.row.parentId">|-- </span> {{ scope.row.name }}
+          </span>
+        </template>
       </el-table-column>
       <el-table-column align="center" label="请求方式" width="220">
         <template slot-scope="scope">
           <el-button :style="requestMethodStyle(scope.row.method)" type="text" size="mini">{{ scope.row.method }}</el-button>
         </template>
       </el-table-column>
-      <el-table-column align="header-center" label="请求路径">
-        <template slot-scope="scope">{{ scope.row.url }}</template>
+      <el-table-column align="header-center" label="请求路径" min-width="300px">
+        <template slot-scope="scope">
+          <span :style="{marginLeft: computedUrlMargin(scope.row)}">{{ scope.row.url }}</span>
+        </template>
       </el-table-column>
       <el-table-column align="center" label="最后修改" width="170">
         <template slot-scope="scope">{{ parseTime(scope.row.updateTime) }}</template>
@@ -46,7 +52,7 @@
       <el-table-column align="header-center" label="操作人">
         <template slot-scope="scope">{{ scope.row.operator }}</template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="220">
+      <el-table-column align="center" label="操作" width="220" fixed="right">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleEdit(scope)">编辑</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope)">删除</el-button>
@@ -57,16 +63,16 @@
     <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="margin-top:20px;float:right;margin-right:20px;" :total="query.total" :current-page="query.page" :page-sizes="[10, 20, 50, 100, 500, 1000]" :page-size="query.limit" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑权限':'新建权限'">
-      <el-form v-loading="dialogLoading" :model="permission" label-width="120px" label-position="left">
-        <el-form-item label="父级权限">
+      <el-form ref="permissionForm" v-loading="dialogLoading" :model="permission" label-width="120px" label-position="right" :rules="rules">
+        <el-form-item label="父级权限" prop="parentId">
           <el-select v-model="permission.parentId" size="medium" filterable style="width: 100%" clearable placeholder="Request Method">
             <el-option v-for="(item, index) in permissionSelectList" :key="index" :label="item.name" :value="item.id">
-              <span>{{ item.name }}</span>
-              <span style="margin-left: 1.5rem; color: #8492a6; font-size: 13px">{{ item.url }}</span>
+              <span :style="{marginLeft: item.parentId === 0 ? '0px': '20px'}"><span v-if="item.parentId">|-- </span> {{ item.url }}</span>
+              <span style="margin-left: 1.5rem; color: #8492a6; font-size: 13px">{{ item.name }}</span>
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="名称">
+        <el-form-item label="名称" prop="name">
           <el-input v-model="permission.name" placeholder="Permission Name" />
         </el-form-item>
         <el-form-item label="方式">
@@ -76,7 +82,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="Url">
+        <el-form-item label="Url" prop="url">
           <el-input v-model="permission.url" placeholder="Request Url" />
         </el-form-item>
       </el-form>
@@ -119,6 +125,17 @@ export default {
       dialogLoading: false,
       dialogVisible: false,
       dialogType: 'new',
+      rules: {
+        parentId: [
+          { required: true, message: '父权限不能为空', trigger: 'blur' }
+        ],
+        name: [
+          { required: true, message: '权限名称不能为空', trigger: 'blur' }
+        ],
+        url: [
+          { required: true, message: '权限地址不能为空', trigger: 'blur' }
+        ]
+      },
       permission: {},
       requestMethod: ['GET', 'POST', 'PUT', 'DELETE', 'ALL'],
       query: {
@@ -246,35 +263,39 @@ export default {
 
     // 提交数据
     async confirmPermission () {
-      const isEdit = this.dialogType === 'edit'
-      this.confirmLoading = true
-      let successFlag = false
-      if (isEdit) {
-        await updatePermission(this.permission).then((res) => {
-          successFlag = true
-        })
-      } else {
-        await savePermission(this.permission).then((res) => {
-          successFlag = true
-        })
-      }
-      this.confirmLoading = false
-      this.dialogVisible = false
-      if (successFlag) {
-        const { method, name, url } = this.permission
-        this.$notify({
-          title: 'Success',
-          dangerouslyUseHTMLString: true,
-          message: `
+      this.$refs.permissionForm.validate(async valid => {
+        if (valid) {
+          const isEdit = this.dialogType === 'edit'
+          this.confirmLoading = true
+          let successFlag = false
+          if (isEdit) {
+            await updatePermission(this.permission).then(res => {
+              successFlag = true
+            })
+          } else {
+            await savePermission(this.permission).then(res => {
+              successFlag = true
+            })
+          }
+          this.confirmLoading = false
+          this.dialogVisible = false
+          if (successFlag) {
+            const { method, name, url } = this.permission
+            this.$notify({
+              title: 'Success',
+              dangerouslyUseHTMLString: true,
+              message: `
             <div>Method: ${method}</div>
             <div>Name: ${name}</div>
             <div>Url: ${url}</div>
           `,
-          type: 'success'
-        })
-        this.getTableData()
-        this.getPermissionList(true)
-      }
+              type: 'success'
+            })
+            this.getTableData()
+            this.getPermissionList(true)
+          }
+        }
+      })
     },
 
     // 批量删除
@@ -315,6 +336,19 @@ export default {
     // 格式化时间
     parseTime (time) {
       return parseTime(new Date())
+    },
+
+    // 计算Url 偏移
+    computedUrlMargin (row) {
+      let count = 0
+      let str1 = row.url
+      while (str1.indexOf('/') !== -1) {
+        str1 = str1.replace('/', '')
+        count++
+      }
+      const hasParent = row.parentId === 0 ? 1 : 2
+      count = count > hasParent ? count : hasParent
+      return (count - 1) * 30 + 'px'
     }
   }
 }

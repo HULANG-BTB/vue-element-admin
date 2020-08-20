@@ -72,7 +72,7 @@
       <el-table-column
         align="center"
         label="操作"
-        width="100"
+        width="200"
       >
         <template slot-scope="scope">
           <el-button
@@ -80,6 +80,10 @@
             size="mini"
             @click="handleLook(scope.row)"
           >查看</el-button>
+          <el-button
+            type="primary"
+            size="mini"
+          >添加分组</el-button>
         </template>
       </el-table-column>
     </el-table>
