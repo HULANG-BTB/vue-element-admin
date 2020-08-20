@@ -1,13 +1,13 @@
 import request from '@/utils/request'
 
-export function getReportBill() {
+export function getReportBill () {
   return request({
     url: '/report/bill',
     method: 'get'
   })
 }
 
-export function selectSearch(data) {
+export function selectSearch (data) {
   return request({
     url: '/report/search',
     method: 'post',
@@ -15,7 +15,7 @@ export function selectSearch(data) {
   })
 }
 
-export function selectNum() {
+export function selectNum () {
   return request({
     url: '/report/num',
     method: 'get'
