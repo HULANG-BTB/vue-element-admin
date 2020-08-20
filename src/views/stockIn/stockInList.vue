@@ -243,7 +243,6 @@ export default {
       return changeState === 0
     },
     storeable (changeState, status) {
-      console.log((changeState === 1) && (status === 0))
       return (changeState === 1) && (status === 0)
     },
     async getTableData () {
@@ -253,12 +252,9 @@ export default {
       this.stockInPageQuery.total = res.data.total
       this.stockInPageQuery.limit = res.data.limit
       this.stockInPageQuery.page = res.data.page
-      console.log(this.tableData)
       this.loading = false
     },
     onSubmit () {
-      console.log(this.date)
-      console.log(this.stockInPageQuery)
       this.stockInPageQuery.start = this.date[0]
       this.stockInPageQuery.end = this.date[1]
       this.getTableData()
@@ -271,7 +267,6 @@ export default {
       }).then(() => {
         this.loading = true
         this.deleteDto.id = row.no
-        console.log(this.deleteDto.id)
         this.deleteDto.changeMan = 'test'
         deleteStockIn(this.deleteDto).catch(() => { this.loading = false })
         this.loading = false

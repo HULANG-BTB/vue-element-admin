@@ -231,29 +231,26 @@ export default {
       this.stockInPageQuery.total = res.data.total
       this.stockInPageQuery.limit = res.data.limit
       this.stockInPageQuery.page = res.data.page
-      console.log(this.tableData)
       this.loading = false
     },
     onSubmit () {
-      console.log(this.date)
-      console.log(this.stockInPageQuery)
       this.stockInPageQuery.start = this.date[0]
       this.stockInPageQuery.end = this.date[1]
       this.getTableData()
     },
     handleCurrentChange (val) {
-      console.log(val)
+      this.stockInPageQuery.page = val
+      this.getTableData()
     },
     handleSizeChange (val) {
-      console.log(val)
+      this.stockInPageQuery.limit = val
+      this.getTableData()
     },
     change (index, row) {
       getStockInInfo(row.no).then(response => {
-        console.log(response.data)
         this.stockIn = response.data
       })
         .catch()
-      console.log(this.stockIn)
       this.dialogFormVisible = true
     },
     // 审核驳回操作

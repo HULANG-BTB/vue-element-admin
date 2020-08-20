@@ -199,8 +199,6 @@ export default {
     }
   },
   created () {
-    console.log('create')
-    console.log(this.$route.params.id)
     if (this.$route.params && this.$route.params.id) {
       const id = this.$route.params.id
       this.fetchDataById(id)
@@ -214,7 +212,6 @@ export default {
       this.loading = true
       const res = await getBillNumber(this.stockInPageQuery).catch(() => { this.loading = false })
       this.stockIn.no = res.data.no
-      console.log(this.addItemDTO)
       this.loading = false
     },
     createTable () {
@@ -226,7 +223,6 @@ export default {
     fetchDataById (id) {
       getStockInInfo(id)
         .then(response => {
-          console.log(response.data)
           this.stockIn = response.data
           // 重要！！！ 设置修改人
           this.stockIn.changeMan = 'test'
@@ -237,7 +233,6 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid && this.stockIn.addStockInItemDTOArray.length !== 0) {
           if (this.$route.params.id) {
-            console.log('update')
             updateStockIn(this.stockIn).then(response => {
               this.$message({
                 message: '修改成功',
@@ -248,7 +243,6 @@ export default {
               this.$message.error('失败了，请稍后再试')
             })
           } else {
-            console.log('add')
             addStockIn(this.stockIn).then(response => {
               this.$message({
                 message: '新增成功',
@@ -313,20 +307,6 @@ export default {
         this.stockIn.addStockInItemDTOArray.splice(this.index, 1)
       }
       this.stockIn.addStockInItemDTOArray.push(this.addItemDTO)
-    },
-    billCodeChange () {
-      for (let i = 0; i < this.billTypes.length; i++) {
-        if (this.billTypes[i].code === this.addItemDTO.billCode) {
-          this.billType = this.billTypes[i]
-        }
-      }
-      this.addItemDTO.billName = this.billType.name
-    },
-    billNo2Change () {
-      if (this.addItemDTO.billNo1 === '' || this.addItemDTO.billNo2 === '') {
-        return
-      }
-      this.addItemDTO.number = this.addItemDTO.billNo2 - this.addItemDTO.billNo1 + 1
     }
   }
 }
