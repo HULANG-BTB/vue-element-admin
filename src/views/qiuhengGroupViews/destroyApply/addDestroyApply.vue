@@ -119,12 +119,12 @@
         </el-table-column>
         <el-table-column
           label="仓库ID"
-          width="140px"
+          width="130px"
         >
           <template slot-scope="scope">
             <el-select
               v-model="scope.row.fWarehouseId"
-              placeholder="选择仓库ID"
+              placeholder="仓库ID"
             >
               <el-option
                 v-show="scope.row.show"
@@ -137,12 +137,12 @@
         </el-table-column>
         <el-table-column
           label="仓库名称"
-          width="160px"
+          width="130px"
         >
           <template slot-scope="scope">
             <el-select
               v-model="scope.row.fWarehouseName"
-              placeholder="选择仓库名称"
+              placeholder="仓库名称"
             >
               <el-option
                 v-show="scope.row.show"
@@ -240,20 +240,11 @@
     </el-row>
 
     <el-form-item>
-      <div v-if="operateType == '新增票据销毁申请'">
-        <el-button
-          type="primary"
-          @click="addDestroyApply()"
-        >立即申请</el-button>
-        <el-button @click="cancel()">取消</el-button>
-      </div>
-      <div v-if="operateType == '修改票据销毁申请信息'">
-        <el-button
-          type="primary"
-          @click="updateApplyInfo()"
-        >立即修改</el-button>
-        <el-button @click="cancel()">取消</el-button>
-      </div>
+      <el-button
+        type="primary"
+        @click="addDestroyApply()"
+      >立即申请</el-button>
+      <el-button @click="cancel()">取消</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -263,7 +254,18 @@ import {
   addDestroyApply, getApplyInfoByDestroyNo, updateApplyInfo
 } from '@/api/qiuhengGroupApi/destroy/destroyApply'
 import { getItemListByDestroyNo } from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
+// import destroy from '@/router/modules/qiuhengGroupModule/destroy'
 export default {
+  props: {
+    operateType: {
+      type: String,
+      default: ''
+    }
+    // destroyNo: {
+    //   type: String,
+    //   default: ''
+    // }
+  },
   data () {
     return {
       applyDto: {
@@ -279,24 +281,27 @@ export default {
         { fBillName: '', fBillBatchCode: '', fWarehouseId: '', fWarehouseName: '', fNumber: 100, fBillNo1: '0000000001', fBillNo2: '0000000100', show: true },
         { fBillName: '', fBillBatchCode: '', fWarehouseId: '', fWarehouseName: '', fNumber: 66, fBillNo1: '0000000120', fBillNo2: '0000000186', show: true }
       ],
-      dialogVisible: false,
-      operateType: 'aa'
+      dialogVisible: false
     }
   },
 
   labelPosition: 'right',
   created () {
+    // this.applyDto.fDestroyNo = this.destroyNo
+    console.log(this.applyDto.fDestroyNo)
     this.$root.eventBus.$on('fDestroyNo', (val) => {
       this.applyDto.fDestroyNo = val
     })
+
     this.$root.eventBus.$on('fDestroyNoUpdate', (val) => {
       this.getApplyInfo(val)
       this.getItemList(val)
     })
-    this.$root.eventBus.$on('operateType', (val) => {
-      this.operateType = val
-      console.log(this.operateType)
-    })
+    // console.log(this.operateType)
+    // this.$root.eventBus.$on('operateType', (val) => {
+    //   this.operateType = val
+    //   console.log(this.operateType)
+    // })
   },
   methods: {
     async addDestroyApply () {

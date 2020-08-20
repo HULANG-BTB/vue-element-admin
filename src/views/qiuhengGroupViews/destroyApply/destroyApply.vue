@@ -11,69 +11,51 @@
             <el-form-item label="业务单号：">
               <el-input
                 v-model="destroySearch.no"
+                size="small"
                 placeholder="请输入需要查询的业务单号"
               />
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="3">
             <el-form-item label>
               <el-button
                 icon="el-icon-search"
+                size="small"
                 @click="handleSearch"
               >搜索</el-button>
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+        </el-row>
+        <el-row>
+          <el-col span="2">
             <el-button
               type="primary"
+              size="small"
               @click="addDestroyApply()"
-            >新增</el-button>
+            ><i class="el-icon-plus el-icon--left" />新增申请</el-button>
           </el-col>
-          <el-col :span="4">
+          <el-col span="3">
             <el-button
+              size="small"
               type="success"
               @click="refreshButton()"
-            >刷新</el-button>
+            ><i class="el-icon-refresh el-icon--left" />刷新页面</el-button>
           </el-col>
-          <div v-if="operateType === '新增票据销毁申请'">
-            <el-dialog
-              :visible.sync="dialogVisible"
-              :show-close="true"
-              width="90%"
-              top="6vh"
-              title="票据销毁申请——新增"
-            >
-              <add-destroy-apply-dialog />
-            </el-dialog>
-          </div>
-          <div v-if="operateType === '查看票据销毁申请信息'">
-            <el-dialog
-              :visible.sync="dialogVisible"
-              :show-close="true"
-              width="80%"
-              top="6vh"
-              title="票据销毁申请——查看"
-            >
-              <add-destroy-apply-dialog />
-            </el-dialog>
-          </div>
-          <div v-if="operateType === '修改票据销毁申请信息'">
-            <el-dialog
-              :visible.sync="dialogVisible"
-              :show-close="true"
-              width="80%"
-              top="6vh"
-              title="票据销毁申请——修改"
-            >
-              <add-destroy-apply-dialog />
-            </el-dialog>
-          </div>
+
         </el-row>
       </el-form>
-
+      <el-dialog
+        :visible.sync="dialogVisible"
+        :show-close="true"
+        width="90%"
+        top="6vh"
+        title="票据销毁申请——新增"
+      >
+        <add-destroy-apply-dialog />
+      </el-dialog>
     </el-header>
 
-    <el-pagination
+    <!-- <el-pagination
       background
       :current-page="page.currentPage"
       :page-sizes="[10,100, 200, 300, 400]"
@@ -82,11 +64,11 @@
       :total="400"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-    />
+    /> -->
 
     <el-table
       :data="tableData"
-      style="width: 100%"
+      style="width: 100; margin-top:50px;"
       :default-sort="{prop: 'id'}"
       border
     >
@@ -104,7 +86,7 @@
         prop="fStatus"
         label="审核状态"
         sortable
-        width="180"
+        width="140"
       />
       <el-table-column
         prop="fDestroyNo"
@@ -128,48 +110,51 @@
         prop="fApplyMan"
         label="申请人"
         sortable
-        width="180"
+        width="100"
       />
       <el-table-column
         fixed="right"
         label="操作"
-        width="180"
+        width="300"
       >
         <template slot-scope="scope">
           <el-button
-            type="text"
-            size="small"
-            @click="lookApplyInfo(scope.row)"
-          >查看</el-button>
-          <el-button
-            type="text"
-            size="small"
-            @click="updateApplyInfo(scope.row)"
-          >修改</el-button>
-          <el-button
-            type="text"
+            type="primary"
             size="small"
             @click="addApplyInfo(scope.row)"
           >新增</el-button>
           <el-button
-            type="text"
+            type="success"
+            size="small"
+            @click="lookApplyInfo(scope.row)"
+          >查看</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="updateApplyInfo(scope.row)"
+          >修改</el-button>
+          <el-button
+            type="danger"
             size="small"
             @click="deleteApplyInfo(scope.row)"
           >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <look-destroy-apply-dialog />
   </div>
 </template>
 
 <script>
 import { getApplyListByAgenIdCode, deleteApplyInfoByDestroyNo, deleteItemInfoByDestroyNo } from '@/api/qiuhengGroupApi/destroy/destroyApply'
 import { } from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
+import lookDestroyApply from '@/views/qiuhengGroupViews/destroyApply/lookDestroyApply'
 
 import addDestroyApplyVue from './addDestroyApply'
 export default {
   components: {
-    'addDestroyApplyDialog': addDestroyApplyVue
+    'addDestroyApplyDialog': addDestroyApplyVue,
+    'look-destroy-apply-dialog': lookDestroyApply
   },
 
   data () {
@@ -194,7 +179,8 @@ export default {
 
       ApplyDtoTable: [],
       ItemDtoList: [],
-      operateType: ''
+      operateType: 'aaa',
+      lookDestroyApplyDialogVisible: true
     }
   },
   created () {
@@ -209,24 +195,27 @@ export default {
   },
   methods: {
     lookApplyInfo (row) {
-      this.dialogVisible = true
-      this.$root.eventBus.$emit('fDestroyNoUpdate', row.fDestroyNo)
-      this.operateType = '查看票据销毁申请信息'
-      this.$root.eventBus.$emit('operatetype', this.operateType)
+      this.$root.eventBus.$emit('lookDestroyApplyDialogVisible', this.lookDestroyApplyDialogVisible)
+      this.$root.eventBus.$emit('lookDestroyApply', row.fDestroyNo)
+      // this.dialogVisible = true
+      // this.$root.eventBus.$emit('fDestroyNoUpdate', row.fDestroyNo)
+      // this.operateType = '查看票据销毁申请信息'
+      // this.$root.eventBus.$emit('operatetype', this.operateType)
     },
     async updateApplyInfo (row) {
       // console.log(row)
       this.dialogVisible = true
       this.$root.eventBus.$emit('fDestroyNoUpdate', row.fDestroyNo)
       this.operateType = '修改票据销毁申请信息'
-      this.$root.eventBus.$emit('operateType', this.operateType)
+      // this.$root.eventBus.$emit('operateType', this.operateType)
     },
-    addDestroyApply () {
-      this.randomNumber()
+    async addDestroyApply () {
+      await this.randomNumber()
+      console.log(this.fDestroyNo)
       this.$root.eventBus.$emit('fDestroyNo', this.fDestroyNo)
       this.dialogVisible = true
-      this.operateType = '新增票据销毁申请'
-      this.$root.eventBus.$emit('operateType', this.operateType)
+      // this.operateType = '新增票据销毁申请'
+      // this.$root.eventBus.$emit('operateType', this.operateType)
       // console.log(this.operateType)
     },
     handleSearch () {},
