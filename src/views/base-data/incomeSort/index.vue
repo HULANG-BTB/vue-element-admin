@@ -159,10 +159,10 @@
 import LeftTree from '@/components/leftTree'
 import FormTable from '@/components/formTable'
 import DialogBorder from '@/components/Dialog/dialog-border'
-import {getRSAKey} from "@/utils/jsEncrypt";
-import {Decrypt,Encrypt} from "@/utils/cryptoJS";
-import {getDecryptJson} from "@/utils/data"
-import { getIncomeTree, queryByCondition, queryAllBillSort, add, update, deleteBillTypeRequest,getRSAPublicKey } from '@/api/incomeSort/incomeSort'
+import { getRSAKey } from '@/utils/jsEncrypt'
+import { Decrypt, Encrypt } from '@/utils/cryptoJS'
+import { getDecryptJson } from '@/utils/data'
+import { getIncomeTree, queryByCondition, queryAllBillSort, add, update, deleteBillTypeRequest, getRSAPublicKey } from '@/api/incomeSort/incomeSort'
 export default {
   components: {
     LeftTree,
@@ -398,9 +398,9 @@ export default {
     requestTableData (param) {
       queryByCondition(param).then(response => {
         const data = response.data
-        const aesKey=response.aseKey
-        const rs= getDecryptJson(data,aesKey)
-        console.log("rs:{}",rs)
+        const aesKey = response.aseKey
+        const rs = getDecryptJson(data, aesKey)
+        console.log('rs:{}', rs)
         this.total = rs.total
 
         this.tableData.bodyData = rs.list
@@ -525,7 +525,6 @@ export default {
           if (valid) {
             const form = { ...this.incomeSort }
             if (this.updateDialog === true) {
-
               update(form).then(response => {
                 this.freshTreeAndTable()
                 this.updateDialogVisible = false
