@@ -19,9 +19,10 @@
         @requestTableData="requestTableData"
         @tableTagClick="tableTagClick"
         @tableHeadButtonClick="tableHeadButtonClick"
-        @tableButtonClick="tableButtonClick" />
+        @tableButtonClick="tableButtonClick"
+      />
     </div>
-    <el-dialog :title=billName :visible.sync="addDialogVisible" center>
+    <el-dialog :title="billName" :visible.sync="addDialogVisible" center>
       <div>
         <span><b>项目名称:</b></span>
         <el-input v-model="addItemCondition" size="mini" placeholder="请输入" style="width: 200px; margin-left: 10px;" />
@@ -35,23 +36,24 @@
           <el-table-column property="id" label="id" width="150" />
           <el-table-column property="itemId" label="项目编码" width="200" />
           <el-table-column property="itemName" label="项目名称" />
-          <el-table-column label="创建时间" >
+          <el-table-column label="创建时间">
             <template slot-scope="scope">
-             <span>{{scope.row.createTime | formatDate}}</span>
-             </template>
+              <span>{{ scope.row.createTime | formatDate }}</span>
+            </template>
           </el-table-column>
-          <el-table-column label="更新时间" >
-           <template slot-scope="scope">
-          <span>{{scope.row.updateTime | formatDate}}</span>
-          </template>
-           </el-table-column>
+          <el-table-column label="更新时间">
+            <template slot-scope="scope">
+              <span>{{ scope.row.updateTime | formatDate }}</span>
+            </template>
+          </el-table-column>
         </el-table>
         <el-pagination
           layout="total, prev, pager, next, jumper"
           :current-page="noContactBillItem.pageNum"
           :page-size="noContactBillItem.pageSize"
           :total="addItemTotal"
-          @current-change="addItemPageChange" />
+          @current-change="addItemPageChange"
+        />
       </div>
     </el-dialog>
   </el-container>
@@ -65,7 +67,6 @@
     queryBillTypeTree,
     queryByCondition,
     turnenabled,
-    update,
     deleteItemBillRequest,
     queryItemByCondition,
     addBillItem
@@ -210,15 +211,13 @@
             {
               prop: 'itemIsEnabled',
               label: '项目启用',
-              width: 80
+              
             },
-            {
-              prop: 'createTime',
-              label: '创建时间'
-            },
+
             {
               prop: 'updateTime',
-              label: '更新时间'
+              label: '更新时间',
+              width: 180
             }
           ],
           operation: [{

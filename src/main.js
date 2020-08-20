@@ -1,3 +1,5 @@
+// import locale from 'element-ui/lib/locale/lang/en' // lang i18n
+import * as filters from '@/api/base/region/filter'
 import '@/assets/styles/index.scss' // global css
 import permission from '@/directive/permission/index.js'
 import '@/icons' // icon
@@ -34,8 +36,6 @@ Vue.use(ElementUI, { locale: zhLocale })
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false
-
-import * as filters from '@/api/base/region/filter'
 
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
