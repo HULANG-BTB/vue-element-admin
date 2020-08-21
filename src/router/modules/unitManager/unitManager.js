@@ -67,15 +67,15 @@ const unitManager = {
       roles: ['admin']
     },
     {
-      path: 'agenBill',
+      path: 'unitBillManager',
       component: () => import('@/views/unitManager/unitBillManager'),
-      name: 'agenBill',
+      name: 'unitBillManager',
       meta: { title: '可用票据', icon: 'edit' }
     },
     {
-      path: 'agenItem',
-      component: () => import('@/views/unitManager/unitBillManager'),
-      name: 'agenItem',
+      path: 'unitItemManager',
+      component: () => import('@/views/unitManager/unitItemManager'),
+      name: 'unitItemManager',
       meta: { title: '可用项目', icon: 'edit' }
     }
   ]

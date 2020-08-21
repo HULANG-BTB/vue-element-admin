@@ -312,11 +312,151 @@ export default {
 
       if (this.project.deptCode !== '') {
         await getAgenCount({ deptCode: this.project.deptCode }).then(res => {
-          // console.log(res)
+          // console.log(res.data)
+          this.project.agenCode = obj.deptCode + res.data
         })
-        this.project.agenCode = 'this.project.deptCode' + 'res.data'
       }
     },
+
+    // 搜索
+    handleQuery () {
+      this.queryParams.page = 1
+      this.getTableData()
+    },
+    // 表单重置封装
+    resetForm (refName) {
+      if (this.$refs[refName]) {
+        this.$refs[refName].resetFields()
+      }
+    },
+    // 重置
+    resetQuery () {
+      this.queryParams.keyword = {}
+    },
+    // 新增按钮
+    async handleAdd () {
+      this.project = Object.assign({}, defaultUser)
+      this.dialogType = 'new'
+      this.dialogVisible = true
+    },
+    // 编辑按钮
+    handleEdit (rowData) {
+      this.dialogVisible = true
+      this.dialogType = 'edit'
+      this.project = Object.assign({}, rowData)
+    },
+    // 查看按钮
+    handleLook (rowData) {
+      this.$router.push({
+        path: '/unitManager/unitManagerDetail/' + rowData.id
+      })
+    },
+    // 单位管理模态框提交
+    confirmRole () {
+      this.$refs.project.validate(async (valid) => {
+        if (valid) {
+          if (this.dialogType === 'edit') { // 编辑
+            this.project.isenable = false // 有修改就需要重新审核
+            await updateUnit(this.project).then(res => {
+              this.getTableData()
+              this.dialogVisible = false
+              this.$message({
+                showClose: true,
+                message: '编辑成功',
+                type: 'success'
+              })
+            }).catch((err) => {
+              this.$message({
+                type: 'error',
+                message: '编辑失败!'
+              })
+              console.error(err)
+            })
+          } else {
+            // 新增
+            await addUnit(this.project).then(res => {
+              this.$set(this.project, {})
+              this.getTableData()
+              this.dialogVisible = false
+              this.$message({
+                showClose: true,
+                message: '添加成功',
+                type: 'success'
+              })
+            }).catch((err) => {
+              this.$message({
+                type: 'error',
+                message: '添加失败'
+              })
+              console.error(err)
+            })
+          }
+        }
+      })
+    },
+    // 模态框取消
+    cancel () {
+      this.dialogVisible = false
+      this.manageDialogVisible = false
+      this.resetForm('project')
+    },
+    // 删除按钮
+    handleDelete (deleData) {
+      this.$confirm('此操作将永久删除该部门, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        deleteUnit(deleData.id)
+          .then(res => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.getTableData()
+          })
+          .catch(err => {
+            this.$message({
+              type: 'error',
+              message: '删除失败!'
+            })
+            console.error(err)
+          })
+      })
+    },
+    // 多选框选中数据
+    handleSelectionChange (selection) {
+      this.selectedList = selection
+    },
+    // 批量删除
+    async handleMultDelete () {
+      this.$confirm('此操作将永久删除选中部门, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        this.selectedids = this.selectedList.map(item => {
+          return { id: item.id }
+        })
+        deleteUnitBatch(this.selectedids).then(res => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getTableData()
+        })
+      })
+    },
+    // 分页，每页数目改变
+    handleSizeChange (val) {
+      this.queryParams.limit = val
+      this.getTableData()
+    },
+    // 当前页码改变
+    handleCurrentChange (val) {
+      this.queryParams.page = val
+      this.getTableData()
+    }
     // 获取所有财政票据种类
     // async getBillAllType () {
     //   // Todo
@@ -404,92 +544,6 @@ export default {
     //   }
     //   this.manageDialogVisible = false
     // },
-
-    // 搜索
-    handleQuery () {
-      this.queryParams.page = 1
-      this.getTableData()
-    },
-    // 表单重置封装
-    resetForm (refName) {
-      if (this.$refs[refName]) {
-        this.$refs[refName].resetFields()
-      }
-    },
-    // 重置
-    resetQuery () {
-      this.queryParams.keyword = {}
-    },
-    // 新增按钮
-    async handleAdd () {
-      this.project = Object.assign({}, defaultUser)
-      // console.log(this.project.deptCode)
-      // if (this.project.deptCode !== '') {
-      //   const { data } = await getAgenCount({ deptCode: this.project.deptCode })
-      //   console.log(data)
-      //   this.project.agenCode = 'this.project.deptCode' + data
-      // }
-      this.dialogType = 'new'
-      this.dialogVisible = true
-    },
-    // 编辑按钮
-    handleEdit (rowData) {
-      this.dialogVisible = true
-      this.dialogType = 'edit'
-      this.project = Object.assign({}, rowData)
-    },
-    // 查看按钮
-    handleLook (rowData) {
-      this.$router.push({
-        path: '/unitManager/unitManagerDetail/' + rowData.id
-      })
-    },
-    // 单位管理模态框提交
-    confirmRole () {
-      this.$refs.project.validate(async (valid) => {
-        if (valid) {
-          if (this.dialogType === 'edit') { // 编辑
-            this.project.isenable = false // 有修改就需要重新审核
-            await updateUnit(this.project).then(res => {
-              this.getTableData()
-              this.dialogVisible = false
-              // this.$set(this.project, {})
-              this.$message({
-                showClose: true,
-                message: '编辑成功',
-                type: 'success'
-              })
-            })
-          } else {
-            // 新增
-            await addUnit(this.project).then(res => {
-              this.$set(this.project, {})
-              this.getTableData()
-              this.dialogVisible = false
-              // if (res.status === 200) {
-              this.$message({
-                showClose: true,
-                message: '添加成功',
-                type: 'success'
-              })
-              // } else {
-              //   this.$message({
-              //     showClose: true,
-              //     message: '添加失败',
-              //     type: 'error'
-              //   })
-              // }
-            })
-          }
-        }
-      })
-    },
-    // 模态框取消
-    cancel () {
-      this.dialogVisible = false
-      this.manageDialogVisible = false
-      this.resetForm('project')
-    },
     // 项目管理按钮
     // async handleProject (row) {
     //   this.loading = true
@@ -515,63 +569,6 @@ export default {
     //   await this.getAgenBillAll(row.agenCode)
     //   this.loading = false
     // },
-    // 删除按钮
-    handleDelete (deleData) {
-      this.$confirm('此操作将永久删除该部门, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async () => {
-        deleteUnit(deleData.id)
-          .then(res => {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-            this.getTableData()
-          })
-          .catch(err => {
-            this.$message({
-              type: 'error',
-              message: '删除失败!'
-            })
-            console.error(err)
-          })
-      })
-    },
-    // 多选框选中数据
-    handleSelectionChange (selection) {
-      this.selectedList = selection
-    },
-    // 批量删除
-    async handleMultDelete () {
-      this.$confirm('此操作将永久删除选中部门, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async () => {
-        this.selectedids = this.selectedList.map(item => {
-          return { id: item.id }
-        })
-        deleteUnitBatch(this.selectedids).then(res => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-          this.getTableData()
-        })
-      })
-    },
-    // 分页，每页数目改变
-    handleSizeChange (val) {
-      this.queryParams.limit = val
-      this.getTableData()
-    },
-    // 当前页码改变
-    handleCurrentChange (val) {
-      this.queryParams.page = val
-      this.getTableData()
-    }
   }
 }
 </script>
