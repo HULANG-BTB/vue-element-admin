@@ -43,11 +43,7 @@ export function setResult (data) {
   })
 }
 
-<<<<<<< HEAD
-export function result(data) {
-=======
-export function pass (data) {
->>>>>>> c39973e095219a9781128697d399f87f9d08207d
+export function result (data) {
   return request({
     url: BASE_URL + '/financial/result',
     method: 'post',
@@ -55,13 +51,3 @@ export function pass (data) {
   })
 }
 
-<<<<<<< HEAD
-=======
-export function unPass (data) {
-  return request({
-    url: BASE_URL + '/financial/unPass',
-    method: 'post',
-    data: data
-  })
-}
->>>>>>> c39973e095219a9781128697d399f87f9d08207d

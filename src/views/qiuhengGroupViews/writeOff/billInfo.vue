@@ -435,7 +435,7 @@ export default {
         await result(params)
         this.$emit('closeMoule', 'true')
       }
-    },
+    }
   }
 }
 </script>
