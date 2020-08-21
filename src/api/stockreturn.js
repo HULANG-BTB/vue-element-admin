@@ -1,6 +1,11 @@
 import request from '@/utils/request'
 
-//* stockreturn相关 */
+const BASE_URL = 'http://localhost:8080'
+
+/**
+ * 查询所有数据
+ * @param {*} query
+ */
 export function getStockReturnList (query) {
   return request({
     url: '/stock-return-po/getListStockReturnPage',
@@ -8,6 +13,11 @@ export function getStockReturnList (query) {
     data: query
   })
 }
+
+/**
+ * 根据日期或者业务单号查询
+ * @param {} query
+ */
 export function getListStockReturnByDateOrNo (query) {
   return request({
     url: '/stock-return-po/getListStockReturnByDateOrNo1',
@@ -18,6 +28,10 @@ export function getListStockReturnByDateOrNo (query) {
   })
 }
 
+/**
+ * 新增退票信息
+ * @param {} Stockreturn
+ */
 export function addStockReturn (Stockreturn) {
   return request({
     url: '/stock-return-po/addStockReturn',
@@ -28,7 +42,10 @@ export function addStockReturn (Stockreturn) {
   })
 }
 
-/* stoackteturnitem 相关 */
+/**
+ * 查询退票明细列表
+ * @param {*} Stockreturn
+ */
 export function getItem (Stockreturn) {
   return request({
     url: '/stock-return-po/getStockReturnByNo',
@@ -37,6 +54,23 @@ export function getItem (Stockreturn) {
     data: Stockreturn
   })
 }
+
+/**
+ * 删除单条信息
+ * @param {*} Stockreturn
+ */
+export function deleteStockReturnByNo (Stockreturn) {
+  return request({
+    url: '/stock-return-po/deleteByNo',
+    method: 'get',
+    params: { no: Stockreturn.no }
+  })
+}
+
+/**
+ * 更新退票业务
+ * @param {*} Stockreturn
+ */
 export function updateByNo (Stockreturn) {
   return request({
     url: '/stock-return-po/updateByNo',
@@ -44,6 +78,7 @@ export function updateByNo (Stockreturn) {
     data: Stockreturn
   })
 }
+
 /* 统一方法 */
 export const util = {
   jsonFormat: function (src) {
