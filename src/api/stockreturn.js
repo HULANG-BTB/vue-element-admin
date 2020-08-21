@@ -1,16 +1,26 @@
 import request from '@/utils/request'
 
-/* stockreturn相关 */
+const BASE_URL = 'http://localhost:8080'
+
+/**
+ * 查询所有数据
+ * @param {*} query
+ */
 export function getStockReturnList (query) {
   return request({
-    url: '/stock-return-po/getListStockReturnPage',
+    url: BASE_URL + '/stock-return-po/getListStockReturnPage',
     method: 'post',
     data: query
   })
 }
+
+/**
+ * 根据日期或者业务单号查询
+ * @param {} query
+ */
 export function getListStockReturnByDateOrNo (query) {
   return request({
-    url: '/stock-return-po/getListStockReturnByDateOrNo1',
+    url: BASE_URL + '/stock-return-po/getListStockReturnByDateOrNo1',
     method: 'post',
     // params: { no: query.no, startTime: query.startTime, endTime: query.endTime }
     // params: query
@@ -18,9 +28,13 @@ export function getListStockReturnByDateOrNo (query) {
   })
 }
 
+/**
+ * 新增退票信息
+ * @param {} Stockreturn
+ */
 export function addStockReturn (Stockreturn) {
   return request({
-    url: '/stock-return-po/addStockReturn',
+    url: BASE_URL + '/stock-return-po/addStockReturn',
     method: 'post',
     // params: { no: query.no, startTime: query.startTime, endTime: query.endTime }
     // params: query
@@ -28,28 +42,43 @@ export function addStockReturn (Stockreturn) {
   })
 }
 
-/* stoackteturnitem 相关 */
-export function getItem (no) {
+/**
+ * 查询退票明细列表
+ * @param {*} Stockreturn
+ */
+export function getStockReturnItems (Stockreturn) {
   return request({
-    url: '/stock-out/getStockReturnByNo/' + no,
+    url: BASE_URL + '/stock-return-po/getStockReturnByNo',
     // url: '/mail/updateStatus',
-    method: 'get'
+    method: 'post',
+    data: Stockreturn
   })
 }
-export function updateSmsStatus (sms) {
+
+/**
+ * 删除单条信息
+ * @param {*} Stockreturn
+ */
+export function deleteStockReturnByNo (Stockreturn) {
   return request({
-    url: '/sms/updateStatus',
-    method: 'put',
-    data: sms
-  })
-}
-export function getBill (query) {
-  return request({
-    url: '/sms/getBill',
+    url: BASE_URL + '/stock-return-po/deleteByNo',
     method: 'get',
-    params: { tel: query.tel, verifyCode: query.verifyCode }
+    params: { no: Stockreturn.no }
   })
 }
+
+/**
+ * 更新退票业务
+ * @param {*} Stockreturn
+ */
+export function updateByNo (Stockreturn) {
+  return request({
+    url: BASE_URL + '/stock-return-po/updateByNo',
+    method: 'post',
+    data: Stockreturn
+  })
+}
+
 /* 统一方法 */
 export const util = {
   jsonFormat: function (src) {
