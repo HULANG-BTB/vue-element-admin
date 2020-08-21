@@ -8,7 +8,7 @@ const BASE_URL = 'http://localhost:8080'
  */
 export function getStockReturnList (query) {
   return request({
-    url: BASE_URL + '/stock-return-po/getListStockReturnPage',
+    url: '/stock-return-po/getListStockReturnPage',
     method: 'post',
     data: query
   })
@@ -20,7 +20,7 @@ export function getStockReturnList (query) {
  */
 export function getListStockReturnByDateOrNo (query) {
   return request({
-    url: BASE_URL + '/stock-return-po/getListStockReturnByDateOrNo1',
+    url: '/stock-return-po/getListStockReturnByDateOrNo1',
     method: 'post',
     // params: { no: query.no, startTime: query.startTime, endTime: query.endTime }
     // params: query
@@ -34,7 +34,7 @@ export function getListStockReturnByDateOrNo (query) {
  */
 export function addStockReturn (Stockreturn) {
   return request({
-    url: BASE_URL + '/stock-return-po/addStockReturn',
+    url: '/stock-return-po/addStockReturn',
     method: 'post',
     // params: { no: query.no, startTime: query.startTime, endTime: query.endTime }
     // params: query
@@ -48,7 +48,7 @@ export function addStockReturn (Stockreturn) {
  */
 export function getStockReturnItems (Stockreturn) {
   return request({
-    url: BASE_URL + '/stock-return-po/getStockReturnByNo',
+    url: '/stock-return-po/getStockReturnByNo',
     // url: '/mail/updateStatus',
     method: 'post',
     data: Stockreturn
@@ -61,7 +61,7 @@ export function getStockReturnItems (Stockreturn) {
  */
 export function deleteStockReturnByNo (Stockreturn) {
   return request({
-    url: BASE_URL + '/stock-return-po/deleteByNo',
+    url: '/stock-return-po/deleteByNo',
     method: 'get',
     params: { no: Stockreturn.no }
   })
@@ -73,7 +73,7 @@ export function deleteStockReturnByNo (Stockreturn) {
  */
 export function updateByNo (Stockreturn) {
   return request({
-    url: BASE_URL + '/stock-return-po/updateByNo',
+    url: '/stock-return-po/updateByNo',
     method: 'post',
     data: Stockreturn
   })
