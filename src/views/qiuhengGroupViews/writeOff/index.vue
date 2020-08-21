@@ -22,21 +22,6 @@
                     />
                   </el-form-item>
                 </el-col>
-
-                <el-col :span="6">
-                  <el-form-item label="编制日期:">
-                    <!-- <el-input type="text" v-model="searchForm.startDate" placeholder="输入日期查询" autocomplete="false"></el-input> -->
-                    <el-date-picker
-                      v-model="searchForm.date"
-                      type="daterange"
-                      value-format="yyyy-MM-dd"
-                      range-separator="至"
-                      start-placeholder="开始日期"
-                      end-placeholder="结束日期"
-                    />
-                  </el-form-item>
-                </el-col>
-
                 <el-col :span="3">
                   <el-form-item label="状态">
                     <el-select
@@ -204,7 +189,9 @@
           <el-dialog
             :visible.sync="dialogVisible"
             :show-close="true"
-            width="70%"
+            title="票据审验详情"
+            class="header-title"
+            width="60%"
             top="5vh"
           >
             <dialog-info
@@ -239,7 +226,9 @@ export default {
       currentPage: 1, // 初始页
       pageSize: 10, // 分页大小
       currentData: [],
+      tempData: [],
       tableData: [],
+      searchDate: [],
       // dialog显示
       dialogVisible: false,
       // 状态下拉列表
@@ -251,7 +240,6 @@ export default {
       // 搜索表单
       searchForm: {
         orderNo: '',
-        date: '',
         state: ''
       },
       // 这里单位号是要获取的Dialog
@@ -265,8 +253,11 @@ export default {
         fAgenIdCode: '',
         date: '',
         author: '',
-        fNo: ''
-      }
+        fNo: '',
+        state: ''
+      },
+      // 记录正在操作的业务行
+      optRow: ''
     }
   },
   created () {
@@ -291,12 +282,22 @@ export default {
 
     handleCurrentChange (val) {
       this.currentPage = val
-      this.setPageSize()
+      this.setPageData()
     },
 
     setPageData () {
       this.currentData = []
-      this.currentData = this.tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+      this.tempData = this.tableData
+      // this.currentData = this.tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+      this.currentData = this.tempData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+    },
+
+    setSearchPageData () {
+      this.currentData = []
+      this.tempData = this.searchDate
+      // this.currentData = this.searchDate.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+      this.currentData = this.tempData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+      this.searchDate = []
     },
 
     // 点击勾选，并保存勾选内容
@@ -307,40 +308,61 @@ export default {
 
     onSearch () {
       // 提交查询表单信息
-      // 有前端进行搜索并实现分页
+      // 由前端进行搜索并实现分页
       if (this.tableData.length === 0) {
         // 判断未空，则不做操作
-      } else if (this.searchForm.orderNo === '' && this.searchForm.date === '') {
-        this.setPageData()
-      } else if (this.searchForm.orderNo !== '' && this.searchForm.date === '') {
+        alert('请先接收核销请求')
+      } else if (this.searchForm.orderNo === '') {
+        if (this.searchForm.state === '0') {
+          this.setPageData()
+        } else {
+          if (this.searchForm.state === '1') {
+            for (let i = 0; i < this.tableData.length; i++) {
+              if (this.tableData[i].state === '已审验') {
+                this.searchDate.push(this.tableData[i])
+              }
+            }
+            this.setSearchPageData()
+          }
+          if (this.searchForm.state === '2') {
+            for (let i = 0; i < this.tableData.length; i++) {
+              if (this.tableData[i].state === '未审验') {
+                this.searchDate.push(this.tableData[i])
+              }
+            }
+            this.setSearchPageData()
+          }
+        }
+      } else if (this.searchForm.orderNo !== '') {
+        let flag = false
         for (let i = 0; i < this.tableData.length; i++) {
           if (this.tableData[i].no === this.searchForm.orderNo) {
-            this.currentData = this.tableData.slice(i, i + 1)
+            if (this.searchForm.state === '0') {
+              this.currentData = this.tableData.slice(i, i + 1)
+            } else {
+              if (this.searchForm.state === '1') {
+                if (this.tableData[i].state === '已审验') {
+                  this.currentData = this.tableData.slice(i, i + 1)
+                } else {
+                  this.currentData = []
+                  alert('未找到符合条件的业务')
+                }
+              }
+              if (this.searchForm.state === '2') {
+                if (this.tableData[i].state === '未审验') {
+                  this.currentData = this.tableData.slice(i, i + 1)
+                } else {
+                  this.currentData = []
+                  alert('未找到符合条件的业务')
+                }
+              }
+            }
+            flag = true
             break
           }
         }
-      } else if (this.searchForm.orderNo === '' && this.searchForm.date[0] !== '' && this.searchForm.date[1] !== '') {
-        let startIndex = 0
-        let endIndex = 0
-        alert(this.searchForm.date[0] + ',' + this.searchForm.date[1])
-        alert(this.tableData[0].date)
-        for (let i = 0; i < this.tableData.length; i++) {
-          if (this.tableData[i].date >= this.searchForm.date[0]) {
-            startIndex = i
-            break
-          }
-        }
-        for (let i = this.tableData.length - 1; i >= 0; i--) {
-          if (this.tableData[i].date <= this.searchForm.date[1]) {
-            endIndex = i
-            break
-          }
-        }
-        alert(startIndex + ',' + endIndex)
-        if (startIndex > endIndex) {
-          this.currentData = []
-        } else {
-          this.currentData = this.tableData.slice(startIndex, endIndex + 1)
+        if (!flag) {
+          alert('搜索失败，请输入正确的业务单号')
         }
       }
       // 尚需完善
@@ -355,11 +377,17 @@ export default {
       this.billInfo.date = row.date
       this.billInfo.author = row.author
       this.billInfo.fNo = row.no
-      // row.state = "已审验"
+      this.billInfo.state = row.state
       this.$root.eventBus.$emit('billNo', this.billInfo.fNo)
+      this.optRow = row
     },
     closeMoule (e) {
       // 点击关闭的callback事件 e的值为false，这里直接赋值为false
+      // row.state = "已审验"
+      if (e === 'true') {
+        this.optRow.state = '已审验'
+        this.optRow = ''
+      }
       this.dialogVisible = false
     },
     async doReceive () {
@@ -373,10 +401,14 @@ export default {
     },
     async doSendBack () {
       // 退回核销请求
-      const params = this.multipleSelection
-      this.doDelete()
-      await sendBack(params)
-      this.setPageData()
+      if (this.multipleSelection.length !== 0) {
+        const params = this.multipleSelection
+        this.doDelete()
+        await sendBack(params)
+        this.setPageData()
+      } else {
+        alert('请选择需要退回的业务单号')
+      }
     },
     doManualImport () {
       // 手工导入核销
@@ -386,16 +418,20 @@ export default {
       // 删除核销请求
       // 获取要删除的票据单号或者核销的业务单号
       // 直接进行删除，刷新UI
-      this.multipleSelection.forEach((item) => {
-        for (let i = 0; i < this.tableData.length; i++) {
-          if (this.tableData[i].no === item.no) {
-            this.tableData.splice(i, 1)
-            break
+      if (this.multipleSelection.length !== 0) {
+        this.multipleSelection.forEach((item) => {
+          for (let i = 0; i < this.tableData.length; i++) {
+            if (this.tableData[i].no === item.no) {
+              this.tableData.splice(i, 1)
+              break
+            }
           }
-        }
-      })
-      this.multipleSelection = []
-      this.setPageData()
+        })
+        this.multipleSelection = []
+        this.setPageData()
+      } else {
+        alert('请选择需要删除的业务单号')
+      }
     }
   }
 
@@ -403,4 +439,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.header-title {
+  color: blue;
+}
 </style>

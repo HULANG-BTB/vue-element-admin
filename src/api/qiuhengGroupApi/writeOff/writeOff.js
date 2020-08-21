@@ -43,18 +43,11 @@ export function setResult(data) {
   })
 }
 
-export function pass(data) {
+export function result(data) {
   return request({
-    url: BASE_URL + '/financial/pass',
+    url: BASE_URL + '/financial/result',
     method: 'post',
     data: data
   })
 }
 
-export function unPass(data) {
-  return request({
-    url: BASE_URL + '/financial/unPass',
-    method: 'post',
-    data: data
-  })
-}

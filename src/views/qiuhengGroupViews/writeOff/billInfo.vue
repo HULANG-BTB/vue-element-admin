@@ -1,53 +1,5 @@
 <template>
   <div>
-    <span
-      slot="header"
-      class="dialog-header"
-      padding="top:0px"
-    >
-      <el-form
-        :label-position="labelPosition"
-        label-width="20px"
-      >
-        <el-row>
-          <el-col
-            :span="6"
-            style="float:left； padding-top:0px"
-          >
-            <el-form-item>
-              <h1><b>票据审验详情</b></h1>
-            </el-form-item>
-          </el-col>
-
-          <el-col
-            :span="3.5"
-            style="float:right"
-          >
-            <el-form-item>
-              <el-button
-                type="primary"
-                size="small"
-                @click="onSubmit()"
-              >通 过</el-button>
-            </el-form-item>
-          </el-col>
-
-          <el-col
-            :span="3.5"
-            style="float:right"
-          >
-            <el-form-item>
-              <el-button
-                align="right"
-                size="small"
-                @click="onCancel()"
-              >不通过</el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-    </span>
-
     <el-form
       :label-position="labelPosition"
       label-width="80px"
@@ -59,9 +11,34 @@
             <span>{{ info.fAgenIdCode }}</span>
           </el-form-item>
         </el-col>
+        <el-col
+          :span="3"
+          style="float:right"
+        >
+          <el-form-item>
+            <el-button
+              type="primary"
+              size="small"
+              @click="onSubmit()"
+            >通 过</el-button>
+          </el-form-item>
+        </el-col>
+
+        <el-col
+          :span="2"
+          style="float:right"
+        >
+          <el-form-item>
+            <el-button
+              align="right"
+              size="small"
+              @click="onCancel()"
+            >不通过</el-button>
+          </el-form-item>
+        </el-col>
       </el-row>
       <el-row>
-        <el-col :span="10">
+        <el-col :span="8">
           <el-form-item label="申请单位">
             <span>{{ info.fAgenName }}</span>
           </el-form-item>
@@ -73,6 +50,7 @@
           <el-form-item label="审验时间">
             <el-date-picker
               v-model="form.date"
+              disabled="true"
               type="date"
               placeholder="审验时间"
               style="width: 100%;"
@@ -89,8 +67,6 @@
         </el-form-item>
       </el-row>
     </el-form>
-
-    <div class="tableTitle" />
 
     <el-tabs type="border-card">
 
@@ -115,7 +91,7 @@
           </el-table-column>
           <el-table-column
             label="开票单位"
-            width="230"
+            width="180"
           >
             <template>
               {{ info.fAgenIdCode }}
@@ -146,15 +122,6 @@
             label="开票金额"
             width="200"
           />
-          <el-table-column
-            label="操作"
-            width="100"
-          >
-            <i
-              class="el-icon-delete"
-              @click="onDelete()"
-            />
-          </el-table-column>
         </el-table>
       </el-tab-pane>
 
@@ -179,7 +146,7 @@
           </el-table-column>
           <el-table-column
             label="开票单位"
-            width="200"
+            width="180"
           >
             <template>
               {{ info.fAgenIdCode }}
@@ -188,36 +155,36 @@
           <el-table-column
             property="fitemCode"
             label="收费项目编码"
-            width="180"
+            width="160"
           />
           <el-table-column
             property="fitemName"
             label="收费项目名称"
-            width="200"
+            width="180"
           />
           <el-table-column
             property="funits"
             label="计量单位"
-            width="80"
+            width="60"
           />
           <el-table-column
             property="famt"
             label="开票金额"
-            width="135"
+            width="130"
           />
           <el-table-column
             property="famt"
             label="应缴金额"
-            width="135"
+            width="130"
           />
           <el-table-column
             property="famt"
             label="已缴金额"
-            width="135"
+            width="130"
           />
           <el-table-column
             label="欠费金额"
-            width="145"
+            width="130"
           >
             <template>0</template>
           </el-table-column>
@@ -253,27 +220,27 @@
           <el-table-column
             property="fbatchNo"
             label="票据批次编码"
-            width="200"
+            width="180"
           />
           <el-table-column
             property="fbatchNo"
             label="票据批次名称"
-            width="200"
+            width="180"
           />
           <el-table-column
             property="fnumber"
             label="份数"
-            width="100"
+            width="60"
           />
           <el-table-column
             property="fbillNo1"
             label="起始号"
-            width="185jq"
+            width="160jq"
           />
           <el-table-column
             property="fbillNo2"
             label="终止号"
-            width="185"
+            width="160"
           />
           <el-table-column
             property="famt"
@@ -288,7 +255,7 @@
           border
           class="main-el-table"
           stripe
-          :data="gridData"
+          :data="monitorData"
           height="350px"
           :cell-style="rowClass"
           :header-cell-style="headClass"
@@ -302,45 +269,28 @@
             </template>
           </el-table-column>
           <el-table-column
-            property="name"
             label="开票单位"
-            width="200"
-          />
-          <el-table-column
-            property="address"
-            label="预警日期"
-            width="140"
-          />
-          <el-table-column
-            property="address"
-            label="发送时间"
-            width="140"
-          />
-          <el-table-column
-            property="address"
-            label="监控事项"
-            width="160"
-          />
-          <el-table-column
-            property="address"
-            label="预警内容"
-            width="370"
-          />
-          <el-table-column
-            property="address"
-            label="处理状态"
-            width="100"
-          />
-          <el-table-column
-            property="address"
-            label="查看"
-            width="100"
+            width="180"
           >
-            <i
-              class="el-icon-tickets"
-              @click="onCheck()"
-            />
+            <template>
+              {{ info.fAgenIdCode }}
+            </template>
           </el-table-column>
+          <el-table-column
+            property="fdate"
+            label="预警日期"
+            width="180"
+          />
+          <el-table-column
+            property="itemName"
+            label="监控事项"
+            width="300"
+          />
+          <el-table-column
+            property="itemContent"
+            label="预警内容"
+            width="400"
+          />
         </el-table>
       </el-tab-pane>
     </el-tabs>
@@ -362,7 +312,7 @@
 
 <script>
 // 引入api
-import { getDetails, pass, unPass } from '@/api/qiuhengGroupApi/writeOff/writeOff'
+import { getDetails, result } from '@/api/qiuhengGroupApi/writeOff/writeOff'
 
 export default {
   components: {
@@ -392,24 +342,20 @@ export default {
       fNo: {
         type: String,
         default: ''
+      },
+      state: {
+        type: String,
+        default: ''
       }
     }
   },
 
   data () {
     return {
-      gridData: [
-        {
-          name: '12',
-          address: 'asd'
-        }
-      ],
-
       form: {
         id: this.info.fAgenIdCode,
         name: this.info.fAgenName,
-        date1: '',
-        date2: '',
+        date: new Date(),
         remarks: ''
       },
       tableData: {
@@ -417,7 +363,8 @@ export default {
         fAgenIdCode: '',
         date: '',
         author: '',
-        fNo: ''
+        fNo: '',
+        state: ''
       },
       datail: [],
       // 开票总览
@@ -426,6 +373,8 @@ export default {
       incomeData: [],
       // 开票明细
       invoiceData: [],
+      // 预警
+      monitorData: [],
       labelPosition: 'right'
     }
   },
@@ -452,35 +401,41 @@ export default {
         // 业务单号
         fNo: this.tableData.fNo
       }
-      console.log(params.fNo)
       const res = await getDetails(params)
       this.overViewData = res.data.writeOffInvoceDetailDTOList
       this.incomeData = res.data.writeOffIncomeDetailDTOList
       this.invoiceData = res.data.writeOffBillInvDetailDTOList
+      this.monitorData = res.data.writeOffMonitorDetailDTOList
     },
     // 功能函数
     async onCancel () {
-      // 不通过
-      const params = {}
-      const res = await unPass(params)
-      console.log(res)
-      this.$emit('closeMoule', 'true')
+      if (this.tableData.state === '已审验') {
+        alert('该业务已审验，请谨慎操作')
+      } else {
+        // 不通过
+        const params = {
+          fAgenIdCode: this.tableData.fAgenIdCode,
+          fNo: this.tableData.fNo,
+          res: 'unPass'
+        }
+        await result(params)
+        this.$emit('closeMoule', 'true')
+      }
     },
     async onSubmit () {
-      // 通过
-      const params = {}
-      const res = await pass(params)
-      console.log(res)
-      this.$emit('closeMoule', 'true')
+      if (this.tableData.state === '已审验') {
+        alert('该业务已审验，请谨慎操作')
+      } else {
+        // 通过
+        const params = {
+          fAgenIdCode: this.tableData.fAgenIdCode,
+          fNo: this.tableData.fNo,
+          res: 'pass'
+        }
+        await result(params)
+        this.$emit('closeMoule', 'true')
+      }
     },
-    onDelete () {
-      // 删除操作 -- 开票预览
-      alert('delete')
-    },
-    onCheck () {
-      // 查看预警信息
-      alert('check')
-    }
   }
 }
 </script>
