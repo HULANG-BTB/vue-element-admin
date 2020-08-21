@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-/* stockreturn相关 */
+//* stockreturn相关 */
 export function getStockReturnList (query) {
   return request({
     url: '/stock-return-po/getListStockReturnPage',
@@ -29,25 +29,19 @@ export function addStockReturn (Stockreturn) {
 }
 
 /* stoackteturnitem 相关 */
-export function getItem (no) {
+export function getItem (Stockreturn) {
   return request({
-    url: '/stock-out/getStockReturnByNo/' + no,
+    url: '/stock-return-po/getStockReturnByNo',
     // url: '/mail/updateStatus',
-    method: 'get'
+    method: 'post',
+    data: Stockreturn
   })
 }
-export function updateSmsStatus (sms) {
+export function updateByNo (Stockreturn) {
   return request({
-    url: '/sms/updateStatus',
-    method: 'put',
-    data: sms
-  })
-}
-export function getBill (query) {
-  return request({
-    url: '/sms/getBill',
-    method: 'get',
-    params: { tel: query.tel, verifyCode: query.verifyCode }
+    url: '/stock-return-po/updateByNo',
+    method: 'post',
+    data: Stockreturn
   })
 }
 /* 统一方法 */
