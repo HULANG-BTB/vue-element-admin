@@ -1,7 +1,8 @@
+/* eslint-disable no-undef */
 <!--
  * @Author: Raiz
  * @since: 2020-07-31 14:47:07
- * @lastTime: 2020-08-20 16:12:41
+ * @lastTime: 2020-08-21 10:35:35
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -100,7 +101,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="是否分类" prop="checkSort">
-              <el-select v-model="billType.checkSort" placeholder="选择分类或者种类">
+              <el-select v-model="billType.checkSort" :disabled="!addDialog" placeholder="选择分类或者种类">
                 <el-option
                   v-for="item in formOptions.checkSortOptions"
                   :key="item.value"
@@ -334,6 +335,9 @@ export default {
         safeYear: [
           { required: true, message: '请输入法定保存年限', trigger: 'blur' }
         ],
+        pid: [
+          { required: true, message: '请选择父级票据', trigger: 'change' }
+        ],
         natureCode: [
           { required: true, message: '请选择票据性质', trigger: 'change' }
         ]
@@ -356,14 +360,13 @@ export default {
           type: 'input'
         },
         {
-          label: '票据用途',
-          prop: 'billNature',
-          type: 'select',
-          options: []
+          label: '助记码',
+          prop: 'memoryCode',
+          type: 'input'
         },
         {
-          label: '是否分类',
-          prop: 'checkSort',
+          label: '票据用途',
+          prop: 'billNature',
           type: 'select',
           options: []
         }
@@ -659,7 +662,10 @@ export default {
     addDialogOpen () {
       queryAllBillSort().then(response => {
         response.data.forEach(element => {
-          element.name = element.code + ' ' + element.name
+          if (element.id !== this.billType.id) {
+            element.name = element.code + ' ' + element.name
+            element.id = parseInt(element.id)
+          }
         })
         this.formOptions.billSortOptions = response.data
       })
@@ -670,8 +676,7 @@ export default {
     },
     init () {
       this.freshTreeAndTable()
-      this.searchFormData[1].options = this.formOptions.billNatureOptions
-      this.searchFormData[2].options = this.checkSortOptions
+      this.searchFormData[2].options = this.formOptions.billNatureOptions
     },
     freshTreeAndTable () {
       this.getLeftTree()
