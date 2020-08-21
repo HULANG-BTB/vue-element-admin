@@ -111,6 +111,14 @@ export function deleteUnitBatch (data) {
     data: data
   })
 }
+// 根据单位编码查询单位
+export function getByAgenCode (data) {
+  return request({
+    url: '/agen/getByAgenCode',
+    method: 'post',
+    data: data
+  })
+}
 
 // 根据ID查询单位
 export function getAgenById (data) {
