@@ -39,9 +39,7 @@
         >重置</el-button>
       </el-form-item>
     </el-form>
-    <el-form
-      :inline="true"
-    >
+    <el-form :inline="true">
       <el-form-item>
         <el-button
           type="primary"
@@ -206,9 +204,10 @@ import {
   getTemplate,
   searchList,
   deleteTemplate,
-  deleteTemplateBatch
+  deleteTemplateBatch,
+  uploadTemplate,
+  uploadExcel
 } from '@/api/template'
-import axios from 'axios'
 
 export default {
   name: 'ShowTemplate',
@@ -320,14 +319,12 @@ export default {
             type: 'success',
             message: '删除成功!'
           })
-          console.log(res)
           this.getTableData()
-        }).catch(err => {
+        }).catch(() => {
           this.$message({
             type: 'error',
             message: '删除失败!'
           })
-          console.error(err)
         })
       })
     },
@@ -411,49 +408,40 @@ export default {
        * @file 模板文件
        * @type {FormData}
        */
-      const formDataXSLX = new FormData()
-      formDataXSLX.append('billCode', this.billCode)
-      formDataXSLX.append('memo', this.memo)
-      formDataXSLX.append('templateName', this.templateName)
-      const formDataFTL = new FormData()
-      formDataFTL.append('billCode', this.billCode)
-      formDataFTL.append('memo', this.memo)
-      formDataFTL.append('templateName', this.templateName)
-      console.log(this.fileType(this.addArr[0]))
-      for (let i = 0; i < this.addArr.length; i++) {
-        const type = this.fileType(this.addArr[i])
-        if (type === 'xslx') {
-          formDataXSLX.append('file', this.addArr[i])
-        } else if (type === 'ftl') {
-          formDataFTL.append('file', this.addArr[i])
-        }
-      }
-      if (formDataXSLX.get('file') !== null) {
-        axios.post('http://pro.beanbang.cn:8080/printTemplate/uploadExcel', formDataXSLX)
-          .then((res) => {
-            if (res.data.success) {
+
+      const formData = new FormData()
+      formData.append('billCode', this.billCode)
+      formData.append('memo', this.memo)
+      formData.append('templateName', this.templateName)
+      formData.append('file', this.addArr[0])
+      const fileType = this.fileType(this.addArr[0])
+      switch (fileType) {
+        case 'ftl':
+          uploadTemplate(formData).then(res => {
+            if (res.success) {
               this.$message({
                 type: 'success',
                 message: '附件上传成功!'
               })
             }
           })
-      }
-      if (formDataFTL.get('file') !== null) {
-        axios.post('http://pro.beanbang.cn:8080/printTemplate/uploadTemplate', formDataFTL)
-          .then((res) => {
-            if (res.data.success) {
+          break
+        case 'xlsx':
+          uploadExcel(formData).then(res => {
+            if (res.success) {
               this.$message({
                 type: 'success',
                 message: '附件上传成功!'
               })
             }
           })
+          break
       }
       /**
        * 上传结束后将上传表单清空
        */
       document.getElementById('uploadTemplateFile').reset()
+      this.addArr = []
       this.dialogAddFile = false
     },
 

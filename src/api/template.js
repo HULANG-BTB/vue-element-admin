@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import download from '@/utils/download'
 
 export function getTemplateListByPage (query) {
   return request({
@@ -9,7 +10,7 @@ export function getTemplateListByPage (query) {
 }
 
 export function getTemplate (id) {
-  return request({
+  return download({
     url: `/printTemplate/content/${id}.html`,
     method: 'get'
   })
@@ -56,5 +57,21 @@ export function deleteTemplateBatch (data) {
     url: `/printTemplate/removeBatch`,
     method: 'delete',
     data: data
+  })
+}
+
+export function uploadTemplate (data) {
+  return request({
+    url: `printTemplate/uploadTemplate`,
+    method: 'post',
+    data
+  })
+}
+
+export function uploadExcel (data) {
+  return request({
+    url: `printTemplate/uploadExcel`,
+    method: `post`,
+    data
   })
 }
