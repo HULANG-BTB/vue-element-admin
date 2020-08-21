@@ -160,8 +160,10 @@ export default {
 
     // 获取权限列表
     async getPermissionList () {
+      this.dialogLoading = true
       const res = await getPermissionListByTree()
       this.permissionList = res.data
+      this.dialogLoading = false
     },
 
     // 计算请求方式样式
@@ -247,10 +249,14 @@ export default {
           if (isEdit) {
             await updateRole(this.role).then((res) => {
               successFlag = true
+            }).catch(() => {
+              this.confirmLoading = false
             })
           } else {
             await addRole(this.role).then((res) => {
               successFlag = true
+            }).catch(() => {
+              this.confirmLoading = false
             })
           }
           this.confirmLoading = false
