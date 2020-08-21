@@ -40,3 +40,27 @@ export function getItems (queryInfo) {
     params: queryInfo
   })
 }
+
+export function getIncomes (queryInfo) {
+  return request({
+    url: BASE_URL + '/unit/selectIncome',
+    method: 'get',
+    params: queryInfo
+  })
+}
+
+export function getBillInfo (queryInfo) {
+  return request({
+    url: BASE_URL + '/unit/getBillInfo',
+    method: 'get',
+    params: queryInfo
+  })
+}
+
+export function saveApply (data) {
+  return request({
+    url: BASE_URL + '/unit/addOrUpdateApply',
+    method: 'post',
+    data: data
+  })
+}
