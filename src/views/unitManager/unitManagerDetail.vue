@@ -65,19 +65,25 @@
       </el-row>
     </el-form>
 
-    <el-row :gutter="30" class="mb8" style="margin-top:20px;">
+    <el-row :gutter="20" class="mb8" style="margin-top:20px;">
       <el-col :span="1.5">
         <el-button type="primary" size="mini" icon="el-icon-edit">准购证</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleProject(project)">项目</el-button>
+        <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleProject(project)">挂接项目</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleBill(project)">票据</el-button>
+        <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleBill(project)">挂接票据</el-button>
       </el-col>
+      <!-- <el-col :span="1.5">
+        <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleAbleItem(project)">可用项目</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleAbleBill(project)">可用票据</el-button>
+      </el-col> -->
     </el-row>
 
-    <el-dialog :visible.sync="manageDialogVisible" :title="manageDialogType === 'projectTow' ? '项目管理' : '票据管理'">
+    <el-dialog :visible.sync="manageDialogVisible" :title="manageDialogType === 'projectTow' ? '挂接项目管理' : '挂接票据管理'">
       <div v-loading="loading" style="text-align:center" class="transfer">
         <el-transfer v-model="manageHasList" style="text-align: left; display: inline-block; margin-bottom: 1rem" :data="manageOriginList" :button-texts="['删除', '添加']" :titles="['未拥有列表', '已拥有列表']">
           <span slot-scope="{ option }">{{ option.label }}</span>
@@ -113,6 +119,8 @@ export default {
     return {
       searchById: { id: this.id },
       loading: true,
+      dialogVisible: false,
+      dialogType: 'subject',
       manageDialogVisible: false,
       manageDialogType: 'projectTow',
       manageHasList: [],
@@ -264,6 +272,18 @@ export default {
       }
       this.manageDialogVisible = false
     }
+    // 可用项目按钮
+    // handleAbleItem (rowData) {
+    //   this.$router.push({
+    //     path: '/unitManager/unitItemManager/'
+    //   })
+    // },
+    // 可用票据按钮
+    // handleAbleBill (rowData) {
+    //   this.$router.push({
+    //     path: '/unitManager/unitBillManager/'
+    //   })
+    // }
   }
 }
 </script>
