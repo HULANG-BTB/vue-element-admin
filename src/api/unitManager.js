@@ -180,3 +180,10 @@ export function updateAgenItemBatch (data) {
     data
   })
 }
+
+export function getRgnTree () {
+  return request({
+    url: '/region/category',
+    method: 'get'
+  })
+}

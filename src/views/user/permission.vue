@@ -29,16 +29,22 @@
       <el-table-column align="center" label="权限ID" width="80">
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
-      <el-table-column align="left" label="权限名称" width="220">
-        <template slot-scope="scope">{{ scope.row.name }}</template>
+      <el-table-column align="left" label="权限名称" min-width="220" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span :style="{marginLeft: computedUrlMargin(scope.row)}">
+            <span v-if="scope.row.parentId">|-- </span> {{ scope.row.name }}
+          </span>
+        </template>
       </el-table-column>
       <el-table-column align="center" label="请求方式" width="220">
         <template slot-scope="scope">
           <el-button :style="requestMethodStyle(scope.row.method)" type="text" size="mini">{{ scope.row.method }}</el-button>
         </template>
       </el-table-column>
-      <el-table-column align="header-center" label="请求路径">
-        <template slot-scope="scope">{{ scope.row.url }}</template>
+      <el-table-column align="header-center" label="请求路径" min-width="300px">
+        <template slot-scope="scope">
+          <span :style="{marginLeft: computedUrlMargin(scope.row)}">{{ scope.row.url }}</span>
+        </template>
       </el-table-column>
       <el-table-column align="center" label="最后修改" width="170">
         <template slot-scope="scope">{{ parseTime(scope.row.updateTime) }}</template>
@@ -46,7 +52,7 @@
       <el-table-column align="header-center" label="操作人">
         <template slot-scope="scope">{{ scope.row.operator }}</template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="220">
+      <el-table-column align="center" label="操作" width="220" fixed="right">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleEdit(scope)">编辑</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope)">删除</el-button>
@@ -61,7 +67,7 @@
         <el-form-item label="父级权限" prop="parentId">
           <el-select v-model="permission.parentId" size="medium" filterable style="width: 100%" clearable placeholder="Request Method">
             <el-option v-for="(item, index) in permissionSelectList" :key="index" :label="item.name" :value="item.id">
-              <span :style="{marginLeft: computedUrlMargin(item.url)}">{{ item.url }}</span>
+              <span :style="{marginLeft: item.parentId === 0 ? '0px': '20px'}"><span v-if="item.parentId">|-- </span> {{ item.url }}</span>
               <span style="margin-left: 1.5rem; color: #8492a6; font-size: 13px">{{ item.name }}</span>
             </el-option>
           </el-select>
@@ -91,7 +97,14 @@
 <script>
 import { deepClone } from '@/utils'
 import { parseTime } from '@/utils/index'
-import { savePermission, updatePermission, removePermission, removePermissionBatch, getPermissionListByPage, getPermissionList } from '@/api/permission'
+import {
+  savePermission,
+  updatePermission,
+  removePermission,
+  removePermissionBatch,
+  getPermissionListByPage,
+  getPermissionList
+} from '@/api/permission'
 
 const defaultPermission = {
   id: null,
@@ -124,13 +137,7 @@ export default {
         ]
       },
       permission: {},
-      requestMethod: [
-        'GET',
-        'POST',
-        'PUT',
-        'DELETE',
-        'ALL'
-      ],
+      requestMethod: ['GET', 'POST', 'PUT', 'DELETE', 'ALL'],
       query: {
         page: 1,
         limit: 10,
@@ -235,22 +242,23 @@ export default {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
         type: 'warning'
-      })
-        .then(async () => {
-          removePermission(row.id).then(res => {
+      }).then(async () => {
+        removePermission(row.id)
+          .then((res) => {
             this.$message({
               type: 'success',
               message: 'Delete succed!'
             })
             this.getTableData()
-          }).catch(err => {
+          })
+          .catch((err) => {
             this.$message({
               type: 'error',
               message: 'Delete failed!'
             })
             console.error(err)
           })
-        })
+      })
     },
 
     // 提交数据
@@ -296,17 +304,16 @@ export default {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
         type: 'warning'
-      })
-        .then(async () => {
-          removePermissionBatch(this.selectedList).then(res => {
-            this.$message({
-              type: 'success',
-              message: 'Delete succed!'
-            })
-            this.getTableData()
-            this.getPermissionList(true)
+      }).then(async () => {
+        removePermissionBatch(this.selectedList).then((res) => {
+          this.$message({
+            type: 'success',
+            message: 'Delete succed!'
           })
+          this.getTableData()
+          this.getPermissionList(true)
         })
+      })
     },
 
     // 批量选择改变
@@ -332,12 +339,15 @@ export default {
     },
 
     // 计算Url 偏移
-    computedUrlMargin (str1) {
+    computedUrlMargin (row) {
       let count = 0
+      let str1 = row.url
       while (str1.indexOf('/') !== -1) {
         str1 = str1.replace('/', '')
         count++
       }
+      const hasParent = row.parentId === 0 ? 1 : 2
+      count = count > hasParent ? count : hasParent
       return (count - 1) * 30 + 'px'
     }
   }
