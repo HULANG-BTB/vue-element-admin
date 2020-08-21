@@ -6,13 +6,14 @@
         <el-container>
           <el-header>
             <!-- 查询表单 -->
-            <el-form v-model="searchForm">
+            <el-form
+              v-model="searchForm"
+              label-width="80px"
+              label-position="right"
+            >
               <el-row>
                 <el-col :span="4">
-                  <el-form-item
-                    label="业务单号:"
-                    label-width="80px"
-                  >
+                  <el-form-item label="业务单号:">
                     <el-input
                       v-model="searchForm.orderNo"
                       type="text"
@@ -22,11 +23,8 @@
                   </el-form-item>
                 </el-col>
 
-                <el-col :span="7">
-                  <el-form-item
-                    label="编制日期:"
-                    label-width="120px"
-                  >
+                <el-col :span="6">
+                  <el-form-item label="编制日期:">
                     <!-- <el-input type="text" v-model="searchForm.startDate" placeholder="输入日期查询" autocomplete="false"></el-input> -->
                     <el-date-picker
                       v-model="searchForm.date"
@@ -39,11 +37,8 @@
                   </el-form-item>
                 </el-col>
 
-                <el-col :span="4">
-                  <el-form-item
-                    label="状态"
-                    label-width="80px"
-                  >
+                <el-col :span="3">
+                  <el-form-item label="状态">
                     <el-select
                       v-model="searchForm.state"
                       placeholder="请选择"
@@ -57,14 +52,11 @@
                     </el-select>
                   </el-form-item>
                 </el-col>
-                <el-col :span="2">
-                  <el-form-item
-                    label=""
-                    label-width="40px"
-                  >
+                <el-col :span="1">
+                  <el-form-item label-width="40px">
                     <el-button
                       type="primary"
-                      style="width: 100%;"
+                      size="small"
                       @click="onSearch()"
                     >查询</el-button>
                   </el-form-item>
@@ -81,6 +73,7 @@
                   <el-form-item label="">
                     <el-button
                       type="primary"
+                      size="small"
                       @click="doReceive()"
                     >接 收</el-button>
                   </el-form-item>
@@ -92,21 +85,9 @@
                   <el-form-item label="">
                     <el-button
                       type="primary"
+                      size="small"
                       @click="doSendBack()"
                     >退 回</el-button>
-                  </el-form-item>
-                </el-col>
-                <el-col
-                  :span="1"
-                  style="padding-left:20px"
-                >
-                  <el-form-item label="">
-                    <el-upload
-                      action=""
-                      :file-list="fileList"
-                    >
-                      <el-button type="primary">手工导入核销</el-button>
-                    </el-upload>
                   </el-form-item>
                 </el-col>
                 <el-col
@@ -115,7 +96,8 @@
                 >
                   <el-form-item label="">
                     <el-button
-                      type="primary"
+                      style="background-color: #F56C6C; color: #FFFFFF"
+                      size="small"
                       @click="doDelete()"
                     >删 除</el-button>
                   </el-form-item>
@@ -142,6 +124,8 @@
           </el-header>
 
           <el-table
+            style="width: 100%; margin-top:30px;"
+            border
             :data="currentData"
             stripe
             tooltip-effect="dark"
@@ -151,12 +135,11 @@
           >
             <el-table-column
               type="selection"
-              width="55"
               align="center"
             />
             <el-table-column
               label="序号"
-              width="120"
+              width="80px"
               align="center"
             >
               <!-- 自动生成序号 -->
@@ -166,7 +149,7 @@
             </el-table-column>
             <el-table-column
               label="状态"
-              width="160"
+              width="140px"
               align="center"
             >
               <template slot-scope="scope">
@@ -176,30 +159,30 @@
             <el-table-column
               prop="no"
               label="业务单号"
-              width="200"
+              width="220px"
               align="center"
             />
             <el-table-column
               prop="date"
               label="编制日期"
-              width="200"
+              width="180px"
               align="center"
             />
             <el-table-column
               prop="reason"
               label="退票原因"
-              width="320"
+              width="340px"
               align="center"
             />
             <el-table-column
               prop="author"
               label="经办人"
-              width="120"
+              width="120px"
               align="center"
             />
             <el-table-column
               label="操作"
-              width="400"
+              width="340px"
               align="center"
             >
               <!-- 获取整行数据 -->
@@ -225,9 +208,8 @@
             top="5vh"
           >
             <dialog-info
-              :bill-info="billInfo"
+              :info="billInfo"
               @closeMoule="closeMoule"
-              :billWatch="billInfo.fNo"
             />
 
           </el-dialog>
@@ -242,7 +224,7 @@
 import InfoDialog from './billInfo'
 
 // 引入api
-import { receive, sendBack, getDetails, setResult, search } from '@/api/qiuhengGroupApi/writeOff/writeOff'
+import { receive, sendBack } from '@/api/qiuhengGroupApi/writeOff/writeOff'
 
 export default {
   components: {
@@ -284,7 +266,7 @@ export default {
         date: '',
         author: '',
         fNo: ''
-      },
+      }
     }
   },
   created () {
@@ -295,8 +277,9 @@ export default {
     rowClass () {
       return 'text-align: center;'
     },
+
     headClass () {
-      return 'text-align: center;'
+      return 'text-align: center; background-color: #EEF5FD'
     },
 
     // 分页
@@ -305,12 +288,14 @@ export default {
       this.currentPage = 1
       this.setPageData()
     },
+
     handleCurrentChange (val) {
       this.currentPage = val
       this.setPageSize()
     },
+
     setPageData () {
-      this.currentData = [],
+      this.currentData = []
       this.currentData = this.tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
     },
 
@@ -327,14 +312,14 @@ export default {
         // 判断未空，则不做操作
       } else if (this.searchForm.orderNo === '' && this.searchForm.date === '') {
         this.setPageData()
-      } else if (this.searchForm.orderNo != '' && this.searchForm.date === '') {
+      } else if (this.searchForm.orderNo !== '' && this.searchForm.date === '') {
         for (let i = 0; i < this.tableData.length; i++) {
           if (this.tableData[i].no === this.searchForm.orderNo) {
             this.currentData = this.tableData.slice(i, i + 1)
             break
           }
         }
-      } else if (this.searchForm.orderNo === '' && this.searchForm.date[0] != '' && this.searchForm.date[1] != '') {
+      } else if (this.searchForm.orderNo === '' && this.searchForm.date[0] !== '' && this.searchForm.date[1] !== '') {
         let startIndex = 0
         let endIndex = 0
         alert(this.searchForm.date[0] + ',' + this.searchForm.date[1])
@@ -370,29 +355,27 @@ export default {
       this.billInfo.date = row.date
       this.billInfo.author = row.author
       this.billInfo.fNo = row.no
-      // ### 将 res 存入一个对象中 prop 方法传给billInfo.vue
       // row.state = "已审验"
+      this.$root.eventBus.$emit('billNo', this.billInfo.fNo)
     },
     closeMoule (e) {
       // 点击关闭的callback事件 e的值为false，这里直接赋值为false
       this.dialogVisible = false
     },
     async doReceive () {
-      var that = this
       // 接收核销请求
       const params = {
         fAgenIdCode: this.fAgenIdCode
       }
       const res = await receive(params)
-      // ### 将数据存在 multipleSelection 再去做分页
-      this.tableData = res
+      this.tableData = res.data
       this.setPageData()
     },
     async doSendBack () {
       // 退回核销请求
       const params = this.multipleSelection
       this.doDelete()
-      const res = await sendBack(params)
+      await sendBack(params)
       this.setPageData()
     },
     doManualImport () {

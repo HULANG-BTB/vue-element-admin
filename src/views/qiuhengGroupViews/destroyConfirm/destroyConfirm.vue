@@ -11,6 +11,7 @@
             <el-form-item label="业务单号：">
               <el-input
                 v-model="destroySearch.no"
+                size="small"
                 placeholder="请输入需要查询的业务单号"
               />
             </el-form-item>
@@ -19,20 +20,25 @@
             <el-form-item label>
               <el-button
                 icon="el-icon-search"
+                type="primary"
+                size="small"
                 @click="handleSearch"
               >搜索</el-button>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="4">
             <el-button
+              size="small"
               type="success"
               @click="refreshButton()"
-            >刷新</el-button>
+            ><i class="el-icon-refresh el-icon--left" /> 刷新页面</el-button>
           </el-col>
         </el-row>
       </el-form>
     </el-header>
-    <el-pagination
+    <!-- <el-pagination
       background
       :current-page="page.currentPage"
       :page-sizes="[10,100, 200, 300, 400]"
@@ -41,11 +47,11 @@
       :total="400"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-    />
+    /> -->
 
     <el-table
       :data="tableData"
-      style="width: 100%"
+      style="width: 100%;margin-top:50px"
       :default-sort="{prop: 'id'}"
       border
     >
@@ -99,11 +105,11 @@
       <el-table-column
         fixed="right"
         label="操作"
-        width="100"
+        width="130"
       >
         <template slot-scope="scope">
           <el-button
-            type="text"
+            type="success"
             size="small"
             @click="handleClick(scope.row)"
           >查看</el-button>
@@ -157,7 +163,7 @@ export default {
         const res = await refresh()
         // debugger
         // console.log(res);
-        this.tableData = res
+        this.tableData = res.data
         // console.log(this.tableData);
         for (var i = 0; i < this.tableData.length; i++) {
           if (this.tableData[i].fDestroyType) {
@@ -168,10 +174,14 @@ export default {
         }
         // eslint-disable-next-line no-redeclare
         for (var i = 0; i < this.tableData.length; i++) {
-          if (this.tableData[i].fStatus) {
-            this.tableData[i].fStatus = '已审核'
-          } else {
+          if (this.tableData[i].fStatus === 0) {
             this.tableData[i].fStatus = '未审核'
+          }
+          if (this.tableData[i].fStatus === 1) {
+            this.tableData[i].fStatus = '已审核但未通过'
+          }
+          if (this.tableData[i].fStatus === 2) {
+            this.tableData[i].fStatus = '已审核并通过'
           }
         }
         console.log(this.tableData)
@@ -189,16 +199,16 @@ export default {
     async refreshButton () {
       const res = await refresh()
       // debugger
-      console.log(res)
-      this.tableData = res
+      // console.log(res)
+      this.tableData = res.data
     },
     handleSearch () {},
     handleSizeChange () {},
     handleCurrentChange () {},
     handleClick (row) {
-      console.log(row)
+      // console.log(row)
       this.$root.eventBus.$emit('fDestroyNoConfirm', row.fDestroyNo)
-      console.log(this.visible)
+      // console.log(this.visible)
       this.$root.eventBus.$emit('visibleDestroyConfirm', this.visible)
     }
   }

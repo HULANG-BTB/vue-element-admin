@@ -17,8 +17,8 @@ export default [
         component: () => import('@/views/qiuhengGroupViews/writeOff/verificationUnit'),
         name: 'PageVerificationUnit',
         meta: {
-          title: '票据核销(单位端)',
-          roles: ['role_manager', 'admin']
+          title: '票据核销(单位端)'
+          // roles: ['role_manager', 'admin']
         }
       },
       {
@@ -26,8 +26,8 @@ export default [
         component: () => import('@/views/qiuhengGroupViews/writeOff/index'),
         name: 'MainOfVerification',
         meta: {
-          title: '票据核销(财政端)',
-          roles: ['role_manager', 'admin']
+          title: '票据核销(财政端)'
+          // roles: ['role_manager', 'admin']
         }
       }
     ]

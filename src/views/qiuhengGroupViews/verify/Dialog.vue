@@ -81,57 +81,18 @@
         />
       </el-form-item>
     </el-form>
-    <el-card shadow="always">
+    <el-card shadow="always" style="height: 400px">
       <div style="height: 230px">
         <div
           class="subject"
           size="small"
         >
-          <span>开票明细</span>
+          <span>票据信息</span>
         </div>
         <el-divider content-position="left">开票审验</el-divider>
-        <el-table
-          ref="multipleTable"
-          :data="tableData"
-          tooltip-effect="dark"
-          style="width: 100%"
-          class="infinite-list-wrapper"
-          size="small"
-        >
-          <el-table-column
-            fixed
-            prop="no"
-            label="序号"
-          />
-          <el-table-column
-            prop="status"
-            label="状态"
-          />
-          <el-table-column
-            prop="type"
-            label="审验类型"
-          />
-          <el-table-column
-            prop="danwei"
-            label="开票单位"
-          />
-          <el-table-column
-            prop="time"
-            label="审验期间"
-          />
-          <el-table-column
-            prop="bill_number"
-            label="开票份数"
-          />
-          <el-table-column
-            prop="payment"
-            label="开票金额"
-          />
-          <el-table-column
-            prop="existWarn"
-            label="是否存在预警记录"
-          />
-        </el-table>
+        <div class="img">
+          <img :src="imgUrl" class="image" />
+        </div>
       </div>
     </el-card>
   </el-dialog>
@@ -165,14 +126,14 @@ export default {
         date2: [
           { type: 'date', required: true, message: '请选择时间', triggr: 'change' }
         ]
-      }
+      },
+      imgUrl: 'https://gym-oss-test.oss-cn-shenzhen.aliyuncs.com/boss-bill/123456100.png?Expires=1597808962&OSSAccessKeyId=LTAI4G9QwvLCHMEmgYf2Jupe&Signature=qCgGFaaiTXHLTleEukBR9z8WPqE%3D'
     }
   },
   mounted () {},
   created () {
     console.log(this.visible)
     this.$root.eventBus.$on('visible', (val) => {
-      console.log(this.visible)
       this.visible = val
     })
   },
@@ -184,7 +145,6 @@ export default {
         multis.push(arr[i])
         this.$root.eventBus.$emit('data', multis)
         this.dialogVisible = false
-        console.log(this.dialogVisible)
       }
     }
   }
@@ -193,4 +153,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "~@/assets/scss/home.scss";
+.img {
+  align-content: center;
+}
 </style>

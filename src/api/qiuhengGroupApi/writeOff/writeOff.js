@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
-const BASE_URL = "http://localhost:8888"
+const BASE_URL = 'http://localhost:8888'
+// const BASE_URL = 'http://123.56.247.54:7000/wirteoff-service'
 
 export function receive(data) {
   return request({
