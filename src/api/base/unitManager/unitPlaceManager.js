@@ -1,8 +1,10 @@
 import request from '@/utils/request'
 
+const BASE_URL = '/base'
+
 export function getunitPlaceListByPage (data) {
   return request({
-    url: '/place/listByPage',
+    url: `${BASE_URL}/place/listByPage`,
     method: 'post',
     data: data
   })
@@ -10,7 +12,7 @@ export function getunitPlaceListByPage (data) {
 
 export function addUnitPlace (data) {
   return request({
-    url: `/place/save`,
+    url: `${BASE_URL}/place/save`,
     method: 'post',
     data: data
   })
@@ -18,7 +20,7 @@ export function addUnitPlace (data) {
 
 export function updateUnitPlace (data) {
   return request({
-    url: '/place/update',
+    url: `${BASE_URL}/place/update`,
     method: 'post',
     data: data
   })
@@ -26,7 +28,7 @@ export function updateUnitPlace (data) {
 
 export function deleteUnitPlace (data) {
   return request({
-    url: `/place/delete`,
+    url: `${BASE_URL}/place/delete`,
     method: 'post',
     data: { id: data }
   })
@@ -34,7 +36,7 @@ export function deleteUnitPlace (data) {
 
 export function deleteUnitPlaceBatch (data) {
   return request({
-    url: `/place/batchDelete`,
+    url: `${BASE_URL}/place/batchDelete`,
     method: 'post',
     data: data
   })
