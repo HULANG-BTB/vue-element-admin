@@ -105,20 +105,20 @@ export default {
           this.$store
             .dispatch('user/login', this.loginForm)
             .then(() => {
-              getRSAPublicKey().then((response) => {
-                localStorage.setItem('publicKey', response.data)
-                addRSAPublicKey().then((response) => {
-                  this.$message({
-                    message: '公钥发送成功',
-                    type: 'success'
-                  })
-                  this.$router.push({
-                    path: this.redirect || '/',
-                    query: this.otherQuery
-                  })
-                  this.loading = false
-                })
-              })
+              // getRSAPublicKey().then((response) => {
+              //   localStorage.setItem('publicKey', response.data)
+              //   addRSAPublicKey().then((response) => {
+              //     this.$message({
+              //       message: '公钥发送成功',
+              //       type: 'success'
+              //     })
+              //     this.$router.push({
+              //       path: this.redirect || '/',
+              //       query: this.otherQuery
+              //     })
+              //     this.loading = false
+              //   })
+              // })
             })
             .catch(() => {
               this.loading = false
