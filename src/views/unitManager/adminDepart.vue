@@ -395,6 +395,7 @@ export default {
     async handleNodeClick (data) {
       if (data.children === null) {
         this.isleaf = false
+        this.resetQuery()
         this.queryParams.keyword.rgnId = data.code
         this.getTableData()
       } else {
