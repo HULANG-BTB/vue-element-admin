@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 // 入库模块
 
-const BASE_URL = 'http://localhost:8080'
+const BASE_URL = '/base/fabFinDept'
 
 // 分页查询入库单
 export function getStockListPage (page) {
