@@ -100,7 +100,7 @@ import {
   getAllItemList,
   updateAgenItemBatch,
   getAgenById
-} from '@/api/unitManager'
+} from '@/api/base/unitManager/unitManager'
 
 export default {
   props: {

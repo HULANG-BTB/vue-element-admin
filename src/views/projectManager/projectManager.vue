@@ -232,7 +232,7 @@
 </template>
 
 <script>
-import { getProjectListByPage, getBySubjectId, addProject, getSubjectTree, updateProject, deleteProject, deleteProjectBatch, addStd, updateStd, getItemStd, importExcel, exportExcel } from '@/api/projectManager'
+import { getProjectListByPage, getBySubjectId, addProject, getSubjectTree, updateProject, deleteProject, deleteProjectBatch, addStd, updateStd, getItemStd, importExcel, exportExcel } from '@/api/base/projectManager/projectManager'
 import { parseTime } from '@/utils/index'
 
 const defaultUser = {

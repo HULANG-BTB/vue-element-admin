@@ -161,7 +161,7 @@
 </template>
 
 <script>
-import { getCrtListByPage, deleteCrt, deleteCrtBatch, addCrt, updateCrt, getAgenName } from '@/api/purchLicense'
+import { getCrtListByPage, deleteCrt, deleteCrtBatch, addCrt, updateCrt, getAgenName } from '@/api/base/unitManager/purchLicense'
 import { parseTime } from '@/utils/index'
 // import { validateDatePicker } from '@/utils/validate'
 

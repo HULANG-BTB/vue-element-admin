@@ -111,9 +111,9 @@ import {
   deleteUser,
   deleteUserBatch,
   resetPassword
-} from '@/api/user'
-import { getRoleList, getRoleListByUserId } from '@/api/role'
-import { getUnitList } from '@/api/unitManager'
+} from '@/api/userManager/user'
+import { getRoleList, getRoleListByUserId } from '@/api/userManager/role'
+import { getUnitList } from '@/api/base/unitManager/unitManager'
 import { parseTime, deepClone } from '@/utils/index'
 import { validatePhoneNumber } from '@/utils/validate'
 

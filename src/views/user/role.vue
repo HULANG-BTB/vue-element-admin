@@ -88,8 +88,8 @@ import {
   updateRole,
   deleteRole,
   deleteRoleBatch
-} from '@/api/role'
-import { getPermissionListByTree, getPermissionByRid } from '@/api/permission'
+} from '@/api/userManager/role'
+import { getPermissionListByTree, getPermissionByRid } from '@/api/userManager/permission'
 import { parseTime } from '@/utils/index'
 
 const defaultRole = {

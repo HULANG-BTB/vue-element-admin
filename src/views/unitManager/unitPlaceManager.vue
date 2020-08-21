@@ -269,7 +269,7 @@
 
 <script>
 // import { listRole, addRole, updateRole } from '@/api/projectManager'
-import { addUnitPlace, getunitPlaceListByPage, updateUnitPlace, deleteUnitPlace, deleteUnitPlaceBatch } from '@/api/unitPlaceManager'
+import { addUnitPlace, getunitPlaceListByPage, updateUnitPlace, deleteUnitPlace, deleteUnitPlaceBatch } from '@/api/base/unitManager/unitPlaceManager'
 import { parseTime } from '@/utils/index'
 
 const defaultUnitPlace = {

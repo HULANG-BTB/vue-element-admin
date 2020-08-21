@@ -163,7 +163,7 @@ import {
   deleteUnitBatch,
   getDapartListAll,
   getAgenCount
-} from '@/api/unitManager'
+} from '@/api/base/unitManager/unitManager'
 // import {
 //   getAgenBillType,
 //   getBillAllType,
