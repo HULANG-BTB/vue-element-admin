@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
 const BASE_URL = 'http://localhost:8888'
+// const BASE_URL = 'http://123.56.247.54:7000/writeoff-service'
 
 export function getApplyList (queryInfo) {
   return request({
