@@ -352,8 +352,9 @@ export default {
         id: '',
         author: '',
         changeState: '2',
-        period: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 365), new Date()]
-
+        period: [
+          new Date(new Date().getTime() - 3600 * 1000 * 24 * 365),
+          new Date(new Date().getTime() + 3600 * 1000 * 24 * 1)]
       },
       pickerOptions: {
         shortcuts: [{
