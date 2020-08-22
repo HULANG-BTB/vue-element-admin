@@ -83,10 +83,10 @@ export default {
       slider: 100,
 
       // 支付方式
-      pay_mode_default: '支付宝',
-      pay_mode_name: ['支付宝', '微信支付', '中国工商银行', '中国建设银行',
-        '中国农业银行', '中国银行', '中国邮政储蓄银行', '中信银行',
-        '中国光大银行', '华夏银行', '招商银行', '浦发银行'],
+      pay_mode_default: 'Alipay',
+      pay_mode_name: ['Alipay', 'Wechat_Payment', 'ICBC', 'Construction_Bank',
+        'Agricultural_Bank', 'China', 'Postal_Savings_Bank', 'CITIC',
+        'China_Everbright_Bank', 'Huaxia_Bank', 'Merchants_Bank', 'Pudong_Development_Bank'],
 
       // 点击支付按钮
       pay_button_flag: [],
