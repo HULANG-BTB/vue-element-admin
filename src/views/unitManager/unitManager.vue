@@ -45,8 +45,9 @@
       <el-table-column align="center" label="单位分类" prop="sortCode" />
       <el-table-column align="center" label="操作" width="400">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleProject(scope.row)">项目</el-button>
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleBill(scope.row)">票据</el-button>
+          <!-- <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleProject(scope.row)">项目</el-button>
+          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleBill(scope.row)">票据</el-button> -->
+          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleLook(scope.row)">查看</el-button>
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">修改</el-button>
           <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
@@ -72,7 +73,7 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="单位编码" :label-width="formLabelWidth" prop="agenCode">
-              <el-input v-model="project.agenCode" placeholder="单位编码" />
+              <el-input v-model="project.agenCode" placeholder="单位编码" :disabled="true" />
             </el-form-item>
             <el-form-item label="部门编码" :label-width="formLabelWidth">
               <el-input v-model="project.deptCode" placeholder="部门编码" :disabled="true" />
@@ -138,7 +139,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="manageDialogVisible" :title="manageDialogType === 'projectTow' ? '项目管理' : '票据管理'">
+    <!-- <el-dialog :visible.sync="manageDialogVisible" :title="manageDialogType === 'projectTow' ? '项目管理' : '票据管理'">
       <div v-loading="loading" style="text-align:center" class="transfer">
         <el-transfer v-model="manageHasList" style="text-align: left; display: inline-block; margin-bottom: 1rem" :data="manageOriginList" :button-texts="['删除', '添加']" :titles="['未拥有列表', '已拥有列表']">
           <span slot-scope="{ option }">{{ option.label }}</span>
@@ -148,8 +149,7 @@
           <el-button type="primary" @click="confirmManage">确认</el-button>
         </div>
       </div>
-
-    </el-dialog>
+    </el-dialog> -->
 
   </div>
 </template>
@@ -161,16 +161,17 @@ import {
   updateUnit,
   deleteUnit,
   deleteUnitBatch,
-  getDapartListAll
-} from '@/api/unitManager'
-import {
-  getAgenBillType,
-  getBillAllType,
-  updateAgenBillBatch,
-  getAgenItemList,
-  getAllItemList,
-  updateAgenItemBatch
-} from '@/api/unitManager'
+  getDapartListAll,
+  getAgenCount
+} from '@/api/base/unitManager/unitManager'
+// import {
+//   getAgenBillType,
+//   getBillAllType,
+//   updateAgenBillBatch,
+//   getAgenItemList,
+//   getAllItemList,
+//   updateAgenItemBatch
+// } from '@/api/unitManager'
 
 const defaultUser = {
   note: '',
@@ -247,17 +248,17 @@ export default {
         deptName: ''
       },
       dialogVisible: false,
-      manageDialogVisible: false,
-      manageDialogType: 'projectTow',
-      manageHasList: [],
-      manageOriginList: [],
+      // manageDialogVisible: false,
+      // manageDialogType: 'projectTow',
+      // manageHasList: [],
+      // manageOriginList: [],
       dialogType: 'new',
       formLabelWidth: '120px',
       selectedList: [],
       deptManag: [],
       rules: {
         agenCode: [
-          { required: true, message: '单位编码不能为空', trigger: 'change' }
+          { required: true, message: '', trigger: 'change' }
         ],
         deptName: [
           { required: true, message: '部门名称不能为空', trigger: 'blur' }
@@ -267,10 +268,10 @@ export default {
         ],
         mnem: [{ required: true, message: '助记码不能为空', trigger: 'blur' }],
         effDate: [
-          { trigger: 'blur', validator: validateDatePicker }
+          { required: true, trigger: 'blur', validator: validateDatePicker }
         ],
         expDate: [
-          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'effDate') }
+          { required: true, trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'effDate') }
         ]
       }
     }
@@ -301,100 +302,20 @@ export default {
       const { data } = await getDapartListAll() // 无参查询部门列表
       this.deptManag = data
     },
-    deptVal (val) {
+    async deptVal (val) {
       let obj = {}
       obj = this.deptManag.find(item => {
         return item.deptName === val
       })
       this.project.deptCode = obj.deptCode
       this.queryParams.keyword.deptName = obj.deptName
-    },
-    // 获取所有财政票据种类
-    async getBillAllType () {
-      // Todo
-      const { data } = await getBillAllType()
-      if (!data) {
-        return
-      }
-      this.manageOriginList = data.map(item => {
-        return { ...item, disabled: false, key: item.code, label: item.name }
-      })
-      if (this.manageOriginList === undefined) {
-        this.manageOriginList = []
-      }
-    },
 
-    // 获取单位具有的所有票据
-    async getAgenBillAll (agenIdcode) {
-      const { data } = await getAgenBillType({ agenIdcode })
-      if (!data) {
-        return
-      }
-      this.manageHasList = data.map(item => item.code)
-      if (this.manageHasList === undefined) {
-        this.manageHasList = []
-      }
-    },
-
-    // 获取所有财政项目列表
-    async getAllItemList () {
-      // Todo
-      const { data } = await getAllItemList()
-      if (!data) {
-        return
-      }
-      this.manageOriginList = data.map(item => {
-        return {
-          ...item,
-          disabled: false,
-          key: item.itemId,
-          label: item.itemName
-        }
-      })
-      if (this.manageOriginList === undefined) {
-        this.manageOriginList = []
-      }
-    },
-
-    // 查询单位具有的项目
-    async getAgenItemList (agenIdcode) {
-      const { data } = await getAgenItemList({ agenIdcode })
-      if (!data) {
-        return
-      }
-      this.manageHasList = data.map(item => item.itemId)
-      if (this.manageHasList === undefined) {
-        this.manageHasList = []
-      }
-    },
-
-    // 管理提交
-    async confirmManage () {
-      const isBillManage = this.manageDialogType === 'bill'
-      let successFlag = false
-      if (isBillManage) {
-        const postData = this.manageHasList.map(item => {
-          return { agenIdcode: this.project.agenCode, typeCode: item }
-        })
-        await updateAgenBillBatch(postData).then(res => {
-          successFlag = true
-        })
-      } else {
-        const postData = this.manageHasList.map(item => {
-          return { agenIdcode: this.project.agenCode, itemCode: item }
-        })
-        await updateAgenItemBatch(postData).then(res => {
-          successFlag = true
+      if (this.project.deptCode !== '') {
+        await getAgenCount({ deptCode: this.project.deptCode }).then(res => {
+          // console.log(res.data)
+          this.project.agenCode = obj.deptCode + res.data
         })
       }
-      if (successFlag) {
-        this.$message({
-          showClose: true,
-          message: '添加成功',
-          type: 'success'
-        })
-      }
-      this.manageDialogVisible = false
     },
 
     // 搜索
@@ -424,6 +345,12 @@ export default {
       this.dialogType = 'edit'
       this.project = Object.assign({}, rowData)
     },
+    // 查看按钮
+    handleLook (rowData) {
+      this.$router.push({
+        path: '/unitManager/unitManagerDetail/' + rowData.id
+      })
+    },
     // 单位管理模态框提交
     confirmRole () {
       this.$refs.project.validate(async (valid) => {
@@ -433,12 +360,17 @@ export default {
             await updateUnit(this.project).then(res => {
               this.getTableData()
               this.dialogVisible = false
-              // this.$set(this.project, {})
               this.$message({
                 showClose: true,
                 message: '编辑成功',
                 type: 'success'
               })
+            }).catch((err) => {
+              this.$message({
+                type: 'error',
+                message: '编辑失败!'
+              })
+              console.error(err)
             })
           } else {
             // 新增
@@ -446,19 +378,17 @@ export default {
               this.$set(this.project, {})
               this.getTableData()
               this.dialogVisible = false
-              // if (res.status === 200) {
               this.$message({
                 showClose: true,
                 message: '添加成功',
                 type: 'success'
               })
-              // } else {
-              //   this.$message({
-              //     showClose: true,
-              //     message: '添加失败',
-              //     type: 'error'
-              //   })
-              // }
+            }).catch((err) => {
+              this.$message({
+                type: 'error',
+                message: '添加失败'
+              })
+              console.error(err)
             })
           }
         }
@@ -469,31 +399,6 @@ export default {
       this.dialogVisible = false
       this.manageDialogVisible = false
       this.resetForm('project')
-    },
-    // 项目管理按钮
-    async handleProject (row) {
-      this.loading = true
-      this.manageOriginList = []
-      this.manageHasList = []
-      this.project = Object.assign({}, row)
-      this.manageDialogType = 'projectTow'
-      this.manageDialogVisible = true
-      await this.getAllItemList()
-      await this.getAgenItemList(row.agenCode)
-      this.loading = false
-    },
-
-    // 票据管理按钮
-    async handleBill (row) {
-      this.loading = true
-      this.manageOriginList = []
-      this.manageHasList = []
-      this.project = Object.assign({}, row)
-      this.manageDialogType = 'bill'
-      this.manageDialogVisible = true
-      await this.getBillAllType()
-      await this.getAgenBillAll(row.agenCode)
-      this.loading = false
     },
     // 删除按钮
     handleDelete (deleData) {
@@ -552,6 +457,118 @@ export default {
       this.queryParams.page = val
       this.getTableData()
     }
+    // 获取所有财政票据种类
+    // async getBillAllType () {
+    //   // Todo
+    //   const { data } = await getBillAllType()
+    //   if (!data) {
+    //     return
+    //   }
+    //   this.manageOriginList = data.map(item => {
+    //     return { ...item, disabled: false, key: item.code, label: item.name }
+    //   })
+    //   if (this.manageOriginList === undefined) {
+    //     this.manageOriginList = []
+    //   }
+    // },
+
+    // 获取单位具有的所有票据
+    // async getAgenBillAll (agenIdcode) {
+    //   const { data } = await getAgenBillType({ agenIdcode })
+    //   if (!data) {
+    //     return
+    //   }
+    //   this.manageHasList = data.map(item => item.code)
+    //   if (this.manageHasList === undefined) {
+    //     this.manageHasList = []
+    //   }
+    // },
+
+    // 获取所有财政项目列表
+    // async getAllItemList () {
+    //   // Todo
+    //   const { data } = await getAllItemList()
+    //   if (!data) {
+    //     return
+    //   }
+    //   this.manageOriginList = data.map(item => {
+    //     return {
+    //       ...item,
+    //       disabled: false,
+    //       key: item.itemId,
+    //       label: item.itemName
+    //     }
+    //   })
+    //   if (this.manageOriginList === undefined) {
+    //     this.manageOriginList = []
+    //   }
+    // },
+
+    // 查询单位具有的项目
+    // async getAgenItemList (agenIdcode) {
+    //   const { data } = await getAgenItemList({ agenIdcode })
+    //   if (!data) {
+    //     return
+    //   }
+    //   this.manageHasList = data.map(item => item.itemId)
+    //   if (this.manageHasList === undefined) {
+    //     this.manageHasList = []
+    //   }
+    // },
+
+    // 管理提交
+    // async confirmManage () {
+    //   const isBillManage = this.manageDialogType === 'bill'
+    //   let successFlag = false
+    //   if (isBillManage) {
+    //     const postData = this.manageHasList.map(item => {
+    //       return { agenIdcode: this.project.agenCode, typeCode: item }
+    //     })
+    //     await updateAgenBillBatch(postData).then(res => {
+    //       successFlag = true
+    //     })
+    //   } else {
+    //     const postData = this.manageHasList.map(item => {
+    //       return { agenIdcode: this.project.agenCode, itemCode: item }
+    //     })
+    //     await updateAgenItemBatch(postData).then(res => {
+    //       successFlag = true
+    //     })
+    //   }
+    //   if (successFlag) {
+    //     this.$message({
+    //       showClose: true,
+    //       message: '添加成功',
+    //       type: 'success'
+    //     })
+    //   }
+    //   this.manageDialogVisible = false
+    // },
+    // 项目管理按钮
+    // async handleProject (row) {
+    //   this.loading = true
+    //   this.manageOriginList = []
+    //   this.manageHasList = []
+    //   this.project = Object.assign({}, row)
+    //   this.manageDialogType = 'projectTow'
+    //   this.manageDialogVisible = true
+    //   await this.getAllItemList()
+    //   await this.getAgenItemList(row.agenCode)
+    //   this.loading = false
+    // },
+
+    // 票据管理按钮
+    // async handleBill (row) {
+    //   this.loading = true
+    //   this.manageOriginList = []
+    //   this.manageHasList = []
+    //   this.project = Object.assign({}, row)
+    //   this.manageDialogType = 'bill'
+    //   this.manageDialogVisible = true
+    //   await this.getBillAllType()
+    //   await this.getAgenBillAll(row.agenCode)
+    //   this.loading = false
+    // },
   }
 }
 </script>

@@ -248,61 +248,19 @@ export default {
       this.bill = {}
       if (this.requestType === 'tel') {
         await getBill(this.query).then(res => {
-          const { code } = res
-          if (code === 10000) {
-            this.billDialogVisible = true
-            this.bill = JSON.parse(res.data)
-            this.loadTable()
-            this.loading = false
-            return
-          } else if (code === 10003) {
-            this.openErrormsg('请输入正确的11位手机号码及6位校验码')
-          } else if (code === 11111) {
-            this.$notify.error({
-              title: '警告',
-              message: '查无数据'
-            })
-          } else {
-            this.$notify.error({
-              title: '警告',
-              message: '服务器异常'
-            })
-          }
-        }).catch(() => {
+          this.billDialogVisible = true
+          this.bill = JSON.parse(res.data)
+          this.loadTable()
           this.loading = false
-          this.$notify.error({
-            title: '警告',
-            message: '服务器异常'
-          })
-        })
+        }).catch(() => { this.loading = false })
       } else {
         await billCheck(this.query).then(res => {
-          if (res.code === 10000) {
-            this.billDialogVisible = true
-            this.bill = res.data
-            this.loading = false
-            this.loadTable()
-            this.loading = false
-          } else if (res.code === 10003) {
-            this.openErrormsg('请输入正确的票据号码及校验码')
-          } else if (res.code === 11111) {
-            this.$notify.error({
-              title: '警告',
-              message: '查无数据'
-            })
-          } else {
-            this.$notify.error({
-              title: '警告',
-              message: '服务器异常'
-            })
-          }
-        }).catch(() => {
+          this.billDialogVisible = true
+          this.bill = JSON.parse(res.data)
           this.loading = false
-          this.$notify.error({
-            title: '警告',
-            message: '服务器异常'
-          })
-        })
+          this.loadTable()
+          this.loading = false
+        }).catch(() => { this.loading = false })
       }
       this.loading = false
     },
