@@ -22,10 +22,11 @@ export function addAccIntoInfoDto (data) {
   })
 }
 
-export function getUUid (UUid) {
+export function getUUid (data) {
   return request({
     url: '/pay/getUUid',
-    method: 'get',
-    params: { UUid }
+    method: 'post',
+    data
   })
 }
+
