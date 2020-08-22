@@ -2,14 +2,14 @@ import request from '@/utils/request'
 
 export function getReportBill () {
   return request({
-    url: '/report/bill',
+    url: '/ecds-report-analysis/report/bill',
     method: 'get'
   })
 }
 
 export function selectSearch (data) {
   return request({
-    url: '/report/search',
+    url: '/ecds-report-analysis/report/search',
     method: 'post',
     data: data
   })
@@ -17,14 +17,14 @@ export function selectSearch (data) {
 
 export function selectNum () {
   return request({
-    url: '/report/num',
+    url: '/ecds-report-analysis/report/num',
     method: 'get'
   })
 }
 
-export function selectDestroyNum() {
+export function selectDestroyNum () {
   return request({
-    url: '/report/desnum',
+    url: '/ecds-report-analysis/report/desnum',
     method: 'get'
   })
 }
