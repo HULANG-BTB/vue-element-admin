@@ -77,11 +77,11 @@
           <el-col :span="10">
             <el-form-item
               label="申请类型"
-              prop="applyTpye"
+              prop="applyType"
               style="width: 300px"
             >
               <el-input
-                v-model="ruleForm.applyTpye"
+                v-model="ruleForm.applyType"
                 type="textarea"
                 :rows="1"
                 disabled
@@ -178,7 +178,7 @@ export default {
         fDetroyNo: '',
         applyMan: '',
         applyDate: '',
-        applyTpye: '',
+        applyType: '',
         applyStatus: ''
       },
       lookDestroyApplyDialogVisible: false
@@ -202,7 +202,7 @@ export default {
       this.ruleForm.applyDate = val
     })
     this.$root.eventBus.$on('lookDestroyApplyType', (val) => {
-      this.ruleForm.applyTpye = val
+      this.ruleForm.applyType = val
     })
     this.$root.eventBus.$on('lookDestroyApplyStatus', (val) => {
       this.ruleForm.applyStatus = val

@@ -32,7 +32,7 @@
             <el-button
               size="small"
               type="success"
-              @click="refreshButton()"
+              @click="refreshButton1()"
             ><i class="el-icon-refresh el-icon--left" /> 刷新页面</el-button>
           </el-col>
         </el-row>
@@ -76,7 +76,7 @@
         prop="fUnitName"
         label="单位名称"
         sortable
-        width="180"
+        width="200"
       />
       <el-table-column
         prop="fApplyMan"
@@ -100,16 +100,16 @@
         prop="fStatus"
         label="审核状态"
         sortable
-        width="120"
+        width="150"
       />
       <el-table-column
         fixed="right"
         label="操作"
-        width="130"
+        width="160"
       >
         <template slot-scope="scope">
           <el-button
-            type="success"
+            type="primary"
             size="small"
             @click="handleClick(scope.row)"
           >查看</el-button>
@@ -156,43 +156,14 @@ export default {
         total: 0,
         keyword: ''
       },
-
-      visible: true,
-
-      async refreshButton () {
-        const res = await refresh()
-        // debugger
-        // console.log(res);
-        this.tableData = res.data
-        // console.log(this.tableData);
-        for (var i = 0; i < this.tableData.length; i++) {
-          if (this.tableData[i].fDestroyType) {
-            this.tableData[i].fDestroyType = '库存票据销毁'
-          } else {
-            this.tableData[i].fDestroyType = '核销票据销毁'
-          }
-        }
-        // eslint-disable-next-line no-redeclare
-        for (var i = 0; i < this.tableData.length; i++) {
-          if (this.tableData[i].fStatus === 0) {
-            this.tableData[i].fStatus = '未审核'
-          }
-          if (this.tableData[i].fStatus === 1) {
-            this.tableData[i].fStatus = '已审核但未通过'
-          }
-          if (this.tableData[i].fStatus === 2) {
-            this.tableData[i].fStatus = '已审核并通过'
-          }
-        }
-        console.log(this.tableData)
-      }
+      visible: true
     }
   },
   // components:{
   // "addDestroyApplyDialog": addDestroyApplyVue
   // },
   created () {
-    this.refreshButton()// 需要触发的函数
+    this.refreshButton1()
   },
   methods: {
     // eslint-disable-next-line vue/no-dupe-keys
@@ -202,14 +173,44 @@ export default {
       // console.log(res)
       this.tableData = res.data
     },
+    async refreshButton1 () {
+      const res = await refresh()
+      // debugger
+      // console.log(res);
+      this.tableData = res.data
+      // console.log(this.tableData);
+      for (var i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].fDestroyType) {
+          this.tableData[i].fDestroyType = '库存票据销毁'
+        } else {
+          this.tableData[i].fDestroyType = '核销票据销毁'
+        }
+      }
+      // eslint-disable-next-line no-redeclare
+      for (var i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].fStatus === 0) {
+          this.tableData[i].fStatus = '未审核'
+        }
+        if (this.tableData[i].fStatus === 1) {
+          this.tableData[i].fStatus = '已审核但未通过'
+        }
+        if (this.tableData[i].fStatus === 2) {
+          this.tableData[i].fStatus = '已审核并通过'
+        }
+      }
+      // console.log(this.tableData)
+    },
     handleSearch () {},
     handleSizeChange () {},
     handleCurrentChange () {},
     handleClick (row) {
-      // console.log(row)
+    // console.log(row)
       this.$root.eventBus.$emit('fDestroyNoConfirm', row.fDestroyNo)
       // console.log(this.visible)
       this.$root.eventBus.$emit('visibleDestroyConfirm', this.visible)
+      this.$root.eventBus.$emit('lookDestroyApplyMan', row.fApplyMan)
+      this.$root.eventBus.$emit('lookDestroyApplyDate', row.fApplyDate)
+      this.$root.eventBus.$emit('lookDestroyApplyType', row.fDestroyType)
     }
   }
 
