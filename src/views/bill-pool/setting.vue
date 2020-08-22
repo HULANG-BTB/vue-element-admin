@@ -1,80 +1,78 @@
 <template>
   <div>
-    <el-header class="top">
-      <el-row :gutter="20">
-        <el-col :span="2" :push="1">
-          <svg-icon class="icon" icon-class="setting" />
-        </el-col>
-        <el-col :span="13" class="grid-content" :push="1">
-          <div><h3>票据池-设置</h3></div>
-        </el-col>
-        <el-col :span="3" :push="2">
-          <el-button
-            type="primary"
-            icon="el-icon-circle-plus"
-            size="small"
-            @click="createDialogVisible = true"
-          >
-            创建票据池
-          </el-button>
-        </el-col>
-      </el-row>
+    <el-form label-width="120px" :inline="true" class="form" @keyup.enter.native="handleSearch">
+      <el-form-item hide-required-asterisk="true" label="票据池编码：">
+        <el-input v-model="billTypeCode" size="small" placeholder="请输入票据编码" maxlength="8" clearable class="input" />
+      </el-form-item>
+      <el-form-item>
+        <el-button size="small" icon="el-icon-search" type="primary" @click="query">搜索</el-button>
+        <el-button icon="el-icon-refresh" type="default" size="small" @click="billTypeCode = ''">重置</el-button>
+      </el-form-item>
+    </el-form>
 
-      <el-dialog
-        title="创建票据池"
-        :visible.sync="createDialogVisible"
-        width="28%"
-        center
-      >
-        <el-form :model="createPoolData" class="divForm">
-          <el-form-item
-            label="票据池代码"
-            :label-width="formLabelWidth"
-            class="divForm"
-          >
-            <el-input
-              v-model="createPoolData.billTypeCode"
-              size="small"
-              autocomplete="off"
-              maxlength="8"
-              minlength="8"
-            />
-          </el-form-item>
-          <el-form-item label="票据池预警数量" :label-width="formLabelWidth">
-            <el-input
-              v-model="createPoolData.minNumber"
-              size="small"
-              autocomplete="off"
-            />
-          </el-form-item>
-          <el-form-item label="每次推送数量" :label-width="formLabelWidth">
-            <el-input
-              v-model="createPoolData.pushNumber"
-              size="small"
-              autocomplete="off"
-            />
-          </el-form-item>
-          <el-form-item label="操作人" :label-width="formLabelWidth">
-            <el-input
-              v-model="createPoolData.operator"
-              size="small"
-              autocomplete="off"
-            />
-          </el-form-item>
-          <el-form-item label="操作人ID" :label-width="formLabelWidth">
-            <el-input
-              v-model="createPoolData.operatorID"
-              size="small"
-              autocomplete="off"
-            />
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button size="small" @click="createDialogVisible = false">取 消</el-button>
-          <el-button size="small" type="primary" :loading="createLoading" @click="createPool">创建</el-button>
-        </div>
-      </el-dialog>
-    </el-header>
+    <el-row :gutter="10">
+      <el-col :span="1.5" :push="2">
+        <el-button type="primary" icon="el-icon-circle-plus" size="mini" @click="createDialogVisible = true">新增票据池</el-button>
+      </el-col>
+      <el-col :span="1.5" :push="2">
+        <el-button type="success" icon="el-icon-refresh" size="mini" @click="query">刷新</el-button>
+      </el-col>
+    </el-row>
+
+    <el-dialog
+      title="新增票据池"
+      :visible.sync="createDialogVisible"
+      width="28%"
+      center
+    >
+      <el-form :model="createPoolData" class="divForm">
+        <el-form-item
+          label="票据池代码"
+          :label-width="formLabelWidth"
+          class="divForm"
+        >
+          <el-input
+            v-model="createPoolData.billTypeCode"
+            size="small"
+            autocomplete="off"
+            maxlength="8"
+            minlength="8"
+          />
+        </el-form-item>
+        <el-form-item label="票据池预警数量" :label-width="formLabelWidth">
+          <el-input
+            v-model="createPoolData.minNumber"
+            size="small"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item label="每次推送数量" :label-width="formLabelWidth">
+          <el-input
+            v-model="createPoolData.pushNumber"
+            size="small"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item label="操作人" :label-width="formLabelWidth">
+          <el-input
+            v-model="createPoolData.operator"
+            size="small"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item label="操作人ID" :label-width="formLabelWidth">
+          <el-input
+            v-model="createPoolData.operatorID"
+            size="small"
+            autocomplete="off"
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="createDialogVisible = false">取 消</el-button>
+        <el-button size="small" type="primary" :loading="createLoading" @click="createPool">创建</el-button>
+      </div>
+    </el-dialog>
 
     <!-- <el-form
       ref="form"
@@ -82,31 +80,6 @@
       label-width="120px"
       :inline="true"
     > -->
-    <el-form
-      label-width="120px"
-      :inline="true"
-      class="form"
-    >
-      <el-form-item
-        hide-required-asterisk="true"
-        label="票据池编码"
-        class="form-item"
-      >
-        <el-input
-          v-model="billTypeCode"
-          type="text"
-          size="15"
-          placeholder="请输入票据编码"
-          maxlength="8"
-          class="input"
-        />
-      </el-form-item>
-      <el-form-item class="form-item-button">
-        <el-button size="small" type="primary" plain @click="query">查询</el-button>
-      </el-form-item>
-      <br />
-      <br />
-    </el-form>
 
     <!-- 设置票据池 -->
     <el-dialog
@@ -166,9 +139,11 @@
     </el-dialog>
     <div>
       <h2 style="margin-left: 100px">票据池信息</h2>
+      <!-- :data="poolData.slice((currentPage-1)*pageSize,currentPage*pageSize)" -->
       <el-table
         v-show="poolDataVisible"
         highlight-current-row
+        height="500"
         :data="poolData"
         :border="true"
         :default-sort="{prop:'billTypeCode',order:'ascending'}"
@@ -199,7 +174,7 @@
             <el-button
               type="primary"
               size="mini"
-              @click="callEditDialog(scope.row)"
+              @click="callEditDialog(scope.row, scope.$index)"
             >编辑</el-button>
 
             <el-button
@@ -229,13 +204,19 @@ export default {
   name: 'PoolSetting',
   data () {
     return {
+      currentPage: 1, // 默认显示页面为1
+      pagesize: 5, //    每页的数据条数
+      tableData: [],
+
       poolDataVisible: false,
       dialogFormVisible: false,
       createDialogVisible: false,
       editDialogVisible: false,
+
       createLoading: false,
       formLabelWidth: '120px',
       billTypeCode: '',
+      editIndex: '',
       // 查找获得的票据池数据信息
       poolData: [
         {
@@ -276,6 +257,19 @@ export default {
     this.query()
   },
   methods: {
+    getList () {
+      // 获取数据
+      return this.poolData
+    },
+    handleSizeChange: function (size) {
+      this.pagesize = size
+    },
+    // 点击第几页
+    handleCurrentChange: function (currentPage) {
+      if (!isNaN(currentPage)) {
+        this.currentPage = currentPage
+      }
+    },
     // 创建票据池
     createPool () {
       this.$confirm('此操作将创建新的票据池, 是否继续?', '提示', {
@@ -326,27 +320,36 @@ export default {
         batchQuerySource().then(res => {
           this.poolData = res.data
         })
+      } else if (this.billTypeCode.length !== 8) {
+        // 票据代码长度错误
+        this.$message.error('请正确输入8位票据池代码')
+        this.billTypeCode = ''
       } else {
         // 根据票据代码查询票据池
         const billcode = {
           billTypeCode: this.billTypeCode
         }
-        // this.poolData.length = 0
         // this.poolData = null
         // 精确查询
         querySource(billcode).then(res => {
-          this.poolData[0] = res.data
+          const data = res.data
+          this.poolData = []
+          // this.poolData[0] = res.data
+          this.poolData[0] = data
         })
       }
       this.poolDataVisible = true
+      this.tableData = this.poolData
     },
-    callEditDialog (rowData) {
+    callEditDialog (rowData, index) {
       // 唤起设置票据池界面，需要在此时就传入设置的票据池信息
       this.editDialogVisible = true
       this.editPoolData.billTypeCode = rowData.billTypeCode
       this.editPoolData.minNumber = rowData.minNumber
       this.editPoolData.pushNumber = rowData.pushNumber
-      this.data = rowData.enable
+      // this.data = rowData.enable
+      this.editPoolData.enable = rowData.enable
+      this.editIndex = index
     },
     editPool () {
       // 编辑票据池
@@ -366,9 +369,8 @@ export default {
           })
         }
       })
+      this.poolData[this.editIndex] = this.editPoolData
       this.editDialogVisible = false
-      // 更改后刷新
-      // this.query()
     },
     deletePool (rowData) {
       // 删除票据池
@@ -403,8 +405,8 @@ export default {
         })
     },
     enablePool (rowData) {
-      // 删除票据池
-      this.$confirm('此操作将启用该票据池不可用, 是否继续?', '提示', {
+      // 启用票据池
+      this.$confirm('此操作将启用该票据池, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -414,7 +416,7 @@ export default {
           this.editPoolData.minNumber = rowData.minNumber
           this.editPoolData.pushNumber = rowData.pushNumber
           this.data = rowData.enable
-          this.editPoolData.enable = 0
+          this.editPoolData.enable = 1
           deleteSource(this.editPoolData).then(res => {
             if (res.success === true) {
               this.$message({
@@ -433,9 +435,6 @@ export default {
             message: '已取消'
           })
         })
-    },
-    handleCurrentChange (val) {
-      this.currentRow = val
     }
   }
 }
@@ -457,8 +456,9 @@ export default {
 .input {
   width: 350px;
 }
-.top {
+.container {
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 .icon {
   height: 50px;
@@ -498,5 +498,13 @@ export default {
 .el-input {
   padding-right: 30px;
   width: 200px;
+}
+.top-query-form {
+  margin-top: 20px;
+  margin-left: 20px;
+}
+.pagination {
+  margin-left: 500px;
+  /* text-align: center; */
 }
 </style>
