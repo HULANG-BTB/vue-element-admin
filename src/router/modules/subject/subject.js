@@ -11,7 +11,11 @@ export default [
         path: 'index',
         component: () => import('@/views/subjectManagement/index'),
         name: 'SubjectManagement',
-        meta: { title: '预算科目管理', icon: 'edit' }
+        meta: {
+          title: '预算科目管理',
+          roles: ['admin', 'financial', 'financial_check', 'unit'],
+          icon: 'edit'
+        }
       }
     ]
   }

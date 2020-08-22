@@ -11,10 +11,18 @@
       <el-tab-pane label="审验记录" name="six"><BillCheck :billcheck.sync="billcheck" /></el-tab-pane>
       <el-tab-pane label="缴销记录" name="seven"><BillPay :billpay.sync="billpay" /></el-tab-pane>
     </el-tabs>
+    <Pagination
+      v-show="total>0"
+      :total.sync="total"
+      :page.sync="query.page"
+      :limit.sync="query.limit"
+      @pagination="updatePageInfo"
+    />
   </div>
 </template>
 
 <script>
+import Pagination from './mypagecomponent/index'
 import BillAvailable from './archivecomponents/BillAvailable'
 import { fetchBillAvailable } from '@/api/archive'
 import AgenInfo from './archivecomponents/AgenInfo'
@@ -32,6 +40,7 @@ import { fetchBillPay } from '@/api/archive'
 export default {
   name: 'ArchiveTabs',
   components: {
+    Pagination,
     // 组件中接收属性
     BillAvailable,
     AgenInfo,
@@ -46,21 +55,29 @@ export default {
   props: {
     list: {
       type: Array,
-      required: true
+      required: true,
+      default () {
+        return []
+      }
     },
     agencode: {
       type: String,
-      required: true
+      required: true,
+      default () {
+        return ''
+      }
     }
   },
   data () {
     return {
       activeName: 'first',
+      // 记录当前的tab页
+      curTab: 'first',
+      total: 0,
       query: {
-        // agenCode: this.list[0].agenCode,
         agenCode: '',
         page: 1,
-        limit: 5
+        limit: 7
       },
       billapply: [],
       billavailable: [],
@@ -71,11 +88,49 @@ export default {
     }
   },
   created () {
-    this.query.agenCode = this.agencode
+    if (this.list.length !== 0) {
+      console.log(this.list)
+      console.log(this.list[0].agenCode)
+      this.query.agenCode = this.list[0].agenCode
+    } else {
+      console.log(this.agencode)
+      this.query.agenCode = this.agencode
+    }
   },
   methods: {
     handleClick (tab, event) {
+      // 记录当前页的标签名
+      this.curTab = tab.name
       switch (tab.name) {
+        case 'first':
+          this.total = 0
+          break
+        case 'second':
+          this.getBillAvailableInfo()
+          break
+        case 'third' :
+          this.getItemAvailableInfo()
+          break
+        case 'fourth' :
+          this.getBillApplyInfo()
+          break
+        case 'fifth' :
+          this.getBillWarnInfo()
+          break
+        case 'six' :
+          this.getBillCheckInfo()
+          break
+        case 'seven' :
+          this.getBillPayInfo()
+          break
+        default :
+          break
+      }
+    },
+    // 以分页的形式更新票据数据
+    updatePageInfo () {
+      // this.total = 0
+      switch (this.curTab) {
         case 'second':
           this.getBillAvailableInfo()
           break
@@ -106,8 +161,8 @@ export default {
       // 需要传递给前端收据的数量
 
       fetchBillApply(this.query).then(response => {
-        this.billapply = response.data
-        // this.total = response.data.length
+        this.billapply = response.data.items
+        this.total = response.data.total
         this.listLoading = false
       })
     },
@@ -118,7 +173,8 @@ export default {
       // 按照时间升序排列
       // 需要传递给前端收据的数量
       fetchBillAvailable(this.query).then(response => {
-        this.billavailable = response.data
+        this.billavailable = response.data.items
+        this.total = response.data.total
         this.listLoading = false
       })
     },
@@ -129,7 +185,8 @@ export default {
       // 按照时间升序排列
       // 需要传递给前端收据的数量
       fetchItemAvailable(this.query).then(response => {
-        this.itemavailable = response.data
+        this.itemavailable = response.data.items
+        this.total = response.data.total
         this.listLoading = false
       })
     },
@@ -140,7 +197,8 @@ export default {
       // 按照时间升序排列
       // 需要传递给前端收据的数量
       fetchBillWarn(this.query).then(response => {
-        this.billwarn = response.data
+        this.billwarn = response.data.items
+        this.total = response.data.total
         this.listLoading = false
       })
     },
@@ -151,7 +209,8 @@ export default {
       // 按照时间升序排列
       // 需要传递给前端收据的数量
       fetchBillCheck(this.query).then(response => {
-        this.billcheck = response.data
+        this.billcheck = response.data.items
+        this.total = response.data.total
         this.listLoading = false
       })
     },
@@ -161,9 +220,10 @@ export default {
       this.listLoading = true
       // 按照时间升序排列
       // 需要传递给前端收据的数量
-      console.log(this.query)
+      console.log(this.list[0].agenCode)
       fetchBillPay(this.query).then(response => {
-        this.billpay = response.data
+        this.billpay = response.data.items
+        this.total = response.data.total
         this.listLoading = false
       })
     }

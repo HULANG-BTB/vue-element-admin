@@ -5,7 +5,7 @@ const BASE_URL = '/base'
 
 export function login (data) {
   return request({
-    url: `${BASE_URL}/user/login`,
+    url: `/user/login`,
     method: 'post',
     data: qs.stringify(data),
     headers: {
@@ -23,8 +23,11 @@ export function getInfo (token) {
 
 export function logout () {
   return request({
-    url: `${BASE_URL}/user/logout`,
-    method: 'post'
+    url: `/user/logout`,
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
   })
 }
 

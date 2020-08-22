@@ -1,28 +1,28 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.keyword" placeholder="请输入搜索内容" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.accountType" placeholder="入账方式" clearable class="filter-item" style="width: 110px">
+      <el-input v-model="listQuery.keyword" size="small" placeholder="请输入搜索内容" style="width: 200px;margin-right: 20px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.accountType" size="small" placeholder="入账方式" clearable class="filter-item" style="width: 110px;margin-right: 20px;">
         <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
       </el-select>
-      <el-select v-model="listQuery.sort" placeholder="排序方式" style="width: 110px" class="filter-item" @change="handleFilter">
+      <el-select v-model="listQuery.sort" size="small" placeholder="排序方式" style="width: 110px;margin-right: 20px;" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+      <el-button v-waves size="small" style="margin-right: 10px" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
-      <el-button v-waves class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-delete" ::disabled="multiple" @click="handleBatchDelete">
+      <el-button v-waves size="small" style="margin-right: 10px" class="filter-item" type="primary" icon="el-icon-delete" :disabled="multiple" @click="handleBatchDelete">
         删除
       </el-button>
-      <!-- <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
+      <el-button v-waves size="small" style="margin-right: 10px;margin-left: 10px" :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         导出
-      </el-button> -->
-      <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
-        操作人
-      </el-checkbox>
-      <el-button v-waves class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-refresh" @click="handleFilter">
+      </el-button>
+      <el-button v-waves size="small" class="filter-item" style="margin-right: 10px;" type="primary" icon="el-icon-refresh" @click="handleFilter">
         刷新
       </el-button>
+      <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:10px;" @change="tableKey=tableKey+1">
+        操作人
+      </el-checkbox>
     </div>
 
     <el-table
@@ -32,7 +32,8 @@
       border
       fit
       highlight-current-row
-      style="width: 100%;"
+      style="width: 100%;margin-top: 20px"
+      height="518px"
       @sort-change="sortChange"
       @selection-change="handleSelectionChange"
     >
@@ -98,7 +99,7 @@
           <span v-if="row.accountType == 4">其它</span>
         </template>
       </el-table-column>
-      <el-table-column label="行为" align="center" width="150px" class-name="small-padding fixed-width">
+      <el-table-column label="行为" align="center" min-width="150px" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             修改
@@ -110,7 +111,7 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" style="padding: 0; position: absolute; right: 20px" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     <!--修改信息子页面-->
     <el-dialog title="修改入账凭证信息" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="80px" style="width: 400px; margin-left:50px;">
@@ -331,9 +332,9 @@ export default {
         }
       })
     },
-    // handleDownload () {
+    // handleDownload() {
     //   this.downloadLoading = true
-    //   import('./vendor/Export2Excel').then(excel => {
+    //   import('@/vendor/Export2Excel').then(excel => {
     //     const tHeader = ['入账凭证号', '票据号码', '开票时间', '开票单位', '单位代码', '票据校验码', '开票点', '入账金额', '入账方式', '操作人']
     //     const filterVal = ['accountId', 'billNo', 'agenTime', 'agenName', 'agenIdcode', 'billSerialId', 'placeId', 'account', 'accountType', 'operator']
     //     const data = this.formatJson(filterVal)

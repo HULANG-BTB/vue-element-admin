@@ -119,6 +119,11 @@ export default {
               //     this.loading = false
               //   })
               // })
+              this.$router.push({
+                path: this.redirect || '/',
+                query: this.otherQuery
+              })
+              this.loading = false
             })
             .catch(() => {
               this.loading = false

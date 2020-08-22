@@ -3,20 +3,19 @@
 
     <div>
       <AgenNameOption v-model="query.agenName" />
-      <!-- agen name 组件中获取 -->
+      <!-- agen name 组件中获取 :loading="downloadLoading"-->
       <el-button
-        :loading="downloadLoading"
         style="margin:0 0 20px 20px;"
         type="primary"
         icon="el-icon-document"
-        @click="queryArchiveInfoByQuery(query)"
+        @click="queryArchiveInfoByQuery()"
       >
         查询
       </el-button>
     </div>
 
     <div class="agen-archive-list">
-      <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+      <el-table :data="list" border fit highlight-current-row style="width: 100%">
         <el-table-column align="center" label="单位编码" width="100px">
           <template slot-scope="scope">
             <span>{{ scope.row.agenCode }}</span>
@@ -66,12 +65,11 @@
         </el-table-column>
 
       </el-table>
-
       <pagination
         v-show="total>0"
         :total="total"
-        :page.sync="listQuery.page"
-        :limit.sync="listQuery.limit"
+        :page.sync="query.page"
+        :limit.sync="query.limit"
         @pagination="queryArchiveInfos"
       />
     </div>
@@ -81,8 +79,7 @@
 
 <script>
 import AgenNameOption from './components/AgenNameOption'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-// import ArchiveBaseInfo from './components/ArchiveBaseInfo'
+import Pagination from './components/mypagecomponent/index'
 import { fetchArchiveInfos } from '@/api/archive'
 
 export default {
@@ -94,42 +91,39 @@ export default {
   },
   data () {
     return {
-      list: null,
+      list: [],
       total: 0,
       // true 开启等待框
       listLoading: false,
-      // 将以下2个query对象合并
-      listQuery: {
-        page: 1,
-        limit: 10
-      },
       query: {
-        agenCode: null,
-        agenName: null
+        agenCode: '',
+        agenName: '',
+        page: 1,
+        limit: 7
       }
     }
   },
   // 初始化时加载归档总览信息
   created () {
-    this.queryArchiveInfos(this.query)
+    this.queryArchiveInfos()
   },
   methods: {
     // 获取全部单位的归档总览信息
-    queryArchiveInfos (query) {
+    queryArchiveInfos () {
       this.listLoading = true
-      fetchArchiveInfos(query).then(response => {
-        this.list = response.data
-        this.total = response.data.length
+      fetchArchiveInfos(this.query).then(response => {
+        this.list = response.data.items
+        this.total = response.data.total
         this.listLoading = false
       })
     },
 
     // 根据公司编码或者公司名称进行模糊查询
-    queryArchiveInfoByQuery (query) {
-      this.listLoading = false
-      fetchArchiveInfos(query).then(response => {
-        this.list = response.data
-        this.total = response.data.length
+    queryArchiveInfoByQuery () {
+      this.listLoading = true
+      fetchArchiveInfos(this.query).then(response => {
+        this.list = response.data.items
+        this.total = response.data.total
         this.listLoading = false
       })
     }

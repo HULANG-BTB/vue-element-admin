@@ -1,6 +1,6 @@
 <template>
   <div class="agen-archive">
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+    <el-table :data="list" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="单位编码" width="100px">
         <template slot-scope="scope">
           <span>{{ scope.row.agenCode }}</span>
@@ -41,10 +41,8 @@
     <!-- 向子组件传递参数 -->
     <ArchiveTabs
       :list.sync="list"
-      :agencode.sync="list[0].agenCode"
-    >
-      />
-    </archivetabs></div>
+      :agencode.sync="query.agenCode"
+    /></div>
 </template>
 
 <script>
@@ -56,21 +54,45 @@ export default {
   components: {
     ArchiveTabs
   },
+  props: {
+    agencode: {
+      type: String,
+      required: true,
+      defaule () {
+        return ''
+      }
+    }
+  },
   data () {
     return {
       list: [],
       // 查询对象
       query: {
-        agenCode: null,
-        agenName: null
+        agenCode: '',
+        agenName: ''
       }
     }
   },
   // 获取财政主界面的详细信息
   created () {
-    this.query.agenCode = this.$route.query.agenCode
+    // console.log(this.$route)
+    // console.log(this.agencode)
+    // console.log(this.$route.query.agenCode.length)
+    // console.log(this.agencode)
+    // console.log(this.agencode.length)
+    if (this.agencode !== undefined) {
+      console.log('bbbbb')
+      if (this.agencode.length !== 0) {
+        this.query.agenCode = this.agencode
+      }
+    } else if (this.$route.query.agenCode.length !== 0) {
+      console.log('aaaaa')
+      console.log(this.$route.query.agenCode)
+      this.query.agenCode = this.$route.query.agenCode
+    }
+
     this.getAgenDetail()
-    this.tempRoute = Object.assign({}, this.$route)
+    // this.tempRoute = Object.assign({}, this.$route)
   },
   methods: {
     // 获取单位详细信息
@@ -78,7 +100,6 @@ export default {
       this.listLoading = true
       fetchAgenArchiveDetail(this.query).then(response => {
         this.list.push(response.data)
-        console.log(this.list)
         this.listLoading = false
       })
     }
