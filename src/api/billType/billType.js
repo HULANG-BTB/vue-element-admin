@@ -7,7 +7,7 @@
  */
 import request from '@/utils/request'
 
-const baseUrl = '/billType/'
+const baseUrl = '/base/billType/'
 
 export function queryBillTypeTree (data) {
   return request({
