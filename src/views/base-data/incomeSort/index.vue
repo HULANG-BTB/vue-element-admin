@@ -411,6 +411,7 @@ export default {
     },
     getLeftTree () {
       getIncomeTree().then(response => {
+        
         response.data.list.forEach(tree => {
           tree.name = tree.code + ' ' + tree.name
           if (tree.incomeSortDTOList.length > 0) {
