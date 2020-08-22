@@ -21,3 +21,10 @@ export function selectNum () {
     method: 'get'
   })
 }
+
+export function selectDestroyNum() {
+  return request({
+    url: '/report/desnum',
+    method: 'get'
+  })
+}
