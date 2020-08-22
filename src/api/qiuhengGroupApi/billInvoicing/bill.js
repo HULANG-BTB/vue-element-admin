@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'bill-invocing'
+const BASE_URL = '/bill-invocing'
 
 export function getBillListByPage (query) {
   return request({
