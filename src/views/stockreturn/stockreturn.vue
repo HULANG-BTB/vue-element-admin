@@ -55,7 +55,7 @@
               <el-button
                 type="primary"
                 size="small"
-                @click="handleAdd(); dialogFormVisible = true"
+                @click="handleAdd(); dialogFormVisible = true; noStatus=false"
               >新增</el-button>
             </el-form-item>
           </el-col>
@@ -78,30 +78,41 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="业务单号" width="180">
+      <el-table-column label="业务单号" width="150">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.no }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="编制日期" width="180">
+      <el-table-column label="编制日期" width="150">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.date }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="退票原因" width="540" align="center">
+      <el-table-column label="退票原因" width="250" align="center">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.returnReason }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="经办人" width="180">
+      <el-table-column label="退票人" width="150">
+        <template slot-scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.returner }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="审核意见" width="250">
+        <template slot-scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.changeSitu }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="审核人" width="150">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.changeMan }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" @click="handleEdit(scope.row); dialogFormVisible=true; noStatus=true">编辑</el-button>
+          <el-button :disabled="scope.row.submitStatus==1" size="mini" @click="handleSubmit1(scope.row)">提交</el-button>
+          <el-button size="mini" type="danger" :disabled="scope.row.submitStatus==1" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -135,7 +146,7 @@
           <el-col :span="2" />
           <el-col :span="11">
             <el-form-item label="业务单号">
-              <el-input v-model="Stockreturn.no" autocomplete="off" placeholder="请输入业务单号：" />
+              <el-input v-model="Stockreturn.no" autocomplete="off" :disabled="noStatus" placeholder="请输入业务单号：" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -200,7 +211,7 @@
         </el-table-column> -->
         <el-table-column align="center" label="票据代码" width="165">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.billCode" placeholder="请选择" @change="billPrecodeChange(scope)">
+            <el-select v-model="scope.row.billCode" placeholder="请选择" @change="billPrecodeChange(scope.row)">
               <el-option
                 v-for="item in billOptions"
                 :key="item.billCode"
@@ -241,9 +252,10 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="dialogFormVisible = false;">取 消</el-button>
         <el-button
           type="primary"
+          :disabled="Stockreturn.submitStatus == 1"
           @click="handleSave(); dialogFormVisible = false"
         >保 存</el-button>
       </div></el-dialog>
@@ -251,7 +263,7 @@
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getStockReturnList, getListStockReturnByDateOrNo, addStockReturn, getItem } from '@/api/stockreturn.js'
+import { getStockReturnList, getListStockReturnByDateOrNo, addStockReturn, getStockReturnItems, deleteStockReturnByNo, updateByNo, putSubmit } from '@/api/stockreturn.js'
 
 export default {
   data () {
@@ -301,12 +313,17 @@ export default {
         agenIdCode: '',
         returner: '',
         author: 'defaultAuthor',
+        changeMan: '',
+        changeSitu: '',
         changeState: '0',
         returnReason: '',
         submitStatus: '0',
         stockReturnItemVOList: []
       },
       dialogFormVisible: false,
+      noStatus: false,
+      // submitStatus: false,
+      saveStatus: false,
       labelPosition: 'left',
       billOptions: [{
         billCode: '00000120',
@@ -356,7 +373,7 @@ export default {
       this.getTableData()
       this.loading = false
     },
-    async billPrecodeChange (scope) {
+    async billPrecodeChange (row) {
       this.billOptions.forEach(e => {
         e.selected = false
         this.Stockreturn.stockReturnItemVOList.forEach(item => {
@@ -364,8 +381,8 @@ export default {
             e.selected = true
           }
         })
-        if (e.billCode === scope.row.billCode) {
-          scope.row.billName = e.billName
+        if (e.billCode === row.billCode) {
+          row.billName = e.billName
         }
       })
     },
@@ -376,47 +393,80 @@ export default {
       tableData.push({
         'billCode': '',
         'billName': '',
-        'number': 0,
+        'number': 2,
         'billNo1': '0000000001',
-        'billNo2': '0000000000'
+        'billNo2': '0000000002'
       })
       this.loading = false
     },
-    // 处理保存请求
-    async handleSave (scope) {
+    async itemDelete (index, rows) {
       this.loading = true
-      // 判断数据是否有误
-      // a
-      // eslint-disable-next-line no-undef
-      const subres = await addStockReturn(this.Stockreturn).catch(() => { this.loading = false })
-      console.log('StockReturn', this.Stockreturn)
-      console.log('提交结果：' + subres)
-      // if (subres) {
-      //   this.$message.success('提交成功！')
-      // } else {
-      //   this.$message.error('提交失败！')
-      // }
+      rows.splice(index, 1)
       this.loading = false
+    },
+    async handleSubmit1 (row) {
+      console.log(row)
+      this.loading = true
+      // eslint-disable-next-line no-unused-vars
+      this.Stockreturn = Object.assign(this.Stockreturn, row)
+      const submitS = await putSubmit(this.Stockreturn).catch(() => { this.loading = false })
+      if (submitS) {
+        this.$message.success('提交成功！')
+      } else {
+        this.$message.error('提交失败！')
+      }
+      this.loading = false
+      this.getTableData()
+    },
+    // 处理保存请求
+    async handleSave () {
+      this.loading = true
+      // 判断为新增还是编辑明细页面
+      // eslint-disable-next-line eqeqeq
+      if (this.noStatus == true) {
+        const updateS = await updateByNo(this.Stockreturn).catch(() => { this.loading = false })
+        console.log(updateS)
+        if (updateS) {
+          this.$message.success('修改成功！')
+        } else {
+          this.$message.error('修改失败！')
+        }
+        this.loading = false
+      } else {
+        const subres = await addStockReturn(this.Stockreturn).catch(() => { this.loading = false })
+        console.log('StockReturn', this.Stockreturn)
+        console.log('提交结果：' + subres)
+        if (subres) {
+          this.$message.success('提交成功！')
+        } else {
+          this.$message.error('提交失败！')
+        }
+        this.loading = false
+      }
       this.getTableData()
     },
     async initVo () {
       Object.assign(this.$data.Stockreturn, this.$options.data().Stockreturn)
       // this.getTableData()
     },
-    async handleEdit (index, row) {
+    async handleEdit (row) {
+      console.log(row)
       this.loading = true
       this.Stockreturn = Object.assign(this.Stockreturn, row)
-      // console.log('pid:' + this.outVo.id)
-      // eslint-disable-next-line no-unused-vars
-      const items = await getItem(this.Stockreturn.no).catch(() => { this.loading = false })
-      // this.Stockreturn.stockReturnItemVOList = items.stockReturnItemVOList
-      // this.outVo.altercode = 2
-      // 处理票据代码选择时的选项
-      // this.billPrecodeChange(row)
+      const items = await getStockReturnItems(this.Stockreturn).catch(() => { this.loading = false })
+      console.log(items)
+      this.Stockreturn.stockReturnItemVOList = items.stockReturnItemVOList
+      this.billPrecodeChange(row)
       this.loading = false
     },
     async handleDelete (index, row) {
       console.log(index, row)
+      this.loading = true
+      this.Stockreturn = Object.assign(this.Stockreturn, row)
+      // 删除一项退票主表信息
+      // eslint-disable-next-line no-unused-vars
+      const deleteStockReturn = await deleteStockReturnByNo(this.Stockreturn).catch(() => { this.loading = false })
+      this.getTableData()
     },
     async handleSizeChange (val) {
       this.query.limit = val
