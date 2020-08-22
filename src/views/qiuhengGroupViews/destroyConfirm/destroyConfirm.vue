@@ -159,9 +159,6 @@ export default {
       visible: true
     }
   },
-  // components:{
-  // "addDestroyApplyDialog": addDestroyApplyVue
-  // },
   created () {
     this.refreshButton1()
   },
