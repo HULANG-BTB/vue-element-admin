@@ -17,6 +17,12 @@ export default [
         component: () => import('@/views/stockreturn/stockreturn'),
         name: 'PageStockReturn1',
         meta: { title: '票据申退' }
+      },
+      {
+        path: '/stockreturn2',
+        component: () => import('@/views/stockreturn/stockreturncheck'),
+        name: 'PageStockReturn2',
+        meta: { title: '票据申退审核' }
       }
     ]
   }

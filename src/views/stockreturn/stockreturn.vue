@@ -78,22 +78,32 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="业务单号" width="180">
+      <el-table-column label="业务单号" width="150">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.no }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="编制日期" width="180">
+      <el-table-column label="编制日期" width="150">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.date }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="退票原因" width="540" align="center">
+      <el-table-column label="退票原因" width="250" align="center">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.returnReason }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="经办人" width="180">
+      <el-table-column label="退票人" width="150">
+        <template slot-scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.returner }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="审核意见" width="250">
+        <template slot-scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.changeSitu }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="审核人" width="150">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.changeMan }}</span>
         </template>
@@ -101,8 +111,13 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.row); dialogFormVisible=true; noStatus=true">编辑</el-button>
+<<<<<<< HEAD
           <!-- <el-button size="mini"@click="dialogFormVisible=true; noStatus=true">查看</el-button> -->
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+=======
+          <el-button :disabled="scope.row.submitStatus==1" size="mini" @click="handleSubmit1(scope.row)">提交</el-button>
+          <el-button size="mini" type="danger" :disabled="scope.row.submitStatus==1" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+>>>>>>> master
         </template>
       </el-table-column>
     </el-table>
@@ -242,9 +257,10 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="dialogFormVisible = false;">取 消</el-button>
         <el-button
           type="primary"
+          :disabled="Stockreturn.submitStatus == 1"
           @click="handleSave(); dialogFormVisible = false"
         >保 存</el-button>
       </div></el-dialog>
@@ -252,7 +268,11 @@
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
+<<<<<<< HEAD
 import { getStockReturnList, getListStockReturnByDateOrNo, addStockReturn, getStockReturnItems, deleteStockReturnByNo, updateByNo } from '@/api/stockreturn.js'
+=======
+import { getStockReturnList, getListStockReturnByDateOrNo, addStockReturn, getStockReturnItems, deleteStockReturnByNo, updateByNo, putSubmit } from '@/api/stockreturn.js'
+>>>>>>> master
 
 export default {
   data () {
@@ -302,6 +322,8 @@ export default {
         agenIdCode: '',
         returner: '',
         author: 'defaultAuthor',
+        changeMan: '',
+        changeSitu: '',
         changeState: '0',
         returnReason: '',
         submitStatus: '0',
@@ -309,6 +331,11 @@ export default {
       },
       dialogFormVisible: false,
       noStatus: false,
+<<<<<<< HEAD
+=======
+      // submitStatus: false,
+      saveStatus: false,
+>>>>>>> master
       labelPosition: 'left',
       billOptions: [{
         billCode: '00000120',
@@ -378,16 +405,67 @@ export default {
       tableData.push({
         'billCode': '',
         'billName': '',
+<<<<<<< HEAD
         'number': 5,
         'billNo1': '0000000001',
         'billNo2': '0000000005'
+=======
+        'number': 2,
+        'billNo1': '0000000001',
+        'billNo2': '0000000002'
+>>>>>>> master
       })
       this.loading = false
     },
     async itemDelete (index, rows) {
+<<<<<<< HEAD
+      this.loading = true
+      rows.splice(index, 1)
+=======
       this.loading = true
       rows.splice(index, 1)
       this.loading = false
+    },
+    async handleSubmit1 (row) {
+      console.log(row)
+      this.loading = true
+      // eslint-disable-next-line no-unused-vars
+      this.Stockreturn = Object.assign(this.Stockreturn, row)
+      const submitS = await putSubmit(this.Stockreturn).catch(() => { this.loading = false })
+      if (submitS) {
+        this.$message.success('提交成功！')
+      } else {
+        this.$message.error('提交失败！')
+      }
+>>>>>>> master
+      this.loading = false
+    },
+    // 处理保存请求
+    async handleSave () {
+      this.loading = true
+      // 判断为新增还是编辑明细页面
+      // eslint-disable-next-line eqeqeq
+      if (this.noStatus == true) {
+        const updateS = await updateByNo(this.Stockreturn).catch(() => { this.loading = false })
+        console.log(updateS)
+        if (updateS) {
+          this.$message.success('修改成功！')
+        } else {
+          this.$message.error('修改失败！')
+        }
+        this.loading = false
+      } else {
+        const subres = await addStockReturn(this.Stockreturn).catch(() => { this.loading = false })
+        console.log('StockReturn', this.Stockreturn)
+        console.log('提交结果：' + subres)
+        if (subres) {
+          this.$message.success('提交成功！')
+        } else {
+          this.$message.error('提交失败！')
+        }
+        this.loading = false
+      }
+      this.getTableData()
     },
     // 处理保存请求
     async handleSave () {

@@ -1,6 +1,10 @@
 import request from '@/utils/request'
 
+<<<<<<< HEAD
 const BASE_URL = 'http://localhost:8080'
+=======
+const BASE_URL = 'http://localhost:8081'
+>>>>>>> master
 
 /**
  * 查询所有数据
@@ -64,6 +68,8 @@ export function deleteStockReturnByNo (Stockreturn) {
     url: '/stock-return-po/deleteByNo',
     method: 'get',
     params: { no: Stockreturn.no }
+<<<<<<< HEAD
+=======
   })
 }
 
@@ -76,6 +82,64 @@ export function updateByNo (Stockreturn) {
     url: '/stock-return-po/updateByNo',
     method: 'post',
     data: Stockreturn
+  })
+}
+
+/**
+ * 单位提交退票申请
+ * @param {*} Stockreturn
+ */
+export function putSubmit (Stockreturn) {
+  return request({
+    url: '/stock-return-po/updateSubmitStatus',
+    method: 'put',
+    params: { no: Stockreturn.no }
+>>>>>>> master
+  })
+}
+
+/**
+<<<<<<< HEAD
+ * 更新退票业务
+ * @param {*} Stockreturn
+ */
+export function updateByNo (Stockreturn) {
+  return request({
+    url: '/stock-return-po/updateByNo',
+    method: 'post',
+    data: Stockreturn
+=======
+ * 财政端审核退票申请（获取已提交的退票列表信息）
+ * @param {*} query
+ */
+export function getFinanStockReturnList (query) {
+  return request({
+    url: BASE_URL + '/finan-stock-return-po/getListStockReturnByDate',
+    method: 'post',
+    data: query
+  })
+}
+
+/**
+ * 财政端审核退票申请（获取已提交的退票详细信息）
+ */
+export function getFinanStockReturnItems (query) {
+  return request({
+    url: BASE_URL + '/finan-stock-return-po/getStockReturnByNo',
+    method: 'post',
+    data: query
+  })
+}
+
+/**
+ * 财政端审核退票（审核是否通过退票申请）
+ */
+export function getCheckStateByNo (query) {
+  return request({
+    url: BASE_URL + '/finan-stock-return-po/CheckStatusByNo',
+    method: 'post',
+    data: query
+>>>>>>> master
   })
 }
 
