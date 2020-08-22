@@ -8,8 +8,7 @@
     >
       登录
     </el-button>
-    <div class="index-check">
-
+    <el-card class="index-check" style="width:400px;background-color: #3f5c6d2c;">
       <el-image class="titleImg" :src="titleImg" />
       <el-form
         :model="query"
@@ -98,44 +97,40 @@
           </el-button>
         </el-form-item>
       </el-form>
+    </el-card>
 
-      <el-dialog title="电子票据" :visible.sync="billDialogVisible">
-        <el-form :inline="true">
-          <el-table
-            v-show="showTable"
-            :stripe="true"
-            :data="tableData"
-          >
-            <el-table-column
-              prop="title"
-              width="180"
-            />
-            <el-table-column
-              prop="property"
-            />
-          </el-table>
-        </el-form>
-
-        <el-button v-if="bill.fBillImgUrl!==null" type="button" style=" margin-top: 15px;" @click="openImg">查看票据详情</el-button>
-
-        <el-dialog
-          :visible.sync="imgDialogVisible"
-          title="电子票据"
-          append-to-body
+    <el-dialog title="电子票据" :visible.sync="billDialogVisible">
+      <el-form :inline="true">
+        <el-table
+          v-show="showTable"
+          :stripe="true"
+          :data="tableData"
         >
-          <el-image
-            v-if="bill.fBillImgUrl!==null"
-            :src="bill.fBillImgUrl"
+          <el-table-column
+            prop="title"
+            width="180"
           />
-        </el-dialog>
-      </el-dialog>
+          <el-table-column
+            prop="property"
+          />
+        </el-table>
+      </el-form>
 
-    </div>
-    <div>
-      <ul>15651995937</ul>
-      <ul>i7gxlo</ul>
-    </div>
+      <el-button v-if="bill.fBillImgUrl!==null" type="button" style=" margin-top: 15px;" @click="openImg">查看票据详情</el-button>
+
+      <el-dialog
+        :visible.sync="imgDialogVisible"
+        title="电子票据"
+        append-to-body
+      >
+        <el-image
+          v-if="bill.fBillImgUrl!==null"
+          :src="bill.fBillImgUrl"
+        />
+      </el-dialog>
+    </el-dialog>
   </div>
+
 </template>
 
 <script>
@@ -335,10 +330,13 @@ export default {
 
   ::v-deep .el-select .el-input {
     width: 110px;
+    background-color: #3f5c6d2c;
   }
   ::v-deep .input-with-select .el-input-group__prepend {
     width: 110px;
-    background-color: #fff;
+    background-color: #3f5c6d2c;
+  }::v-deep .input-with-select .el-scrollbar__view {
+    background-color: #3f5c6d2c;
   }
   ::v-deep .el-form-item__error{
     float: right;
