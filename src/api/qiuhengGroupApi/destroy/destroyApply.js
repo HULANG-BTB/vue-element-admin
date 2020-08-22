@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://localhost:9538'
+const BASE_URL = '/bill-destroy'
+// const BASE_URL = 'http://localhost:9538'
 
 export function addDestroyApply (applyVo) {
   return request({
@@ -10,11 +11,11 @@ export function addDestroyApply (applyVo) {
   })
 }
 
-export function updateApplyInfo (applyVo) {
+export function updateApplyInfo (result) {
   return request({
     url: BASE_URL + '/apply/updateApplyInfo',
-    method: 'get',
-    data: applyVo
+    method: 'post',
+    data: result
   })
 }
 

@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://localhost:8888'
+const BASE_URL = '/writeoff-service'
+// const BASE_URL = 'http://123.56.247.54:7000/writeoff-service'
 
 export function getApplyList (queryInfo) {
   return request({
@@ -38,5 +39,29 @@ export function getItems (queryInfo) {
     url: BASE_URL + '/unit/selectItem',
     method: 'get',
     params: queryInfo
+  })
+}
+
+export function getIncomes (queryInfo) {
+  return request({
+    url: BASE_URL + '/unit/selectIncome',
+    method: 'get',
+    params: queryInfo
+  })
+}
+
+export function getBillInfo (queryInfo) {
+  return request({
+    url: BASE_URL + '/unit/getBillInfo',
+    method: 'get',
+    params: queryInfo
+  })
+}
+
+export function saveApply (data) {
+  return request({
+    url: BASE_URL + '/unit/addOrUpdateApply',
+    method: 'post',
+    data: data
   })
 }

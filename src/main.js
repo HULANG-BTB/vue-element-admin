@@ -8,7 +8,6 @@ import ElementUI from 'element-ui'
 // import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 import 'element-ui/lib/theme-chalk/index.css'
-import moment from 'moment'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 import Vue from 'vue'
 import App from './App'
@@ -42,14 +41,13 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
-Vue.filter('dateFmt', (input, formatString = 'YYYY-MM-DD') => {
-  // moment(input) 把时间字符串转成时间对象
-  // format(formatString) 把时间对象，按照指定格式，格式化成符合条件的字符串
-  return moment(input).format(formatString)
-})
-
 new Vue({
   el: '#app',
+  data () {
+    return {
+      eventBus: new Vue()
+    }
+  },
   router,
   store,
   render: h => h(App)
