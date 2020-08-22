@@ -28,12 +28,6 @@ export default [
         path: '/out-record',
         component: () => import('@/views/finanbill/out-record'),
         name: 'OutRecord',
-        meta: { title: '出库记录' }
-      },
-      {
-        path: '/change-record',
-        component: () => import('@/views/finanbill/change-record'),
-        name: 'ChangeRecord',
         meta: { title: '变动记录' }
       }
     ]
