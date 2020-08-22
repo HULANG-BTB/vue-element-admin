@@ -24,11 +24,11 @@
               <!--分页区域-->
               <div class="block">
                 <el-pagination
-                  :current-page="currentPage"
-                  :total="20"
+                  :current-page="page.currentPage"
+                  :total="page.total"
                   layout="total, sizes, prev, pager, next, jumper"
-                  :page-size="10"
-                  :page-sizes="[10, 15, 20]"
+                  :page-size="page.pageSize"
+                  :page-sizes="[10, 20, 30]"
                   size="small"
                   @size-change="handleSizeChange"
                   @current-change="handleCurrentChange"
@@ -51,13 +51,12 @@
             @selection-change="handleSelectionChange"
           >
             <el-table-column type="selection" width="60" />
-            <el-table-column fixed prop="no" label="序号" />
-            <el-table-column prop="status" label="状态" />
-            <el-table-column prop="type" label="审验类型" />
-            <el-table-column prop="danwei" label="开票单位" />
-            <el-table-column prop="time" label="开票时间" />
-            <el-table-column prop="bill_number" label="开票份数" />
-            <el-table-column prop="payment" label="开票金额" />
+            <el-table-column fixed prop="fbillId" label="票据 ID" />
+            <el-table-column prop="fbillNo" label="票据编码" />
+            <el-table-column prop="fCreateTime" label="开票时间" />
+            <el-table-column prop="fstate" label="票据状态" />
+            <el-table-column prop="fplaceName" label="开票单位" />
+            <el-table-column prop="ftotalAmt" label="开票金额" />
             <el-table-column prop="existWarn" label="是否存在预警记录" />
             <el-table-column
               fixed="right"
@@ -76,6 +75,14 @@
 </template>
 
 <script>
+import {
+  getPassBillList,
+  getImageUrl,
+  pdfSign
+} from '@/api/qiuhengGroupApi/billInvoicing/bill'
+import {
+
+} from '@/api/qiuhengGroupApi/billInvoicing/bill'
 import VerifyDialog from '@/views/qiuhengGroupViews/verify/Dialog'
 export default {
   components: {
@@ -88,21 +95,33 @@ export default {
         f_no: '',
         f_agen_id_code: ''
       },
-      tableData: [{
-        no: 1,
-        status: '未审验',
-        type: '手工审核',
-        danwei: '福州市boss软件',
-        time: '2020-08-13 08:19:50',
-        bill_number: 100,
-        payment: '888888.00',
-        existWarn: '是'
+      tableData: [],
+      visible: true,
+      // 分页
+      page: {
+        currentPage: 1,
+        pageSize: 1,
+        total: 0,
+        keyword: ''
+      },
+      query: {
+        currentPage: 1,
+        pageSize: 1
       }
-      ],
-      visible: true
     }
   },
+  created () {
+    this.getTableData()
+  },
   methods: {
+    async getTableData () {
+      this.query.currentPage = this.page.currentPage
+      this.query.pageSize = this.page.pageSize
+      const res = await getPassBillList(this.query)
+      this.tableData = res.records
+      // 通过slice方法获取数组中的一段
+      this.page.total = res.total
+    },
     // 提交查询条件
     onSubmit () {
       console.log()
@@ -117,14 +136,39 @@ export default {
     },
     // 点击查看详情
     handleClick (row) {
-      if (row.status === '未审验') {
-        console.log(this.visible)
+      this.$root.eventBus.$emit('verifydata', row)
+      const billId = row.fbillId
+      const billNo = row.fbillNo
+      if (this.sign(billId, billNo) === 1) {
         this.$root.eventBus.$emit('visible', this.visible)
+        this.getUrl(billId, billNo)
       }
     },
     // ok
     handleSelectionChange () {
 
+    },
+    // 财政端电子签名
+    async sign (billId, billNo) {
+      const res = await pdfSign(billId, billNo)
+      console.log(res)
+      if (res.success) {
+        this.$message('审核通过')
+        return 1
+      } else {
+        this.$message('出现预警问题')
+      }
+    },
+    // 获取票据模板img的url
+    async getUrl (billId, billNo) {
+      const res = await getImageUrl(billId, billNo)
+      console.log(res)
+      if (res.success) {
+        this.imgUrl = res.data
+        return res.data
+      } else {
+        this.$message('出现预警问题')
+      }
     }
 
   }
