@@ -1,9 +1,11 @@
 import request from '@/utils/request'
 import download from '@/utils/download'
 
+const baseURL = '/ecds-template'
+
 export function getImageTemplate () {
   return download({
-    url: `/image/template`,
+    url: baseURL + `/image/template`,
     method: 'get',
     responseType: 'blob'
   })
@@ -11,7 +13,7 @@ export function getImageTemplate () {
 
 export function generateImage (data) {
   return download({
-    url: `/image/genImage`,
+    url: baseURL + `/image/genImage`,
     method: 'post',
     responseType: 'blob',
     data
@@ -20,7 +22,7 @@ export function generateImage (data) {
 
 export function getRemoteAddress (data) {
   return request({
-    url: `/image/getRemoteAddress`,
+    url: baseURL + `/image/getRemoteAddress`,
     method: 'post',
     data
   })
