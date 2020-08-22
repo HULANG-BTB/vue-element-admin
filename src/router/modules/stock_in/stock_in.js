@@ -9,14 +9,18 @@ export default [
     name: 'User',
     meta: {
       title: '票据入库',
-      icon: 'user'
+      icon: 'user',
+      roles: ['financial', 'financial_check', 'admin']
     },
     children: [
       {
         path: 'stockInList',
         component: () => import('@/views/stockIn/stockInList'),
         name: 'stockInList',
-        meta: { title: '入库单列表' }
+        meta: {
+          title: '入库单列表',
+          roles: ['financial', 'admin']
+        }
       },
       {
         path: 'addStockIn',
@@ -24,7 +28,7 @@ export default [
         name: 'addStockIn',
         meta: {
           title: '新建入库单',
-          roles: ['role_manager', 'admin']
+          roles: ['financial', 'admin']
         }
       },
       {
@@ -33,7 +37,7 @@ export default [
         name: 'editStockIn',
         meta: {
           title: '编辑入库单',
-          roles: ['role_manager', 'admin']
+          roles: ['financial', 'admin']
         },
         hidden: true
       },
@@ -43,7 +47,7 @@ export default [
         name: 'changeStockIn',
         meta: {
           title: '入库单审核',
-          roles: ['permission_manager', 'admin']
+          roles: ['financial_check', 'admin']
         }
       }
     ]
