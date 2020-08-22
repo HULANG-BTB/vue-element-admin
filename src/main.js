@@ -8,13 +8,12 @@ import ElementUI from 'element-ui'
 // import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 import 'element-ui/lib/theme-chalk/index.css'
+import moment from 'moment'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
-
-import moment from 'moment'
 
 Vue.use(permission)
 
@@ -27,10 +26,10 @@ Vue.use(permission)
  * please remove it before going online ! ! !
  */
 
-if (process.env.NODE_ENV !== 'production') {
-  const { mockXHR } = require('../mock')
-  mockXHR()
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   const { mockXHR } = require('../mock')
+//   mockXHR()
+// }
 
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale: zhLocale })

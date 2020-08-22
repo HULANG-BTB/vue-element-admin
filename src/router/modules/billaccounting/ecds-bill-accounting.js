@@ -9,24 +9,28 @@ const billAccountRouter = {
   name: 'billAccount',
   meta: {
     title: '入账管理',
+    roles: ['admin', 'financial', 'financial_check'],
     icon: 'chart'
   },
   children: [{
     path: '/cbillaccounting',
     component: () => import('@/views/ecds-bill-accounting/cbillaccounting'),
     name: 'cbillaccounting',
+    roles: ['admin', 'financial', 'financial_check'],
     meta: { title: '入账信息' }
   },
   {
     path: '/voucher',
     component: () => import('@/views/ecds-bill-accounting/voucher'),
     name: 'voucher',
+    roles: ['admin', 'financial', 'financial_check'],
     meta: { title: '入账凭证' }
   },
   {
     path: '/billInterflow',
     component: () => import('@/views/ecds-bill-accounting/billInterflow'),
     name: 'billInterflow',
+    roles: ['admin', 'financial', 'financial_check'],
     meta: { title: '入账交互' }
   }
   ]
