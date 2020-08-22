@@ -175,8 +175,8 @@ export default {
   methods: {
     async getData (val) {
       const res = await getItemListByDestroyNo(val)
-      console.log(res)
-      this.tableData = res
+      // console.log(res)
+      this.tableData = res.data
     }
   }
 }

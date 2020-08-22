@@ -18,7 +18,7 @@
     >
       <div class="look-header">
         <el-row>
-          <el-col :span="12">
+          <el-col :span="10">
             <el-form-item
               label="申请单号"
               prop="fDetroyNo"
@@ -46,6 +46,62 @@
               />
             </el-form-item>
           </el-col>
+          <el-col :span="10">
+            <el-form-item
+              label="申请人"
+              prop="applyMan"
+              style="width: 300px"
+            >
+              <el-input
+                v-model="ruleForm.applyMan"
+                type="textarea"
+                :rows="1"
+                disabled
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item
+              label="申请日期"
+              prop="applyDate"
+              style="width: 300px"
+            >
+              <el-input
+                v-model="ruleForm.applyDate"
+                type="textarea"
+                :rows="1"
+                disabled
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item
+              label="申请类型"
+              prop="applyTpye"
+              style="width: 300px"
+            >
+              <el-input
+                v-model="ruleForm.applyTpye"
+                type="textarea"
+                :rows="1"
+                disabled
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item
+              label="申请状态"
+              prop="applyStatus"
+              style="width: 300px"
+            >
+              <el-input
+                v-model="ruleForm.applyStatus"
+                type="textarea"
+                :rows="1"
+                disabled
+              />
+            </el-form-item>
+          </el-col>
         </el-row>
 
       </div>
@@ -58,7 +114,7 @@
         >
           <span>票据销毁申请明细</span>
         </div>
-        <el-divider content-position="left">票据销毁审核</el-divider>
+        <el-divider content-position="left">票据销毁申请信息明细</el-divider>
         <el-table
           ref="multipleTable"
           :data="tableData"
@@ -119,7 +175,11 @@ export default {
         date1: '',
         date2: '',
         unitName: '博思软件股份有限公司',
-        fDetroyNo: ''
+        fDetroyNo: '',
+        applyMan: '',
+        applyDate: '',
+        applyTpye: '',
+        applyStatus: ''
       },
       lookDestroyApplyDialogVisible: false
     }
@@ -135,12 +195,24 @@ export default {
       this.getData(val)
       this.ruleForm.fDetroyNo = val
     })
+    this.$root.eventBus.$on('lookDestroyApplyMan', (val) => {
+      this.ruleForm.applyMan = val
+    })
+    this.$root.eventBus.$on('lookDestroyApplyDate', (val) => {
+      this.ruleForm.applyDate = val
+    })
+    this.$root.eventBus.$on('lookDestroyApplyType', (val) => {
+      this.ruleForm.applyTpye = val
+    })
+    this.$root.eventBus.$on('lookDestroyApplyStatus', (val) => {
+      this.ruleForm.applyStatus = val
+    })
   },
   methods: {
     async getData (val) {
       const res = await getItemListByDestroyNo(val)
       // console.log(res)
-      this.tableData = res
+      this.tableData = res.data
     }
   }
 }
