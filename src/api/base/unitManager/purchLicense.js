@@ -10,6 +10,14 @@ export function getCrtListByPage (data) {
     data: data
   })
 }
+// 根据单位编码查询领购证
+export function getCrtByAgenCode (data) {
+  return request({
+    url: '/crt/getByAgenCode',
+    method: 'post',
+    data: data
+  })
+}
 
 export function checkCrtListByPage (data) {
   return request({

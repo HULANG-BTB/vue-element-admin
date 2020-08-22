@@ -268,10 +268,10 @@ export default {
         ],
         mnem: [{ required: true, message: '助记码不能为空', trigger: 'blur' }],
         effDate: [
-          { trigger: 'blur', validator: validateDatePicker }
+          { required: true, trigger: 'blur', validator: validateDatePicker }
         ],
         expDate: [
-          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'effDate') }
+          { required: true, trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'effDate') }
         ]
       }
     }
