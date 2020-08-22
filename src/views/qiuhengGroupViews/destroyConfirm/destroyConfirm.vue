@@ -154,10 +154,7 @@ export default {
         pageSize: 1,
         total: 0,
         keyword: ''
-<<<<<<< HEAD
-=======
       },
-
       visible: true,
 
       async refreshButton () {
@@ -182,7 +179,6 @@ export default {
           }
         }
         console.log(this.tableData)
->>>>>>> 1051464fcaed94f55382915195bd471a6b242fe8
       }
     }
   },

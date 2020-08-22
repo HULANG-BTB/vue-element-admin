@@ -233,7 +233,8 @@
 </template>
 <script>
 import {
-  addBill
+  addBill,
+  getBill
 } from '@/api/qiuhengGroupApi/billInvoicing/bill'
 import projectDialog from '@/views/qiuhengGroupViews/bill-invoicing/ProjectDialog.vue'
 export default {
@@ -258,8 +259,8 @@ export default {
       },
       // 票据模块
       uneCbillDto: {
-        fBillId: '201700000001',
-        fBillNo: 'NO.6666666',
+        fBillId: '01160201',
+        fBillNo: '0000000015',
         fType: '福州市非税收入票据（电子）',
         checkCode: ''
       },
@@ -291,8 +292,15 @@ export default {
       this.amt = val
       console.log(this.amt)
     })
+    this.getBill()
   },
   methods: {
+    // 获取可用票据
+    async getBill () {
+      const res = await getBill()
+      console.log(res)
+    },
+    // 新增开票
     async insertBill () {
       const batchPojo = {
         unitName: '',
