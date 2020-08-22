@@ -1,26 +1,28 @@
 <template>
-  <div class="bg">
-    <div class="app-container" style="text-align:center">
-      <el-header>
-        <i class="el-icon-date" />交易日期 : {{ date_format }}
-        <i class="el-icon-user" />交款人 : {{ pay_person }}
-        <i class="el-icon-coin" />缴费金额 : {{ pay_money }}
+  <div class="bk">
+    <el-card class="bg">
+      <el-header class="header">
+        <i v-cloak class="el-icon-date" />交易日期 : {{ date_format }}
+        <el-divider direction="vertical" />
+        <i v-cloak class="el-icon-user" />缴款人 : {{ pay_person }}
+        <el-divider direction="vertical" />
+        <i v-cloak class="el-icon-coin" />缴费金额 : {{ pay_money }}
         <a style="color:blue" @click="route_payInformation">【订单详情】</a>
         <a style="color:blue" @click="route_index">【返回首页】</a>
       </el-header>
+      <el-divider><span style="color:yellow">请选择你的支付方式</span></el-divider>
       <div class="box">
-        <div class="lab">选择您的支付方式</div>
         <el-radio-group v-for="item in pay_mode_name" :key="item" v-model="pay_mode_default">
-          <el-radio :label="item" style="margin-right:15px">
+          <el-radio :label="item" class="radio">
             <svg-icon :icon-class="item" class="icon" />
           </el-radio>
         </el-radio-group>
       </div>
-      <div style="pay_ok">
-        <el-checkbox-group v-model="pay_button_flag">
-          <el-checkbox label="我已阅读相关协议" @change="change_status_pay" />
+      <el-divider class="break1" />
+      <div>
+        <el-checkbox-group v-model="pay_button_flag" class="checkbox">
+          <el-checkbox v-cloak size="small" @change="change_status_pay">{{ msg3 }}</el-checkbox>
         </el-checkbox-group>
-        <br />
         <el-button type="primary" :disabled="pay_button_use" @click="payment_visible = true">点我支付</el-button>
       </div>
 
@@ -29,7 +31,9 @@
         <el-button type="primary" class="button" @click="picture_pay()">二维码支付</el-button>
       </el-dialog>
 
-      <el-dialog :visible.sync="password_visible" title="密码支付">
+      <el-dialog :visible.sync="password_visible" title="付款详情">
+        <div class="money">支付总金额:{{ money }}</div>
+        <el-divider><span style="color:red">请输入密码</span></el-divider>
         <div class="code-input-main">
           <div v-for="(item,index) in codeList" :key="index" class="code-input-main-item">{{ code_format[index] }}</div>
           <input v-model="code" maxlength="6" class="code-input-input" type="password" />
@@ -38,15 +42,18 @@
           <span v-if="code_length" style="color:red">{{ msg }}</span>
         </div>
         <div style="text-align:center;">
-          <el-button type="primary" @click="password_yes">确认支付</el-button>
-          <el-button type="primary" @click="password_no">取消</el-button>
+          <el-button type="primary" size="small" @click="password_yes">确认支付</el-button>
+          <el-button type="danger" size="small" @click="password_no">取消</el-button>
         </div>
       </el-dialog>
 
       <el-dialog :visible.sync="picture_visible" title="二维码支付" @close="reset">
-        <img :src="image" />
+        <span v-if="Qrcode_NO2" style="color:red">{{ msg4 }}</span>
+        <img v-if="Qrcode" :src="image" />
+        <div v-if="Qrcode_NO3" style="color:red;margin-top:15px">二维码还有{{ num }}s失效</div>
+        <span v-if="Qrcode_NO" style="color:red">{{ msg2 }}</span>
       </el-dialog>
-    </div>
+    </el-card>
   </div>
 </template>
 <script>
@@ -63,6 +70,9 @@ export default {
   data () {
     return {
 
+      // 总缴入金额
+      money: '',
+
       // 传输的数据整体
       info: '',
 
@@ -75,12 +85,6 @@ export default {
       pay_money: '',
       pay_checkcode: '',
       pay_phone: '',
-
-      // 订单详情
-      pay_items: [],
-
-      // 分割线
-      slider: 100,
 
       // 支付方式
       pay_mode_default: 'Alipay',
@@ -112,7 +116,21 @@ export default {
       timer: '',
 
       // 动态显示时间定时器
-      Dytimer: ''
+      Dytimer: '',
+
+      // 二维码支付显示
+      Qrcode: false,
+      Qrcode_NO: false,
+      msg2: '',
+
+      // 勾选信息
+      msg3: '勾选并阅读缴费系统相关协议',
+
+      // 二维码失效
+      num: 30,
+      msg4: '',
+      Qrcode_NO2: false,
+      Qrcode_NO3: false
     }
   },
   computed: {
@@ -163,18 +181,18 @@ export default {
   },
   created () {
     // 获取前一个页面路由的数据
-    this.info = JSON.parse(decodeURIComponent(this.$route.query.data))
-    const payInformation = JSON.parse(decodeURIComponent(this.$route.query.data))
-    // 获取项目列表
-    this.pay_items = payInformation.PayList
+    this.info = JSON.parse(decodeURIComponent(this.$route.params.data))
+    const payInformation = JSON.parse(decodeURIComponent(this.$route.params.data))
     // 获取缴款人电话
-    this.pay_phone = payInformation.payTel
+    this.pay_phone = payInformation.fpayerTel
     // 获取缴款人总计缴费金额
     this.pay_money = payInformation.money
     // 获取缴款人校验码
-    this.pay_checkcode = payInformation.billSerialld
+    this.pay_checkcode = payInformation.checkCode
     // 获取缴款人姓名
-    this.pay_person = payInformation.persion
+    this.pay_person = payInformation.payDto.payerName
+
+    this.money = '￥' + payInformation.money
   },
 
   destroyed () {
@@ -196,8 +214,10 @@ export default {
     // 切换支付按钮是否可用
     change_status_pay () {
       if (this.pay_button_flag.length === 1) {
+        this.msg3 = '您已同意并阅读缴费系统相关协议'
         this.pay_button_use = false
       } else {
+        this.msg3 = '勾选并阅读缴费系统相关协议'
         this.pay_button_use = true
       }
     },
@@ -210,14 +230,18 @@ export default {
     // 点击显示密码支付弹窗函数
     password_pay () {
       this.code_length = false
-      this.msg = '请输入6位支付密码'
       this.code = ''
       this.password_visible = true
     },
 
     // 密码支付确认按钮
     password_yes () {
+      const regex = /\d{6}$/
       if (this.code.length !== 6) {
+        this.msg = '请输入6位支付密码'
+        this.code_length = true
+      } else if (!regex.test(this.code)) {
+        this.msg = '请输入数字'
         this.code_length = true
       } else {
         this.code_length = false
@@ -229,9 +253,10 @@ export default {
           accountType: this.getArrayIndex(this.pay_mode_default),
           time: this.date_formatr(this.pay_date)
         }).then((response) => {
-          if (response.status === 200) {
-            this.$router.push({ path: '/paySuccess', query: {}})
+          if (response.code === 11115 && response.success === true) {
+            this.$router.push({ name: 'PaySuccess', params: {}})
           } else {
+            this.code_length = true
             this.msg = '密码错误，请重试或联系工作人员'
             this.loading = false
           }
@@ -242,12 +267,18 @@ export default {
     // 二维码支付函数
     picture_pay () {
       clearInterval(this.timer)
+      this.num = 30
+      this.Qrcode_NO2 = false
+      this.Qrcode_NO = false
+      this.Qrcode_NO3 = false
+      this.Qrcode = true
       this.getPicture()
       this.picture_visible = true
       const _this = this
       this.timer = setInterval(function () {
-        getUUid(_this.UUid).then((response) => {
-          if (response.msg === 'Yes') {
+        _this.num--
+        getUUid({ uuid: _this.UUid }).then((response) => {
+          if (response.message === 'Yes' && response.success === true) {
             addAccIntoInfoDto({
               billSerialId: _this.pay_checkcode,
               payerTel: _this.pay_phone,
@@ -258,9 +289,16 @@ export default {
             clearInterval(_this.timer)
             _this.route()
           } else {
-            console.log(response.msg)
+            console.log(response.message)
           }
         })
+        if (_this.num === 0) {
+          _this.Qrcode_NO3 = false
+          _this.Qrcode = false
+          clearInterval(_this.timer)
+          _this.msg4 = '二维码已经失效请重新获取'
+          _this.Qrcode_NO2 = true
+        }
       }, 1000)
     },
 
@@ -272,18 +310,21 @@ export default {
     // 路由到支付成功页面
     route () {
       clearInterval(this.timer)
-      this.$router.push({ path: '/paySuccess', query: {}})
+      this.$router.push({ name: 'PaySuccess', params: {}})
     },
 
     // 获取二维码函数
     getPicture () {
       getQrCode().then((response) => {
-        if (response.status === 200) {
+        if (response.code === 11113 && response.success === true) {
           this.image = 'data:image/png;base64,' + response.data.image
-          this.UUid = response.data.UUid
+          this.UUid = response.data.uuid
+          this.Qrcode_NO3 = true
           console.log(this.UUid)
         } else {
-          console.log('失败')
+          this.msg2 = '二维码获取失败请重试'
+          this.num = 0
+          this.Qrcode_NO = true
           this.loading = false
         }
       })
@@ -292,13 +333,13 @@ export default {
     // 返回首页函数
     route_index () {
       clearInterval(this.timer)
-      this.$router.push({ path: '/pay', query: {}})
+      this.$router.push({ name: 'PayIndex', params: {}})
     },
 
     // 返回项目详情页面
     route_payInformation () {
       clearInterval(this.timer)
-      this.$router.push({ path: '/payInformation', query: { data: JSON.stringify(this.info) }})
+      this.$router.push({ name: 'PayInformation', params: { data: JSON.stringify(this.info) }})
     },
 
     // 二维码支付模态框销毁时清除定时器
@@ -332,10 +373,20 @@ export default {
 }
 </script>
 <style scoped>
+.checkbox{
+  margin-bottom: 2% ;
+}
+.header{
+  margin-top: 3%;
+}
   /*支付图片样式*/
 .icon {
-  padding-top: 90px;
-  font-size: 150px;
+  padding-top: 60px;
+  font-size: 120px;
+}
+
+.radio {
+  margin-right:15px;
 }
 
 .button {
@@ -371,7 +422,7 @@ input::-webkit-inner-spin-button {
 .code-input-main-item {
   width: 34px;
   height: 44px;
-  margin: 0 5px;
+  margin: 0 2px;
   padding-bottom: 0;
   opacity: 0.8;
   border-bottom: solid #323232 1px;
@@ -383,7 +434,7 @@ input::-webkit-inner-spin-button {
 .box{
   width: 80%;
   height: 20%;
-  margin-left: 10%;
+  margin-left: 8%;
   margin-bottom: 2%;
 }
 
@@ -392,23 +443,29 @@ input::-webkit-inner-spin-button {
   color: yellow;
 }
 
-.app-container{
-  padding-top:12%;
-}
-
 .msg{
-  padding: 5%;
+  padding: 3%;
 }
 
 .bg {
-  /* width: 100%;
-  height: 100%;
-  background:url(../../assets/payment/bg.jpg) no-repeat;
-  background-size: 100%; */
-  background:rgb(196, 214, 247);
-  background-size: 100%;
+  text-align: center;
+}
+.bk {
   width: 100%;
   height: 100%;
+  padding-top: 3%;
+  padding-left: 5%;
+  padding-right: 5%;
 }
-
+.money{
+  font-size:40px;
+  margin-bottom: 40px;
+}
+.break1{
+  margin-top: 5%;
+  margin-bottom: 3%;
+}
+[v-cloak]{
+  display:none;
+}
 </style>

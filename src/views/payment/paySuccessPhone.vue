@@ -21,22 +21,19 @@ export default {
   created () {
     this.getUUid()
   },
-  destroyed () {
-    clearInterval(this.timer) // 在Vue实例销毁前，清除当前日期定时器
-  },
   methods: {
     getUUid () {
       Axios({
-        url: 'http://192.168.110.158:8080/pay/setUUid',
+        url: 'http://47.97.155.84/prod-api/pay/setUUid',
         params: {
           UUid: this.$route.query.UUid
         }
       }).then((response) => {
-        if (response.status === 200) {
-          this.msg = response.data.msg
+        if (response.code === 11115 && response.success === true) {
+          this.msg = response.data.message
           console.log(response)
         } else {
-          this.msg = '服务暂时离线'
+          this.msg = response.data.message
         }
       })
     }
