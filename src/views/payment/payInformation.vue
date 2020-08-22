@@ -1,34 +1,32 @@
 <template>
-  <div class="bg">
-    <div class="tab" style="text-align:center">
+  <div class="bk">
+    <el-card class="bg">
       <el-table
         :data="payment.slice((page-1)*limit,page*limit)"
         border
-        stripe
-        style="width: 50%;margin: 0 auto;height: 50%"
-        :header-cell-style="{background:'rgb(85,214,249)'}"
+        style="width: 60%;margin-top: 5%;margin-left: 20%;margin-bottom:2%"
       >
-        <el-table-column prop="fnumber" label="序号" width="100%" />
-        <el-table-column prop="fitemName" label="收费项目" width="100%" />
-        <el-table-column prop="fnumber" label="数量" width="100%" />
-        <el-table-column prop="famt" label="收费标准" width="100%" />
-        <el-table-column prop="famt" label="应缴金额" width="100%" />
+        <el-table-column prop="fitemCode" label="序号" width="100" />
+        <el-table-column prop="fitemName" label="收费项目" width="140" />
+        <el-table-column prop="fnumber" label="数量" width="140" />
+        <el-table-column prop="famt" label="收费标准" width="140" />
+        <el-table-column prop="famt" label="应缴费金额(元)" fixed="right" />
       </el-table>
-      <br />
       <el-pagination
         background
         layout="prev, pager, next, sizes, total, jumper"
         :total="total"
         :current-page="page"
-        :page-sizes="[1, 5, 10]"
+        :page-sizes="[1, 5, 8]"
         :page-size="limit"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
-      <br />
-      <el-button type="primary" size="small" @click="Payment()">确认</el-button>
-      <el-button type="info" size="small" @click="PayIndex()">返回</el-button>
-    </div>
+      <div style="margin-bottom:4%;margin-top:2%">
+        <el-button type="primary" size="small" @click="Payment()">确认</el-button>
+        <el-button type="danger" size="small" @click="PayIndex()">返回</el-button>
+      </div>
+    </el-card>
   </div>
 </template>
 
@@ -63,7 +61,7 @@ export default {
     },
 
     PayIndex () {
-      this.$router.push({ path: '/pay', query: {}})
+      this.$router.push({ name: 'PayIndex', params: {}})
     },
 
     // 每页数目改变
@@ -79,13 +77,12 @@ export default {
 }
 </script>
 <style scoped>
-.tab {
-  padding-top: 200px;
-}
 .bg {
-  background:rgb(196, 214, 247);
-  background-size: 100%;
+  text-align: center;
+}
+.bk {
   width: 100%;
   height: 100%;
+  padding: 5%;
 }
-</style>>
+</style>
