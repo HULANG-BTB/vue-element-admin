@@ -10,7 +10,7 @@ export function getDapartListAll (data) {
     data: data
   })
 }
-
+// 通过页码查找部门列表
 export function getDapartListByPage (data) {
   return request({
     url: `${BASE_URL}/dept/listByPage`,
@@ -18,7 +18,7 @@ export function getDapartListByPage (data) {
     data: data
   })
 }
-
+// 新增部门
 export function addDapart (data) {
   return request({
     url: `${BASE_URL}/dept/save`,
@@ -26,7 +26,7 @@ export function addDapart (data) {
     data: data
   })
 }
-
+// 修改部门
 export function updateDapart (user) {
   return request({
     url: `${BASE_URL}/dept/update`,
@@ -34,7 +34,7 @@ export function updateDapart (user) {
     data: user
   })
 }
-
+// 删除部门
 export function deleteDapart (data) {
   return request({
     url: `${BASE_URL}/dept/remove`,
@@ -42,7 +42,7 @@ export function deleteDapart (data) {
     data: { id: data }
   })
 }
-
+// 批量删除部门
 export function deleteDapartBatch (data) {
   return request({
     url: `${BASE_URL}/dept/removeBatch`,
@@ -51,7 +51,7 @@ export function deleteDapartBatch (data) {
   })
 }
 
-// 单位管理
+// 单位管理查找单位列表
 export function getUnitListByPage (data) {
   return request({
     url: `${BASE_URL}/agen/listByPage`,
@@ -59,7 +59,7 @@ export function getUnitListByPage (data) {
     data: data
   })
 }
-
+// 未审核单位查询
 export function getCheckList (data) {
   return request({
     url: `${BASE_URL}/agen/checkListByPage`,
@@ -67,7 +67,7 @@ export function getCheckList (data) {
     data: data
   })
 }
-
+// 批量审核单位
 export function getCheckBatch (data) {
   return request({
     url: `${BASE_URL}/agen/checkBatch`,
@@ -75,14 +75,14 @@ export function getCheckBatch (data) {
     data: data
   })
 }
-
+// 查看单位列表
 export function getUnitList () {
   return request({
     url: `${BASE_URL}/agen/listAll`,
     method: 'get'
   })
 }
-
+// 新增单位
 export function addUnit (data) {
   return request({
     url: `${BASE_URL}/agen/save`,
@@ -90,7 +90,7 @@ export function addUnit (data) {
     data: data
   })
 }
-
+// 修改单位
 export function updateUnit (user) {
   return request({
     url: `${BASE_URL}/agen/update`,
@@ -98,7 +98,7 @@ export function updateUnit (user) {
     data: user
   })
 }
-
+// 删除单位
 export function deleteUnit (data) {
   return request({
     url: `${BASE_URL}/agen/remove`,
@@ -106,10 +106,35 @@ export function deleteUnit (data) {
     data: { id: data }
   })
 }
-
+// 批量删除
 export function deleteUnitBatch (data) {
   return request({
     url: `${BASE_URL}/agen/removeBatch`,
+    method: 'post',
+    data: data
+  })
+}
+// 根据单位编码查询单位
+export function getByAgenCode (data) {
+  return request({
+    url: '/agen/getByAgenCode',
+    method: 'post',
+    data: data
+  })
+}
+
+// 根据ID查询单位
+export function getAgenById (data) {
+  return request({
+    url: `${BASE_URL}/agen/getById`,
+    method: 'post',
+    data: data
+  })
+}
+// 根据部门编码查询部门下属单位数
+export function getAgenCount (data) {
+  return request({
+    url: `${BASE_URL}/agen/getAgenCount`,
     method: 'post',
     data: data
   })
@@ -128,7 +153,7 @@ export function getAgenBillType (data) {
 export function getBillAllType () {
   return request({
     url: `${BASE_URL}/billType/queryAllBillType`,
-    method: 'post'
+    method: 'get'
   })
 }
 
@@ -164,5 +189,12 @@ export function updateAgenItemBatch (data) {
     url: `${BASE_URL}/agenItem/updateBatch`,
     method: 'post',
     data
+  })
+}
+
+export function getRgnTree () {
+  return request({
+    url: `${BASE_URL}/region/category`,
+    method: 'get'
   })
 }
