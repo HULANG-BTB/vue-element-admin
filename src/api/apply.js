@@ -13,12 +13,11 @@ export function deleteApply (applyId) {
   return request({
     url: 'fbeStockFinanceapply',
     method: 'delete',
-    params: { id:applyId }
+    params: { id: applyId }
   })
 }
 
-
-export function getItemList(rowId) {
+export function getItemList (rowId) {
   return request({
     url: '/fbeStockFinanceapply/items',
     method: 'get',
@@ -50,7 +49,7 @@ export function updateItem (item) {
   })
 }
 
-export function submitApply (apply){
+export function submitApply (apply) {
   return request({
     url: 'fbeStockFinanceapply/submit',
     method: 'put',
@@ -58,7 +57,7 @@ export function submitApply (apply){
   })
 }
 
-export function createApply (apply){
+export function createApply (apply) {
   return request({
     url: 'fbeStockFinanceapply',
     method: 'post',
@@ -66,7 +65,7 @@ export function createApply (apply){
   })
 }
 
-export function getApplyCheckList (query){
+export function getApplyCheckList (query) {
   return request({
     url: 'fbeStockFinanceapplyCheck/getAll',
     method: 'get',
@@ -74,28 +73,27 @@ export function getApplyCheckList (query){
   })
 }
 
-export function passApply (applyId,changeSitu){
+export function passApply (applyId, changeSitu) {
   return request({
     url: 'fbeStockFinanceapplyCheck/pass',
     method: 'put',
-    params: { 
-      id:applyId,
-      changeSitu:changeSitu
+    params: {
+      id: applyId,
+      changeSitu: changeSitu
     }
   })
 }
 
-export function returnApply (applyId,changeSitu){
+export function returnApply (applyId, changeSitu) {
   return request({
     url: 'fbeStockFinanceapplyCheck/return',
     method: 'put',
-    params: { 
-      id:applyId ,
-      changeSitu:changeSitu
+    params: {
+      id: applyId,
+      changeSitu: changeSitu
     }
   })
 }
-
 
 /* 统一方法 */
 export const util = {

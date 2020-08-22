@@ -528,7 +528,6 @@ export default {
           if (valid) {
             const form = { ...this.incomeSort }
             if (this.updateDialog === true) {
-
               update(form).then(response => {
                 this.freshTreeAndTable()
                 this.updateDialogVisible = false

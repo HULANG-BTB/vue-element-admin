@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-button @click="openCreate" style="margin-bottom:10px">新增</el-button>
+    <el-button style="margin-bottom:10px" @click="openCreate">新增</el-button>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -14,9 +14,9 @@
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="状态" width="110"  sortable>
+      <el-table-column align="center" label="状态" width="110" sortable>
         <template slot-scope="scope">
-          <span v-text="displayStatus(scope.row.status)"></span>
+          <span v-text="displayStatus(scope.row.status)" />
         </template>
       </el-table-column>
       <el-table-column label="申领单号" width="160" align="center" sortable>
@@ -41,28 +41,28 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" align="center">
         <template slot-scope="scope">
-          <el-dialog customClass="customWidth" :visible.sync="detailTableVisiable">
-              <act style="text-align:left" :row="rowDetail" />
+          <el-dialog custom-class="customWidth" :visible.sync="detailTableVisiable">
+            <act style="text-align:left" :row="rowDetail" />
           </el-dialog>
-          <el-button @click="openDetail(scope.row)" :type="scope.row.status | statusFilter">{{scope.row.status==0?"编辑":"查看"}}</el-button>
-          <el-button @click="onDelete(scope.row.id)" v-if="scope.row.status==0" :type="scope.row.status | statusFilter">{{scope.row.status==0?"删除":""}}</el-button>
+          <el-button :type="scope.row.status | statusFilter" @click="openDetail(scope.row)">{{ scope.row.status==0?"编辑":"查看" }}</el-button>
+          <el-button v-if="scope.row.status==0" :type="scope.row.status | statusFilter" @click="onDelete(scope.row.id)">{{ scope.row.status==0?"删除":"" }}</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog customClass="customWidth" :visible.sync="createTableVisiable">
-      <act style="text-align:left" :row="rowCreate"/>
+    <el-dialog custom-class="customWidth" :visible.sync="createTableVisiable">
+      <act style="text-align:left" :row="rowCreate" />
     </el-dialog>
   </div>
-  
+
 </template>
 
 <script>
-import { getApplyCheckList,getItemList } from '@/api/apply'
+import { getApplyCheckList, getItemList } from '@/api/apply'
 import act from './applyCheck.vue'
 
 export default {
   filters: {
-    statusFilter(status) {
+    statusFilter (status) {
       const statusMap = {
         published: 'success',
         draft: 'gray',
@@ -71,10 +71,10 @@ export default {
       return statusMap[status]
     }
   },
-  components:{ 
+  components: {
     act
   },
-  data() {
+  data () {
     return {
       list: null,
       listLoading: true,
@@ -84,17 +84,17 @@ export default {
       rowCreate: null
     }
   },
-  created() {
+  created () {
     this.fetchData()
   },
   methods: {
-    openCreate(){
+    openCreate () {
       this.rowCreate = {
         id: null,
         linkMan: null,
         linkAddr: null,
         linkTel: null,
-        agenName: "单位名",
+        agenName: '单位名',
         memo: null,
         summary: null,
         author: null,
@@ -102,53 +102,53 @@ export default {
         no: 1,
         rgnCode: 1,
         agenIdCode: 1,
-        kindName: "测试型单位",
-        author: "测试作者",
+        kindName: '测试型单位',
+        author: '测试作者',
         status: 0
       }
-      this.createTableVisiable = true;
+      this.createTableVisiable = true
     },
-    openDetail(row){
+    openDetail (row) {
       this.rowDetail = this.refreshRow(row)
-      this.detailTableVisiable = true;
+      this.detailTableVisiable = true
     },
-    fetchData() {
+    fetchData () {
       var that = this
-      getApplyCheckList().then(function(data){
-          that.list = data
-        })
+      getApplyCheckList().then(function (data) {
+        that.list = data
+      })
       this.listLoading = false
     },
-    refreshRow(row){
-      getItemList(row.id).then(function(data){
-          row.items = data
-        })
+    refreshRow (row) {
+      getItemList(row.id).then(function (data) {
+        row.items = data
+      })
       return row
     },
-    displayStatus(status){
-      switch(status) {
-      case 1:
-        return "待审核"
-        break;
-      case 2:
-        return "审核通过"
-        break;
-      case 3:
-        return "审核未通过"
-        break;
-     default:
-        return "待审核"
-      } 
+    displayStatus (status) {
+      switch (status) {
+        case 1:
+          return '待审核'
+          break
+        case 2:
+          return '审核通过'
+          break
+        case 3:
+          return '审核未通过'
+          break
+        default:
+          return '待审核'
+      }
     },
-    onDelete(applyId){
+    onDelete (applyId) {
       var that = this
       deleteApply(applyId).then(
-        function(){
-          getApplyList().then(function(data){
-          that.list = data
+        function () {
+          getApplyList().then(function (data) {
+            that.list = data
           })
         }
-        
+
       )
     }
   }

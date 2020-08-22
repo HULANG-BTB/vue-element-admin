@@ -43,9 +43,9 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
-Vue.filter('dateFmt', (input, formatString = "YYYY-MM-DD") => {
-   // moment(input) 把时间字符串转成时间对象
-   // format(formatString) 把时间对象，按照指定格式，格式化成符合条件的字符串
+Vue.filter('dateFmt', (input, formatString = 'YYYY-MM-DD') => {
+  // moment(input) 把时间字符串转成时间对象
+  // format(formatString) 把时间对象，按照指定格式，格式化成符合条件的字符串
   return moment(input).format(formatString)
 })
 
