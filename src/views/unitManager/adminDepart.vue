@@ -1,136 +1,153 @@
 <template>
   <div class="app-container">
-    <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
-      <el-form-item label="部门编码" prop="keyword.deptCode">
-        <el-input
-          v-model="queryParams.keyword.deptCode"
-          placeholder="请输入部门编码"
-          clearable
-          style="width: 140px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="部门名称" prop="keyword.deptName">
-        <el-input
-          v-model="queryParams.keyword.deptName"
-          placeholder="请输入部门名称"
-          clearable
-          style="width: 140px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="是否启用" prop="keyword.isenable">
-        <el-select v-model="queryParams.keyword.isenable" placeholder="请选择部门状态" style="width: 150px">
-          <el-option label="启用" value="true" />
-          <el-option label="停用" value="false" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="small"
-          @click="handleAdd"
-        >新增部门</el-button>
+    <el-row :gutter="20">
+      <el-col :span="6">
+        <el-card class="box-card">
+          <el-tree ref="tree" :data="treeList" node-key="id" :props="defaultProps" style="font-size:10px;" @node-click="handleNodeClick">
+            <span slot-scope="{ node, data }" class="custom-tree-node">
+              <span>{{ data.code }} {{ node.label }}</span>
+            </span>
+          </el-tree>
+        </el-card>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          :disabled="deleteBatchDisable"
-          icon="el-icon-delete"
-          size="small"
-          @click="handleMultDelete"
-        >批量删除</el-button>
+      <el-col :span="18">
+        <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
+          <el-form-item label="部门编码" prop="keyword.deptCode">
+            <el-input
+              v-model="queryParams.keyword.deptCode"
+              placeholder="请输入部门编码"
+              clearable
+              style="width: 140px"
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
+          <el-form-item label="部门名称" prop="keyword.deptName">
+            <el-input
+              v-model="queryParams.keyword.deptName"
+              placeholder="请输入部门名称"
+              clearable
+              style="width: 140px"
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
+          <el-form-item label="是否启用" prop="keyword.isenable">
+            <el-select v-model="queryParams.keyword.isenable" placeholder="请选择部门状态" style="width: 150px">
+              <el-option label="启用" value="true" />
+              <el-option label="停用" value="false" />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
+            <el-button icon="el-icon-refresh" @click="resetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
+
+        <el-row :gutter="10" class="mb8">
+          <el-col :span="1.5">
+            <el-button
+              type="primary"
+              icon="el-icon-plus"
+              size="small"
+              :disabled="isleaf"
+              @click="handleAdd"
+            >新增部门</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              type="danger"
+              :disabled="deleteBatchDisable"
+              icon="el-icon-delete"
+              size="small"
+              @click="handleMultDelete"
+            >批量删除</el-button>
+          </el-col>
+        </el-row>
+
+        <el-table :data="projectList" style="width: 100%;margin-top:30px;" border @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55" align="center" />
+          <el-table-column align="center" label="部门编码" prop="deptCode" />
+          <el-table-column align="center" label="部门名称" prop="deptName" :show-overflow-tooltip="true" />
+          <el-table-column align="center" label="联系人" prop="linkMan" />
+          <el-table-column align="center" label="联系电话" prop="linkTel" />
+          <el-table-column align="center" label="经办人" prop="operator" />
+          <el-table-column align="center" label="经办日期" prop="updateTime">
+            <template slot-scope="scope">
+              {{ parseTime(scope.row.updateTime) }}
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="是否启用" prop="isenable">
+            <template slot-scope="scope">
+              <el-tag
+                :type="scope.row.isenable ? 'success' : 'info'"
+                disable-transitions
+              >{{ scope.row.isenable ? '启用' : '停用' }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="操作" width="220">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">修改</el-button>
+              <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <el-pagination
+          style="margin-top:20px;float:right;margin-right:20px;"
+          center
+          background
+          margin-top="10"
+          layout="prev, pager, next, sizes, total, jumper"
+          :page-sizes="[10,20,50,100]"
+          :page-size="queryParams.limit"
+          :total="queryParams.total"
+          :current-page="queryParams.page"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
+        />
+
+        <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'部门变动':'新增部门'">
+          <el-form ref="project" :model="project" :rules="rules" label-width="80px" label-position="right" style="padding-right:25px;">
+            <el-form-item label="部门名称" :label-width="formLabelWidth" prop="deptName">
+              <el-input v-model="project.deptName" placeholder="部门名称" />
+            </el-form-item>
+            <el-form-item label="联系人" :label-width="formLabelWidth">
+              <el-input v-model="project.linkMan" placeholder="联系人" />
+            </el-form-item>
+            <el-form-item label="联系电话" :label-width="formLabelWidth">
+              <el-input v-model="project.linkTel" placeholder="联系电话" />
+            </el-form-item>
+            <el-form-item label="地址" :label-width="formLabelWidth">
+              <el-input v-model="project.addr" placeholder="地址" />
+            </el-form-item>
+            <el-form-item label="经办人" :label-width="formLabelWidth" prop="operator">
+              <el-input v-model="project.operator" placeholder="经办人" />
+            </el-form-item>
+            <el-form-item label="经办日期" :label-width="formLabelWidth" prop="createTime">
+              <el-date-picker v-model="project.createTime" type="date" placeholder="选择日期" style="width: 100%;" />
+            </el-form-item>
+            <el-form-item label="备注" :label-width="formLabelWidth">
+              <el-input v-model="project.note" placeholder="备注" />
+            </el-form-item>
+            <el-form-item label="是否启用" :label-width="formLabelWidth" prop="isenable">
+              <el-select v-model="project.isenable" placeholder="选择是否启用">
+                <el-option label="启用" :value="true" />
+                <el-option label="停用" :value="false" />
+              </el-select>
+            </el-form-item>
+          </el-form>
+          <div style="text-align:right;">
+            <el-button type="danger" @click="cancel">取消</el-button>
+            <el-button type="primary" @click="confirmRole">确认</el-button>
+          </div>
+        </el-dialog>
       </el-col>
     </el-row>
-
-    <el-table :data="projectList" style="width: 100%;margin-top:30px;" border @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column align="center" label="部门编码" prop="deptCode" />
-      <el-table-column align="center" label="部门名称" prop="deptName" :show-overflow-tooltip="true" />
-      <el-table-column align="center" label="联系人" prop="linkMan" />
-      <el-table-column align="center" label="联系电话" prop="linkTel" />
-      <el-table-column align="center" label="经办人" prop="operator" />
-      <el-table-column align="center" label="经办日期" prop="updateTime">
-        <template slot-scope="scope">
-          {{ parseTime(scope.row.updateTime) }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="是否启用" prop="isenable">
-        <template slot-scope="scope">
-          <el-tag
-            :type="scope.row.isenable ? 'success' : 'info'"
-            disable-transitions
-          >{{ scope.row.isenable ? '启用' : '停用' }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="操作" width="220">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">修改</el-button>
-          <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <el-pagination
-      style="margin-top:20px;float:right;margin-right:20px;"
-      center
-      background
-      margin-top="10"
-      layout="prev, pager, next, sizes, total, jumper"
-      :page-sizes="[10,20,50,100]"
-      :page-size="queryParams.limit"
-      :total="queryParams.total"
-      :current-page="queryParams.page"
-      @current-change="handleCurrentChange"
-      @size-change="handleSizeChange"
-    />
-
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'部门变动':'新增部门'">
-      <el-form ref="project" :model="project" :rules="rules" label-width="80px" label-position="right" style="padding-right:25px;">
-        <el-form-item label="部门编码" :label-width="formLabelWidth" prop="deptCode">
-          <el-input v-model="project.deptCode" placeholder="部门编码" />
-        </el-form-item>
-        <el-form-item label="部门名称" :label-width="formLabelWidth" prop="deptName">
-          <el-input v-model="project.deptName" placeholder="部门名称" />
-        </el-form-item>
-        <el-form-item label="联系人" :label-width="formLabelWidth">
-          <el-input v-model="project.linkMan" placeholder="联系人" />
-        </el-form-item>
-        <el-form-item label="联系电话" :label-width="formLabelWidth">
-          <el-input v-model="project.linkTel" placeholder="联系电话" />
-        </el-form-item>
-        <el-form-item label="经办人" :label-width="formLabelWidth" prop="operator">
-          <el-input v-model="project.operator" placeholder="经办人" />
-        </el-form-item>
-        <el-form-item label="经办日期" :label-width="formLabelWidth" prop="createTime">
-          <el-date-picker v-model="project.createTime" type="date" placeholder="选择日期" style="width: 100%;" />
-        </el-form-item>
-        <el-form-item label="是否启用" :label-width="formLabelWidth" prop="isenable">
-          <el-select v-model="project.isenable" placeholder="选择是否启用">
-            <el-option label="启用" :value="true" />
-            <el-option label="停用" :value="false" />
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div style="text-align:right;">
-        <el-button type="danger" @click="cancel">取消</el-button>
-        <el-button type="primary" @click="confirmRole">确认</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getDapartListByPage, addDapart, updateDapart, deleteDapart, deleteDapartBatch } from '@/api/unitManager'
+import { getDapartListByPage, addDapart, updateDapart, deleteDapart, deleteDapartBatch, getRgnTree } from '@/api/base/unitManager/unitManager'
 import { parseTime } from '@/utils/index'
 import { validateDatePicker } from '@/utils/validate'
 
@@ -160,13 +177,20 @@ export default {
         keyword: {
           deptCode: '',
           deptName: '',
-          isenable: ''
+          isenable: '',
+          rgnId: ''
         },
         page: 1,
         limit: 10
         // total: 0
       },
       projectList: [],
+      treeList: [],
+      isleaf: true,
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      },
       project: {
         id: 1,
         deptCode: '',
@@ -190,9 +214,6 @@ export default {
       formLabelWidth: '100px',
       selectedList: [],
       rules: {
-        deptCode: [
-          { required: true, message: '部门编码不能为空', trigger: 'blur' }
-        ],
         deptName: [
           { required: true, message: '部门名称不能为空', trigger: 'blur' }
         ],
@@ -220,12 +241,10 @@ export default {
     }
   },
   created () {
+    this.getTableTree()
     this.getTableData()
   },
   methods: {
-    // parseTime (time, format) {
-    //   return parseTime(time, '{y}-{m}-{d}')
-    // },
     // 格式化时间
     parseTime (time) {
       return parseTime(new Date(time), '{y}-{m}-{d}')
@@ -260,6 +279,7 @@ export default {
     handleAdd () {
       this.project = Object.assign({}, defaultUser)
       this.dialogType = 'new'
+      this.project.rgnId = this.queryParams.keyword.rgnId
       this.dialogVisible = true
     },
     // 编辑按钮
@@ -366,6 +386,21 @@ export default {
     handleCurrentChange (val) {
       this.queryParams.page = val
       this.getTableData()
+    },
+    // 获取树形菜单列表
+    async getTableTree () {
+      const res = await getRgnTree()
+      this.treeList = res.data
+    },
+    async handleNodeClick (data) {
+      if (data.children === null) {
+        this.isleaf = false
+        this.resetQuery()
+        this.queryParams.keyword.rgnId = data.code
+        this.getTableData()
+      } else {
+        this.isleaf = true
+      }
     }
   }
 }

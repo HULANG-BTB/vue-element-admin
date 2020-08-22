@@ -141,7 +141,7 @@
 </template>
 
 <script>
-import { getStdListByPage, updateStd, deleteStd, deleteStdBatch, projectStdCheck } from '@/api/projectManager'
+import { getStdListByPage, updateStd, deleteStd, deleteStdBatch, projectStdCheck } from '@/api/base/projectManager/projectManager'
 import { parseTime } from '@/utils/index'
 
 export default {

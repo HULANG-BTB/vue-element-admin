@@ -17,8 +17,7 @@ export function login (data) {
 export function getInfo (token) {
   return request({
     url: `${BASE_URL}/user/info`,
-    method: 'get',
-    params: { token } // Todo 生产环境删除
+    method: 'get'
   })
 }
 
