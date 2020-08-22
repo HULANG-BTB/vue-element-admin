@@ -86,7 +86,7 @@
                 @click="submitAll()"
               >提交</el-button>
               <el-button
-                v-if="!isCheckBoxChecked"
+                :disabled="isCheckBoxChecked"
                 type="danger"
                 size="small"
                 @click="deleteAll()"
@@ -356,7 +356,7 @@
   </div>
 </template>
 <script>
-import { getAll, addOut, getItem, save, submit, submitAll, deleteAll, util } from '@/api/finanbill.js'
+import { getAll, addOut, getItem, save, submit, submitAll, deleteAll, util } from '@/api/finanbill/finanbill.js'
 
 export default {
   name: 'OutApp',
@@ -538,7 +538,11 @@ export default {
       this.outVo = Object.assign(this.outVo, scope.row)
       // console.log('pid:' + this.outVo.id)
       const items = await getItem(this.outVo.id).catch(() => { this.loading = false })
-      this.outVo.outItemVos = items.data
+      if (items.data == null || items.data.length === 0) {
+        this.outVo.outItemVos = []
+      } else {
+        this.outVo.outItemVos = items.data
+      }
       this.outVo.altercode = 2
       // 处理票据代码选择时的选项
       this.billPrecodeChange(scope)
