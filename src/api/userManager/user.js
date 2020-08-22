@@ -5,7 +5,7 @@ const BASE_URL = '/base'
 
 export function login (data) {
   return request({
-    url: `/user/login`,
+    url: `${BASE_URL}/user/login`,
     method: 'post',
     data: qs.stringify(data),
     headers: {

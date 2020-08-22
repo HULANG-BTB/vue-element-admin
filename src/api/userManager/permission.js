@@ -43,7 +43,7 @@ export function getPermissionById (id) {
 
 export function getPermissionByRid (id) {
   return request({
-    url: `${BASE_URL}/permission/getByRid/` + id,
+    url: `${BASE_URL}/permission/getByRid/${id}`,
     method: 'get'
   })
 }
