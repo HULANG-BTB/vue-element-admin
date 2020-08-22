@@ -24,7 +24,10 @@ export function getInfo (token) {
 export function logout () {
   return request({
     url: `/user/logout`,
-    method: 'post'
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
   })
 }
 
