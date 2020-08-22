@@ -26,7 +26,7 @@
       </el-table-column>
       <el-table-column label="申领日期" width="220" align="center" sortable>
         <template slot-scope="scope">
-          {{ scope.row.updateTime | dateFmt('YYYY-MM-DD HH:MM:SS') }}
+          {{ scope.row.submitDate | dateFmt('YYYY-MM-DD HH:MM:SS') }}
         </template>
       </el-table-column>
       <el-table-column label="领购人" width="160" align="center" sortable>
@@ -114,14 +114,14 @@ export default {
     },
     fetchData() {
       var that = this
-      getApplyCheckList().then(function(data){
-          that.list = data
+      getApplyCheckList().then(res => {
+          that.list = res.data
         })
       this.listLoading = false
     },
     refreshRow(row){
-      getItemList(row.id).then(function(data){
-          row.items = data
+      getItemList(row.id).then(res =>{
+          row.items = res.data
         })
       return row
     },
@@ -144,8 +144,8 @@ export default {
       var that = this
       deleteApply(applyId).then(
         function(){
-          getApplyList().then(function(data){
-          that.list = data
+          getApplyList().then(res =>{
+          that.list = res.data
           })
         }
         

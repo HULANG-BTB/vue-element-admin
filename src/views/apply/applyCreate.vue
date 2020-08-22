@@ -24,8 +24,6 @@
     <div><span style="margin-right:8cm">编制人：{{row.author}}</span>
     <span style="margin-right:8cm">编制日期：{{row.updateTime| dateFmt('YYYY-MM-DD')}}</span>
     <el-button  type="primary" @click="onCreate">创建</el-button></div>
-    <!-- <el-button @click="test()">测试</el-button> -->
-      
   </div>
 </template>
 
@@ -63,26 +61,21 @@ export default {
     }
   },
   methods: {
-    // test(){
-    //   console.log(this.row.status)
-    // },
     onCreate() {
       var that = this
       createApply(this.row).then(
-        function(data){
+        res => {
+          this.visiable = false
           that.$notify({
             message:'新增申请成功'
           })
-          setTimeout(function(){
-              location.reload()
-          },2000)
-          
-        }   
+        }
       )  
     }
   },
   props:{
-    row: Object
+    row: Object,
+    visiable: Object
   }
 }
 </script>
