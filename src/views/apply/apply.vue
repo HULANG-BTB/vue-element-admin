@@ -1,5 +1,83 @@
 <template>
   <div class="app-container">
+    <el-form
+      :model="query"
+      :inline="true"
+      class="demo-form-inline"
+      @keyup.enter.native="handleSearch"
+    >
+      <div class="my-form-item">
+        <el-form-item label="单号:">
+          <el-input
+            v-model="query.no"
+            placeholder="请输入业务单号"
+            clearable
+            size="small"
+          />
+        </el-form-item>
+        <el-form-item label="编制人:">
+          <el-input
+            v-model="query.author"
+            placeholder="请输入编制人"
+            clearable
+            size="small"
+          />
+        </el-form-item>
+
+        <el-form-item label="日期:">
+          <div class="block">
+            <el-date-picker
+              v-model="query.preDate"
+              type="date"
+              size="small"
+              placeholder="选择开始日期">
+            </el-date-picker>
+            <el-date-picker
+              v-model="query.lastDate"
+              type="date"
+              size="small"
+              placeholder="选择结束日期">
+            </el-date-picker>
+          </div>
+            
+
+        </el-form-item>
+        
+          
+        <el-form-item label style="margin-left: 30px">
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="small"
+            @click="handleSearch"
+          >搜索</el-button>
+        </el-form-item>
+        <el-form-item label>
+          <el-button
+            type=""
+            icon="el-icon-refresh"
+            size="small"
+            @click="refreshQuery"
+          >重置</el-button>
+        </el-form-item>
+      </div>
+
+      <div>
+        <el-form-item label="审核状态">
+          <el-radio-group
+            v-model="query.changeState"
+            size="medium"
+            @change="handleSearch"
+          >
+            <el-radio-button label="0">未提交</el-radio-button>
+            <el-radio-button label="1">已提交</el-radio-button>
+            <el-radio-button label="2">审核通过</el-radio-button>
+            <el-radio-button label="3">审核退回</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+      </div>
+    </el-form>
+
     <el-button @click="openCreate" style="margin-bottom:10px">新增</el-button>
     <el-table
       v-loading="listLoading"
@@ -50,14 +128,24 @@
       </el-table-column>
     </el-table>
     <el-dialog customClass="customWidth" :visible.sync="createTableVisiable">
-      <act style="text-align:left" :row="rowCreate"/>
+      <act style="text-align:left" :visiable="createTableVisiable" :row="rowCreate"/>
     </el-dialog>
+
+    <el-pagination
+      background
+      layout="prev, pager, next, sizes, total, jumper"
+      :current-page="query.page"
+      :page-sizes="[5, 10, 20, 50, 100, 500]"
+      :page-size="query.limit"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
   </div>
   
 </template>
 
 <script>
-import { getApplyList,getItemList, deleteApply,util } from '@/api/apply'
+import { getApplyList, getItemList, deleteApply, util , getMaxNo } from '@/api/apply'
 import adt from './applyDetail.vue'
 import act from './applyCreate.vue'
 
@@ -84,7 +172,17 @@ export default {
       detailTableVisiable: false,
       createTableVisiable: false,
       rowDetail: null,
-      rowCreate: null
+      rowCreate: null,
+      query: {
+        page: 1,
+        limit: 10,
+        total: 0,
+        no: '',
+        author: '',
+        changeState: 0,
+        preDate: null,
+        lastDate: null
+      }
     }
   },
   created() {
@@ -109,22 +207,27 @@ export default {
         author: "测试作者",
         status: 0
       }
+      this.onGetMaxNo().then(
+        res => {
+          this.rowCreate.no = res.data
+        }
+      )
       this.createTableVisiable = true;
     },
     openDetail(row){
       this.rowDetail = this.refreshRow(row)
       this.detailTableVisiable = true;
     },
-    fetchData() {
+  fetchData() {
       var that = this
-      getApplyList().then(function(data){
-          that.list = data
-        })
-      this.listLoading = false
+      getApplyList(this.query).then(res => { 
+        that.list = res.data
+        this.listLoading = false
+      })    
     },
     refreshRow(row){
-      getItemList(row.id).then(function(data){
-          row.items = data
+      getItemList(row.id).then(res => {
+          row.items = res.data
         })
       return row
     },
@@ -149,12 +252,32 @@ export default {
     onDelete(applyId){
       var that = this
       deleteApply(applyId).then(
-        function(){
-          getApplyList().then(function(data){
-          that.list = data
-          })
+        res => {
+          this.refreshQuery()
         }
       )
+    },
+    handleSearch(){
+      this.query.page = 1
+      this.fetchData()
+    },
+    handleSizeChange(val) {
+      this.query.limit = val
+      this.fetchData()
+    },
+    handleCurrentChange(val) {
+      this.query.page = val
+      this.fetchData()
+    },
+    refreshQuery(){
+      this.query.no = ""
+      this.query.author = ""
+      this.query.preDate = null
+      this.query.lastDate = null
+      this.fetchData()
+    },
+    onGetMaxNo(){
+      return getMaxNo()
     }
   }
 }
