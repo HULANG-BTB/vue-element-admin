@@ -78,13 +78,13 @@
                 type="primary"
                 size="small"
                 :disabled="isCheckBoxChecked"
-                @click="submitAll()"
+                @click="checkAll(checkResult.pass)"
               >通过</el-button>
               <el-button
                 :disabled="isCheckBoxChecked"
                 type="danger"
                 size="small"
-                @click="deleteAll()"
+                @click="checkAll(checkResult.fail)"
               >退回</el-button>
             </el-form-item>
           </el-col>
@@ -235,40 +235,6 @@
       <!--
         item的table----------------------------------
       -->
-      <el-table
-        v-loading.body="loading"
-        :data="outVo.outItemVos"
-        style="width: 100%; margin-top: 10px;"
-        border
-      >
-        <el-table-column type="selection" align="center" width="55" />
-        <!-- 从1开始，与数据库数据无关 -->
-        <el-table-column type="index" align="center" label="序号" width="55" />
-        <!-- 出库主键 -->
-        <el-table-column align="center" label="单号" width="130">
-          <template slot-scope="scope">{{ scope.row.id.toString().padStart(11, 'SI00000000') }}</template>
-        </el-table-column>
-        <el-table-column align="center" label="票据代码" width="160">
-          <template slot-scope="scope">{{ scope.row.billPrecode }}</template>
-        </el-table-column>
-        <el-table-column align="center" label="票据名称" width="155">
-          <template slot-scope="scope">{{ scope.row.billName }}</template>
-        </el-table-column>
-        <el-table-column align="center" label="数量" width="85">
-          <template slot-scope="scope">{{ scope.row.number }}</template>
-        </el-table-column>
-        <el-table-column align="center" label="单位" width="55">
-          <template> 张 </template>
-        </el-table-column>
-        <el-table-column align="center" label="起始号" width="130">
-          <template slot-scope="scope">{{ scope.row.billNo1 }}</template>
-        </el-table-column>
-        <el-table-column align="center" label="终止号" width="130">
-          <template slot-scope="scope">
-            {{ scope.row.billNo2 }}
-          </template>
-        </el-table-column>
-      </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button
           v-if="!isSend"
@@ -295,7 +261,7 @@
   </div>
 </template>
 <script>
-import { getAll, getItem, check, checkAll, util } from '@/api/finanbill.js'
+import { getAll, getItem, check, checkAll, util } from '@/api/finanbill/finanbill.js'
 
 export default {
   name: 'OutApp',
@@ -459,6 +425,9 @@ export default {
     async checkAll (val) {
       this.loading = true
       this.outVo.changeState = val
+      this.selectedList.forEach(vo => {
+        vo.changeState = val
+      })
       const subAllres = await checkAll(this.selectedList).catch(() => { this.loading = false })
       console.log('提交结果：' + subAllres.data)
       if (subAllres.data) {
