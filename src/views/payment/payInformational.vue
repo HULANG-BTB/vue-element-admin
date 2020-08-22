@@ -1,32 +1,32 @@
 <template>
-  <div class="bg">
-    <div class="tab" style="text-align:center">
+  <div class="bk">
+    <el-card class="bg">
       <el-table
         :data="payment.slice((page-1)*limit,page*limit)"
         border
-        stripe
-        style="width: 50%;margin: 0 auto"
-        :header-cell-style="{background:'rgb(85,214,249)'}"
+        style="width: 60%;margin-top: 5%;margin-left: 20%;margin-bottom:2%"
       >
-        <el-table-column prop="item" label="收费项目" width="180" />
-        <el-table-column prop="shouldPay" label="收费标准" width="180" />
-        <el-table-column prop="realPay" label="应缴金额" />
+        <el-table-column prop="fitemCode" label="序号" width="100" />
+        <el-table-column prop="fitemName" label="收费项目" width="140" />
+        <el-table-column prop="fnumber" label="数量" width="140" />
+        <el-table-column prop="famt" label="收费标准" width="140" />
+        <el-table-column prop="famt" label="应缴费金额(元)" fixed="right" />
       </el-table>
-      <br />
       <el-pagination
         background
         layout="prev, pager, next, sizes, total, jumper"
         :total="total"
         :current-page="page"
-        :page-sizes="[1, 5, 10]"
+        :page-sizes="[1, 5, 8]"
         :page-size="limit"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
-      <br />
-      <div class="mini_word">请点击跳转或等待{{ time }}s后跳转</div>
-      <el-button type="primary" class="button" @click="Payment()">确认</el-button>
-    </div>
+      <div style="margin-bottom:4%;margin-top:2%">
+        <div class="mini_word">请点击跳转或等待{{ time }}s后跳转</div>
+        <el-button type="primary" size="small" @click="Payment()">确认</el-button>
+      </div>
+    </el-card>
   </div>
 </template>
 
@@ -50,9 +50,9 @@ export default {
   },
   created () {
     this.payInformation = JSON.parse(
-      decodeURIComponent(this.$route.query.data)
+      decodeURIComponent(this.$route.params.data)
     )
-    this.payment = this.payInformation.PayList
+    this.payment = this.payInformation.payDto.uneCbillItems
     this.total = this.payInformation.total
     const _this = this
     this.timer = setInterval(function () {
@@ -65,10 +65,7 @@ export default {
   },
   methods: {
     Payment () {
-      this.$router.push({
-        path: '/pay',
-        query: { }
-      })
+      this.$router.push({ name: 'PayIndex', params: {}})
     },
 
     // 每页数目改变
@@ -82,7 +79,7 @@ export default {
     },
 
     router () {
-      this.$router.push({ path: '/pay', query: {}})
+      this.$router.push({ name: 'PayIndex', params: {}})
       this.time = 10
       clearInterval(this.timer)
     },
@@ -94,26 +91,15 @@ export default {
 }
 </script>
 <style scoped>
-.button {
-  height: 40px;
-  width: 120px;
-}
-.tab {
-  padding-top: 150px;
-}
-.mini_word {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  color: red;
-}
 .bg {
-  /* width: 100%;
-  height: 100%;
-  background:url(../../assets/payment/bg.jpg) no-repeat;
-  background-size: 100%; */
-  background:rgb(196, 214, 247);
-  background-size: 100%;
+  text-align: center;
+}
+.bk {
   width: 100%;
   height: 100%;
+  padding: 5%;
 }
-</style>>
+.mini_word{
+  margin-bottom: 1%;
+}
+</style>

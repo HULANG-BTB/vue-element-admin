@@ -16,7 +16,7 @@ export default [
         path: 'setting',
         component: () => import('@/views/bill-pool/setting'),
         name: 'setting',
-        meta: { title: '票据池设置' }
+        meta: { title: '票据池管理' }
       }]
   }
 ]

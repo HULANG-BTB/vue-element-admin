@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import { getProjectListByPage, projectCheck, updateProject, getIncomSortName } from '@/api/projectManager'
+import { getProjectListByPage, projectCheck, updateProject, getIncomSortName } from '@/api/base/projectManager/projectManager'
 import { parseTime } from '@/utils/index'
 
 export default {

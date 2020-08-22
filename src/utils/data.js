@@ -34,10 +34,9 @@ export function getEncryptedJson (object) {
  * @param key
  * @returns {*}
  */
-export function getDecryptJson(data,key) {
-  let aseKey=RSAdencrypt(key);
-  console.log("aseKey:{}",aseKey)
-  let rs=JSON.parse(Decrypt(data,aseKey))
-  console.log("rs:{}",rs)
+
+export function getDecryptJson (data, key) {
+  const aseKey = RSAdencrypt(key)
+  const rs = JSON.parse(Decrypt(data, aseKey))
   return rs
 }

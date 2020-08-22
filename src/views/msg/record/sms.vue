@@ -1,129 +1,143 @@
 <template>
   <div class="app-container">
-    <el-form
-      :model="query"
-      :inline="true"
-      class="demo-form-inline"
-      @keyup.enter.native="handleSearch"
-    >
-      <el-form-item label="短信ID:">
-        <el-input
-          v-model="query.id"
-          placeholder="请输入短信ID"
-          clearable
-          size="small"
-        />
-      </el-form-item>
-      <el-form-item label="收信人:">
-        <el-input
-          v-model="query.smsTo"
-          placeholder="请输入收信人"
-          clearable
-          size="small"
-        />
-      </el-form-item>
-      <el-form-item label="日期:">
-        <div class="block">
-          <el-date-picker
-            v-model="query.period"
-            type="daterange"
-            align="right"
-            unlink-panels
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :picker-options="pickerOptions"
+    <el-card>
+      <el-form
+        :model="query"
+        :inline="true"
+        style="height: 40px;"
+        class="demo-form-inline"
+        @keyup.enter.native="handleSearch"
+      >
+        <el-form-item label="短信ID:">
+          <el-input
+            v-model="query.id"
+            placeholder="请输入短信ID"
+            clearable
             size="small"
           />
-        </div>
-      </el-form-item>
-      <el-form-item :label="query.isSent ? '已发信':'未发信'">
-        <el-switch
-          v-model="query.isSent"
-          active-color="#13ce66"
-          inactive-color="#ff4949"
-          @change="handleIsSentChange"
-        /></el-form-item>
-      <el-form-item label>
-        <el-button
-          type="primary"
-          icon="el-icon-search"
-          size="small"
-          @click="handleSearch"
-        >搜索</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-table
-      v-loading.body="loading"
-      :data="smsTableData"
-      style="width: 100%;"
-      border
-      @selection-change="handleOnSelectChange"
-    >
-      <el-table-column align="center" label="短信Id" width="165">
-        <template slot-scope="scope">{{ scope.row.id }}</template>
-      </el-table-column>
-      <el-table-column align="center" label="发信人" width="165">
-        <template slot-scope="scope">{{ scope.row.smsFrom }}</template>
-      </el-table-column>
-      <el-table-column align="center" label="收信人" width="165">
-        <template slot-scope="scope">{{ scope.row.smsTo }}</template>
-      </el-table-column>
-      <el-table-column align="center" label="校验码">
-        <template slot-scope="scope">{{ scope.row.verifyCode }}</template>
-      </el-table-column>
-      <el-table-column align="center" label="短信内容">
-        <template slot-scope="scope"><el-popover
-          slot="reference"
-          placement="top-start"
-          title="短信内容"
-          width="300"
-          trigger="click"
-        >
-          <div class="popover-content" v-html="util.prettyJson(scope.row.content)" />
-          <el-button slot="reference" type="text">点击查看内容</el-button>
-
-        </el-popover></template>
-      </el-table-column>
-      <el-table-column align="center" label="发信时间">
-        <template slot-scope="scope">{{ scope.row.sentDate }}</template>
-      </el-table-column>
-      <el-table-column align="center" label="是否已发送">
-        <template slot-scope="scope">
-          <el-tag
-            :key="scope.row.isSent ? '已发送' : '未发送'"
-            :type="scope.row.isSent ? 'success' : 'danger'"
-            effect="plain"
-          >
-            {{ scope.row.isSent ? '已发送' : '未发送' }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="发件详情">
-        <template slot-scope="scope">{{ scope.row.error }}</template>
-      </el-table-column>
-      <el-table-column v-if="!query.isSent" align="center" label="操作">
-        <template slot-scope="scope">
+        </el-form-item>
+        <el-form-item label="收信人:">
+          <el-input
+            v-model="query.smsTo"
+            placeholder="请输入收信人"
+            clearable
+            size="small"
+          />
+        </el-form-item>
+        <el-form-item label="日期:">
+          <div class="block">
+            <el-date-picker
+              v-model="query.period"
+              type="daterange"
+              align="right"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions"
+              size="small"
+            />
+          </div>
+        </el-form-item>
+        <el-form-item :label="query.isSent ? '已发信':'未发信'">
+          <el-switch
+            v-model="query.isSent"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="handleIsSentChange"
+          /></el-form-item>
+        <el-form-item label>
           <el-button
             type="primary"
-            size="mini"
-            @click="handleEdit(scope)"
-          >已发件</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      background
-      layout="prev, pager, next, sizes, total, jumper"
-      :total="query.total"
-      :current-page="query.page"
-      :page-sizes="[10, 20, 50, 100, 500, 1000]"
-      :page-size="query.limit"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+            icon="el-icon-search"
+            size="small"
+            @click="handleSearch"
+          >搜索</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card style="margin-top:10px;height:760px">
+      <el-table
+        v-loading.body="loading"
+        :data="smsTableData"
+        max-height="655px"
 
+        style="width: 100%;"
+        border
+        @selection-change="handleOnSelectChange"
+      >
+        <el-table-column align="center" label="短信Id" width="165">
+          <template slot-scope="scope">{{ scope.row.id }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="发信人" width="165">
+          <template slot-scope="scope">{{ scope.row.smsFrom }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="收信人" width="165">
+          <template slot-scope="scope">{{ scope.row.smsTo }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="校验码">
+          <template slot-scope="scope">{{ scope.row.verifyCode }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="短信内容">
+          <template slot-scope="scope"><el-popover
+            slot="reference"
+            placement="top-start"
+            title="短信内容"
+            width="300"
+            trigger="click"
+          >
+            <div class="popover-content" v-html="util.prettyJson(scope.row.content)" />
+            <el-button slot="reference" type="text">点击查看内容</el-button>
+
+          </el-popover></template>
+        </el-table-column>
+        <el-table-column align="center" label="发信时间">
+          <template slot-scope="scope">{{ scope.row.sentDate }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="是否已发送">
+          <template slot-scope="scope">
+            <el-tag
+              :key="scope.row.isSent ? '已发送' : '未发送'"
+              :type="scope.row.isSent ? 'success' : 'danger'"
+              effect="plain"
+            >
+              {{ scope.row.isSent ? '已发送' : '未发送' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="发件详情">
+          <template slot-scope="scope"><el-popover
+            slot="reference"
+            placement="top-start"
+            title="发信详情"
+            trigger="click"
+          >
+            <div class="popover-content" v-html="scope.row.error" />
+            <el-button slot="reference" type="text">{{ scope.row.error?scope.row.error.substring(0,4)+' ...':'' }}</el-button>
+          </el-popover></template>
+        </el-table-column>
+        <el-table-column v-if="!query.isSent" align="center" label="操作">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleEdit(scope)"
+            >已发件</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+        v-if="query.total>0"
+        background
+        layout="prev, pager, next, sizes, total, jumper"
+        :total="query.total"
+        :current-page="query.page"
+        :page-sizes="[10, 20, 50, 100, 500, 1000]"
+        :page-size="query.limit"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </el-card>
   </div>
 </template>
 
@@ -272,7 +286,7 @@ export default {
   .el-pagination {
     float: right;
     margin-right: 30px;
-    margin-top: 30px;
+    margin-top: 20px;
     margin-bottom: 30px;
   }
 }

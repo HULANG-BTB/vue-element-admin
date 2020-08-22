@@ -19,16 +19,16 @@ export default [
         component: () => import('@/views/qiuhengGroupViews/bill-invoicing/Home.vue'),
         name: 'voicingbill',
         meta: {
-          title: '开票',
-          roles: ['user_manager', 'editor']
+          title: '开票'
+          // roles: ['user_manager', 'editor']
         }
       },
       {
         path: 'verify',
         component: () => import('@/views/qiuhengGroupViews/verify/Verify.vue'),
         name: 'verify',
-        meta: { title: '开票审验',
-          roles: ['user_manager', 'editor']
+        meta: { title: '开票审验'
+          // roles: ['user_manager', 'editor']
         }
       },
       {
