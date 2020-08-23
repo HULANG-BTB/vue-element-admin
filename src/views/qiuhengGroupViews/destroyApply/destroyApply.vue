@@ -10,7 +10,7 @@
           <el-col :span="7">
             <el-form-item label="业务单号：">
               <el-input
-                v-model="destroySearch.no"
+                v-model="destroySearch.fDestroyNo"
                 size="small"
                 placeholder="请输入需要查询的业务单号"
               />
@@ -22,7 +22,7 @@
                 icon="el-icon-search"
                 type="primary"
                 size="small"
-                @click="handleSearch"
+                @click="handleSearch()"
               >搜索</el-button>
             </el-form-item>
           </el-col>
@@ -147,7 +147,7 @@
 </template>
 
 <script>
-import { getApplyListByAgenIdCode, deleteApplyInfoByDestroyNo, deleteItemInfoByDestroyNo } from '@/api/qiuhengGroupApi/destroy/destroyApply'
+import { getApplyListByAgenIdCode, deleteApplyInfoByDestroyNo, deleteItemInfoByDestroyNo, getApplyInfoByDestroyNo } from '@/api/qiuhengGroupApi/destroy/destroyApply'
 import { } from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
 import lookDestroyApply from '@/views/qiuhengGroupViews/destroyApply/lookDestroyApply'
 
@@ -161,13 +161,14 @@ export default {
   data () {
     return {
       tableData: [],
+      tableData1: [],
 
+      destroySearch: {
+        fDestroyNo: ''
+      },
       dialogVisible: false,
       labelPosition: 'right',
 
-      destroySearch: {
-        no: ''
-      },
       // 分页
       page: {
         currentPage: 1,
@@ -224,7 +225,14 @@ export default {
       // this.$root.eventBus.$emit('operateType', this.operateType)
       // console.log(this.operateType)
     },
-    handleSearch () {},
+    async handleSearch () {
+      this.tableData1 = []
+      const res = await getApplyInfoByDestroyNo(this.destroySearch.fDestroyNo)
+      console.log(res)
+      this.tableData1.push(res.data)
+      this.tableData = this.tableData1
+      console.log(this.tableData)
+    },
     handleSizeChange () {},
     handleCurrentChange () {},
     // 生成流水号
