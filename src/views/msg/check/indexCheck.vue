@@ -9,12 +9,17 @@
       登录
     </el-button>
     <el-card class="index-check" style="width:400px;background-color: #3f5c6d2c;">
-      <el-image class="titleImg" :src="titleImg" />
+      <el-image :src="logo" class="logo" />
+      <el-header
+        class="title"
+      >
+        票据信息查验
+      </el-header>
       <el-form
+        style="margin-top:10px;"
         :model="query"
         class="check-form"
         :rules="rules"
-        :inline="true"
         @keyup.enter.native="handlerCheck"
       >
 
@@ -34,8 +39,8 @@
                 placeholder="请选择"
                 @change="selectChange"
               >
-                <el-option label="手机号码" value="tel" />
-                <el-option label="票据号码" value="billId" />
+                <el-option label="手机号" value="tel" />
+                <el-option label="票据号" value="billId" />
               </el-select>
             </el-input>
           </el-form-item>
@@ -68,8 +73,8 @@
                 placeholder="请选择"
                 @change="selectChange"
               >
-                <el-option label="手机号码" value="tel" />
-                <el-option label="票据号码" value="billId" />
+                <el-option label="手机号" value="tel" />
+                <el-option label="票据号" value="billId" />
               </el-select>
             </el-input>
           </el-form-item>
@@ -89,7 +94,6 @@
         <el-form-item label>
           <el-button
             class="check-button"
-            type="primary"
             icon="el-icon-search"
             @click="handlerCheck"
           >
@@ -135,12 +139,12 @@
 
 <script>
 import { getBill, billCheck } from '@/api/msg.js'
-import titleImg from '@/assets/bg/title.png'
+import logo from '@/assets/bg/bosslogo.png'
 
 export default {
   data () {
     return {
-      titleImg: titleImg,
+      logo: logo,
       billDialogVisible: false,
       imgDialogVisible: false,
       requestType: 'tel',
@@ -310,16 +314,14 @@ export default {
   }
   .index-check {
     margin: 0 auto;
-    margin-top: 25%;
+    margin-top: 12%;
   }
-  .input-with-select {
-    float: left;
+  .check-button {
+    color: #fff;
+    background-color: #3f5c6d2c;
+    width: 350px;
   }
-  .titleImg {
-    top: 10px;
-    left:100px;
-    position: absolute;
-  }
+
   .check-form {
     margin-top: 15%;
   }
@@ -327,20 +329,47 @@ export default {
     float: right;
     color: #fff;
   }
+  .title {
+    color:rgb(53, 50, 50);
+    font-size:35px;
+    margin-top:10px;
+    font-weight: lighter;
+  }
 
   ::v-deep .el-select .el-input {
-    width: 110px;
-    background-color: #3f5c6d2c;
+    width: 90px;
+    color:#FFF
+  }
+  ::v-deep .el-scrollbar .el-select-dropdown__wrap  {
+    background-color: #6779832c;
+    color: #FFF
+  }
+
+  ::v-deep .el-card__body  .el-input__inner{
+    background-color: #6779832c;
+    color: #FFF
   }
   ::v-deep .input-with-select .el-input-group__prepend {
-    width: 110px;
+    width: 90px;
     background-color: #3f5c6d2c;
-  }::v-deep .input-with-select .el-scrollbar__view {
+    color: #FFF
+  }
+
+  ::v-deep .input-with-select .el-scrollbar__view {
     background-color: #3f5c6d2c;
   }
+
+  // logo
+  ::v-deep .logo .el-image__inner {
+    width: auto;
+    height: auto;
+    max-height: 50%;
+    max-width: 50%;
+  }
+  // 校验文字信息
   ::v-deep .el-form-item__error{
-    float: right;
     font-size: 15px;
     font-weight: 800;
+    margin-left: 100px;
   }
 </style>
