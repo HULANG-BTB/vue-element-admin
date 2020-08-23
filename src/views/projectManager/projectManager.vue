@@ -557,12 +557,8 @@ export default {
       this.project.subjectName = this.subjectList.name
       this.project.incomSortCode = this.incomeSort.code
       this.project.fundsnatureCode = this.incomeSort.name + '收入'
-      if (this.projectList.length === 0) {
-        this.project.itemId = this.subjectList.code + '01'
-      } else {
-        const val = parseInt(this.projectList[this.projectList.length - 1].itemId) + 1
-        this.project.itemId = val + ''
-      }
+      const val = parseInt(this.queryParams.total) + 1
+      this.project.itemId = this.subjectList.code + val
       this.dialogType = 'new'
       this.dialogVisible = true
     },
