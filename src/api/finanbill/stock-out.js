@@ -1,6 +1,9 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://192.168.21.182:8080/stock-out/'
+// const BASE_URL = 'http://192.168.21.182:8080/stock-out/'
+// const BASE_URL = 'http://47.97.155.84/prod-api/stock-out/'
+// 120.27.3.74
+const BASE_URL = 'stock-out/'
 
 /* 出库相关 */
 
