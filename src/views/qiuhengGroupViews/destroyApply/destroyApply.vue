@@ -16,7 +16,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="2">
             <el-form-item label>
               <el-button
                 icon="el-icon-search"
@@ -28,14 +28,14 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col span="2">
+          <el-col :span="2">
             <el-button
               type="primary"
               size="small"
               @click="addDestroyApply()"
             ><i class="el-icon-plus el-icon--left" />新增申请</el-button>
           </el-col>
-          <el-col span="3">
+          <el-col :span="3">
             <el-button
               size="small"
               type="success"
@@ -48,7 +48,7 @@
       <el-dialog
         :visible.sync="dialogVisible"
         :show-close="true"
-        width="90%"
+        width="80%"
         top="6vh"
         title="票据销毁申请——新增"
       >
@@ -151,10 +151,10 @@ import { getApplyListByAgenIdCode, deleteApplyInfoByDestroyNo, deleteItemInfoByD
 import { } from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
 import lookDestroyApply from '@/views/qiuhengGroupViews/destroyApply/lookDestroyApply'
 
-import addDestroyApplyVue from './addDestroyApply'
+import addDestroyApply from './addDestroyApply'
 export default {
   components: {
-    'addDestroyApplyDialog': addDestroyApplyVue,
+    'add-destroy-apply-dialog': addDestroyApply,
     'look-destroy-apply-dialog': lookDestroyApply
   },
 
@@ -180,11 +180,11 @@ export default {
 
       ApplyDtoTable: [],
       ItemDtoList: [],
-      operateType: 'aaa',
       lookDestroyApplyDialogVisible: true
     }
   },
   created () {
+    this.refreshButton()
     this.$root.eventBus.$on('dialogVisible1', (val) => {
       this.dialogVisible = val
       // console.log(this.dialogVisible)
@@ -192,12 +192,17 @@ export default {
     this.$root.eventBus.$on('dialogVisibleCancel', (val) => {
       this.dialogVisible = val
     })
-    this.refreshButton()
   },
   methods: {
     lookApplyInfo (row) {
       this.$root.eventBus.$emit('lookDestroyApplyDialogVisible', this.lookDestroyApplyDialogVisible)
       this.$root.eventBus.$emit('lookDestroyApply', row.fDestroyNo)
+      // console.log(row)
+      this.$root.eventBus.$emit('lookDestroyApplyMan', row.fApplyMan)
+      this.$root.eventBus.$emit('lookDestroyApplyDate', row.fApplyDate)
+      this.$root.eventBus.$emit('lookDestroyApplyType', row.fDestroyType)
+      this.$root.eventBus.$emit('lookDestroyApplyStatus', row.fStatus)
+
       // this.dialogVisible = true
       // this.$root.eventBus.$emit('fDestroyNoUpdate', row.fDestroyNo)
       // this.operateType = '查看票据销毁申请信息'
@@ -213,8 +218,8 @@ export default {
     async addDestroyApply () {
       await this.randomNumber()
       console.log(this.fDestroyNo)
-      this.$root.eventBus.$emit('fDestroyNo', this.fDestroyNo)
       this.dialogVisible = true
+      this.$root.eventBus.$emit('fDestroyNo', this.fDestroyNo)
       // this.operateType = '新增票据销毁申请'
       // this.$root.eventBus.$emit('operateType', this.operateType)
       // console.log(this.operateType)
@@ -234,7 +239,8 @@ export default {
     },
     async refreshButton () {
       const res = await getApplyListByAgenIdCode('1314')
-      this.tableData = res
+      console.log(res)
+      this.tableData = res.data
       for (var i = 0; i < this.tableData.length; i++) {
         if (this.tableData[i].fDestroyType) {
           this.tableData[i].fDestroyType = '库存票据销毁'
@@ -242,12 +248,15 @@ export default {
           this.tableData[i].fDestroyType = '核销票据销毁'
         }
       }
-      // eslint-disable-next-line no-redeclare
-      for (var i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].fStatus) {
-          this.tableData[i].fStatus = '已审核'
-        } else {
-          this.tableData[i].fStatus = '未审核'
+      for (var k = 0; k < this.tableData.length; k++) {
+        if (this.tableData[k].fStatus === 0) {
+          this.tableData[k].fStatus = '未审核'
+        }
+        if (this.tableData[k].fStatus === 1) {
+          this.tableData[k].fStatus = '已审核但未通过'
+        }
+        if (this.tableData[k].fStatus === 2) {
+          this.tableData[k].fStatus = '已审核并通过'
         }
       }
       // console.log(this.tableData);

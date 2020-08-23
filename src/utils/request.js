@@ -18,7 +18,6 @@ service.interceptors.request.use(
     // 请求发送前修改
     NProgress.start()
     if (store.getters.token) {
-      config.headers['Content-Type'] = 'application/json;charset=UTF-8'
       // 请求头附带token
       config.headers[Config.auth.header] = `Basic ${getToken()}`
     }

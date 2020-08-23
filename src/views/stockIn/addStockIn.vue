@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form ref="ruleForm" :model="stockIn" :rules="rules" label-width="100px" class="demo-ruleForm">
+    <el-form ref="ruleForm" :model="stockIn" :rules="rules" label-width="100px" class="demo-ruleForm" style="margin: 30px;">
       <el-form-item label="业务号" prop="no">
         <span style="color:red">NO.{{ stockIn.no }}</span>
       </el-form-item>
@@ -10,22 +10,22 @@
 
       <el-table
         :data="stockIn.addStockInItemDTOArray"
-        style="width: 100%; margin-top: 30px;"
-        border
+        style="width: 100%; margin: 30px;"
       >
         <el-table-column
           type="selection"
-          width="50px"
+          width="50"
           align="center"
         />
         <el-table-column
+          label="序号"
           type="index"
-          width="50px"
+          width="50"
           align="center"
         />
         <el-table-column
           label="票据编码"
-          width="150%"
+          width="130"
           align="center"
         >
           <template slot-scope="scope">
@@ -34,7 +34,7 @@
         </el-table-column>
         <el-table-column
           label="票据名称"
-          width="150px"
+          width="130"
           align="center"
         >
           <template slot-scope="scope">
@@ -43,7 +43,7 @@
         </el-table-column>
         <el-table-column
           label="数量"
-          width="100px"
+          width="100"
           align="center"
         >
           <template slot-scope="scope">
@@ -52,7 +52,7 @@
         </el-table-column>
         <el-table-column
           label="起始号"
-          width="180px"
+          width="150"
           align="center"
         >
           <template slot-scope="scope">
@@ -61,14 +61,14 @@
         </el-table-column>
         <el-table-column
           label="终止号"
-          width="180px"
+          width="150"
           align="center"
         >
           <template slot-scope="scope">
             {{ scope.row.billNo2 }}
           </template>
         </el-table-column>
-        <el-table-column width="150px">
+        <el-table-column width="180">
           <template slot="header" slot-scope="scope">
             <el-button
               size="mini"
@@ -78,7 +78,7 @@
               size="mini"
               type="danger"
               @click="handleDelete(scope.$index, scope.row)"
-            >删除</el-button>
+            >删除多项</el-button>
           </template>
           <template slot-scope="scope">
             <el-button
@@ -93,8 +93,8 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-form-item>
-        <el-button type="primary" :disabled="submitable()" @click="submitForm('ruleForm')">立即创建</el-button>
+      <el-form-item style="float: right">
+        <el-button type="primary" :disabled="submitable()" @click="submitForm('ruleForm')">提交</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
