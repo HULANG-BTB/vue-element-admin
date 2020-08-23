@@ -62,8 +62,16 @@
               :on-success="onSuccess"
               :before-upload="beforeUpload"
             >
-              <el-button slot="trigger" size="small" type="success" icon="el-icon-check">导入</el-button>
+              <el-button slot="trigger" size="small" type="primary" icon="el-icon-check">导入</el-button>
             </el-upload>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              type="primary"
+              icon="el-icon-message"
+              size="small"
+              @click="oaganExport"
+            >导出</el-button>
           </el-col>
         </el-row>
 
@@ -224,7 +232,7 @@
 </template>
 
 <script>
-import { getProjectListByPage, getBySubjectId, addProject, getSubjectTree, updateProject, deleteProject, deleteProjectBatch, addStd, updateStd, getItemStd, importExcel } from '@/api/projectManager'
+import { getProjectListByPage, getBySubjectId, addProject, getSubjectTree, updateProject, deleteProject, deleteProjectBatch, addStd, updateStd, getItemStd, importExcel, exportExcel } from '@/api/projectManager'
 import { parseTime } from '@/utils/index'
 
 const defaultUser = {
@@ -444,6 +452,7 @@ export default {
   },
   created () {
     this.getTableTree()
+    this.getTableData()
   },
   methods: {
     importExcel () {
@@ -451,10 +460,10 @@ export default {
     },
     // 上传之前的回调
     beforeUpload (file) {
-      if (!/(?:xls|xlsx)$/.test(file.name)) {
-        this.$message.error('请上传Excel文件')
-        return false
-      }
+      // if (!/(?:xls|xlsx)$/.test(file.name)) {
+      //   this.$message.error('请上传Excel文件')
+      //   return false
+      // }
       const loading = this.$loading({
         lock: true,
         text: '正在上传',
@@ -477,6 +486,29 @@ export default {
       } else {
         this.$message.error(res.message)
       }
+    },
+    // 下载
+    oaganExport (data) {
+      this.selectedids = this.selectedList.map(item => {
+        return { id: item.id }
+      })
+      exportExcel(this.selectedids).then(res => {
+        const blob = new Blob([res])
+        const fileName = '项目管理数据.xlsx'
+        if ('download' in document.createElement('a')) {
+          const link = document.createElement('a')
+          link.href = window.URL.createObjectURL(blob) // 创建下载的链接
+          link.download = fileName // 下载后文件名
+          link.style.display = 'none'
+          document.body.appendChild(link)
+          link.click() // 点击下载
+          window.URL.revokeObjectURL(link.href) // 释放掉blob对象
+          document.body.removeChild(link) // 下载完成移除元素
+        } else {
+          // IE10+下载
+          window.navigator.msSaveBlob(blob, fileName)
+        }
+      })
     },
     // 格式化时间
     parseTime (time) {
@@ -523,12 +555,8 @@ export default {
       this.project.subjectName = this.subjectList.name
       this.project.incomSortCode = this.incomeSort.code
       this.project.fundsnatureCode = this.incomeSort.name + '收入'
-      if (this.projectList.length === 0) {
-        this.project.itemId = this.subjectList.code + '01'
-      } else {
-        const val = parseInt(this.projectList[this.projectList.length - 1].itemId) + 1
-        this.project.itemId = val + ''
-      }
+      const val = parseInt(this.queryParams.total) + 1
+      this.project.itemId = this.subjectList.code + val
       this.dialogType = 'new'
       this.dialogVisible = true
     },
@@ -567,7 +595,7 @@ export default {
       this.selectedList = selection
     },
     // 批量删除[{"id":2},{"id":3}]
-    async handleMultDelete () {
+    handleMultDelete () {
       this.$confirm('此操作将永久删除选中项目, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -576,7 +604,7 @@ export default {
         this.selectedids = this.selectedList.map(item => {
           return { id: item.id }
         })
-        deleteProjectBatch(this.selectedids)
+        await deleteProjectBatch(this.selectedids)
           .then((res) => {
             this.$message({
               type: 'success',
