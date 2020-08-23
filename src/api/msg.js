@@ -1,13 +1,19 @@
 import request from '@/utils/request'
 
+<<<<<<< HEAD
 const BASE_URL = 'boss-ecds-bill-message'
 // const BASE_URL = 'http://120.27.3.74:8080/'
 // const BASE_URL = 'http://localhost:8080/'
+=======
+// const BASE_URL = 'boss-ecds-bill-message'
+const BASE_URL = '/boss-ecds-bill-message'
+// const BASE_URL = 'http://localhost:8080'
+>>>>>>> cfbcb54fa234dd7259eb0bec05a1461bc91a003f
 /* mail相关 */
 export function getMailList (query) {
   return request({
     url: BASE_URL + '/mail/list',
-    method: 'post',
+    method: 'POST',
     data: query
   })
 }
