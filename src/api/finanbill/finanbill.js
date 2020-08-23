@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const BASE_URL = '/stock-out/'
+const BASE_URL = '/finan-stock-management/stock-out/'
 
 /* 出库相关 */
 

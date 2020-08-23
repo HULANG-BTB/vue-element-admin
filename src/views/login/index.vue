@@ -82,7 +82,7 @@ export default {
   created () {
     if (getToken()) {
       this.$router.push({
-        path: this.redirect || '/',
+        path: this.redirect || '/dashboard',
         query: this.otherQuery
       })
     }
@@ -119,6 +119,11 @@ export default {
               //     this.loading = false
               //   })
               // })
+              this.$router.push({
+                path: this.redirect || '/dashboard',
+                query: this.otherQuery
+              })
+              this.loading = false
             })
             .catch(() => {
               this.loading = false

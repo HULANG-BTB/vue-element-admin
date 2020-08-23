@@ -264,10 +264,10 @@ export default {
         limit: 10,
         total: 0,
 
-        id: null,
-        mailTo: null,
-        isSent: true,
-        period: null
+        id: '',
+        mailTo: '',
+        isSent: '',
+        period: ''
 
       },
       pickerOptions: {

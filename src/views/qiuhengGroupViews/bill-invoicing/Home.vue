@@ -59,14 +59,14 @@
           <!--开票记录列表-->
           <div class="bill-header">
             <div>
-              <span>本单位开票记录</span>
-            </div>
-            <div>
               <el-button
                 type="primary"
                 @click="addBill"
               >新增开票
               </el-button>
+            </div>
+            <div>
+              <span>本单位开票记录</span>
             </div>
           </div>
 
@@ -204,12 +204,6 @@ export default {
     handleCurrentChange (val) {
       this.page.currentPage = val
     },
-    // 点击查看详情
-    handleClick (row) {
-      if (row.status === '未审验') {
-        this.$root.eventBus.$emit('visible', this.visible)
-      }
-    },
     // ok
     handleSelectionChange () {
 
@@ -229,7 +223,6 @@ export default {
     getStep (row) {
       console.log(row.fstate)
       this.active = row.fstate
-      debugger
     }
   }
 }

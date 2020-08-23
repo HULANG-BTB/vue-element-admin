@@ -1,5 +1,5 @@
 <template>
-  <el-container style="height:601.82px">
+  <el-container style="height:670.4px">
     <left-tree
       :left-side-data="leftSideData"
       :year="object.year"
@@ -15,8 +15,8 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
-          <el-button type="primary" icon="el-icon-edit" style="margin-left: 0" @click="addCreate">添加</el-button>
-          <el-button type="primary" icon="el-icon-edit" style="margin-left: 0" @click="copyCreate">复制</el-button>
+          <el-button type="primary" icon="el-icon-edit" style="margin-left: 10px" @click="addCreate()">添加</el-button>
+          <el-button type="primary" icon="el-icon-edit" style="margin-left: 10px" @click="copyCreate">复制</el-button>
           <!-- <el-button :loading="downloadLoading" type="primary" icon="el-icon-download" @click="handleDownload">下载</el-button> -->
           <el-upload
             class="upload-demo"
@@ -28,33 +28,33 @@
             :show-file-list="false"
           >
             <!-- <el-button size="small" type="primary">点击上传</el-button> -->
-            <el-button type="primary" icon="el-icon-download">导入</el-button>
+            <el-button type="primary" icon="el-icon-download" style="margin-left: 10px">导入</el-button>
           </el-upload>
           <!-- <el-button type="primary" icon="el-icon-download" @click="importData">导入</el-button> -->
-          <el-button type="primary" icon="el-icon-upload2" @click="exportData">导出</el-button>
+          <el-button type="primary" icon="el-icon-upload2" style="margin-left: 10px" @click="exportData">导出</el-button>
         </el-form-item>
       </el-form>
       <el-table
         :data="tableData"
-        style="width: 100%;margin-top: 15px;"
-        height="457px"
+        style="width: 100%"
+        height="535px"
         border
       >
         <el-table-column
           fixed
           prop="year"
           label="年度"
-          width="100"
+          width="120"
         />
         <el-table-column
           prop="code"
           label="科目编码"
-          width="100"
+          width="120"
         />
         <el-table-column
           prop="name"
           label="科目名称"
-          width="150"
+          width="180"
         />
         <el-table-column
           prop="level"
@@ -74,7 +74,7 @@
         <el-table-column
           prop="remark"
           label="备注"
-          width="100"
+          width="200"
         />
         <el-table-column
           fixed="right"
@@ -99,26 +99,26 @@
         @current-change="handleCurrentChange"
       />
       <el-dialog title="添加" :visible.sync="addDialogVisible" center>
-        <el-form :model="addForm" :inline="true">
-          <el-form-item label="年度" :label-width="formLabelWidth">
+        <el-form ref="addForm" :rules="rules" :model="addForm" :label-width="formLabelWidth" :inline="true">
+          <el-form-item label="年度" prop="year">
             <el-input v-model="addForm.year" autocomplete="off" :disabled="true" />
           </el-form-item>
-          <el-form-item label="上级预算科目" :label-width="formLabelWidth">
+          <el-form-item label="上级预算科目" prop="usperSubName">
             <el-input v-model="addForm.usperSubName" autocomplete="off" :disabled="true" />
           </el-form-item>
-          <el-form-item label="科目编码" :label-width="formLabelWidth">
+          <el-form-item label="科目编码" prop="subCode">
             <el-input v-model="addForm.subCode" autocomplete="off" />
           </el-form-item>
-          <el-form-item label="科目名称" :label-width="formLabelWidth">
+          <el-form-item label="科目名称" prop="subName">
             <el-input v-model="addForm.subName" autocomplete="off" />
           </el-form-item>
-          <el-form-item label="备注" :label-width="formLabelWidth">
+          <el-form-item label="备注" prop="remarks">
             <el-input v-model="addForm.remarks" type="textarea" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="addDetermine">确 定</el-button>
+          <el-button type="primary" @click="addDetermine('addForm')">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog title="编辑" :visible.sync="editDialogVisible" center>
@@ -161,7 +161,6 @@ export default {
   components: {
     LeftTree
   },
-  inject: ['reload'],
   data () {
     return {
       leftSideData: {
@@ -208,6 +207,14 @@ export default {
         subCode: '',
         subName: '',
         remarks: ''
+      },
+      rules: {
+        subCode: [
+          { required: true, message: '请输入科目编码', trigger: 'blur' }
+        ],
+        subName: [
+          { required: true, message: '请输入科目名称', trigger: 'blur' }
+        ]
       },
       editForm: {
         subName: '',
@@ -263,21 +270,43 @@ export default {
     },
     // 添加数据
     addDetermine () {
-      const data = {}
-      data.code = this.addForm.subCode
-      data.name = this.addForm.subName
-      data.parentId = this.parentId
-      data.remark = this.addForm.remarks
-      data.year = this.searchForm.year
-      add(data).then(res => {
-        this.$message({
-          message: '添加成功',
-          type: 'success'
-        })
-        setTimeout(() => { location.reload() }, 1000)
-      }).catch(err => console.log(err))
-      this.addDialogVisible = false
-      this.addForm = {}
+      this.$refs.addForm.validate((valid) => {
+        if (valid) {
+          const data = {}
+          data.code = this.addForm.subCode
+          data.name = this.addForm.subName
+          data.parentId = this.parentId
+          data.remark = this.addForm.remarks
+          data.year = this.searchForm.year
+          console.log(data)
+          add(data).then(res => {
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            })
+            setTimeout(() => { location.reload() }, 1000)
+          }).catch(err => console.log(err))
+          this.addDialogVisible = false
+          this.addForm = {}
+        } else {
+          return false
+        }
+      })
+      // const data = {}
+      // data.code = this.addForm.subCode
+      // data.name = this.addForm.subName
+      // data.parentId = this.parentId
+      // data.remark = this.addForm.remarks
+      // data.year = this.searchForm.year
+      // add(data).then(res => {
+      //   this.$message({
+      //     message: '添加成功',
+      //     type: 'success'
+      //   })
+      //   setTimeout(() => { location.reload() }, 1000)
+      // }).catch(err => console.log(err))
+      // this.addDialogVisible = false
+      // this.addForm = {}
     },
     editHandleClick (row) {
       this.editDialogVisible = true
@@ -397,7 +426,7 @@ export default {
           return fmt
         }
 
-        const blob = new Blob([res], { type: 'application/vnd.ms-excel' })// 创建二进制流流接受对象
+        const blob = new Blob([res.data], { type: 'application/vnd.ms-excel' })// 创建二进制流流接受对象
         const date = new Date()
         const format = dateFormat('YYYY年mm月dd日HH时MM分SS秒', date)
         const fileName = this.parentName + format + '.xlsx'
@@ -438,7 +467,7 @@ export default {
       object.name = this.searchForm.name
       object.year = this.searchForm.year
       getTableList(object).then(res => {
-        const right = res.rightList
+        const right = res.data.rightList
         const data = []
         for (let i = 0; i < right.length; i++) {
           data[i] = {}
@@ -461,7 +490,7 @@ export default {
           data[i].remark = right[i].remark
         }
         this.tableData = data
-        this.total = res.total
+        this.total = res.data.total
       })
     },
     // 刷新左侧的树数据
@@ -470,7 +499,7 @@ export default {
       console.log(object)
       getTableList(object).then(res => {
         const tree = []
-        const left = res.leftList
+        const left = res.data.leftList
         // 遍历左边的树的数据
         for (let i = 0; i < left.length; i++) {
           tree[i] = {}
@@ -521,7 +550,7 @@ export default {
 <style scoped>
 #right{
   height: 100%;
-  width: 936.36px;
+  width: 1079px;
 }
 
 .demo-form-inline{

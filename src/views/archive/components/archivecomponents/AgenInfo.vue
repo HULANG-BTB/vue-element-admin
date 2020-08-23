@@ -51,7 +51,9 @@ export default {
   props: {
     agenInfo: {
       type: Object,
-      required: true
+      default () {
+        return {}
+      }
     }
   },
   methods: {
