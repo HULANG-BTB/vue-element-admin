@@ -314,7 +314,7 @@ export default {
   }
   .index-check {
     margin: 0 auto;
-    margin-top: 15%;
+    margin-top: 12%;
   }
   .check-button {
     color: #fff;
