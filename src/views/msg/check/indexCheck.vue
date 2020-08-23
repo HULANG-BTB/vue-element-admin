@@ -269,7 +269,8 @@ export default {
     },
     login () {
       this.$router.push({
-        path: '/login' })
+        path: '/login'
+      })
     },
     // 参数校验失败弹窗
     openErrormsg (msg) {

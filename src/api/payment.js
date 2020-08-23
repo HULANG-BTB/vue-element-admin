@@ -1,11 +1,11 @@
 import request from '@/utils/request'
 
-const BASE_URL = '/pay'
+const BASE_URL = ''
 
 export function payLogin (data) {
   return request({
     url: BASE_URL + '/pay/payLogin',
-    method: BASE_URL + 'post',
+    method: 'post',
     data
   })
 }
