@@ -126,7 +126,7 @@
             <el-form-item label="失效日期" :label-width="formLabelWidth" prop="itemstdExpdate">
               <el-date-picker v-model="standard.itemstdExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
             </el-form-item>
-            <el-form-item label="标准金额" :label-width="formLabelWidth">
+            <el-form-item label="标准金额" :label-width="formLabelWidth" prop="charge">
               <el-input v-model="standard.charge" placeholder="标准金额" />
             </el-form-item>
           </el-col>
@@ -146,6 +146,17 @@ import { parseTime } from '@/utils/index'
 
 export default {
   data () {
+    const chargeMethod = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('金额不能为空'))
+      } else if (value > this.standard.maxCharge) {
+        callback(new Error('金额必须低于标准上限'))
+      } else if (value < this.standard.minCharge) {
+        callback(new Error('金额必须高于标准下限'))
+      } else {
+        callback()
+      }
+    }
     const validateDatePicker = (rule, value, callback, source, option, other) => {
       const thisZero = new Date().setHours(0, 0, 0, 0)
       const input = new Date(value).setHours(0, 0, 0, 0)
@@ -198,6 +209,9 @@ export default {
       formLabelWidth: '120px',
       selectedList: [],
       rules: {
+        charge: [
+          { required: true, validator: chargeMethod, trigger: 'blur' }
+        ],
         itemstdCode: [
           { required: true, message: '标准编码不能为空', trigger: 'blur' }
         ],
@@ -214,16 +228,16 @@ export default {
           { required: true, message: '计量单位不能为空', trigger: 'blur' }
         ],
         itemstdEffdate: [
-          { trigger: 'blur', validator: validateDatePicker }
+          { required: true, trigger: 'blur', validator: validateDatePicker }
         ],
         itemstdExpdate: [
-          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemstdEffdate') }
+          { required: true, trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemstdEffdate') }
         ],
         createTime: [
-          { trigger: 'blur', validator: validateDatePicker }
+          { required: true, trigger: 'blur', validator: validateDatePicker }
         ],
         updateTime: [
-          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'createTime') }
+          { required: true, trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'createTime') }
         ],
         itemCode: [
           { required: true, message: '项目编码不能为空', trigger: 'blur' }

@@ -274,7 +274,9 @@ const defaultStand = {
 export default {
   data () {
     const chargeMethod = (rule, value, callback) => {
-      if (value > this.standard.maxCharge) {
+      if (value === '') {
+        callback(new Error('金额不能为空'))
+      } else if (value > this.standard.maxCharge) {
         callback(new Error('金额必须低于标准上限'))
       } else if (value < this.standard.minCharge) {
         callback(new Error('金额必须高于标准下限'))
@@ -389,22 +391,22 @@ export default {
           { required: true, message: '资金性质不能为空', trigger: 'blur' }
         ],
         itemEffdate: [
-          { trigger: 'blur', validator: validateDatePicker }
+          { required: true, trigger: 'blur', validator: validateDatePicker }
         ],
         itemExpdate: [
-          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemEffdate') }
+          { required: true, trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemEffdate') }
         ],
         effdate: [
-          { trigger: 'blur', validator: validateDatePicker }
+          { required: true, trigger: 'blur', validator: validateDatePicker }
         ],
         expdate: [
-          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'effdate') }
+          { required: true, trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'effdate') }
         ]
 
       },
       standRules: {
         charge: [
-          { validator: chargeMethod, trigger: 'blur' }
+          { required: true, validator: chargeMethod, trigger: 'blur' }
         ],
         itemstdCode: [
           { required: true, message: '标准编码不能为空', trigger: 'blur' }
@@ -422,16 +424,16 @@ export default {
           { required: true, message: '计量单位不能修改', trigger: 'change' }
         ],
         itemstdEffdate: [
-          { trigger: 'blur', validator: validateDatePicker }
+          { required: true, trigger: 'blur', validator: validateDatePicker }
         ],
         itemstdExpdate: [
-          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemstdEffdate') }
+          { required: true, trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemstdEffdate') }
         ],
         createTime: [
-          { trigger: 'blur', validator: validateDatePicker }
+          { required: true, trigger: 'blur', validator: validateDatePicker }
         ],
         updateTime: [
-          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'createTime') }
+          { required: true, trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'createTime') }
         ],
         itemCode: [
           { required: true, message: '项目编码不能为空', trigger: 'blur' }
