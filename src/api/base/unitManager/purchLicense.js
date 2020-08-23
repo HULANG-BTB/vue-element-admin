@@ -13,7 +13,7 @@ export function getCrtListByPage (data) {
 // 根据单位编码查询领购证
 export function getCrtByAgenCode (data) {
   return request({
-    url: '/crt/getByAgenCode',
+    url: `${BASE_URL}/crt/getByAgenCode`,
     method: 'post',
     data: data
   })

@@ -117,7 +117,7 @@ export function deleteUnitBatch (data) {
 // 根据单位编码查询单位
 export function getByAgenCode (data) {
   return request({
-    url: '/agen/getByAgenCode',
+    url: `${BASE_URL}/agen/getByAgenCode`,
     method: 'post',
     data: data
   })

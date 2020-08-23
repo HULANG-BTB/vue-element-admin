@@ -1,10 +1,12 @@
-import request from '@/utils/request'
 import download from '@/utils/download'
+import request from '@/utils/request'
+
+const BASE_URL = '/base'
 
 // 项目管理查询列表
 export function getProjectListByPage (data) {
   return request({
-    url: '/item/listByPage',
+    url: `${BASE_URL}/item/listByPage`,
     method: 'post',
     data: data
   })
@@ -12,14 +14,14 @@ export function getProjectListByPage (data) {
 // 树形菜单列表
 export function getSubjectTree () {
   return request({
-    url: '/item/getItemTree',
+    url: `${BASE_URL}/item/getItemTree`,
     method: 'get'
   })
 }
 // 树形菜单列表
 export function getIncomSortName (data) {
   return request({
-    url: '/item/getIncomSortName',
+    url: `${BASE_URL}/item/getIncomSortName`,
     method: 'get',
     params: { 'code': data }
   })
@@ -27,7 +29,7 @@ export function getIncomSortName (data) {
 
 export function getBySubjectId (data) {
   return request({
-    url: '/incomeSort/getBySubjectId',
+    url: `${BASE_URL}/incomeSort/getBySubjectId`,
     method: 'get',
     params: { 'subjectId': data }
   })
@@ -35,7 +37,7 @@ export function getBySubjectId (data) {
 // 新增项目
 export function addProject (data) {
   return request({
-    url: '/item/save',
+    url: `${BASE_URL}/item/save`,
     method: 'post',
     data: data
   })
@@ -43,7 +45,7 @@ export function addProject (data) {
 // 修改项目
 export function updateProject (user) {
   return request({
-    url: '/item/update',
+    url: `${BASE_URL}/item/update`,
     method: 'post',
     data: user
   })
@@ -51,7 +53,7 @@ export function updateProject (user) {
 // 删除项目
 export function deleteProject (data) {
   return request({
-    url: '/item/delete',
+    url: `${BASE_URL}/item/delete`,
     method: 'post',
     data: { id: data }
   })
@@ -59,7 +61,7 @@ export function deleteProject (data) {
 // 批量删除项目
 export function deleteProjectBatch (data) {
   return request({
-    url: '/item/batchDelete',
+    url: `${BASE_URL}/item/batchDelete`,
     method: 'post',
     data: data
   })
@@ -67,7 +69,7 @@ export function deleteProjectBatch (data) {
 // 项目审核
 export function projectCheck (data) {
   return request({
-    url: '/item/batchVerify',
+    url: `${BASE_URL}/item/batchVerify`,
     method: 'post',
     data: data
   })
@@ -75,7 +77,7 @@ export function projectCheck (data) {
 // 导入
 export function importExcel (data) {
   return request({
-    url: '/item/import',
+    url: `${BASE_URL}/item/import`,
     method: 'post',
     data: data
   })
@@ -92,7 +94,7 @@ export function exportExcel (data) {
 // 项目标准列表
 export function getStdListByPage (data) {
   return request({
-    url: '/itemstd/listByPage',
+    url: `${BASE_URL}/itemstd/listByPage`,
     method: 'post',
     data: data
   })
@@ -100,7 +102,7 @@ export function getStdListByPage (data) {
 // 项目标准
 export function getItemStd (data) {
   return request({
-    url: '/itemstd/getItemStd',
+    url: `${BASE_URL}/itemstd/getItemStd`,
     method: 'post',
     data: { itemCode: data }
   })
@@ -108,7 +110,7 @@ export function getItemStd (data) {
 // 新增标准
 export function addStd (data) {
   return request({
-    url: '/itemstd/save',
+    url: `${BASE_URL}/itemstd/save`,
     method: 'post',
     data: data
   })
@@ -116,7 +118,7 @@ export function addStd (data) {
 // 修改标准
 export function updateStd (user) {
   return request({
-    url: '/itemstd/update',
+    url: `${BASE_URL}/itemstd/update`,
     method: 'post',
     data: user
   })
@@ -124,7 +126,7 @@ export function updateStd (user) {
 // 删除标准
 export function deleteStd (data) {
   return request({
-    url: '/itemstd/delete',
+    url: `${BASE_URL}/itemstd/delete`,
     method: 'post',
     data: { id: data }
   })
@@ -132,7 +134,7 @@ export function deleteStd (data) {
 // 批量删除标准
 export function deleteStdBatch (data) {
   return request({
-    url: '/itemstd/batchDelete',
+    url: `${BASE_URL}/itemstd/batchDelete`,
     method: 'post',
     data: data
   })
@@ -140,7 +142,7 @@ export function deleteStdBatch (data) {
 // 标准审核
 export function projectStdCheck (data) {
   return request({
-    url: '/itemstd/batchVerify',
+    url: `${BASE_URL}/itemstd/batchVerify`,
     method: 'post',
     data: data
   })
@@ -149,7 +151,7 @@ export function projectStdCheck (data) {
 // 项目分组列表
 export function getGroupListByPage (data) {
   return request({
-    url: '/group/listByPage',
+    url: `${BASE_URL}/group/listByPage`,
     method: 'post',
     data: data
   })
@@ -157,7 +159,7 @@ export function getGroupListByPage (data) {
 // 新增分组
 export function addGroup (data) {
   return request({
-    url: '/group/save',
+    url: `${BASE_URL}/group/save`,
     method: 'post',
     data: data
   })
@@ -165,7 +167,7 @@ export function addGroup (data) {
 // 删除分组
 export function deleteGroup (data) {
   return request({
-    url: '/group/delete',
+    url: `${BASE_URL}/group/delete`,
     method: 'post',
     data: { id: data }
   })
@@ -173,7 +175,7 @@ export function deleteGroup (data) {
 // 通过分组编码获得项目信息
 export function getItemList (data) {
   return request({
-    url: '/groupItem/getItemInfo',
+    url: `${BASE_URL}/groupItem/getItemInfo`,
     method: 'post',
     data: { groupCode: data }
   })
@@ -181,7 +183,7 @@ export function getItemList (data) {
 // 删除项目分组关系
 export function deleteItemFromGroup (data) {
   return request({
-    url: '/groupItem/delete',
+    url: `${BASE_URL}/groupItem/delete`,
     method: 'post',
     data: data
   })

@@ -94,11 +94,11 @@
           />
           <el-table-column
             label="状态"
-            prop="fchangeState"
+            prop="fChangeState"
           />
           <el-table-column
             label="业务单号"
-            prop="fno"
+            prop="fNo"
           />
           <el-table-column
             label="日期"
@@ -106,15 +106,15 @@
           />
           <el-table-column
             label="合计份数"
-            prop="fnumber"
+            prop="fNumber"
           />
           <el-table-column
             label="金额"
-            prop="ftotalAmt"
+            prop="fTotalAmt"
           />
           <el-table-column
             label="备注"
-            prop="fmemo"
+            prop="fMemo"
           />
           <el-table-column label="操作">
             <template slot-scope="scope">
@@ -261,11 +261,13 @@ export default {
       this.dialogVisible = true
       this.isNew = true
       this.row = {
-        fno: '',
-        fchangeState: '',
-        fisUpload: '',
-        fmemo: '',
-        fendDate: ''
+        fNo: '',
+        fChangeState: '',
+        fIsUpload: '',
+        fMemo: '',
+        fEndDate: '',
+        fAuthor: '',
+        fDate: ''
       }
     },
     // 修改申请对话框显示
@@ -285,7 +287,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        if (row.fisUpload !== '已上报' && row.fchangeState !== '已审验') {
+        if (row.fIsUpload !== '已上报' && row.fChangeState !== '已审验') {
           deleteApply(row.fNo)
             .then((res) => {
               if (res.code === 10000) {
@@ -337,14 +339,14 @@ export default {
       try {
         const list = []
         this.multipleSelection.forEach(item => {
-          if (item.fisUpload === '已上报') {
+          if (item.fIsUpload === '已上报') {
             this.$message({
               type: 'warning',
               message: '选中的申请中存在已经上报的申请'
             })
             throw new Error('hasUploadApply')
           }
-          list.push(item.fno)
+          list.push(item.fNo)
         })
         uploadApply(list)
           .then((res) => {
@@ -384,21 +386,21 @@ export default {
       try {
         const list = []
         this.multipleSelection.forEach(item => {
-          if (item.fchangeState === '已审验') {
+          if (item.fChangeState === '已审验') {
             this.$message({
               type: 'warning',
               message: '选中的申请中存在已经被审验'
             })
             throw new Error('err')
           }
-          if (item.fisUpload === '未上报') {
+          if (item.fIsUpload === '未上报') {
             this.$message({
               type: 'warning',
               message: '选中的申请中存在未上报的'
             })
             throw new Error('err')
           }
-          list.push(item.fno)
+          list.push(item.fNo)
         })
         rescindApply(list)
           .then((res) => {

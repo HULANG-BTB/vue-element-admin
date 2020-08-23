@@ -102,17 +102,7 @@ export default {
   data () {
     return {
       visible: false,
-      tableData: [{
-        no: 1,
-        status: '未审验',
-        type: '手工审核',
-        danwei: '福州市boss软件',
-        time: '20160101-20160131',
-        bill_number: 100,
-        payment: '888888.00',
-        existWarn: '是'
-      }
-      ],
+      tableData: {},
       ruleForm: {
         date1: '',
         date2: '',
@@ -127,26 +117,19 @@ export default {
           { type: 'date', required: true, message: '请选择时间', triggr: 'change' }
         ]
       },
-      imgUrl: 'https://gym-oss-test.oss-cn-shenzhen.aliyuncs.com/boss-bill/123456100.png?Expires=1597808962&OSSAccessKeyId=LTAI4G9QwvLCHMEmgYf2Jupe&Signature=qCgGFaaiTXHLTleEukBR9z8WPqE%3D'
+      imgUrl: ''
     }
   },
   mounted () {},
   created () {
-    console.log(this.visible)
     this.$root.eventBus.$on('visible', (val) => {
       this.visible = val
     })
+    this.$root.eventBus.$on('verifydata', (val) => {
+      this.tableData = val
+    })
   },
   methods: {
-    getData () {
-      var arr = this.multipleSelection
-      const multis = []
-      for (var i = 0; i < arr.length; i++) {
-        multis.push(arr[i])
-        this.$root.eventBus.$emit('data', multis)
-        this.dialogVisible = false
-      }
-    }
   }
 }
 </script>
