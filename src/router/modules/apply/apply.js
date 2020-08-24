@@ -22,7 +22,7 @@ export default [
         component: () => import('@/views/apply/check'),
         name: 'PageCheck',
         meta: { title: '申领审核' }
-      },
+      }
     ]
   }
 ]

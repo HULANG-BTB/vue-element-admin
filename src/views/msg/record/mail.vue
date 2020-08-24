@@ -1,212 +1,225 @@
 <template>
   <div class="app-container">
-    <el-form
-      :model="query"
-      :inline="true"
-      class="demo-form-inline"
-      @keyup.enter.native="handleSearch"
-    >
-      <el-form-item label="邮件ID:">
-        <el-input
-          v-model="query.id"
-          placeholder="请输入邮件ID"
-          clearable
-          size="small"
-        />
-      </el-form-item>
-      <el-form-item label="收件人:">
-        <el-input
-          v-model="query.mailTo"
-          placeholder="请输入收件人"
-          clearable
-          size="small"
-        />
-      </el-form-item>
-
-      <el-form-item label="日期:">
-        <div class="block">
-          <el-date-picker
-            v-model="query.period"
-            type="daterange"
-            align="right"
-            unlink-panels
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :picker-options="pickerOptions"
+    <el-card>
+      <el-form
+        :model="query"
+        :inline="true"
+        style="height: 40px;width:100%"
+        class="demo-form-inline"
+        @keyup.enter.native="handleSearch"
+      >
+        <el-form-item label="邮件ID:">
+          <el-input
+            v-model="query.id"
+            placeholder="请输入邮件ID"
+            clearable
             size="small"
           />
-        </div>
-      </el-form-item>
+        </el-form-item>
+        <el-form-item label="收件人:">
+          <el-input
+            v-model="query.mailTo"
+            placeholder="请输入收件人"
+            clearable
+            size="small"
+          />
+        </el-form-item>
 
-      <el-form-item :label="query.isSent ? '已发件':'未发件'">
-        <el-switch
-          v-model="query.isSent"
-          active-color="#13ce66"
-          inactive-color="#ff4949"
-          @change="handleIsSentChange"
-        />
-      </el-form-item>
+        <el-form-item label="日期:">
+          <div class="block">
+            <el-date-picker
+              v-model="query.period"
+              type="daterange"
+              align="right"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions"
+              size="small"
+            />
+          </div>
+        </el-form-item>
 
-      <el-form-item label>
+        <el-form-item :label="query.isSent ? '已发件':'未发件'">
+          <el-switch
+            v-model="query.isSent"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="handleIsSentChange"
+          />
+        </el-form-item>
+
+        <el-form-item label>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="small"
+            @click="handleSearch"
+          >搜索</el-button>
+        </el-form-item>
+      </el-form>
+
+      <div style="margin-top:10px;margin-bottom:15px;">
         <el-button
           type="primary"
-          icon="el-icon-search"
           size="small"
-          @click="handleSearch"
-        >搜索</el-button>
-      </el-form-item>
-    </el-form>
-    <el-button
-      type="primary"
-      size="small"
-      @click="handleAdd"
-    >新建记录</el-button>
-    <el-button
-      :disabled="deleteBatchDisable"
-      type="danger"
-      size="small"
-      @click="handleDeleteBatch"
-    >批量删除</el-button>
-
-    <el-table
-      v-loading.body="loading"
-      :data="mailTableData"
-      style="width: 100%;margin-top:20px;"
-      max-height="700px"
-      border
-      @selection-change="handleOnSelectChange"
-    >
-      <el-table-column type="selection" align="center" width="55" />
-      <el-table-column align="center" label="邮件Id" width="165">
-        <template slot-scope="scope">{{ scope.row.id }}</template>
-      </el-table-column>
-      <el-table-column align="center" label="发件人" width="165">
-        <template slot-scope="scope">{{ scope.row.mailFrom }}</template>
-      </el-table-column>
-      <el-table-column align="center" label="收件人" width="165">
-        <template slot-scope="scope">{{ scope.row.mailTo }}</template>
-      </el-table-column>
-      <el-table-column align="center" label="邮件主题">
-        <template slot-scope="scope">{{ scope.row.subject }}</template>
-      </el-table-column>
-      <el-table-column align="center" label="邮件内容">
-
-        <template slot-scope="scope">
-          <el-popover
-            slot="reference"
-            placement="top-start"
-            title="邮件内容"
-            width="300"
-            trigger="click"
-          >
-            <div class="popover-content" v-html="util.prettyJson(scope.row.content)" />
-            <el-button slot="reference" type="text">点击查看内容</el-button>
-
-          </el-popover>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="发件时间" prop="date" sortable>
-        <template slot-scope="scope">{{ scope.row.sentDate }}</template>
-      </el-table-column>
-      <el-table-column align="center" label="是否已发送">
-        <template slot-scope="scope">
-          <el-tag
-            :key="scope.row.isSent ? '已发送' : '未发送'"
-            :type="scope.row.isSent ? 'success' : 'danger'"
-            effect="plain"
-          >
-            {{ scope.row.isSent ? '已发送' : '未发送' }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="发件详情">
-        <template slot-scope="scope">
-          <!-- <el-button type="text" class="detail-button" @click="detailOver(scope)">
-            {{ (scope.row.error?scope.row.error:'').substring(0, 3) }}
-          </el-button> -->
-          {{ scope.row.error }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="操作" width="165px">
-        <template slot-scope="scope">
-          <el-button
-            v-if="!query.isSent"
-            type="primary"
-            size="mini"
-            @click="handleEdit(scope)"
-          >已发件</el-button>
-
-          <el-button
-            type="danger"
-            size="mini"
-            @click="handleDelete(scope)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      background
-      layout="prev, pager, next, sizes, total, jumper"
-      :total="query.total"
-      :current-page="query.page"
-      :page-sizes="[10, 20, 50, 100, 500, 1000]"
-      :page-size="query.limit"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
-    <el-dialog
-      :visible.sync="dialogVisible"
-      :title="dialogType === 'edit' ? '编辑邮件' : '新建邮件'"
-    >
-      <el-form
-        v-loading="dialogLoading"
-        :model="mail"
-        label-width="80px"
-        label-position="left"
-        :rules="rules"
+          @click="handleAdd"
+        >新建记录
+        </el-button>
+        <el-button
+          :disabled="deleteBatchDisable"
+          type="danger"
+          size="small"
+          @click="handleDeleteBatch"
+        >批量删除
+        </el-button>
+      </div>
+      <el-table
+        v-loading.body="loading"
+        :data="mailTableData"
+        style="width: 100%;margin-top:10px;"
+        max-height="620px"
+        border
+        @selection-change="handleOnSelectChange"
       >
-        <div>
-          <el-form-item label="发件人" prop="mailFrom">
-            <el-input
-              v-model="mail.mailFrom"
-              placeholder="发件人"
-            />
-          </el-form-item>
-          <el-form-item label="收件人" prop="mailTo">
-            <el-input
-              v-model="mail.mailTo"
-              placeholder="收件人"
-            />
-          </el-form-item>
-          <el-form-item label="邮件主题" prop="subject">
-            <el-input
-              v-model="mail.subject"
-              placeholder="邮件主题"
-            />
-          </el-form-item>
-          <el-form-item label="邮件内容" prop="content">
-            <el-input
-              v-model="mail.content"
-              type="textarea"
-              :autosize="{ minRows: 2, maxRows: 4}"
-              placeholder="邮件内容"
-            />
-          </el-form-item>
-          <el-form-item style="text-algin:center;" class="dialogButton">
+        <el-table-column type="selection" align="center" width="55" />
+        <el-table-column align="center" label="邮件Id" width="165">
+          <template slot-scope="scope">{{ scope.row.id }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="发件人" width="165">
+          <template slot-scope="scope">{{ scope.row.mailFrom }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="收件人" width="165">
+          <template slot-scope="scope">{{ scope.row.mailTo }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="邮件主题">
+          <template slot-scope="scope">{{ scope.row.subject }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="邮件内容">
+
+          <template slot-scope="scope">
+            <el-popover
+              slot="reference"
+              placement="top-start"
+              title="邮件内容"
+              width="300"
+              trigger="click"
+            >
+              <div class="popover-content" v-html="util.prettyJson(scope.row.content)" />
+              <el-button slot="reference" type="text">点击查看内容</el-button>
+            </el-popover>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="发件时间" prop="date" sortable>
+          <template slot-scope="scope">{{ scope.row.sentDate }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="是否已发送">
+          <template slot-scope="scope">
+            <el-tag
+              :key="scope.row.isSent ? '已发送' : '未发送'"
+              :type="scope.row.isSent ? 'success' : 'danger'"
+              effect="plain"
+            >
+              {{ scope.row.isSent ? '已发送' : '未发送' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="发件详情">
+          <template slot-scope="scope">
+            <el-popover
+              slot="reference"
+              placement="top-start"
+              title="发件详情"
+              width="300"
+              trigger="click"
+            >
+              <div class="popover-content" v-html="scope.row.error" />
+              <el-button slot="reference" type="text">{{ scope.row.error?scope.row.error.substring(0,4)+' ...':'' }}</el-button>
+            </el-popover>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="操作" width="165px">
+          <template slot-scope="scope">
+            <el-button
+              v-if="!query.isSent"
+              type="primary"
+              size="mini"
+              @click="handleEdit(scope)"
+            >已发件</el-button>
+
             <el-button
               type="danger"
-              @click="dialogVisible = false"
-            >取消</el-button>
-            <el-button
-              type="primary"
-              @click="confirmMail"
-            >确定</el-button>
-          </el-form-item>
+              size="mini"
+              @click="handleDelete(scope)"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+        v-if="query.total > 0"
+        background
+        layout="prev, pager, next, sizes, total, jumper"
+        :total="query.total"
+        :current-page="query.page"
+        :page-sizes="[10, 20, 50, 100, 500, 1000]"
+        :page-size="query.limit"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+      <el-dialog
+        :visible.sync="dialogVisible"
+        :title="dialogType === 'edit' ? '编辑邮件' : '新建邮件'"
+      >
+        <el-form
+          v-loading="dialogLoading"
+          :model="mail"
+          label-width="80px"
+          label-position="left"
+          :rules="rules"
+        >
+          <div>
+            <el-form-item label="发件人" prop="mailFrom">
+              <el-input
+                v-model="mail.mailFrom"
+                placeholder="发件人"
+              />
+            </el-form-item>
+            <el-form-item label="收件人" prop="mailTo">
+              <el-input
+                v-model="mail.mailTo"
+                placeholder="收件人"
+              />
+            </el-form-item>
+            <el-form-item label="邮件主题" prop="subject">
+              <el-input
+                v-model="mail.subject"
+                placeholder="邮件主题"
+              />
+            </el-form-item>
+            <el-form-item label="邮件内容" prop="content">
+              <el-input
+                v-model="mail.content"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 4}"
+                placeholder="邮件内容"
+              />
+            </el-form-item>
+            <el-form-item style="text-algin:center;" class="dialogButton">
+              <el-button
+                type="danger"
+                @click="dialogVisible = false"
+              >取消</el-button>
+              <el-button
+                type="primary"
+                @click="confirmMail"
+              >确定</el-button>
+            </el-form-item>
 
-        </div>
-      </el-form>
-    </el-dialog>
+          </div>
+        </el-form>
+      </el-dialog>
+    </el-card>
   </div>
 </template>
 
@@ -254,7 +267,6 @@ export default {
         mailTo: null,
         isSent: true,
         period: null
-
       },
       pickerOptions: {
         shortcuts: [{
@@ -376,13 +388,6 @@ export default {
             })
             this.getTableData()
           })
-          .catch((err) => {
-            this.$message({
-              type: 'error',
-              message: '删除失败!'
-            })
-            console.error(err)
-          })
       })
     },
     // 批量删除
@@ -477,7 +482,7 @@ export default {
   .el-pagination {
     float: right;
     margin-right: 30px;
-    margin-top: 30px;
+    margin-top: 20px;
     margin-bottom: 30px;
   }
 }

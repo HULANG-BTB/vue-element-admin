@@ -1,26 +1,30 @@
 import request from '@/utils/request'
+import download from '@/utils/download'
+
+const baseURL = '/ecds-template'
 
 export function getImageTemplate () {
-  return request({
-    url: `/image/template`,
+  return download({
+    url: baseURL + `/image/template`,
     method: 'get',
     responseType: 'blob'
   })
 }
 
-export function getRemoteAddress (data) {
-  return request({
-    url: `/image/getRemoteAddress`,
-    method: 'post',
-    data
-  })
-}
-
 export function generateImage (data) {
-  return request({
-    url: `/image/genImage`,
+  return download({
+    url: baseURL + `/image/genImage`,
     method: 'post',
     responseType: 'blob',
     data
   })
 }
+
+export function getRemoteAddress (data) {
+  return request({
+    url: baseURL + `/image/getRemoteAddress`,
+    method: 'post',
+    data
+  })
+}
+

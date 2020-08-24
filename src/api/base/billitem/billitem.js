@@ -7,8 +7,8 @@
  */
 import request from '@/utils/request'
 
-const baseUrl = '/itembill/'
-const treebaseUrl = '/billType/'
+const baseUrl = '/base/itembill/'
+const treebaseUrl = '/base/billType/'
 export function queryBillTypeTree (data) {
   return request({
     url: treebaseUrl + 'queryBillTypeTree',
@@ -49,13 +49,6 @@ export function turnenabled (data) {
   })
 }
 
-export function update (data) {
-  return request({
-    url: baseUrl + 'update',
-    method: 'post',
-    data
-  })
-}
 // 删除票据项目关系
 export function deleteItemBillRequest (data) {
   return request({
