@@ -127,7 +127,7 @@
           @size-change="handleSizeChange"
         />
 
-        <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'项目变动':'新增项目'">
+        <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'项目变动':'新增项目'" @close="cancel">
           <el-form ref="project" :model="project" :rules="rules" label-width="80px" label-position="right" style="padding-right:25px;">
             <el-row :gutter="20">
               <el-col :span="12">
@@ -182,7 +182,7 @@
           </div>
         </el-dialog>
 
-        <el-dialog :visible.sync="dialogVisibleTow" :title="dialogTypeTow==='edit'?'编辑标准':'新增标准'">
+        <el-dialog :visible.sync="dialogVisibleTow" :title="dialogTypeTow==='edit'?'编辑标准':'新增标准'" @close="cancel">
           <el-form ref="standard" :model="standard" :rules="standRules" label-width="80px" label-position="right" style="padding-right:25px;">
             <el-row :gutter="20">
               <el-col :span="12">
@@ -232,7 +232,7 @@
 </template>
 
 <script>
-import { getProjectListByPage, getBySubjectId, addProject, getSubjectTree, updateProject, deleteProject, deleteProjectBatch, addStd, updateStd, getItemStd, importExcel, exportExcel } from '@/api/base/projectManager/projectManager'
+import { getProjectListByPage, getBySubjectId, addProject, getSubjectTree, updateProject, deleteProject, deleteProjectBatch, addStd, updateStd, getItemStd, importExcel, exportExcel, getIncomeSortName } from '@/api/base/projectManager/projectManager'
 import { parseTime } from '@/utils/index'
 
 const defaultUser = {
@@ -287,7 +287,7 @@ export default {
     const validateDatePicker = (rule, value, callback, source, option, other) => {
       const thisZero = new Date().setHours(0, 0, 0, 0)
       const input = new Date(value).setHours(0, 0, 0, 0)
-      if (input < thisZero && !other && this.dialogType !== 'edit') {
+      if (input < thisZero && !other && this.dialogType !== 'edit' && this.dialogTypeTow !== 'edit') {
         callback(new Error('日期不能早于今天'))
       } else if (other || this.dialogType === 'edit') {
         const otherDate = new Date(this.project[other]).setHours(0, 0, 0, 0)
@@ -369,8 +369,8 @@ export default {
       standardList: {},
       dialogVisible: false,
       dialogVisibleTow: false,
-      dialogType: '',
-      dialogTypeTow: '',
+      dialogType: 'new',
+      dialogTypeTow: 'new',
       formLabelWidth: '120px',
       selectedList: [],
       selectedids: [],
@@ -563,10 +563,13 @@ export default {
       this.dialogVisible = true
     },
     // 编辑按钮
-    handleEdit (rowData) {
+    async handleEdit (rowData) {
       this.dialogVisible = true
       this.dialogType = 'edit'
       this.project = Object.assign({}, rowData)
+      this.fund = this.project.fundsnatureCode
+      const res = await getIncomeSortName(this.project.incomSortCode)
+      this.incomeSort.name = res.data.name
     },
     // 删除按钮
     handleDelete (deleData) {
