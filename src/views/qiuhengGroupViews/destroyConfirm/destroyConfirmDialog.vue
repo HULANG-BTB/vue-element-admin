@@ -3,6 +3,7 @@
     title="财政端票据销毁审核"
     :visible.sync="visible"
     width="70%"
+    top="6vh"
   >
     <div class="verify">
       <span class="bill">票据销毁审核</span>
@@ -10,10 +11,12 @@
         <el-button
           type="primary"
           size="small"
+          @click="confirmOK()"
         >审核通过</el-button>
         <el-button
           type="primary"
           size="small"
+          @click="confirmNO()"
         >审核失败</el-button>
       </div>
     </div>
@@ -70,19 +73,80 @@
           </el-col>
         </el-form-item>
       </div>
-      <el-form-item
-        label="备注"
-        prop="desc"
-      >
-        <el-input
-          v-model="ruleForm.desc"
-          type="textarea"
-          :rows="1"
-        />
-      </el-form-item>
+      <div>
+        <el-row>
+          <el-col :span="9">
+            <el-form-item
+              label="申请人"
+              prop="desc"
+              style="width: 300px"
+            >
+              <el-input
+                v-model="ruleForm.applyMan"
+                type="textarea"
+                :rows="1"
+                disabled
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="9">
+            <el-form-item
+              label="申请时间"
+              prop="desc"
+              style="width: 300px"
+            >
+              <el-input
+                v-model="ruleForm.applyDate"
+                type="textarea"
+                :rows="1"
+                disabled
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item
+              label="审核人"
+              prop="desc"
+              style="width: 300px"
+            >
+              <el-input
+                v-model="ruleForm.ConfirmMan"
+                type="textarea"
+                :rows="1"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="9">
+            <el-form-item
+              label="申请类型"
+              prop="desc"
+              style="width: 300px"
+            >
+              <el-input
+                v-model="ruleForm.applyType"
+                type="textarea"
+                :rows="1"
+                disabled
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="15">
+            <el-form-item
+              label="备注"
+              prop="desc"
+            >
+              <el-input
+                v-model="ruleForm.desc"
+                type="textarea"
+                :rows="1"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </div>
     </el-form>
     <el-card shadow="always">
-      <div style="height: 230px">
+      <div style="height: 300px">
         <div
           class="subject"
           size="small"
@@ -139,18 +203,36 @@
 </template>
 <script>
 import {
-  getItemListByDestroyNo
+  getItemListByDestroyNo, destroyStockBill
 } from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
+import {
+  updateApplyInfo
+} from '@/api/qiuhengGroupApi/destroy/destroyApply'
 export default {
   data () {
     return {
       visible: false,
+      status: '',
       tableData: [],
+
+      fAgenIdCode: '',
+      fBillBatchCode: '',
+      fWarehouseId: '',
+      fBillNo1: '',
+      fBillNo2: '',
+
       ruleForm: {
         date1: '',
         date2: '',
         desc: '',
-        danwei: '博思软件股份有限公司'
+        danwei: '博思软件股份有限公司',
+        applyMan: '',
+        applyDate: '',
+        applyType: ''
+      },
+      resultVo: {
+        fDestroyNo: '',
+        fStatus: ''
       },
       rules: {
         date1: [
@@ -165,11 +247,21 @@ export default {
   mounted () {},
   created () {
     this.$root.eventBus.$on('fDestroyNoConfirm', (val) => {
+      this.resultVo.fDestroyNo = val
       this.getData(val)
     })
     this.$root.eventBus.$on('visibleDestroyConfirm', (val) => {
       console.log(this.visible)
       this.visible = val
+    })
+    this.$root.eventBus.$on('lookDestroyApplyMan', (val) => {
+      this.ruleForm.applyMan = val
+    })
+    this.$root.eventBus.$on('lookDestroyApplyDate', (val) => {
+      this.ruleForm.applyDate = val
+    })
+    this.$root.eventBus.$on('lookDestroyApplyType', (val) => {
+      this.ruleForm.applyType = val
     })
   },
   methods: {
@@ -177,6 +269,61 @@ export default {
       const res = await getItemListByDestroyNo(val)
       // console.log(res)
       this.tableData = res.data
+    },
+    confirmOK () {
+      this.$confirm('确认该票据销毁申请审核通过，并且立即销毁票据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        this.resultVo.fStatus = '已审核并通过'
+        console.log(this.tableData)
+        for (var k = 0; k < this.tableData.length; k++) {
+          this.fAgenIdCode = '1314'
+          this.fBillBatchCode = this.tableData[k].fBillBatchCode
+          console.log('aa', this.fBillBatchCode)
+          this.fWarehouseId = this.tableData[k].fWarehouseId
+          this.fBillNo1 = this.tableData[k].fBillNo1
+          console.log('bb', this.fBillNo1)
+          this.fBillNo2 = this.tableData[k].fBillNo2
+          // console.log(this.fBillNo1)
+          destroyStockBill(this.fAgenIdCode, this.fBillBatchCode, this.fWarehouseId, this.fBillNo1, this.fBillNo2)
+        }
+        updateApplyInfo(this.resultVo)
+        console.log(this.resultVo)
+        this.visible = false
+        this.$router.push
+        this.$message({
+          type: 'success',
+          message: '票据销毁申请审核通过，且票据销毁成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
+      })
+    },
+    confirmNO () {
+      this.$confirm('确认该票据销毁申请审核不通过，退回给申请人?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        this.resultVo.fStatus = '已审核但未通过'
+        updateApplyInfo(this.resultVo)
+        this.visible = false
+        this.$router.push
+        this.$message({
+          type: 'success',
+          message: '票据销毁申请审核不通过，且票据销毁不成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
+      })
     }
   }
 }

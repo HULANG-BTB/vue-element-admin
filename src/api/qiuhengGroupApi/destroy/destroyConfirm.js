@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://localhost:9538'
+const BASE_URL = '/bill-destroy'
+// const BASE_URL = 'http://localhost:9538'
 
 export function refresh () {
   return request({
@@ -18,3 +19,18 @@ export function getItemListByDestroyNo (fDestroyNo) {
     }
   })
 }
+
+export function destroyStockBill (fAgenIdCode, fBillBatchCode, fWarehouseId, fBillNo1, fBillNo2) {
+  return request({
+    url: BASE_URL + '/confirm/destroyStockBill',
+    method: 'delete',
+    params: {
+      fAgenIdCode,
+      fBillBatchCode,
+      fWarehouseId,
+      fBillNo1,
+      fBillNo2
+    }
+  })
+}
+

@@ -1,5 +1,5 @@
 <template>
-  <div class="pay-container">
+  <div class="login-container">
     <el-form
       ref="paySearchForm"
       :model="paySearchForm"
@@ -13,15 +13,15 @@
         <h3 class="title">请输入缴费信息</h3>
       </div>
 
-      <el-form-item prop="fPayerTel">
+      <el-form-item prop="fpayerTel">
         <span class="svg-container">
-          <svg-icon icon-class="手机号" />
+          <svg-icon icon-class="phone" />
         </span>
         <el-input
-          ref="fPayerTel"
-          v-model="paySearchForm.fPayerTel"
+          ref="fpayerTel"
+          v-model="paySearchForm.fpayerTel"
           placeholder="手机号"
-          name="fPayerTel"
+          name="fpayerTel"
           type="text"
           tabindex="2"
           auto-complete="on"
@@ -31,7 +31,7 @@
 
       <el-form-item prop="checkCode">
         <span class="svg-container">
-          <svg-icon icon-class="票据校验码" />
+          <svg-icon icon-class="code" />
         </span>
         <el-input
           ref="checkCode"
@@ -70,10 +70,9 @@ export default {
         callback()
       }
     }
-    const validatefPayerTel = (rule, value, callback) => {
+    const validatefpayerTel = (rule, value, callback) => {
       if (value.length !== 11) {
         callback(new Error('请输入有效的手机号'))
-        // 是否进行手机号校验 } else if () {
       } else {
         callback()
       }
@@ -81,11 +80,11 @@ export default {
     return {
       paySearchForm: {
         checkCode: '',
-        fPayerTel: ''
+        fpayerTel: ''
       },
       paySearchRules: {
         checkCode: [{ required: true, trigger: 'blur', validator: validateCheckCode }],
-        fPayerTel: [{ required: true, trigger: 'blur', validator: validatefPayerTel }]
+        fpayerTel: [{ required: true, trigger: 'blur', validator: validatefpayerTel }]
       },
       responseMsg: {
         msg: ''
@@ -108,17 +107,18 @@ export default {
       this.$refs.paySearchForm.validate(valid => {
         if (valid) {
           this.loading = true
+          console.log(this.paySearchForm)
           payLogin(this.paySearchForm).then(res => {
-            if (res.status === 200) {
-              if (res.data.type === 1) {
-                this.$router.push({ path: this.redirect || '/payInformation', query: { data: JSON.stringify(res.data) }})
+            if (res.code === 11111 && res.success === true) {
+              if (res.data.type === 0) {
+                this.$router.push({ name: this.redirect || 'PayInformation', params: { data: JSON.stringify(res.data) }})
                 this.loading = false
               } else {
-                this.$router.push({ path: this.redirect || '/payInformational', query: { data: JSON.stringify(res.data) }})
+                this.$router.push({ name: this.redirect || 'PayInformational', params: { data: JSON.stringify(res.data) }})
                 this.loading = false
               }
             } else {
-              this.responseMsg.msg = '手机号或验证码输入错误，查询不到此订单'
+              this.responseMsg.msg = '查询没有此缴款单,请检查手机号或验证码输入是否正确'
               this.loading = false
             }
           })
@@ -135,18 +135,18 @@ export default {
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-$bg: rgb(196, 214, 247);
+$bg: #283443;
 $light_gray: #fff;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .pay-container .el-input input {
+  .login-container .el-input input {
     color: $cursor;
   }
 }
 
 /* reset element-ui css */
-.pay-container {
+.login-container {
   .el-input {
     display: inline-block;
     height: 47px;
@@ -158,7 +158,7 @@ $cursor: #fff;
       -webkit-appearance: none;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
-      color: black;
+      color: $light_gray;
       height: 47px;
       caret-color: $cursor;
 
@@ -179,18 +179,17 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$dark_gray: #fff;
-$light_gray: #fff;
+$bg: #2d3a4b;
+$dark_gray: #889aa4;
+$light_gray: #eee;
 
-.pay-container {
+.login-container {
   min-height: 100%;
   width: 100%;
-  //background: url(../../assets/payment/bg.jpg) no-repeat;
-  background:rgb(196, 214, 247);
-  background-size: 100%;;
+  background-color: $bg;
   overflow: hidden;
 
-.pay-form {
+  .pay-form {
     position: relative;
     width: 520px;
     max-width: 100%;
@@ -221,11 +220,10 @@ $light_gray: #fff;
 
   .title-container {
     position: relative;
-    margin-top: 50px;;
 
     .title {
       font-size: 26px;
-      color: black;
+      color: $light_gray;
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;

@@ -15,7 +15,7 @@
           <el-form-item>
             <el-button type="primary" size="mini" icon="el-icon-search" @click="query">查询</el-button>
             <el-button type="primary" size="mini" @click="reset">重置</el-button>
-          </el-form-item></br>
+          </el-form-item><br />
           <el-button type="primary" size="mini" icon="el-icon-plus" @click="add">新增</el-button>
         </el-form>
 

@@ -3,6 +3,7 @@
     title="单位票据销毁申请信息"
     :visible.sync="lookDestroyApplyDialogVisible"
     width="70%"
+    top="6vh"
   >
     <div class="look">
       <span class="bill">票据销毁申请查看</span>
@@ -77,11 +78,11 @@
           <el-col :span="10">
             <el-form-item
               label="申请类型"
-              prop="applyTpye"
+              prop="applyType"
               style="width: 300px"
             >
               <el-input
-                v-model="ruleForm.applyTpye"
+                v-model="ruleForm.applyType"
                 type="textarea"
                 :rows="1"
                 disabled
@@ -107,7 +108,7 @@
       </div>
     </el-form>
     <el-card shadow="always">
-      <div style="height: 230px">
+      <div style="height: 300px">
         <div
           class="subject"
           size="small"
@@ -178,7 +179,7 @@ export default {
         fDetroyNo: '',
         applyMan: '',
         applyDate: '',
-        applyTpye: '',
+        applyType: '',
         applyStatus: ''
       },
       lookDestroyApplyDialogVisible: false
@@ -202,7 +203,7 @@ export default {
       this.ruleForm.applyDate = val
     })
     this.$root.eventBus.$on('lookDestroyApplyType', (val) => {
-      this.ruleForm.applyTpye = val
+      this.ruleForm.applyType = val
     })
     this.$root.eventBus.$on('lookDestroyApplyStatus', (val) => {
       this.ruleForm.applyStatus = val

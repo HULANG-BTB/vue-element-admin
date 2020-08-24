@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://localhost:9123'
+const BASE_URL = '/bill-invocing'
 
 // 获取单位开票记录
 export function getBillListByPage (query) {
