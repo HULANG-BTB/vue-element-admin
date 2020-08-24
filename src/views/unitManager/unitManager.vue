@@ -133,7 +133,7 @@
             </el-form-item>
             <el-form-item label="归口财政部门" :label-width="formLabelWidth">
               <el-select v-model="project.findeptId" placeholder="归口财政部门">
-                <el-option v-for="item in finDept" :key="item.id" :label="item.findeptName+item.findeptCode" :value="item.findeptCode" />
+                <el-option v-for="item in finDept" :key="item.id" :label="item.findeptName" :value="item.findeptName" />
               </el-select>
             </el-form-item>
             <el-form-item label="单位分类" :label-width="formLabelWidth">
