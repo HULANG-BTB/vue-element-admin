@@ -1,7 +1,11 @@
 import request from '@/utils/request'
 
+<<<<<<< HEAD
 // const BASE_URL = '/ecds-bill-invocing'
 const BASE_URL = 'http://192.168.110.95:9123'
+=======
+const BASE_URL = '/bill-invocing'
+>>>>>>> b01327bf455d49b904ab0894685a127338a04fec
 
 // 获取单位开票记录
 export function getBillListByPage (query) {

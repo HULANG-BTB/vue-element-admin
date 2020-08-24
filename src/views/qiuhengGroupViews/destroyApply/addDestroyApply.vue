@@ -372,7 +372,7 @@ export default {
           fOperatorId: '66623214',
           fOperatorName: '李四',
           fRgnCode: '42',
-          fAgenIdCode: '1314'
+          fAgenIdCode: this.$store.state.user.agenCode
         },
         itemDtoList: this.itemDtoList
       }
