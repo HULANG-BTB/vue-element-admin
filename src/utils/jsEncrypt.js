@@ -35,6 +35,7 @@ export function getRSAKey () {
 export function RSAencrypt (pas) {
   var jse = new JsEncrypt()
   jse.setPublicKey(localStorage.getItem('publicKey'))
+  console.log("pas:{}",pas)
   return jse.encrypt(pas)
 }
 
