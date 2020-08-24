@@ -76,7 +76,7 @@
           size="small"
         >
           <span>票据销毁申请明细</span>
-          <el-button type="primary" style="float:right" @click="addApplyOneItem()">新增</el-button>
+          <el-button type="primary" size="small" style="float:right" icon="el-icon-plus" circle @click="addApplyOneItem()" />
         </div>
         <el-divider content-position="left">票据销毁申请信息明细</el-divider>
         <el-table
@@ -104,11 +104,11 @@
               >
                 <el-option
                   v-show="scope.row.show"
-                  label="01160220"
-                  value="01160220"
+                  label="01160201"
+                  value="01160201"
                 />
               </el-select>
-              <span v-show="!scope.row.show">{{ scope.row.fBillBatchCode }}</span>
+              <span v-show="!scope.row.show" />
             </template>
           </el-table-column>
           <el-table-column
@@ -132,12 +132,12 @@
               v-model="scope.row.billName"
               placeholder="票据名称"
             /> -->
-              <span v-show="!scope.row.show">{{ scope.row.billName }}</span>
+              <span v-show="!scope.row.show" />
             </template>
           </el-table-column>
           <el-table-column
             label="仓库ID"
-            width="130px"
+            width="140px"
           >
             <template slot-scope="scope">
               <el-select
@@ -151,7 +151,7 @@
                   value="0001"
                 />
               </el-select>
-              <span v-show="!scope.row.show">{{ scope.row.fWarehouseId }}</span>
+              <span v-show="!scope.row.show" />
             </template>
           </el-table-column>
           <el-table-column
@@ -169,7 +169,7 @@
                   label="A仓库"
                   value="A仓库"
                 />
-                <span v-show="!scope.row.show">{{ scope.row.fWarehouseName }}</span>
+                <span v-show="!scope.row.show" />
               </el-select>
             </template>
           </el-table-column>
@@ -217,11 +217,12 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            width="180px"
+            width="160px"
           >
             <template slot-scope="scope">
-              <el-button size="small" @click="scope.row.show =true">编辑</el-button>
-              <el-button size="small" @click="scope.row.show =false">保存</el-button>
+              <el-button type="primary" size="small" icon="el-icon-edit" circle @click="scope.row.show =true" />
+              <el-button type="success" size="small" icon="el-icon-check" circle @click="scope.row.show =false" />
+              <el-button type="danger" size="small" icon="el-icon-delete" circle @click.prevent="delteItem(index)" />
             </template>
           </el-table-column>
         </el-table>
@@ -344,6 +345,9 @@ export default {
         fBillNo2: '',
         show: true
       })
+    },
+    delteItem (index) {
+      this.itemDtoList.splice(index, 1)
     },
     async addDestroyApply () {
       let fDestroyTypeToBool

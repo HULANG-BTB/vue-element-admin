@@ -16,6 +16,7 @@ import { RSAencrypt, RSAdencrypt, getRSAKey } from '@/utils/jsEncrypt'
 export function getEncryptedJson (object) {
   // 获取对称密钥
   const key = GetKey(16)
+
   // ase加密
   const data = Encrypt(JSON.stringify(object), key)
   // rsa加密
@@ -33,6 +34,7 @@ export function getEncryptedJson (object) {
  * @param key
  * @returns {*}
  */
+
 export function getDecryptJson (data, key) {
   const aseKey = RSAdencrypt(key)
   const rs = JSON.parse(Decrypt(data, aseKey))

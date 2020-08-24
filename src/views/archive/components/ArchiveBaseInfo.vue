@@ -1,6 +1,6 @@
 <template>
   <div class="agen-archive">
-    <el-table :data="list" border fit highlight-current-row style="width: 100%">
+    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="单位编码" width="100px">
         <template slot-scope="scope">
           <span>{{ scope.row.agenCode }}</span>
@@ -41,8 +41,10 @@
     <!-- 向子组件传递参数 -->
     <ArchiveTabs
       :list.sync="list"
-      :agencode.sync="query.agenCode"
-    /></div>
+      :agencode.sync="list[0].agenCode"
+    >
+      />
+    </archivetabs></div>
 </template>
 
 <script>
@@ -57,10 +59,7 @@ export default {
   props: {
     agencode: {
       type: String,
-      required: true,
-      defaule () {
-        return ''
-      }
+      required: true
     }
   },
   data () {
@@ -75,24 +74,13 @@ export default {
   },
   // 获取财政主界面的详细信息
   created () {
-    // console.log(this.$route)
-    // console.log(this.agencode)
-    // console.log(this.$route.query.agenCode.length)
-    // console.log(this.agencode)
-    // console.log(this.agencode.length)
-    if (this.agencode !== undefined) {
-      console.log('bbbbb')
-      if (this.agencode.length !== 0) {
-        this.query.agenCode = this.agencode
-      }
-    } else if (this.$route.query.agenCode.length !== 0) {
-      console.log('aaaaa')
-      console.log(this.$route.query.agenCode)
+    if (this.agencode !== undefined && this.agencode !== '' && this.agencode !== null) {
+      this.query.agenCode = this.agencode
+    } else if (this.$route !== undefined && this.$route !== '' && this.$route !== null) {
       this.query.agenCode = this.$route.query.agenCode
     }
-
     this.getAgenDetail()
-    // this.tempRoute = Object.assign({}, this.$route)
+    this.tempRoute = Object.assign({}, this.$route)
   },
   methods: {
     // 获取单位详细信息

@@ -19,3 +19,18 @@ export function getItemListByDestroyNo (fDestroyNo) {
     }
   })
 }
+
+export function destroyStockBill (fAgenIdCode, fBillBatchCode, fWarehouseId, fBillNo1, fBillNo2) {
+  return request({
+    url: BASE_URL + '/confirm/destroyStockBill',
+    method: 'delete',
+    params: {
+      fAgenIdCode,
+      fBillBatchCode,
+      fWarehouseId,
+      fBillNo1,
+      fBillNo2
+    }
+  })
+}
+
