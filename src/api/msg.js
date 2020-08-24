@@ -1,7 +1,6 @@
 import request from '@/utils/request'
 
-// const BASE_URL = 'boss-ecds-bill-message'
-const BASE_URL = '/boss-ecds-bill-message'
+const BASE_URL = 'boss-ecds-bill-message'
 
 /* mail相关 */
 export function getMailList(query) {
