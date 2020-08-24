@@ -202,30 +202,40 @@ export default {
       this.clearTable()
       this.bill = {}
       if (this.requestType === 'tel') {
-        await getBill(this.query)
-          .then((res) => {
-            this.billDialogVisible = true
-            this.bill = JSON.parse(res.data)
-            this.loadTable()
-            this.loading = false
-          })
-          .catch(() => {
-            this.loading = false
-          })
+        if (!this.telValidator(this.query.tel) || !this.verifyCodeValidator(this.query.verifyCode)) {
+          this.openErrormsg('请输入正确的手机号及校验码')
+          this.loading = false
+          return
+        }
+        await getBill(this.query).then(res => {
+          this.billDialogVisible = true
+          this.bill = JSON.parse(res.data)
+          this.loadTable()
+          this.loading = false
+        }).catch(() => { this.loading = false })
       } else {
-        await billCheck(this.query)
-          .then((res) => {
-            this.billDialogVisible = true
-            this.bill = JSON.parse(res.data)
-            this.loading = false
-            this.loadTable()
-            this.loading = false
-          })
-          .catch(() => {
-            this.loading = false
-          })
+        if (!this.billIdValidator(this.query.billId) || !this.checkCodeValidator(this.query.checkCode)) {
+          this.openErrormsg('请输入正确的票据号及校验码')
+          this.loading = false
+          return
+        }
+        await billCheck(this.query).then(res => {
+          this.billDialogVisible = true
+          this.bill = JSON.parse(res.data)
+          this.loading = false
+          this.loadTable()
+          this.loading = false
+        }).catch(() => { this.loading = false })
       }
       this.loading = false
+    },
+    // 前端票据号查询参数校验
+    billIdValidator (billId) {
+      return /^[0-9]{10}$/.test(billId)
+    },
+    // 前端校验码查询参数校验
+    checkCodeValidator (checkCode) {
+      return /^[0-9]{6}$/.test(checkCode)
     },
     // 前端手机号查询参数校验
     telValidator (tel) {
