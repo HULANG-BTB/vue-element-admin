@@ -64,7 +64,7 @@ export function deleteTemplateBatch (data) {
 
 export function uploadTemplate (data) {
   return request({
-    url: baseURL + `printTemplate/uploadTemplate`,
+    url: baseURL + `/printTemplate/uploadTemplate`,
     method: 'post',
     data
   })
@@ -72,7 +72,7 @@ export function uploadTemplate (data) {
 
 export function uploadExcel (data) {
   return request({
-    url: baseURL + `printTemplate/uploadExcel`,
+    url: baseURL + `/printTemplate/uploadExcel`,
     method: `post`,
     data
   })
