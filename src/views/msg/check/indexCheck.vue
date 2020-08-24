@@ -1,141 +1,70 @@
 <template>
   <div v-loading.body="loading" class="app-container">
-    <el-button
-      type="text"
-      class="login-button"
-      icon="el-icon-user"
-      @click="login"
-    >
+    <el-button type="text" class="login-button" icon="el-icon-user" @click="login">
       登录
     </el-button>
-    <div class="index-check">
+    <div class="box">
+      <el-card class="index-check" style="background-color: #3f5c6d2c;">
+        <el-image class="titleImg" :src="titleImg" />
+        <el-form :model="query" class="check-form" :rules="rules" :inline="true" @keyup.enter.native="handlerCheck">
 
-      <el-image class="titleImg" :src="titleImg" />
-      <el-form
-        :model="query"
-        class="check-form"
-        :rules="rules"
-        :inline="true"
-        @keyup.enter.native="handlerCheck"
-      >
+          <div v-if="requestType === 'tel'">
+            <el-form-item prop="tel">
+              <el-input v-model="query.tel" placeholder="请输入手机号码" clearable class="input-with-select" style="width: 350px;">
+                <el-select slot="prepend" v-model="requestType" class="el-select" placeholder="请选择" @change="selectChange">
+                  <el-option label="手机号码" value="tel" />
+                  <el-option label="票据号码" value="billId" />
+                </el-select>
+              </el-input>
+            </el-form-item>
+            <el-form-item prop="verifyCode">
+              <el-input v-model="query.verifyCode" placeholder="请输入校验码" clearable style="width: 350px;" class="input-with-select">
+                <template slot="prepend">校验码</template>
+              </el-input>
+            </el-form-item>
+          </div>
 
-        <div v-if="requestType === 'tel'">
-          <el-form-item prop="tel">
-            <el-input
-              v-model="query.tel"
-              placeholder="请输入手机号码"
-              clearable
-              class="input-with-select"
-              style="width: 350px;"
-            >
-              <el-select
-                slot="prepend"
-                v-model="requestType"
-                class="el-select"
-                placeholder="请选择"
-                @change="selectChange"
-              >
-                <el-option label="手机号码" value="tel" />
-                <el-option label="票据号码" value="billId" />
-              </el-select>
-            </el-input>
-          </el-form-item>
-          <el-form-item prop="verifyCode">
-            <el-input
-              v-model="query.verifyCode"
-              placeholder="请输入校验码"
-              clearable
-              style="width: 350px;"
-              class="input-with-select"
-            >
-              <template slot="prepend">校验码</template>
-            </el-input>
-          </el-form-item>
-        </div>
+          <div v-if="requestType === 'billId'">
+            <el-form-item prop="billId">
+              <el-input v-model="query.billId" placeholder="请输入票据号码" clearable class="input-with-select" style="width: 350px;">
+                <el-select slot="prepend" v-model="requestType" class="el-select" placeholder="请选择" @change="selectChange">
+                  <el-option label="手机号码" value="tel" />
+                  <el-option label="票据号码" value="billId" />
+                </el-select>
+              </el-input>
+            </el-form-item>
+            <el-form-item prop="verifyCode">
+              <el-input v-model="query.checkCode" placeholder="请输入校验码" clearable style="width: 350px;" class="input-with-select">
+                <template slot="prepend">校验码</template>
+              </el-input>
+            </el-form-item>
+          </div>
 
-        <div v-if="requestType === 'billId'">
-          <el-form-item prop="billId">
-            <el-input
-              v-model="query.billId"
-              placeholder="请输入票据号码"
-              clearable
-              class="input-with-select"
-              style="width: 350px;"
-            >
-              <el-select
-                slot="prepend"
-                v-model="requestType"
-                class="el-select"
-                placeholder="请选择"
-                @change="selectChange"
-              >
-                <el-option label="手机号码" value="tel" />
-                <el-option label="票据号码" value="billId" />
-              </el-select>
-            </el-input>
+          <el-form-item label>
+            <el-button class="check-button" type="primary" icon="el-icon-search" @click="handlerCheck">
+              查验
+            </el-button>
           </el-form-item>
-          <el-form-item prop="verifyCode">
-            <el-input
-              v-model="query.checkCode"
-              placeholder="请输入校验码"
-              clearable
-              style="width: 350px;"
-              class="input-with-select"
-            >
-              <template slot="prepend">校验码</template>
-            </el-input>
-          </el-form-item>
-        </div>
+        </el-form>
+      </el-card>
+    </div>
 
-        <el-form-item label>
-          <el-button
-            class="check-button"
-            type="primary"
-            icon="el-icon-search"
-            @click="handlerCheck"
-          >
-            查验
-          </el-button>
-        </el-form-item>
+    <el-dialog title="电子票据" :visible.sync="billDialogVisible">
+      <el-form :inline="true">
+        <el-table v-show="showTable" :stripe="true" :data="tableData">
+          <el-table-column prop="title" width="180" />
+          <el-table-column prop="property" />
+        </el-table>
       </el-form>
 
-      <el-dialog title="电子票据" :visible.sync="billDialogVisible">
-        <el-form :inline="true">
-          <el-table
-            v-show="showTable"
-            :stripe="true"
-            :data="tableData"
-          >
-            <el-table-column
-              prop="title"
-              width="180"
-            />
-            <el-table-column
-              prop="property"
-            />
-          </el-table>
-        </el-form>
+      <el-button v-if="bill.fBillImgUrl!==null" type="button" style=" margin-top: 15px;" @click="openImg">查看票据详情</el-button>
 
-        <el-button v-if="bill.fBillImgUrl!==null" type="button" style=" margin-top: 15px;" @click="openImg">查看票据详情</el-button>
-
-        <el-dialog
-          :visible.sync="imgDialogVisible"
-          title="电子票据"
-          append-to-body
-        >
-          <el-image
-            v-if="bill.fBillImgUrl!==null"
-            :src="bill.fBillImgUrl"
-          />
-        </el-dialog>
+      <el-dialog :visible.sync="imgDialogVisible" title="电子票据" append-to-body>
+        <el-image v-if="bill.fBillImgUrl!==null" :src="bill.fBillImgUrl" />
       </el-dialog>
-
-    </div>
-    <div>
-      <ul>15651995937</ul>
-      <ul>i7gxlo</ul>
-    </div>
+    </el-dialog>
   </div>
+
 </template>
 
 <script>
@@ -156,71 +85,85 @@ export default {
         verifyCode: null
       },
       bill: {},
-      tableData: [{
-        title: '开票时间',
-        property: ''
-      }, {
-        title: '票据类型',
-        property: ''
-      }, {
-        title: '票据号码',
-        property: ''
-      }, {
-        title: '票据代码',
-        property: ''
-      }, {
-        title: '校验位',
-        property: ''
-      }, {
-        title: '交款人',
-        property: ''
-      }, {
-        title: '合计金额',
-        property: ''
-      }, {
-        title: '开票单位',
-        property: ''
-      }
+      tableData: [
+        {
+          title: '开票时间',
+          property: ''
+        },
+        {
+          title: '票据类型',
+          property: ''
+        },
+        {
+          title: '票据号码',
+          property: ''
+        },
+        {
+          title: '票据代码',
+          property: ''
+        },
+        {
+          title: '校验位',
+          property: ''
+        },
+        {
+          title: '交款人',
+          property: ''
+        },
+        {
+          title: '合计金额',
+          property: ''
+        },
+        {
+          title: '开票单位',
+          property: ''
+        }
       ],
       loading: false,
       showTable: false,
       rules: {
-        tel: [{
-          required: true,
-          message: '请输入手机号码',
-          trigger: ['blur', 'change']
-        }, {
-          pattern: /^1\d{10}$/,
-          message: '无效手机号码'
-        }
+        tel: [
+          {
+            required: true,
+            message: '请输入手机号码',
+            trigger: ['blur', 'change']
+          },
+          {
+            pattern: /^1\d{10}$/,
+            message: '无效手机号码'
+          }
         ],
-        verifyCode: [{
-          required: true,
-          message: '请输入校验码',
-          trigger: ['blur', 'change']
-        }, {
-          pattern: /^[A-Za-z0-9]{6}$/,
-          message: '无效校验码'
-        }
+        verifyCode: [
+          {
+            required: true,
+            message: '请输入校验码',
+            trigger: ['blur', 'change']
+          },
+          {
+            pattern: /^[A-Za-z0-9]{6}$/,
+            message: '无效校验码'
+          }
         ],
-        billId: [{
-          required: true,
-          message: '请输入票据号码',
-          trigger: ['blur', 'change']
-        }, {
-          pattern: /^[A-Za-z0-9]{6}$/,
-          message: '无效票据号码'
-        }
+        billId: [
+          {
+            required: true,
+            message: '请输入票据号码',
+            trigger: ['blur', 'change']
+          },
+          {
+            pattern: /^[A-Za-z0-9]{6}$/,
+            message: '无效票据号码'
+          }
         ]
       }
     }
   },
-  created () {
-  },
+  created () {},
   methods: {
     jump () {
       this.$router.push({
-        path: '/dashboard' })
+        path: '/dashboard'
+      })
     },
     clearTable () {
       this.showTable = false
@@ -247,62 +190,28 @@ export default {
       this.clearTable()
       this.bill = {}
       if (this.requestType === 'tel') {
-        await getBill(this.query).then(res => {
-          const { code } = res
-          if (code === 10000) {
+        await getBill(this.query)
+          .then((res) => {
             this.billDialogVisible = true
             this.bill = JSON.parse(res.data)
             this.loadTable()
             this.loading = false
-            return
-          } else if (code === 10003) {
-            this.openErrormsg('请输入正确的11位手机号码及6位校验码')
-          } else if (code === 11111) {
-            this.$notify.error({
-              title: '警告',
-              message: '查无数据'
-            })
-          } else {
-            this.$notify.error({
-              title: '警告',
-              message: '服务器异常'
-            })
-          }
-        }).catch(() => {
-          this.loading = false
-          this.$notify.error({
-            title: '警告',
-            message: '服务器异常'
           })
-        })
+          .catch(() => {
+            this.loading = false
+          })
       } else {
-        await billCheck(this.query).then(res => {
-          if (res.code === 10000) {
+        await billCheck(this.query)
+          .then((res) => {
             this.billDialogVisible = true
-            this.bill = res.data
+            this.bill = JSON.parse(res.data)
             this.loading = false
             this.loadTable()
             this.loading = false
-          } else if (res.code === 10003) {
-            this.openErrormsg('请输入正确的票据号码及校验码')
-          } else if (res.code === 11111) {
-            this.$notify.error({
-              title: '警告',
-              message: '查无数据'
-            })
-          } else {
-            this.$notify.error({
-              title: '警告',
-              message: '服务器异常'
-            })
-          }
-        }).catch(() => {
-          this.loading = false
-          this.$notify.error({
-            title: '警告',
-            message: '服务器异常'
           })
-        })
+          .catch(() => {
+            this.loading = false
+          })
       }
       this.loading = false
     },
@@ -316,7 +225,8 @@ export default {
     },
     login () {
       this.$router.push({
-        path: '/login' })
+        path: '/login'
+      })
     },
     // 参数校验失败弹窗
     openErrormsg (msg) {
@@ -340,51 +250,69 @@ export default {
 </script>
 <style scoped lang="scss">
 .app-container {
-    bottom: 0;
-    left: 0;
-    width:100%;
-    height:100%;
-    z-index:-10;
-    zoom: 1;
-    background-color: #fff;
-    background: url('~@/assets/bg/bg.jpg');
-    background-size: cover;
-    -webkit-background-size: cover;
-    -o-background-size: cover;
-    background-position: left  bottom;
-    text-align:center;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -10;
+  zoom: 1;
+  background-color: #fff;
+  background: url("~@/assets/bg/bg.jpg");
+  background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  background-position: left bottom;
+  text-align: center;
 
+  .box {
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    justify-content: center;
+    height: 95vh;
   }
+
   .index-check {
-    margin: 0 auto;
-    margin-top: 25%;
+    width: 440px;
   }
+
   .input-with-select {
     float: left;
   }
+
   .titleImg {
     top: 10px;
-    left:100px;
+    left: 100px;
     position: absolute;
   }
+
   .check-form {
     margin-top: 15%;
   }
+
   .login-button {
     float: right;
     color: #fff;
   }
 
-  ::v-deep .el-select .el-input {
+  ::v-deep .el-select .el-input input {
     width: 110px;
+    background-color: #fff;
   }
+
   ::v-deep .input-with-select .el-input-group__prepend {
     width: 110px;
     background-color: #fff;
   }
-  ::v-deep .el-form-item__error{
+
+  ::v-deep .input-with-select .el-scrollbar__view {
+    background-color: #fff;
+  }
+
+  ::v-deep .el-form-item__error {
     float: right;
     font-size: 15px;
     font-weight: 800;
   }
+}
 </style>

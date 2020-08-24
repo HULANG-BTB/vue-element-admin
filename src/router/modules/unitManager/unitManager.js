@@ -21,7 +21,13 @@ const unitManager = {
       props: (route) => ({
         id: route.params.id
       }),
-      meta: { title: '单位管理详情', icon: 'table' }
+      meta: { title: '单位管理详情(财政端)', icon: 'table' }
+    },
+    {
+      path: 'unitManagerDetailUnit',
+      component: () => import('@/views/unitManager/unitManagerDetailUnit'),
+      name: 'unitManagerDetailUnit',
+      meta: { title: '单位管理详情(单位端)', icon: 'table' }
     },
     {
       path: 'unitCheck',
@@ -67,18 +73,19 @@ const unitManager = {
       roles: ['admin']
     },
     {
-      path: 'agenBill',
+      path: 'unitBillManager',
       component: () => import('@/views/unitManager/unitBillManager'),
-      name: 'agenBill',
+      name: 'unitBillManager',
       meta: { title: '可用票据', icon: 'edit' }
     },
     {
-      path: 'agenItem',
-      component: () => import('@/views/unitManager/unitBillManager'),
-      name: 'agenItem',
+      path: 'unitItemManager',
+      component: () => import('@/views/unitManager/unitItemManager'),
+      name: 'unitItemManager',
       meta: { title: '可用项目', icon: 'edit' }
     }
   ]
 }
 
 export default unitManager
+

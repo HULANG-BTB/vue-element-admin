@@ -9,7 +9,15 @@
     >
       <el-form-item label="查询模板文件:">
         <el-input
-          v-model="query.keyword"
+          v-model="template.billCode"
+          placeholder="输入票据代码(不含年度)"
+          clearable
+          size="small"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-input
+          v-model="template.name"
           placeholder="输入模板名称"
           clearable
           size="small"
@@ -31,9 +39,7 @@
         >重置</el-button>
       </el-form-item>
     </el-form>
-    <el-form
-      :inline="true"
-    >
+    <el-form :inline="true">
       <el-form-item>
         <el-button
           type="primary"
@@ -52,58 +58,70 @@
         >批量删除</el-button>
       </el-form-item>
     </el-form>
-    <div align="center">
-      <div style="width: 650px;">
-        <el-table
-          v-loading.body="loading"
-          :data="templateTableData"
-          style="width: 100%; margin-top: 30px;"
-          border
-          @selection-change="handleOnSelectChange"
+    <div>
+      <el-table
+        v-loading.body="loading"
+        :data="templateTableData"
+        style="width: 100%; margin-top: 30px;text-align: center"
+        border
+        @selection-change="handleOnSelectChange"
+      >
+        <el-table-column
+          type="selection"
+          align="center"
+          width="60"
+        />
+        <el-table-column
+          align="left"
+          label="模板ID"
+          width="100"
         >
-          <el-table-column
-            type="selection"
-            align="center"
-            width="60"
-          />
-          <el-table-column
-            align="left"
-            label="模板ID"
-            width="100"
-          >
-            <template slot-scope="scope">{{ scope.row.id }}</template>
-          </el-table-column>
-          <el-table-column
-            align="center"
-            label="模板名称"
-            width="290"
-          >
-            <template slot-scope="scope">{{ scope.row.name }}</template>
-          </el-table-column>
-          <el-table-column
-            align="center"
-            label="操作"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <el-button
-                type="primary"
-                size="small"
-                @click="handleShowTemplate(scope.row.id)"
-              >查看</el-button>
-              <el-button
-                type="danger"
-                size="small"
-                @click="handleDelete(scope)"
-              >删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
+          <template slot-scope="scope">{{ scope.row.id }}</template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="票据代码（不含年度）"
+          width="290"
+        >
+          <template slot-scope="scope">{{ scope.row.rgnCode + scope.row.typeId + scope.row.sortId }}</template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="模板名称"
+          width="290"
+        >
+          <template slot-scope="scope">{{ scope.row.name }}</template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="备注"
+          width="290"
+        >
+          <template slot-scope="scope">{{ scope.row.memo }}</template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="操作"
+          width="200"
+        >
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              size="small"
+              @click="handleShowTemplate(scope.row.id)"
+            >查看</el-button>
+            <el-button
+              type="danger"
+              size="small"
+              @click="handleDelete(scope)"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
 
     <el-pagination
-      layout="prev, pager, next, sizes, jumper"
+      layout="prev, pager, next, sizes, total, jumper"
       align="right"
       :page-size="query.pageSize"
       :total="query.total"
@@ -115,7 +133,7 @@
 
     <el-card>
       <div
-        id="continer"
+        id="container"
         style="width: 100%;margin: auto;"
       />
     </el-card>
@@ -184,11 +202,12 @@
 import {
   getTemplateListByPage,
   getTemplate,
-  getTemplateById,
+  searchList,
   deleteTemplate,
-  deleteTemplateBatch
+  deleteTemplateBatch,
+  uploadTemplate,
+  uploadExcel
 } from '@/api/template'
-import axios from 'axios'
 
 export default {
   name: 'ShowTemplate',
@@ -207,13 +226,18 @@ export default {
       query: {
         currentPage: 1,
         pageSize: 5,
-        total: 15,
-        keyword: ''
+        total: 15
+      },
+      template: {
+        billCode: '',
+        name: ''
       }
     }
   },
   computed: {
-    // 复选框数量等于0，将批量删除按钮的可点击属性置为false，否则置为true
+    /**
+     * 复选框数量等于0，将批量删除按钮的可点击属性置为false，否则置为true
+     */
     deleteBatchDisable () {
       return this.selectedList.length === 0
     }
@@ -241,26 +265,21 @@ export default {
     /**
      * 查询模板信息
      */
-    handleSearch () {
-      if (this.query.keyword === '') {
-        this.$message({
-          type: 'info',
-          message: '查询内容不为空'
-        })
-        return
-      }
+    async handleSearch () {
+      this.loading = true
       this.query.currentPage = 1
-      const res = getTemplateById(this.query.keyword)
-      this.templateTableData = res.data.records
+      const res = await searchList(this.template)
+      this.templateTableData = res.data
       this.selectedList = []
-      // this.getTableData()
+      this.loading = false
     },
 
     /**
      * 重置查询信息
      */
     handleReset () {
-      this.query.keyword = ''
+      this.template.billCode = ''
+      this.template.name = ''
       this.query.currentPage = 1
       this.selectedList = []
       this.getTableData()
@@ -273,11 +292,6 @@ export default {
     /**
      * template显示框可视化，并展示对应template
      */
-    handleShow (scope) {
-      this.dialogVisible = false
-      document.getElementById('continer').innerHTML = scope.row.template
-    },
-
     handleShowTemplate (id) {
       this.dialogVisible = false
       getTemplate(id).then(res => {
@@ -285,35 +299,10 @@ export default {
         const reader = new FileReader()
         reader.onload = function (event) {
           const contents = reader.result
-          console.log('file contents:' + contents)
-          document.getElementById('continer').innerHTML = contents
+          document.getElementById('container').innerHTML = contents
         }
         reader.readAsText(blob)
       })
-    },
-
-    byteToString (arr) {
-      if (typeof arr === 'string') {
-        return arr
-      }
-      let str = ''
-      const _arr = arr
-      for (let i = 0; i < _arr.length; i++) {
-        const one = _arr[i].toString(2)
-        const v = one.match(/^1+?(?=0)/)
-        if (v && one.length === 8) {
-          const bytesLength = v[0].length
-          let store = _arr[i].toString(2).slice(7 - bytesLength)
-          for (let st = 1; st < bytesLength; st++) {
-            store += _arr[st + i].toString(2).slice(2)
-          }
-          str += String.fromCharCode(parseInt(store, 2))
-          i += bytesLength - 1
-        } else {
-          str += String.fromCharCode(_arr[i])
-        }
-      }
-      return str
     },
 
     /**
@@ -330,14 +319,12 @@ export default {
             type: 'success',
             message: '删除成功!'
           })
-          console.log(res)
           this.getTableData()
-        }).catch(err => {
+        }).catch(() => {
           this.$message({
             type: 'error',
             message: '删除失败!'
           })
-          console.error(err)
         })
       })
     },
@@ -368,31 +355,37 @@ export default {
       })
     },
 
+    /**
+     * 判断上传的文件类型，不符合返回-1
+     */
+    fileType (file) {
+      const fileName = file.name
+      const idx = fileName.lastIndexOf('.')
+      if (idx !== -1) {
+        let ext = fileName.substr(idx + 1).toUpperCase()
+        ext = ext.toLowerCase()
+        if (ext === 'ftl') {
+          return 'ftl'
+        } else if (ext === 'xlsx') {
+          return 'xlsx'
+        } else {
+          return -1
+        }
+      }
+    },
+
     getFile (event) {
       const file = event.target.files
-      console.log(event)
-      console.log(file[0])
       for (let i = 0; i < file.length; i++) {
-        // 上传类型判断
-        const imgName = file[i].name
-        console.log(imgName)
-        const idx = imgName.lastIndexOf('.')
-        if (idx !== -1) {
-          let ext = imgName.substr(idx + 1).toUpperCase()
-          ext = ext.toLowerCase()
-          if (ext !== 'pdf' && ext !== 'ftl') {
-            this.$message({
-              type: 'info',
-              message: '文件类型错误'
-            })
-            return
-          } else {
-            this.addArr.push(file[i])
-            console.log(this.addArr[0])
-          }
-        } else {
-          console.log(idx)
+        const type = this.fileType(file[i])
+        if (type === -1) {
+          this.$message({
+            type: 'info',
+            message: '文件类型错误'
+          })
+          return
         }
+        this.addArr.push(file[i])
       }
     },
 
@@ -415,27 +408,40 @@ export default {
        * @file 模板文件
        * @type {FormData}
        */
+
       const formData = new FormData()
       formData.append('billCode', this.billCode)
       formData.append('memo', this.memo)
       formData.append('templateName', this.templateName)
-      for (let i = 0; i < this.addArr.length; i++) {
-        formData.append('file', this.addArr[i])
+      formData.append('file', this.addArr[0])
+      const fileType = this.fileType(this.addArr[0])
+      switch (fileType) {
+        case 'ftl':
+          uploadTemplate(formData).then(res => {
+            if (res.success) {
+              this.$message({
+                type: 'success',
+                message: '附件上传成功!'
+              })
+            }
+          })
+          break
+        case 'xlsx':
+          uploadExcel(formData).then(res => {
+            if (res.success) {
+              this.$message({
+                type: 'success',
+                message: '附件上传成功!'
+              })
+            }
+          })
+          break
       }
-      console.log(this.addArr[0].name)
-      axios.post('http://pro.beanbang.cn:8080/printTemplate/uploadTemplate', formData)
-        .then((res) => {
-          if (res.data.success) {
-            this.$message({
-              type: 'success',
-              message: '附件上传成功!'
-            })
-          }
-        })
       /**
        * 上传结束后将上传表单清空
        */
       document.getElementById('uploadTemplateFile').reset()
+      this.addArr = []
       this.dialogAddFile = false
     },
 

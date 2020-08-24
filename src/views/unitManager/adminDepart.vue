@@ -147,7 +147,7 @@
 </template>
 
 <script>
-import { getDapartListByPage, addDapart, updateDapart, deleteDapart, deleteDapartBatch, getRgnTree } from '@/api/unitManager'
+import { getDapartListByPage, addDapart, updateDapart, deleteDapart, deleteDapartBatch, getRgnTree } from '@/api/base/unitManager/unitManager'
 import { parseTime } from '@/utils/index'
 import { validateDatePicker } from '@/utils/validate'
 
