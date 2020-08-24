@@ -10,7 +10,7 @@ import request from '@/utils/request'
 import { RSAencrypt, RSAdencrypt, getRSAKey } from '@/utils/jsEncrypt'
 import { getEncryptedJson } from '@/utils/data'
 
-const baseUrl = '/testli/encryption/'
+const baseUrl = '/base/encryption/'
 
 /**
  * 获取后端公钥
