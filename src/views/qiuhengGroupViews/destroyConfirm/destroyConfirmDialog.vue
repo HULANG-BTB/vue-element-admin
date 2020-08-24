@@ -251,7 +251,6 @@ export default {
       this.getData(val)
     })
     this.$root.eventBus.$on('visibleDestroyConfirm', (val) => {
-      console.log(this.visible)
       this.visible = val
     })
     this.$root.eventBus.$on('lookDestroyApplyMan', (val) => {
@@ -267,7 +266,6 @@ export default {
   methods: {
     async getData (val) {
       const res = await getItemListByDestroyNo(val)
-      // console.log(res)
       this.tableData = res.data
     },
     confirmOK () {
@@ -277,20 +275,15 @@ export default {
         type: 'warning'
       }).then(async () => {
         this.resultVo.fStatus = '已审核并通过'
-        console.log(this.tableData)
         for (var k = 0; k < this.tableData.length; k++) {
           this.fAgenIdCode = '1314'
           this.fBillBatchCode = this.tableData[k].fBillBatchCode
-          console.log('aa', this.fBillBatchCode)
           this.fWarehouseId = this.tableData[k].fWarehouseId
           this.fBillNo1 = this.tableData[k].fBillNo1
-          console.log('bb', this.fBillNo1)
           this.fBillNo2 = this.tableData[k].fBillNo2
-          // console.log(this.fBillNo1)
           destroyStockBill(this.fAgenIdCode, this.fBillBatchCode, this.fWarehouseId, this.fBillNo1, this.fBillNo2)
         }
         updateApplyInfo(this.resultVo)
-        console.log(this.resultVo)
         this.visible = false
         this.$router.push
         this.$message({
