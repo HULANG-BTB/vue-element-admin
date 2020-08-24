@@ -124,7 +124,6 @@ export default {
                 query: this.otherQuery
               })
               this.loading = false
-
             })
             .catch(() => {
               this.loading = false
