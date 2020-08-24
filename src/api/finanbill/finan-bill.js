@@ -1,29 +1,21 @@
 import request from '@/utils/request'
 
-const BASE_URL = '/finan-stock-management/out-change/'
+// const BASE_URL = 'http://192.168.21.182:8080/stock-out/'
+// const BASE_URL = 'http://47.97.155.84/prod-api/stock-out/'
+// 120.27.3.74
+const BASE_URL = 'finan-bill/'
 
-/* 出库相关 */
-
-/**
- * 获得出库列表
- * @param {*} query 出库vo，包含编制人，审核状态等信息
- */
-export function getAll(query) {
-  return request({
-    url: BASE_URL + 'showAll',
-    method: 'post',
-    data: query
-  })
-}
+/* 票据相关 */
 
 /**
- * 删除多选
+ * 获取票据代码可用的票号段
+ * @param {*} billPrecode 票据代码
  */
-export function deleteAll(query) {
+export function getValid (billPrecode) {
   return request({
-    url: BASE_URL + 'deleteAll',
-    method: 'put',
-    data: query
+    url: BASE_URL + 'getValid',
+    method: 'get',
+    params: { billPrecode: billPrecode }
   })
 }
 

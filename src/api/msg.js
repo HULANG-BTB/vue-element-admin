@@ -1,11 +1,13 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'boss-ecds-bill-message'
+// const BASE_URL = 'boss-ecds-bill-message'
+const BASE_URL = '/boss-ecds-bill-message'
+// const BASE_URL = 'http://localhost:8080'
 /* mail相关 */
 export function getMailList (query) {
   return request({
     url: BASE_URL + '/mail/list',
-    method: 'post',
+    method: 'POST',
     data: query
   })
 }

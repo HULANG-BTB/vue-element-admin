@@ -8,7 +8,7 @@ const BASE_URL = '/finan-stock-management/stock-out/'
  * 获得出库列表
  * @param {*} query 出库vo，包含编制人，审核状态等信息
  */
-export function getAll (query) {
+export function getAll(query) {
   return request({
     url: BASE_URL + 'showAll',
     method: 'post',
@@ -20,7 +20,7 @@ export function getAll (query) {
  * 获得出库中的明细
  * @param {pid} pid 父id，即出库id
  */
-export function getItem (pid) {
+export function getItem(pid) {
   return request({
     url: BASE_URL + 'getItem',
     // url: '/mail/updateStatus',
@@ -33,7 +33,7 @@ export function getItem (pid) {
  * 新增出库记录
  * @param {*} author 编制人
  */
-export function addOut (author) {
+export function addOut(author) {
   return request({
     url: BASE_URL + 'add',
     method: 'get',
@@ -45,7 +45,7 @@ export function addOut (author) {
  * 提交保存请求
  * @param {*} query 出库即其明细
  */
-export function save (query) {
+export function save(query) {
   return request({
     url: BASE_URL + 'save',
     method: 'post',
@@ -57,7 +57,7 @@ export function save (query) {
  * 提交请求，即：将保存状态变更为待审核状态checkState
  * @param {*} id 提交id
  */
-export function submit (id) {
+export function submit(id) {
   return request({
     url: BASE_URL + 'submit',
     method: 'put',
@@ -69,7 +69,7 @@ export function submit (id) {
  * 提交请求，即：将保存状态变更为待审核状态checkState
  * @param {*} query 提交id
  */
-export function submitAll (query) {
+export function submitAll(query) {
   return request({
     url: BASE_URL + 'submitAll',
     method: 'put',
@@ -80,7 +80,7 @@ export function submitAll (query) {
 /**
  * 删除多选
  */
-export function deleteAll (query) {
+export function deleteAll(query) {
   return request({
     url: BASE_URL + 'deleteAll',
     method: 'put',
@@ -92,7 +92,7 @@ export function deleteAll (query) {
  * 审核出库
  * @param {*} query 要审核的出库vo
  */
-export function check (query) {
+export function check(query) {
   return request({
     url: BASE_URL + 'check',
     method: 'post',
@@ -104,7 +104,7 @@ export function check (query) {
  * 批量审核出库
  * @param {*} query 被审核的vo的list
  */
-export function checkAll (query) {
+export function checkAll(query) {
   return request({
     url: BASE_URL + 'checkAll',
     method: 'post',

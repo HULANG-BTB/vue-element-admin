@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://localhost:8080'
+const BASE_URL = 'http://localhost:8081'
 
 /**
  * 查询所有数据
@@ -8,7 +8,7 @@ const BASE_URL = 'http://localhost:8080'
  */
 export function getStockReturnList (query) {
   return request({
-    url: BASE_URL + '/stock-return-po/getListStockReturnPage',
+    url: '/stock-return-po/getListStockReturnPage',
     method: 'post',
     data: query
   })
@@ -20,7 +20,7 @@ export function getStockReturnList (query) {
  */
 export function getListStockReturnByDateOrNo (query) {
   return request({
-    url: BASE_URL + '/stock-return-po/getListStockReturnByDateOrNo1',
+    url: '/stock-return-po/getListStockReturnByDateOrNo1',
     method: 'post',
     // params: { no: query.no, startTime: query.startTime, endTime: query.endTime }
     // params: query
@@ -34,7 +34,7 @@ export function getListStockReturnByDateOrNo (query) {
  */
 export function addStockReturn (Stockreturn) {
   return request({
-    url: BASE_URL + '/stock-return-po/addStockReturn',
+    url: '/stock-return-po/addStockReturn',
     method: 'post',
     // params: { no: query.no, startTime: query.startTime, endTime: query.endTime }
     // params: query
@@ -48,7 +48,7 @@ export function addStockReturn (Stockreturn) {
  */
 export function getStockReturnItems (Stockreturn) {
   return request({
-    url: BASE_URL + '/stock-return-po/getStockReturnByNo',
+    url: '/stock-return-po/getStockReturnByNo',
     // url: '/mail/updateStatus',
     method: 'post',
     data: Stockreturn
@@ -61,7 +61,7 @@ export function getStockReturnItems (Stockreturn) {
  */
 export function deleteStockReturnByNo (Stockreturn) {
   return request({
-    url: BASE_URL + '/stock-return-po/deleteByNo',
+    url: '/stock-return-po/deleteByNo',
     method: 'get',
     params: { no: Stockreturn.no }
   })
@@ -73,39 +73,54 @@ export function deleteStockReturnByNo (Stockreturn) {
  */
 export function updateByNo (Stockreturn) {
   return request({
-    url: BASE_URL + '/stock-return-po/updateByNo',
+    url: '/stock-return-po/updateByNo',
     method: 'post',
     data: Stockreturn
   })
 }
 
-/* 统一方法 */
-export const util = {
-  jsonFormat: function (src) {
-    const jsonStr = src
-    return jsonStr.replace('"', '').replace('{', '').replace('}', '')
-  },
-  dateFormat: function (date) {
-    const dateTime = new Date(date)
-    const YY = dateTime.getFullYear()
-    const MM =
-      dateTime.getMonth() + 1 < 10
-        ? '0' + (dateTime.getMonth() + 1)
-        : dateTime.getMonth() + 1
-    const D =
-      dateTime.getDate() < 10 ? '0' + dateTime.getDate() : dateTime.getDate()
-    const hh =
-      dateTime.getHours() < 10
-        ? '0' + dateTime.getHours()
-        : dateTime.getHours()
-    const mm =
-      dateTime.getMinutes() < 10
-        ? '0' + dateTime.getMinutes()
-        : dateTime.getMinutes()
-    const ss =
-      dateTime.getSeconds() < 10
-        ? '0' + dateTime.getSeconds()
-        : dateTime.getSeconds()
-    return `${YY}-${MM}-${D}  ${hh}:${mm}:${ss}`
-  }
+/**
+ * 单位提交退票申请
+ * @param {*} Stockreturn
+ */
+export function putSubmit (Stockreturn) {
+  return request({
+    url: '/stock-return-po/updateSubmitStatus',
+    method: 'put',
+    params: { no: Stockreturn.no }
+  })
+}
+
+/**
+ *
+ * @param {*} query
+ */
+export function getFinanStockReturnList (query) {
+  return request({
+    url: BASE_URL + '/finan-stock-return-po/getListStockReturnByDate',
+    method: 'post',
+    data: query
+  })
+}
+
+/**
+ * 财政端审核退票申请（获取已提交的退票详细信息）
+ */
+export function getFinanStockReturnItems (query) {
+  return request({
+    url: BASE_URL + '/finan-stock-return-po/getStockReturnByNo',
+    method: 'post',
+    data: query
+  })
+}
+
+/**
+ * 财政端审核退票（审核是否通过退票申请）
+ */
+export function getCheckStateByNo (query) {
+  return request({
+    url: BASE_URL + '/finan-stock-return-po/CheckStatusByNo',
+    method: 'post',
+    data: query
+  })
 }
