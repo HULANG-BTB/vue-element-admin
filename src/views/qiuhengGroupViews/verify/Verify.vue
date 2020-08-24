@@ -118,9 +118,10 @@ export default {
       this.query.currentPage = this.page.currentPage
       this.query.pageSize = this.page.pageSize
       const res = await getPassBillList(this.query)
-      this.tableData = res.records
+      this.tableData = res.data.records
       // 通过slice方法获取数组中的一段
-      this.page.total = res.total
+      console.log(res.data.total)
+      this.page.total = res.data.total
     },
     // 提交查询条件
     onSubmit () {
@@ -135,29 +136,22 @@ export default {
       console.log(`每页 ${val} 条`)
     },
     // 点击查看详情
-    handleClick (row) {
+    async handleClick (row) {
       this.$root.eventBus.$emit('verifydata', row)
       const billId = row.fbillId
       const billNo = row.fbillNo
-      if (this.sign(billId, billNo) === 1) {
+      const res = await pdfSign(billId, billNo)
+      if (res.success) {
+        this.$message('财政签名审核通过')
         this.$root.eventBus.$emit('visible', this.visible)
         this.getUrl(billId, billNo)
+      } else {
+        this.$message('出现预警问题')
       }
     },
     // ok
     handleSelectionChange () {
 
-    },
-    // 财政端电子签名
-    async sign (billId, billNo) {
-      const res = await pdfSign(billId, billNo)
-      console.log(res)
-      if (res.success) {
-        this.$message('审核通过')
-        return 1
-      } else {
-        this.$message('出现预警问题')
-      }
     },
     // 获取票据模板img的url
     async getUrl (billId, billNo) {
@@ -165,12 +159,11 @@ export default {
       console.log(res)
       if (res.success) {
         this.imgUrl = res.data
-        return res.data
+        this.$root.eventBus.$emit('imgurl', this.imgUrl)
       } else {
         this.$message('出现预警问题')
       }
     }
-
   }
 }
 </script>
