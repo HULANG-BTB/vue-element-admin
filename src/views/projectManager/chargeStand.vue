@@ -12,7 +12,7 @@
       </el-form-item>
       <el-form-item label="状态">
         <el-select v-model="queryParams.keyword.isenable" placeholder="请选择标准状态" style="width: 150px">
-          <el-option label="已完成" value="1" />
+          <el-option label="已审核" value="1" />
           <el-option label="待审核" value="0" />
           <el-option label="全部" value="" />
         </el-select>
@@ -51,7 +51,7 @@
           <el-tag
             :type="scope.row.isenable ? 'success' : 'info'"
             disable-transitions
-          >{{ scope.row.isenable ? '已完成' : '待审核' }}
+          >{{ scope.row.isenable ? '已审核' : '待审核' }}
           </el-tag>
         </template>
       </el-table-column>
@@ -93,7 +93,7 @@
       @size-change="handleSizeChange"
     />
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType">
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType" @close="cancel">
       <el-form ref="standard" :model="standard" :rules="rules" label-width="80px" label-position="right" style="padding-right:25px;">
         <el-row :gutter="20">
           <el-col :span="12">
