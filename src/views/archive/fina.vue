@@ -133,6 +133,9 @@ export default {
 </script>
 
 <style scoped>
+  .archive-container {
+    margin: 30px;
+  }
   .edit-input {
     padding-right: 100px;
   }
