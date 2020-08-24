@@ -548,7 +548,8 @@ export default {
     setCode () {
       console.log('setcode')
       this.getCode.codeNum = this.addItemDTO.number
-      const result = getCodeFunction(this.getCode).then(() => {
+      getCodeFunction(this.getCode).then((result) => {
+        console.log(result)
         this.addItemDTO.billNo1 = result.data.beginCode
         this.addItemDTO.billNo2 = result.data.endCode
         this.okable = false
