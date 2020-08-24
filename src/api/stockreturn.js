@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 const BASE_URL = 'http://localhost:8081'
-
+// const BASE_URL = 'http://120.27.3.74:8085'
 /**
  * 查询所有数据
  * @param {*} query
@@ -14,6 +14,13 @@ export function getStockReturnList (query) {
   })
 }
 
+export function getNo () {
+  return request({
+    url: '/stock-return-po/getNo',
+    method: 'get',
+    data: null
+  })
+}
 /**
  * 根据日期或者业务单号查询
  * @param {} query
