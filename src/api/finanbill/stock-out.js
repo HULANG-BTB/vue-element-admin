@@ -117,6 +117,22 @@ export function checkAll (query) {
   })
 }
 
+export function createCode (data) {
+  return request({
+    url: BASE_URL + 'create/single',
+    method: 'post',
+    data
+  })
+}
+
+export function createBatchCode (batchCode) {
+  return request({
+    url: BASE_URL + 'create/batch',
+    method: 'post',
+    data: batchCode
+  })
+}
+
 /* 统一方法 */
 export const util = {
   jsonFormat: function (src) {
