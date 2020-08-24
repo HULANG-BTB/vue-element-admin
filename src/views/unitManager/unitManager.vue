@@ -45,8 +45,6 @@
       <el-table-column align="center" label="单位分类" prop="sortCode" />
       <el-table-column align="center" label="操作" width="400">
         <template slot-scope="scope">
-          <!-- <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleProject(scope.row)">项目</el-button>
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleBill(scope.row)">票据</el-button> -->
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleLook(scope.row)">查看</el-button>
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">修改</el-button>
           <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>

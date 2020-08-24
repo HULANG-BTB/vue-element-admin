@@ -75,12 +75,6 @@
       <el-col :span="1.5">
         <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleBill(project)">挂接票据</el-button>
       </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleAbleItem(project)">可用项目</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleAbleBill(project)">可用票据</el-button>
-      </el-col> -->
     </el-row>
 
     <el-dialog :visible.sync="dialogVisibleTow" title="准购证信息">
@@ -349,18 +343,6 @@ export default {
       }
       this.manageDialogVisible = false
     }
-    // 可用项目按钮
-    // handleAbleItem (rowData) {
-    //   this.$router.push({
-    //     path: '/unitManager/unitItemManager/'
-    //   })
-    // },
-    // 可用票据按钮
-    // handleAbleBill (rowData) {
-    //   this.$router.push({
-    //     path: '/unitManager/unitBillManager/'
-    //   })
-    // }
   }
 }
 </script>

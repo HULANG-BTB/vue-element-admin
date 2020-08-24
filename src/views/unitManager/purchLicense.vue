@@ -331,8 +331,6 @@ export default {
       this.dialogVisible = true
       this.dialogType = 'edit'
       this.crt = Object.assign({}, rowData)
-      // const { data } = await getOtherItem(rowData.id) // 模态框中需要的其他接口
-      // this.project.roles = data
     },
     // 删除按钮
     handleDelete (deleData) {

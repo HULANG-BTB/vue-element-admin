@@ -298,27 +298,7 @@ export default {
       dialogVisible: false,
       dialogType: 'new',
       formLabelWidth: '100px',
-      // multiple: true, // 非多个禁用
-      // pagesize: 5,
-      // currpage: 1,
       fileList: []
-      // rules: {
-      //   itemCode: [
-      //     { required: true, message: '项目编码不能为空', trigger: 'blur' }
-      //   ],
-      //   itemName: [
-      //     { required: true, message: '项目名称不能为空', trigger: 'blur' }
-      //   ],
-      //   mnen: [
-      //     { required: true, message: '助记码不能为空', trigger: 'blur' }
-      //   ],
-      //   incomeSortCode: [
-      //     { required: true, message: '收入类别不能为空', trigger: 'blur' }
-      //   ],
-      //   fundsnatureCode: [
-      //     { required: true, message: '资金性质不能为空', trigger: 'blur' }
-      //   ]
-      // }
     }
   },
   created () {
@@ -371,8 +351,6 @@ export default {
       this.dialogVisible = true
       this.dialogType = 'edit'
       this.UnitPlace = Object.assign({}, rowData)
-      // const { data } = await getOtherItem(rowData.id) // 模态框中需要的其他接口
-      // this.project.roles = data
     },
     handleDisable (rowData) {
       this.$confirm('是否禁用开票点？', '提示', {
@@ -518,14 +496,6 @@ export default {
       this.dialogVisible = false
       this.resetForm('project')
     },
-    // //分页
-    // handleCurrentChange (cpage) {
-    //   // userList.slice((currpage - 1) * pagesize, currpage * pagesize)
-    //   this.currpage = cpage
-    // },
-    // handleSizeChange (psize) {
-    //   this.pagesize = psize
-    // },
     handleSizeChange (val) {
       this.queryParams.limit = val
       this.getTableData()
@@ -533,8 +503,6 @@ export default {
     // 转换时间戳
     parseTime (time) {
       return parseTime(new Date(time), '{y}-{m}-{d}')
-      // var dateee = new Date(time).toJSON()
-      // return new Date(+new Date(dateee) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
     },
     // 当前页码改变
     handleCurrentChange (val) {
