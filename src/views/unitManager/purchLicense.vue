@@ -161,7 +161,7 @@
 </template>
 
 <script>
-import { getCrtListByPage, deleteCrt, deleteCrtBatch, addCrt, updateCrt, getAgenName } from '@/api/purchLicense'
+import { getCrtListByPage, deleteCrt, deleteCrtBatch, addCrt, updateCrt, getAgenName } from '@/api/base/unitManager/purchLicense'
 import { parseTime } from '@/utils/index'
 // import { validateDatePicker } from '@/utils/validate'
 
@@ -274,7 +274,7 @@ export default {
   methods: {
     // 格式化时间
     parseTime (time) {
-      return parseTime(new Date())
+      return parseTime(new Date(time), '{y}-{m}-{d}')
     },
     // 获取资源列表
     async getTableData () {
