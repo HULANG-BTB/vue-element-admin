@@ -1,51 +1,30 @@
 <template>
   <div class="app-container">
-    <el-form
-      :model="query"
-      :inline="true"
-      class="demo-form-inline"
-      @keyup.enter.native="handleSearch"
-    >
+    <el-form :model="query" :inline="true" class="demo-form-inline" @keyup.enter.native="handleSearch">
       <el-form-item label="搜索角色：">
         <el-input v-model="query.keyword" placeholder="请输入角色名或角色Key" clearable size="small" />
       </el-form-item>
-      <el-form-item label>
-        <el-button icon="el-icon-search" size="small" @click="handleSearch">搜索</el-button>
+      <el-form-item>
+        <el-button icon="el-icon-search" type="primary" size="small" @click="handleSearch">搜索</el-button>
       </el-form-item>
-      <el-form-item label>
-        <el-button type="primary" size="small" @click="handleAdd">创建角色</el-button>
-      </el-form-item>
-      <el-form-item label>
-        <el-button
-          :disabled="deleteBatchDisable"
-          type="danger"
-          size="small"
-          @click="handleDeleteBatch"
-        >批量删除</el-button>
-      </el-form-item>
-      <el-form-item label>
-        <el-button type="success" size="small" @click="getTableData">重载数据</el-button>
+      <el-form-item>
+        <el-button icon="el-icon-refresh" type="default" size="small" @click="query.keyword = ''">重置</el-button>
       </el-form-item>
     </el-form>
 
-    <el-pagination
-      background
-      layout="prev, pager, next, sizes, total, jumper"
-      :total="query.total"
-      :current-page="query.page"
-      :page-sizes="[10, 20, 50, 100, 500, 1000]"
-      :page-size="query.limit"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+    <el-row :gutter="10">
+      <el-col :span="1.5">
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="handleAdd">新增角色</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="danger" icon="el-icon-delete" size="small" :disabled="deleteBatchDisable" @click="handleDeleteBatch">批量删除</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="success" icon="el-icon-refresh" size="small" @click="getTableData">重载数据</el-button>
+      </el-col>
+    </el-row>
 
-    <el-table
-      v-loading.body="loading"
-      :data="roleTableData"
-      style="width: 100%;margin-top:30px;"
-      border
-      @selection-change="handleOnSelectChange"
-    >
+    <el-table v-loading.body="loading" :data="roleTableData" style="width: 100%;margin-top:30px;" border @selection-change="handleOnSelectChange">
       <el-table-column type="selection" align="center" width="55" />
       <el-table-column align="left" label="角色Key" width="220">
         <template slot-scope="scope">{{ scope.row.role }}</template>
@@ -53,51 +32,41 @@
       <el-table-column align="center" label="角色名称" width="220">
         <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
+      <el-table-column align="center" label="最后修改" width="170">
+        <template slot-scope="scope">{{ parseTime(scope.row.updateTime) }}</template>
+      </el-table-column>
+      <el-table-column align="header-center" label="操作人">
+        <template slot-scope="scope">{{ scope.row.operator }}</template>
+      </el-table-column>
       <el-table-column align="header-center" label="描述">
         <template slot-scope="scope">{{ scope.row.description }}</template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleEdit(scope)">Edit</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope)">Delete</el-button>
+          <el-button type="primary" size="mini" @click="handleEdit(scope)">编辑</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(scope)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
+    <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="margin-top:20px;float:right;margin-right:20px;" :total="query.total" :current-page="query.page" :page-sizes="[10, 20, 50, 100, 500, 1000]" :page-size="query.limit" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑角色':'新建角色'">
-      <el-form v-loading="dialogLoading" :model="role" label-width="80px" label-position="left">
-        <el-form-item label="Key">
-          <el-input v-model="role.role" placeholder="Role Name" />
+      <el-form ref="roleForm" v-loading="dialogLoading" :model="role" label-width="80px" label-position="right" :rules="rules">
+        <el-form-item label="Key" prop="role">
+          <el-input v-model="role.role" placeholder="角色 Key" />
         </el-form-item>
-        <el-form-item label="名称">
-          <el-input v-model="role.name" placeholder="Role Name" />
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="role.name" placeholder="角色名称" />
         </el-form-item>
         <el-form-item label="描述">
-          <el-input
-            v-model="role.description"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            type="textarea"
-            placeholder="Role Description"
-          />
+          <el-input v-model="role.description" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Role Description" />
         </el-form-item>
         <el-form-item label="权限">
-          <el-tree
-            ref="tree"
-            accordion
-            :data="permissionList"
-            :props="defaultProps"
-            show-checkbox
-            node-key="id"
-            :default-checked-keys="role.permissions"
-          >
+          <el-tree ref="tree" accordion :data="permissionList" :props="defaultProps" show-checkbox node-key="id" :default-checked-keys="role.permissions">
             <span slot-scope="{ node, data }" class="custom-tree-node">
               <span>{{ node.label }}</span>
-              <el-button
-                v-if="data.method"
-                :style="requestMethodStyle(data.method)"
-                type="text"
-                size="mini"
-              >{{ data.method }}</el-button>
+              <el-button v-if="data.method" :style="requestMethodStyle(data.method)" type="text" size="mini">{{ data.method }}</el-button>
               <span v-if="data.url" style="margin-left:1rem">{{ data.url }}</span>
             </span>
           </el-tree>
@@ -105,7 +74,7 @@
       </el-form>
       <div style="text-align:right;">
         <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
-        <el-button type="primary" @click="confirmRole">Confirm</el-button>
+        <el-button type="primary" :loading="confirmLoading" @click="confirmRole">Confirm</el-button>
       </div>
     </el-dialog>
   </div>
@@ -113,8 +82,15 @@
 
 <script>
 import { deepClone } from '@/utils'
-import { addRole, getRoleListByPage, updateRole, deleteRole, deleteRoleBatch } from '@/api/role'
-import { getPermissionListByTree, getPermissionByRid } from '@/api/permission'
+import {
+  addRole,
+  getRoleListByPage,
+  updateRole,
+  deleteRole,
+  deleteRoleBatch
+} from '@/api/userManager/role'
+import { getPermissionListByTree, getPermissionByRid } from '@/api/userManager/permission'
+import { parseTime } from '@/utils/index'
 
 const defaultRole = {
   id: '',
@@ -133,8 +109,17 @@ export default {
       permissionList: [],
       selectedList: [],
       loading: true,
+      confirmLoading: false,
       dialogLoading: false,
       dialogVisible: false,
+      rules: {
+        role: [
+          { required: true, message: '角色Key不能为空', trigger: 'blur' }
+        ],
+        name: [
+          { required: true, message: '角色名称不能为空', trigger: 'blur' }
+        ]
+      },
       dialogType: 'new',
       defaultProps: {
         children: 'children',
@@ -175,8 +160,10 @@ export default {
 
     // 获取权限列表
     async getPermissionList () {
+      this.dialogLoading = true
       const res = await getPermissionListByTree()
       this.permissionList = res.data
+      this.dialogLoading = false
     },
 
     // 计算请求方式样式
@@ -234,7 +221,7 @@ export default {
         type: 'warning'
       })
         .then(async () => {
-          deleteRole(row.id).then(res => {
+          deleteRole(row.id).then((res) => {
             this.roleTableData.splice($index, 1)
             this.$message({
               type: 'success',
@@ -242,7 +229,7 @@ export default {
             })
           })
         })
-        .catch(err => {
+        .catch((err) => {
           this.$message({
             type: 'error',
             message: 'Delete failed!'
@@ -252,36 +239,45 @@ export default {
     },
 
     async confirmRole () {
-      const isEdit = this.dialogType === 'edit'
-
-      const checkedNodes = this.$refs.tree.getCheckedNodes(true)
-      this.role.permissions = checkedNodes
-      let successFlag = false
-      if (isEdit) {
-        await updateRole(this.role).then(res => {
-          successFlag = true
-        })
-      } else {
-        await addRole(this.role).then(res => {
-          successFlag = true
-        })
-      }
-      if (successFlag) {
-        const { description, role, name } = this.role
-        this.dialogVisible = false
-        this.$notify({
-          title: 'Success',
-          dangerouslyUseHTMLString: true,
-          message: `
+      this.$refs.roleForm.validate(async valid => {
+        if (valid) {
+          const isEdit = this.dialogType === 'edit'
+          this.confirmLoading = true
+          const checkedNodes = this.$refs.tree.getCheckedNodes(true)
+          this.role.permissions = checkedNodes
+          let successFlag = false
+          if (isEdit) {
+            await updateRole(this.role).then((res) => {
+              successFlag = true
+            }).catch(() => {
+              this.confirmLoading = false
+            })
+          } else {
+            await addRole(this.role).then((res) => {
+              successFlag = true
+            }).catch(() => {
+              this.confirmLoading = false
+            })
+          }
+          this.confirmLoading = false
+          if (successFlag) {
+            const { description, role, name } = this.role
+            this.dialogVisible = false
+            this.$notify({
+              title: 'Success',
+              dangerouslyUseHTMLString: true,
+              message: `
             <div>Role Key: ${role}</div>
             <div>Role Name: ${name}</div>
             <div>Description: ${description}</div>
           `,
-          type: 'success'
-        })
-        // 更新数据列表
-        await this.getTableData()
-      }
+              type: 'success'
+            })
+            // 更新数据列表
+            await this.getTableData()
+          }
+        }
+      })
     },
 
     // 批量删除
@@ -290,16 +286,15 @@ export default {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
         type: 'warning'
-      })
-        .then(async () => {
-          deleteRoleBatch(this.selectedList).then(res => {
-            this.$message({
-              type: 'success',
-              message: 'Delete succed!'
-            })
-            this.getTableData()
+      }).then(async () => {
+        deleteRoleBatch(this.selectedList).then((res) => {
+          this.$message({
+            type: 'success',
+            message: 'Delete succed!'
           })
+          this.getTableData()
         })
+      })
     },
 
     handleOnSelectChange (selection) {
@@ -316,6 +311,11 @@ export default {
     handleCurrentChange (val) {
       this.query.page = val
       this.getTableData()
+    },
+
+    // 格式化时间
+    parseTime (time) {
+      return parseTime(new Date())
     }
   }
 }

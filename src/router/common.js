@@ -28,12 +28,24 @@ export default [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '控制台', icon: 'dashboard', affix: true }
-    }]
+    redirect: '/indexCheck',
+    children: [
+      {
+        path: 'dashboard',
+        name: 'dashboard',
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: '控制台', icon: 'dashboard', affix: false }
+      }
+    ]
+  },
+
+  {
+    path: '/indexCheck',
+    component: () => import('@/views/msg/check/indexCheck'),
+    name: 'PageIndexCheck',
+    meta: {
+      title: '主页查验',
+      icon: 'el-icon-message'
+    }
   }
 ]
