@@ -1,7 +1,7 @@
 <template>
   <div style="display:inline-block;">
     <label class="radio-label" style="padding-left:0;">公司名称: </label>
-    <el-input v-model="agenname" placeholder="请输入公司名称" style="width:400px;" prefix-icon="el-icon-document" />
+    <el-input v-model="agenname" placeholder="请输入公司名称" style="width:400px;" prefix-icon="el-icon-search" />
   </div>
 </template>
 

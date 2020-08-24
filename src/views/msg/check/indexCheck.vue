@@ -3,17 +3,21 @@
     <el-button type="text" class="login-button" icon="el-icon-user" @click="login">
       登录
     </el-button>
+
     <div class="box">
-      <el-card class="index-check" style="background-color: #3f5c6d2c;">
-        <el-image class="titleImg" :src="titleImg" />
-        <el-form :model="query" class="check-form" :rules="rules" :inline="true" @keyup.enter.native="handlerCheck">
+      <el-card class="index-check">
+        <el-image :src="logo" class="logo" />
+        <el-header class="title">
+          票据信息查验
+        </el-header>
+        <el-form style="margin-top:10px;" :model="query" class="check-form" :rules="rules" @keyup.enter.native="handlerCheck">
 
           <div v-if="requestType === 'tel'">
             <el-form-item prop="tel">
               <el-input v-model="query.tel" placeholder="请输入手机号码" clearable class="input-with-select" style="width: 350px;">
                 <el-select slot="prepend" v-model="requestType" class="el-select" placeholder="请选择" @change="selectChange">
-                  <el-option label="手机号码" value="tel" />
-                  <el-option label="票据号码" value="billId" />
+                  <el-option label="手机号" value="tel" />
+                  <el-option label="票据号" value="billId" />
                 </el-select>
               </el-input>
             </el-form-item>
@@ -28,8 +32,8 @@
             <el-form-item prop="billId">
               <el-input v-model="query.billId" placeholder="请输入票据号码" clearable class="input-with-select" style="width: 350px;">
                 <el-select slot="prepend" v-model="requestType" class="el-select" placeholder="请选择" @change="selectChange">
-                  <el-option label="手机号码" value="tel" />
-                  <el-option label="票据号码" value="billId" />
+                  <el-option label="手机号" value="tel" />
+                  <el-option label="票据号" value="billId" />
                 </el-select>
               </el-input>
             </el-form-item>
@@ -41,7 +45,7 @@
           </div>
 
           <el-form-item label>
-            <el-button class="check-button" type="primary" icon="el-icon-search" @click="handlerCheck">
+            <el-button class="check-button" icon="el-icon-search" @click="handlerCheck">
               查验
             </el-button>
           </el-form-item>
@@ -69,12 +73,12 @@
 
 <script>
 import { getBill, billCheck } from '@/api/msg.js'
-import titleImg from '@/assets/bg/title.png'
+import logo from '@/assets/bg/bosslogo.png'
 
 export default {
   data () {
     return {
-      titleImg: titleImg,
+      logo: logo,
       billDialogVisible: false,
       imgDialogVisible: false,
       requestType: 'tel',
@@ -257,62 +261,78 @@ export default {
   z-index: -10;
   zoom: 1;
   background-color: #fff;
-  background: url("~@/assets/bg/bg.jpg");
+  background: url("~@/assets/bg/bg.gif");
   background-size: cover;
   -webkit-background-size: cover;
   -o-background-size: cover;
   background-position: left bottom;
   text-align: center;
+}
+.box {
+  display: flex;
+  display: -webkit-flex;
+  align-items: center;
+  justify-content: center;
+  height: 95vh;
+}
+.index-check {
+  width: 400px;
+  background-color: #3f5c6d2c;
+}
+.check-button {
+  color: #fff;
+  background-color: #3f5c6d2c;
+  width: 350px;
+}
 
-  .box {
-    display: flex;
-    display: -webkit-flex;
-    align-items: center;
-    justify-content: center;
-    height: 95vh;
-  }
+.check-form {
+  margin-top: 15%;
+}
+.login-button {
+  float: right;
+  color: #fff;
+}
+.title {
+  color: rgb(53, 50, 50);
+  font-size: 35px;
+  margin-top: 10px;
+  font-weight: lighter;
+}
 
-  .index-check {
-    width: 440px;
-  }
+::v-deep .el-select .el-input {
+  width: 90px;
+  color: #fff;
+}
+::v-deep .el-scrollbar .el-select-dropdown__wrap {
+  background-color: #6779832c;
+  color: #fff;
+}
 
-  .input-with-select {
-    float: left;
-  }
+::v-deep .el-card__body .el-input__inner {
+  background-color: #6779832c;
+  color: #fff;
+}
+::v-deep .input-with-select .el-input-group__prepend {
+  width: 90px;
+  background-color: #3f5c6d2c;
+  color: #fff;
+}
 
-  .titleImg {
-    top: 10px;
-    left: 100px;
-    position: absolute;
-  }
+::v-deep .input-with-select .el-scrollbar__view {
+  background-color: #3f5c6d2c;
+}
 
-  .check-form {
-    margin-top: 15%;
-  }
-
-  .login-button {
-    float: right;
-    color: #fff;
-  }
-
-  ::v-deep .el-select .el-input input {
-    width: 110px;
-    background-color: #fff;
-  }
-
-  ::v-deep .input-with-select .el-input-group__prepend {
-    width: 110px;
-    background-color: #fff;
-  }
-
-  ::v-deep .input-with-select .el-scrollbar__view {
-    background-color: #fff;
-  }
-
-  ::v-deep .el-form-item__error {
-    float: right;
-    font-size: 15px;
-    font-weight: 800;
-  }
+// logo
+::v-deep .logo .el-image__inner {
+  width: auto;
+  height: auto;
+  max-height: 50%;
+  max-width: 50%;
+}
+// 校验文字信息
+::v-deep .el-form-item__error {
+  font-size: 15px;
+  font-weight: 800;
+  margin-left: 100px;
 }
 </style>
