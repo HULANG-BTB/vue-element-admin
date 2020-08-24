@@ -143,10 +143,10 @@
         class="demo-form-inline"
       >
         <el-row>
-          <el-col :span="3" />
+          <el-col :span="2" />
           <el-col :span="11">
             <el-form-item label="业务单号">
-              <el-input v-model="Stockreturn.no" autocomplete="off" :disabled="true"  placeholder="请输入业务单号：" />
+              <el-input v-model="Stockreturn.no" autocomplete="off" :disabled="true" placeholder="请输入业务单号：" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
