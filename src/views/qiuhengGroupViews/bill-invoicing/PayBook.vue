@@ -19,58 +19,65 @@
                 >打印缴款书</el-menu-item>
               </el-menu>
             </div>
-            <div>
-              <h1>{{ unitName }}</h1>
-              <h1>{{ fAmt }}</h1>
-            </div>
             <el-card shadow>
-              <div style="height: 230px">
+              <div style="height: 90px">
                 <div
                   class="subject"
                   size="small"
                 >
-                  <span>票据明细</span>
+                  <div>
+                    <el-input slot="prefix" v-model="unitName" style="outline:none;" type="text" disabled prefix="开票单位" size="small" />
+                  </div>
+                  <div>
+                    <el-input v-model="uneCbillDto.fBillId" style="outline:none;" disabled size="small" />
+                    <el-input v-model="uneCbillDto.fBillNo" style="outline:none;" disabled size="small" />
+                    <el-input v-model="uneCbillDto.checkCode" style="outline:none;" disabled size="small" />
+                  </div>
+                  <div>
+                    <el-input v-model="payerDto.fPayerName" style="outline:none;" disabled size="small" />
+                    <el-input v-model="payerDto.fPayerEmail" style="outline:none;" disabled size="small" />
+                    <el-input v-model="payerDto.fPayerTel" style="outline:none;" disabled size="small" />
+                  </div>
                 </div>
-                <el-divider content-position="left" />
-                <el-table
-                  :data="itemDtos"
-                  stripe
-                  style="width: 100%"
-                  size="small"
-                >
-                  <el-table-column
-                    prop="fItemCode"
-                    label="项目编码"
-                    width="180"
-                  />
-                  <el-table-column
-                    prop="fItemName"
-                    label="项目名称"
-                  />
-                  <el-table-column
-                    prop="fUnits"
-                    label="计量单位"
-                  />
-                  <el-table-column
-                    prop="fNumber"
-                    label="数量"
-                  />
-                  <el-table-column
-                    prop="fAmt"
-                    label="金额"
-                  />
-                </el-table>
               </div>
-              <div class="foot" size="small">
-                <i style="font-family: PingFang SC">.</i>
-                <i style="font-family: PingFang SC">合计：{{ fAmt }}</i>
-              </div>
+              <el-divider content-position="left" />
+              <el-table
+                :data="itemDtos"
+                stripe
+                style="width: 100%"
+                size="small"
+              >
+                <el-table-column
+                  prop="fItemCode"
+                  label="项目编码"
+                  width="180"
+                />
+                <el-table-column
+                  prop="fItemName"
+                  label="项目名称"
+                />
+                <el-table-column
+                  prop="fUnits"
+                  label="计量单位"
+                />
+                <el-table-column
+                  prop="fNumber"
+                  label="数量"
+                />
+                <el-table-column
+                  prop="fAmt"
+                  label="金额"
+                />
+              </el-table>
             </el-card>
-            <div class="foot">
-              <i style="font-family: PingFang SC">编制人：samuel</i>
-              <i style="font-family: PingFang SC">编制日期：{{ dateTime }}</i>
+            <div class="foot" size="small">
+              <h7 style="font-family: PingFang SC">.</h7>
+              <h7 v-model="fAmt" style="font-family: PingFang SC">合计：{{ fAmt }}</h7>
             </div>
-          </el-card>
+          </el-card></div>
+        <div class="foot">
+          <i style="font-family: PingFang SC">编制人：{{ fAuthor }}</i>
+          <i style="font-family: PingFang SC">编制日期：{{ dateTime }}</i>
         </div>
       </el-col>
     </el-row>
@@ -83,27 +90,26 @@ export default {
   },
   data () {
     return {
-      unitName: '',
+      unitName: '博思软件股份有限公司',
       payerDto: {},
       uneCbillDto: {},
-      itemDtos: [{
-        fItemCode: '20001',
-        fItemName: '学费',
-        fUnits: '元',
-        fNumber: 1,
-        fAmt: 8888.00
-      }],
-      fAmt: '',
-      dateTime: ''
+      itemDtos: [],
+      fAmt: '1000',
+      dateTime: '',
+      fAuthor: 'admin'
     }
   },
   created () {
     this.$root.eventBus.$on('batchPojo', (val) => {
       console.log(val)
       this.unitName = val.unitName
+      console.log(val.unitName)
       this.payerDto = val.payerDto
+      console.log(val.payerDto)
       this.fAmt = val.fAmt
+      console.log(val.fAmt)
       this.uneCbillDto = val.uneCbillDto
+      console.log(val.itemDtos)
       this.itemDtos = val.itemDtos
       console.log(this.itemDtos)
     })
@@ -143,5 +149,9 @@ export default {
     margin-top: 20px;
     display: flex;
     justify-content: space-between
+}
+.subject {
+  display: flex;
+  justify-content: center;
 }
 </style>

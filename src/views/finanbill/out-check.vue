@@ -261,7 +261,7 @@
   </div>
 </template>
 <script>
-import { getAll, getItem, check, checkAll, util } from '@/api/finanbill/finanbill.js'
+import { getAll, getItem, check, checkAll, util } from '@/api/finanbill/stock-out.js'
 
 export default {
   name: 'OutApp',

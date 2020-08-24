@@ -1,6 +1,11 @@
 import request from '@/utils/request'
 
-const BASE_URL = '/finan-stock-management/stock-out/'
+// const BASE_URL = 'http://192.168.21.182:8080/stock-out/'
+// const BASE_URL = 'http://47.97.155.84/prod-api/stock-out/'
+// 120.27.3.74
+// const BASE_URL = 'http://192.168.110.194:8080/'
+const BASE_URL = 'finan-stock-management/'
+// const BASE_URL = 'http://120.27.3.74:8085/'
 
 /* 出库相关 */
 
@@ -10,7 +15,7 @@ const BASE_URL = '/finan-stock-management/stock-out/'
  */
 export function getAll (query) {
   return request({
-    url: BASE_URL + 'showAll',
+    url: BASE_URL + 'stock-out/showAll',
     method: 'post',
     data: query
   })
@@ -22,7 +27,7 @@ export function getAll (query) {
  */
 export function getItem (pid) {
   return request({
-    url: BASE_URL + 'getItem',
+    url: BASE_URL + 'stock-out/getItem',
     // url: '/mail/updateStatus',
     method: 'get',
     params: { pid: pid }
@@ -35,7 +40,7 @@ export function getItem (pid) {
  */
 export function addOut (author) {
   return request({
-    url: BASE_URL + 'add',
+    url: BASE_URL + 'stock-out/add',
     method: 'get',
     params: { author: author }
   })
@@ -47,7 +52,7 @@ export function addOut (author) {
  */
 export function save (query) {
   return request({
-    url: BASE_URL + 'save',
+    url: BASE_URL + 'stock-out/save',
     method: 'post',
     data: query
   })
@@ -59,7 +64,7 @@ export function save (query) {
  */
 export function submit (id) {
   return request({
-    url: BASE_URL + 'submit',
+    url: BASE_URL + 'stock-out/submit',
     method: 'put',
     params: { id: id }
   })
@@ -71,7 +76,7 @@ export function submit (id) {
  */
 export function submitAll (query) {
   return request({
-    url: BASE_URL + 'submitAll',
+    url: BASE_URL + 'stock-out/submitAll',
     method: 'put',
     data: query
   })
@@ -82,7 +87,7 @@ export function submitAll (query) {
  */
 export function deleteAll (query) {
   return request({
-    url: BASE_URL + 'deleteAll',
+    url: BASE_URL + 'stock-out/deleteAll',
     method: 'put',
     data: query
   })
@@ -94,7 +99,7 @@ export function deleteAll (query) {
  */
 export function check (query) {
   return request({
-    url: BASE_URL + 'check',
+    url: BASE_URL + 'stock-out/check',
     method: 'post',
     data: query
   })
@@ -106,9 +111,25 @@ export function check (query) {
  */
 export function checkAll (query) {
   return request({
-    url: BASE_URL + 'checkAll',
+    url: BASE_URL + 'stock-out/checkAll',
     method: 'post',
     data: query
+  })
+}
+
+export function createCode (data) {
+  return request({
+    url: BASE_URL + 'create/single',
+    method: 'post',
+    data
+  })
+}
+
+export function createBatchCode (batchCode) {
+  return request({
+    url: BASE_URL + 'create/batch',
+    method: 'post',
+    data: batchCode
   })
 }
 
