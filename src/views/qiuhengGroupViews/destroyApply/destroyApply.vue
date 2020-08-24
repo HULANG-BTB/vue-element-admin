@@ -246,7 +246,7 @@ export default {
       this.fDestroyNo = now.getFullYear().toString() + month.toString() + day + hour + minutes + seconds + (Math.round(Math.random() * 23 + 100)).toString()
     },
     async refreshButton () {
-      const res = await getApplyListByAgenIdCode('1314')
+      const res = await getApplyListByAgenIdCode(this.$store.state.user.agenCode)
       console.log(res)
       this.tableData = res.data
       for (var i = 0; i < this.tableData.length; i++) {
