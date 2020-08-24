@@ -57,9 +57,6 @@
   </div>
 </template>
 <script>
-import {
-  getItemInfo
-} from '@/api/qiuhengGroupApi/billInvoicing/bill'
 export default {
   data () {
     return {
