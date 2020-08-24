@@ -2,8 +2,8 @@ import request from '@/utils/request'
 
 // 入库模块
 
-const BASE_URL = 'http://120.27.3.74:8085'
-// const BASE_URL = 'finan-stock-management/'
+// const BASE_URL = 'http://120.27.3.74:8085'
+const BASE_URL = 'finan-stock-management/'
 
 // 分页查询入库单
 export function getStockListPage (page) {
