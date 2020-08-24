@@ -48,7 +48,7 @@
       <el-dialog
         :visible.sync="dialogVisible"
         :show-close="true"
-        width="80%"
+        width="90%"
         top="6vh"
         title="票据销毁申请——新增"
       >
