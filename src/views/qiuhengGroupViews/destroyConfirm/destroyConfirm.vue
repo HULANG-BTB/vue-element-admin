@@ -168,19 +168,13 @@ export default {
     this.refreshButton1()
   },
   methods: {
-    // eslint-disable-next-line vue/no-dupe-keys
     async refreshButton () {
       const res = await refresh()
-      // debugger
-      // console.log(res)
       this.tableData = res.data
     },
     async refreshButton1 () {
       const res = await refresh()
-      // debugger
-      // console.log(res);
       this.tableData = res.data
-      // console.log(this.tableData);
       for (var i = 0; i < this.tableData.length; i++) {
         if (this.tableData[i].fDestroyType) {
           this.tableData[i].fDestroyType = '库存票据销毁'
@@ -200,22 +194,17 @@ export default {
           this.tableData[i].fStatus = '已审核并通过'
         }
       }
-      // console.log(this.tableData)
     },
     async handleSearch () {
       this.tableData1 = []
       const res = await getApplyInfoByDestroyNo(this.destroySearch.fDestroyNo)
-      console.log(res)
       this.tableData1.push(res.data)
       this.tableData = this.tableData1
-      console.log(this.tableData)
     },
     handleSizeChange () {},
     handleCurrentChange () {},
     handleClick (row) {
-    // console.log(row)
       this.$root.eventBus.$emit('fDestroyNoConfirm', row.fDestroyNo)
-      // console.log(this.visible)
       this.$root.eventBus.$emit('visibleDestroyConfirm', this.visible)
       this.$root.eventBus.$emit('lookDestroyApplyMan', row.fApplyMan)
       this.$root.eventBus.$emit('lookDestroyApplyDate', row.fApplyDate)

@@ -317,8 +317,6 @@ export default {
 
   labelPosition: 'right',
   created () {
-    // this.applyDto.fDestroyNo = this.destroyNo
-    console.log(this.applyDto.fDestroyNo)
     this.$root.eventBus.$on('fDestroyNo', (val) => {
       this.applyDto.fDestroyNo = val
     })
@@ -327,11 +325,6 @@ export default {
       this.getApplyInfo(val)
       this.getItemList(val)
     })
-    // console.log(this.operateType)
-    // this.$root.eventBus.$on('operateType', (val) => {
-    //   this.operateType = val
-    //   console.log(this.operateType)
-    // })
   },
   methods: {
     addApplyOneItem () {
@@ -390,7 +383,6 @@ export default {
       }).then(async () => {
         await addDestroyApply(applyVo)
         this.$root.eventBus.$emit('dialogVisible1', this.dialogVisible)
-        // console.log(res)
         this.$router.push
         this.$message({
           type: 'success',
@@ -445,7 +437,6 @@ export default {
       }).then(async () => {
         await updateApplyInfo(applyVo)
         this.$root.eventBus.$emit('dialogVisible1', this.dialogVisible)
-        // console.log(res)
         this.$router.push
         this.$message({
           type: 'success',
@@ -466,7 +457,6 @@ export default {
     },
     async getApplyInfo (val) {
       const res = await getApplyInfoByDestroyNo(val)
-      // console.log(res)
       this.applyDto = res.data
       if (this.applyDto.fDestroyType === true) {
         this.applyDto.fDestroyType = '库存票据销毁'
@@ -482,13 +472,10 @@ export default {
       if (this.applyDto.fStatus === 2) {
         this.applyDto.fStatus = '已审核并通过'
       }
-      // console.log(this.applyDto)
     },
     async getItemList (val) {
       const res1 = await getItemListByDestroyNo(val)
-      // console.log(res1)
       this.itemDtoList = res1.data
-      // console.log(this.itemDtoList)
     }
   }
 }
