@@ -20,6 +20,15 @@ export function generateImage (data) {
   })
 }
 
+export function genStampedImage (data) {
+  return download({
+    url: baseURL + `/image/stampedImage`,
+    method: 'post',
+    responseType: 'blob',
+    data
+  })
+}
+
 export function getRemoteAddress (data) {
   return request({
     url: baseURL + `/image/getRemoteAddress`,
@@ -28,3 +37,10 @@ export function getRemoteAddress (data) {
   })
 }
 
+export function getPDFAddress (data) {
+  return request({
+    url: baseURL + `/pdf/getRemoteAddress`,
+    method: 'post',
+    data
+  })
+}
