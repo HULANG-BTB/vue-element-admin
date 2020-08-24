@@ -317,8 +317,6 @@ export default {
 
   labelPosition: 'right',
   created () {
-    // this.applyDto.fDestroyNo = this.destroyNo
-    console.log(this.applyDto.fDestroyNo)
     this.$root.eventBus.$on('fDestroyNo', (val) => {
       this.applyDto.fDestroyNo = val
     })
@@ -327,11 +325,6 @@ export default {
       this.getApplyInfo(val)
       this.getItemList(val)
     })
-    // console.log(this.operateType)
-    // this.$root.eventBus.$on('operateType', (val) => {
-    //   this.operateType = val
-    //   console.log(this.operateType)
-    // })
   },
   methods: {
     addApplyOneItem () {
@@ -390,7 +383,6 @@ export default {
       }).then(async () => {
         await addDestroyApply(applyVo)
         this.$root.eventBus.$emit('dialogVisible1', this.dialogVisible)
-        // console.log(res)
         this.$router.push
         this.$message({
           type: 'success',
