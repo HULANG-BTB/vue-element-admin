@@ -155,7 +155,7 @@
         <el-form-item label="票据代码:">
           <el-input
             v-model="billCode"
-            placeholder="billCode"
+            placeholder="011602"
             clearable
             size="small"
             class="input-width"
@@ -164,7 +164,7 @@
         <el-form-item label="备注:">
           <el-input
             v-model="memo"
-            placeholder="memo"
+            placeholder="备注"
             clearable
             size="small"
             class="input-width"
@@ -173,13 +173,13 @@
         <el-form-item label="模板名称:">
           <el-input
             v-model="templateName"
-            placeholder="templateName"
+            placeholder="非税票据"
             clearable
             size="small"
             class="input-width"
           />
         </el-form-item>
-        <el-form-item>
+        <el-form-item label="ftl 或 xlsx 文件:">
           <input
             id="uploadFileName"
             type="file"
