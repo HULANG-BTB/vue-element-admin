@@ -132,7 +132,9 @@
               <el-input v-model="project.mnem" placeholder="助记码" />
             </el-form-item>
             <el-form-item label="归口财政部门" :label-width="formLabelWidth">
-              <el-input v-model="project.findeptId" placeholder="归口财政部门" />
+              <el-select v-model="project.findeptId" placeholder="归口财政部门">
+                <el-option v-for="item in finDept" :key="item.id" :label="item.findeptName+item.findeptCode" :value="item.findeptCode" />
+              </el-select>
             </el-form-item>
             <el-form-item label="单位分类" :label-width="formLabelWidth">
               <el-select v-model="project.sortCode" placeholder="请选择单位类型">
@@ -182,7 +184,7 @@ import {
   getDapartListAll,
   getAgenCount
 } from '@/api/base/unitManager/unitManager'
-
+import { getAllFinDept } from '@/api/finDept/finDept'
 const defaultUser = {
   note: '',
   finMgr: '',
@@ -261,6 +263,7 @@ export default {
       formLabelWidth: '120px',
       selectedList: [],
       deptManag: [],
+      finDept: [],
       rules: {
         agenCode: [
           { required: true, message: '', trigger: 'change' }
@@ -289,6 +292,7 @@ export default {
   created () {
     this.getTableData()
     this.getDapartName()
+    this.getFinDeptName()
   },
   methods: {
     // 获取资源列表
@@ -322,7 +326,12 @@ export default {
         })
       }
     },
-
+    // 获取财政部门
+    async getFinDeptName () {
+      const { data } = await getAllFinDept() // 无参查询部门列表
+      this.finDept = data
+      console.log(data)
+    },
     // 搜索
     handleQuery () {
       this.queryParams.page = 1
