@@ -108,9 +108,9 @@ export default {
     refreshItems () {
       var that = this
       getItemList(this.row.id).then(
-        function (data) {
-          that.row.items = data
-        }
+        res => {
+          that.row.items = res.data
+          }
       )
     },
     onSubmit () {
@@ -119,7 +119,7 @@ export default {
       this.row.updateTime = null
       var that = this
       submitApply(this.row).then(
-        function (data) {
+        res => {
           that.$notify({
             message: '提交成功'
           })
@@ -132,7 +132,7 @@ export default {
       row.fPid = this.row.id
       if (row.fId != null) {
         updateItem(row).then(
-          function (data) {
+          res => {
             that.$notify({
               message: '保存成功'
             })
@@ -141,7 +141,7 @@ export default {
         )
       } else {
         saveItem(row).then(
-          function (data) {
+          res => {
             that.$notify({
               message: '保存成功'
             })
@@ -152,8 +152,8 @@ export default {
     },
     deleteItem (itemId) {
       var that = this
-      deleteItemById(itemId).then(
-        function (data) {
+    deleteItemById(itemId).then(
+      res => {
           that.$notify({
             message: '删除成功'
           })

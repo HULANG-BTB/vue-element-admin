@@ -3,6 +3,7 @@
     title="单位票据销毁申请信息"
     :visible.sync="lookDestroyApplyDialogVisible"
     width="70%"
+    top="6vh"
   >
     <div class="look">
       <span class="bill">票据销毁申请查看</span>
@@ -107,7 +108,7 @@
       </div>
     </el-form>
     <el-card shadow="always">
-      <div style="height: 230px">
+      <div style="height: 300px">
         <div
           class="subject"
           size="small"
@@ -187,9 +188,7 @@ export default {
   mounted () {},
   created () {
     this.$root.eventBus.$on('lookDestroyApplyDialogVisible', (val) => {
-      // console.log(this.visible)
       this.lookDestroyApplyDialogVisible = val
-      console.log(this.lookDestroyApplyDialogVisible)
     })
     this.$root.eventBus.$on('lookDestroyApply', (val) => {
       this.getData(val)
@@ -211,7 +210,6 @@ export default {
   methods: {
     async getData (val) {
       const res = await getItemListByDestroyNo(val)
-      // console.log(res)
       this.tableData = res.data
     }
   }

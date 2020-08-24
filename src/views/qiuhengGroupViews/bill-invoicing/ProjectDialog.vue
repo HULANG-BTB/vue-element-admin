@@ -64,18 +64,18 @@ export default {
       // eslint-disable-next-line no-sparse-arrays
       tableData: [
         {
-          fItemCode: '20002',
-          fItemName: '学费',
+          fItemCode: '1030101',
+          fItemName: '农村网贷收入',
           fUnits: '元',
           fNumber: 1,
-          fAmt: 8888.00
+          fAmt: 44444.00
         },
         {
-          fItemCode: '20001',
-          fItemName: '书费',
+          fItemCode: '1030102',
+          fItemName: '中央网贷收入',
           fUnits: '元',
           fNumber: 1,
-          fAmt: 1000.00
+          fAmt: 3333.00
         }
       ],
       multipleSelection: [],
@@ -89,6 +89,11 @@ export default {
     })
   },
   methods: {
+    // 获取单位收费项目
+    async getItem () {
+      // const unitName = '博思软件股份有限公司'
+      // const res = await getItemInfo(unitName)
+    },
     handleClose (done) {
       this.$confirm('确认关闭？')
         .then((_) => {
@@ -102,6 +107,7 @@ export default {
     handleSelectionChange (val) {
       this.multipleSelection = val
     },
+    // 获取选中的收费项目
     getData () {
       const arr = this.multipleSelection
       const multis = []

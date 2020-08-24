@@ -8,69 +8,254 @@
   <link rel="icon" href="<%= BASE_URL %>favicon.ico">
   <title><%= webpackConfig.name %></title>
   <style>
-    .spinner {
-      margin: 50% auto;
-      width: 50px;
-      height: 60px;
+    .loader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      -moz-transform: translate(-50%, -50%);
+      -mos-transform: translate(-50%, -50%);
+      -o-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
       text-align: center;
-      font-size: 10px;
+      /* disable selection and cursor changes */
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      cursor: default;
     }
 
-    .spinner>div {
-      background-color: #67CF22;
-      height: 100%;
-      width: 6px;
-      display: inline-block;
-
-      -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
-      animation: stretchdelay 1.2s infinite ease-in-out;
+    /* Text align it the center of screen and connect the looped animation for 2.5 seconds */
+    .loader .text {
+      position: absolute;
+      top: 1.8em;
+      left: 0.4em;
+      z-index: 5;
+      font-size: 2em;
+      text-transform: uppercase;
+      -webkit-animation: text 2.5s cubic-bezier(0.750, 0.000, 0.500, 1.000) infinite normal;
+      -moz-animation: text 2.5s cubic-bezier(0.750, 0.000, 0.500, 1.000) infinite normal;
+      -ms-animation: text 2.5s cubic-bezier(0.750, 0.000, 0.500, 1.000) infinite normal;
+      -o-animation: text 2.5s cubic-bezier(0.750, 0.000, 0.500, 1.000) infinite normal;
+      animation: text 2.5s cubic-bezier(0.750, 0.000, 0.500, 1.000) infinite normal;
     }
 
-    .spinner .rect2 {
-      -webkit-animation-delay: -1.1s;
-      animation-delay: -1.1s;
+    /* Create a container for animation*/
+    .loader .spinner {
+      position: relative;
+      width: 5em;
+      height: 5em;
+      color: #fff;
     }
 
-    .spinner .rect3 {
-      -webkit-animation-delay: -1.0s;
-      animation-delay: -1.0s;
+    .loader .spinner:before,
+    .spinner:after {
+      content: "";
+      position: relative;
+      display: block;
     }
 
-    .spinner .rect4 {
-      -webkit-animation-delay: -0.9s;
-      animation-delay: -0.9s;
+    /* Create cube and set animation*/
+    .loader .spinner:before {
+      -webkit-animation: spinner 2.5s cubic-bezier(0.750, 0.000, 0.500, 1.000) infinite normal;
+      -moz-animation: spinner 2.5s cubic-bezier(0.750, 0.000, 0.500, 1.000) infinite normal;
+      -ms-animation: spinner 2.5s cubic-bezier(0.750, 0.000, 0.500, 1.000) infinite normal;
+      -o-animation: spinner 2.5s cubic-bezier(0.750, 0.000, 0.500, 1.000) infinite normal;
+      animation: spinner 2.5s cubic-bezier(0.750, 0.000, 0.500, 1.000) infinite normal;
+      width: 10em;
+      height: 10em;
+      background-color: #DB2F00;
     }
 
-    .spinner .rect5 {
-      -webkit-animation-delay: -0.8s;
-      animation-delay: -0.8s;
+    /* Create shadow and set animation*/
+    .loader .spinner:after {
+      -webkit-animation: shadow 2.5s cubic-bezier(0.750, 0.000, 0.500, 1.000) infinite normal;
+      -moz-animation: shadow 2.5s cubic-bezier(0.750, 0.000, 0.500, 1.000) infinite normal;
+      -ms-animation: shadow 2.5s cubic-bezier(0.750, 0.000, 0.500, 1.000) infinite normal;
+      -o-animation: shadow 2.5s cubic-bezier(0.750, 0.000, 0.500, 1.000) infinite normal;
+      animation: shadow 2.5s cubic-bezier(0.750, 0.000, 0.500, 1.000) infinite normal;
+      position: relative;
+      bottom: -1.75em;
+      height: .25em;
+      border-radius: 50%;
+      background-color: #322b27;
     }
 
-    @-webkit-keyframes stretchdelay {
+    /* Animation keys */
+    /* from cube to circle */
+    @-webkit-keyframes spinner {
+      50% {
+        -webkit-border-radius: 50%;
+        -webkit-transform: scale(.5) rotate(360deg);
+        background-color: #13A3A5;
+      }
 
-      0%,
-      40%,
       100% {
-        -webkit-transform: scaleY(0.4)
-      }
-
-      20% {
-        -webkit-transform: scaleY(1.0)
+        -webkit-transform: scale(1) rotate(720deg);
+        background-color: #DB2F00;
       }
     }
 
-    @keyframes stretchdelay {
-
-      0%,
-      40%,
-      100% {
-        transform: scaleY(0.4);
-        -webkit-transform: scaleY(0.4);
+    @-moz-keyframes spinner {
+      50% {
+        -moz-border-radius: 50%;
+        -moz-transform: scale(.5) rotate(360deg);
+        background-color: #13A3A5;
       }
 
-      20% {
-        transform: scaleY(1.0);
-        -webkit-transform: scaleY(1.0);
+      100% {
+        -moz-transform: scale(1) rotate(720deg);
+        background-color: #DB2F00;
+      }
+    }
+
+    @-mos-keyframes spinner {
+      50% {
+        -mos-border-radius: 50%;
+        -mos-transform: scale(.5) rotate(360deg);
+        background-color: #13A3A5;
+      }
+
+      100% {
+        -mos-transform: scale(1) rotate(720deg);
+        background-color: #DB2F00;
+      }
+    }
+
+    @-o-keyframes spinner {
+      50% {
+        -o-border-radius: 50%;
+        -o-transform: scale(.5) rotate(360deg);
+        background-color: #13A3A5;
+      }
+
+      100% {
+        -o-transform: scale(1) rotate(720deg);
+        background-color: #DB2F00;
+      }
+    }
+
+    @keyframes spinner {
+      50% {
+        border-radius: 50%;
+        transform: scale(.5) rotate(360deg);
+        background-color: #13A3A5;
+      }
+
+      100% {
+        transform: scale(1) rotate(720deg);
+        background-color: #DB2F00;
+      }
+    }
+
+
+    /* animation shadow */
+    @-webkit-keyframes shadow {
+      50% {
+        -webkit-transform: scale(.5);
+        background-color: #322b27;
+      }
+    }
+
+    @-moz-keyframes shadow {
+      50% {
+        -moz-transform: scale(.5);
+        background-color: #322b27;
+      }
+    }
+
+    @-mos-keyframes shadow {
+      50% {
+        -mos-transform: scale(.5);
+        background-color: #322b27;
+      }
+    }
+
+    @-o-keyframes shadow {
+      50% {
+        -o-transform: scale(.5);
+        background-color: #322b27;
+      }
+    }
+
+    @keyframes shadow {
+      50% {
+        transform: scale(.5);
+        background-color: #322b27;
+      }
+    }
+
+    /* animation text */
+    @-webkit-keyframes text {
+      0% {
+        -webkit-transform: scale(1, 1);
+      }
+
+      50% {
+        -webkit-transform: scale(.5, .5);
+      }
+
+      100% {
+        -webkit-transform: scale(1, 1);
+      }
+    }
+
+    @-moz-keyframes text {
+      0% {
+        -moz-transform: scale(1, 1);
+      }
+
+      50% {
+        -moz-transform: scale(.5, .5);
+      }
+
+      100% {
+        -moz-transform: scale(1, 1);
+      }
+    }
+
+    @-mos-keyframes text {
+      0% {
+        -mos-transform: scale(1, 1);
+      }
+
+      50% {
+        -mos-transform: scale(.5, .5);
+      }
+
+      100% {
+        -mos-transform: scale(1, 1);
+      }
+    }
+
+    @-o-keyframes text {
+      0% {
+        -o-transform: scale(1, 1);
+      }
+
+      50% {
+        -o-transform: scale(.5, .5);
+      }
+
+      100% {
+        -o-transform: scale(1, 1);
+      }
+    }
+
+    @keyframes text {
+      0% {
+        transform: scale(1, 1);
+      }
+
+      50% {
+        transform: scale(.5, .5);
+      }
+
+      100% {
+        transform: scale(1, 1);
       }
     }
   </style>
@@ -82,12 +267,9 @@
       to continue.</strong>
   </noscript>
   <div id="app">
-    <div class="spinner">
-      <div class="rect1"></div>
-      <div class="rect2"></div>
-      <div class="rect3"></div>
-      <div class="rect4"></div>
-      <div class="rect5"></div>
+    <div class="loader">
+      <span class="text">Loading</span>
+      <span class="spinner"></span>
     </div>
   </div>
   <!-- built files will be auto injected -->

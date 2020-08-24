@@ -1,7 +1,7 @@
 import download from '@/utils/download'
 import request from '@/utils/request'
 
-const BASE_URL = '/base'
+const BASE_URL = 'base'
 
 // 项目管理查询列表
 export function getProjectListByPage (data) {
@@ -19,9 +19,9 @@ export function getSubjectTree () {
   })
 }
 // 树形菜单列表
-export function getIncomSortName (data) {
+export function getIncomeSortName (data) {
   return request({
-    url: `${BASE_URL}/item/getIncomSortName`,
+    url: `${BASE_URL}/item/getIncomeSortName`,
     method: 'get',
     params: { 'code': data }
   })

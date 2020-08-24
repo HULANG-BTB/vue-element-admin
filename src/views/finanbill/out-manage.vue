@@ -292,7 +292,7 @@
         </el-table-column>
         <el-table-column align="center" label="票据代码" width="160">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.billPrecode" placeholder="请选择" :disabled="isSend" @change="billPrecodeChange(scope)">
+            <el-select v-model="scope.row.billPrecode" placeholder="请选择" :disabled="isSend" @change="billPrecodeChange(scope); getValid(scope)">
               <el-option
                 v-for="item in billOptions"
                 :key="item.billPrecode"
@@ -309,7 +309,14 @@
         </el-table-column>
         <el-table-column align="center" label="数量" width="85">
           <template slot-scope="scope">
-            <el-input v-model="scope.row.number" size="mini" :disabled="isSend" />
+            <el-input
+              v-model="scope.row.number"
+              maxlength="7"
+              size="mini"
+              :disabled="isSend"
+              onkeyup="this.value = this.value.replace(/[^\d.]/g,'');"
+              @input="checkNumber(scope)"
+            />
             <!-- {{ scope.row.number }} -->
           </template>
         </el-table-column>
@@ -356,7 +363,8 @@
   </div>
 </template>
 <script>
-import { getAll, addOut, getItem, save, submit, submitAll, deleteAll, util } from '@/api/finanbill/finanbill.js'
+import { getAll, addOut, getItem, save, submit, submitAll, deleteAll, util } from '@/api/finanbill/stock-out.js'
+import { getValid } from '@/api/finanbill/finan-bill.js'
 
 export default {
   name: 'OutApp',
@@ -377,6 +385,7 @@ export default {
         altercode: '',
         outItemVos: []
       },
+
       /**
        * 领用人选择
        */
@@ -424,16 +433,8 @@ export default {
         billName: '票据2',
         selected: false
       }, {
-        billPrecode: '00000210',
+        billPrecode: '01160201',
         billName: '票据3',
-        selected: false
-      }, {
-        billPrecode: '01000120',
-        billName: '票据4',
-        selected: false
-      }, {
-        billPrecode: '02000120',
-        billName: '票据5',
         selected: false
       }],
       // 对齐方式
@@ -574,12 +575,37 @@ export default {
         'pid': pid,
         'billPrecode': '',
         'billName': '',
-        'number': 0,
+        'number': 1,
+        'maxNum': 0,
         'billNo1': '0000000001',
         'billNo2': '0000000000',
         'id': 0
       })
       this.loading = false
+    },
+
+    /**
+     * 获得可用票号段
+     */
+    async getValid (scope) {
+      this.loading = true
+      var validRes = await getValid(scope.row.billPrecode).catch(() => { this.loading = false })
+      // eslint-disable-next-line require-atomic-updates
+      scope.row.maxNum = validRes.data.number
+      // eslint-disable-next-line require-atomic-updates
+      scope.row.billNo1 = validRes.data.billNo1
+      // eslint-disable-next-line require-atomic-updates
+      scope.row.number = 1
+      this.loading = false
+    },
+
+    /**
+     * 输入item数量时，检查是否足够
+     */
+    checkNumber (scope) {
+      console.log('检查数量')
+      scope.row.number = scope.row.number <= 0 ? 1 : scope.row.number
+      scope.row.number = scope.row.number <= scope.row.maxNum ? scope.row.number : scope.row.maxNum
     },
 
     // // 获取未被选择的
