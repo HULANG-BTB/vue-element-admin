@@ -139,7 +139,7 @@
 </template>
 
 <script>
-import { getCheckList, getCheckBatch, updateUnit, getDapartListAll } from '@/api/unitManager'
+import { getCheckList, getCheckBatch, updateUnit, getDapartListAll } from '@/api/base/unitManager/unitManager'
 import { parseTime } from '@/utils/index'
 
 export default {

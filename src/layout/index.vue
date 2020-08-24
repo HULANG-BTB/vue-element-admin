@@ -16,6 +16,7 @@
 import { Navbar, Sidebar, AppMain, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
+import { getRSAPublicKey, addRSAPublicKey } from '@/utils/encryption'
 
 export default {
   name: 'Layout',
@@ -49,13 +50,12 @@ export default {
     }
   },
   mounted () {
-    this.getPublicKey()
   },
   methods: {
     handleClickOutside () {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
-    }
-
+    },
+   
   }
 }
 </script>

@@ -45,7 +45,7 @@
         <el-button
           type="success"
           size="small"
-          @click="getTableData"
+          @click="getTableDataAll()"
         >重载数据</el-button>
       </el-form-item>
       <div class="my-form-item">
@@ -78,22 +78,32 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="业务单号" width="180">
+      <el-table-column label="业务单号" width="150">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.no }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="编制日期" width="180">
+      <el-table-column label="编制日期" width="150">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.date }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="退票原因" width="540" align="center">
+      <el-table-column label="退票原因" width="250" align="center">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.returnReason }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="经办人" width="180">
+      <el-table-column label="退票人" width="150">
+        <template slot-scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.returner }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="审核意见" width="250">
+        <template slot-scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.changeSitu }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="审核人" width="150">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.changeMan }}</span>
         </template>
@@ -101,8 +111,8 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.row); dialogFormVisible=true; noStatus=true">编辑</el-button>
-          <!-- <el-button size="mini"@click="dialogFormVisible=true; noStatus=true">查看</el-button> -->
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button :disabled="scope.row.submitStatus==1" size="mini" @click="handleSubmit1(scope.row)">提交</el-button>
+          <el-button size="mini" type="danger" :disabled="scope.row.submitStatus==1" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -136,7 +146,7 @@
           <el-col :span="2" />
           <el-col :span="11">
             <el-form-item label="业务单号">
-              <el-input v-model="Stockreturn.no" autocomplete="off" :disabled="noStatus" placeholder="请输入业务单号：" />
+              <el-input v-model="Stockreturn.no" autocomplete="off" :disabled="true" placeholder="请输入业务单号：" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -242,9 +252,10 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="dialogFormVisible = false;">取 消</el-button>
         <el-button
           type="primary"
+          :disabled="Stockreturn.submitStatus == 1"
           @click="handleSave(); dialogFormVisible = false"
         >保 存</el-button>
       </div></el-dialog>
@@ -252,7 +263,7 @@
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getStockReturnList, getListStockReturnByDateOrNo, addStockReturn, getStockReturnItems, deleteStockReturnByNo, updateByNo } from '@/api/stockreturn.js'
+import { getNo, getStockReturnList, getListStockReturnByDateOrNo, addStockReturn, getStockReturnItems, deleteStockReturnByNo, updateByNo, putSubmit } from '@/api/stockreturn.js'
 
 export default {
   data () {
@@ -302,6 +313,8 @@ export default {
         agenIdCode: '',
         returner: '',
         author: 'defaultAuthor',
+        changeMan: '',
+        changeSitu: '',
         changeState: '0',
         returnReason: '',
         submitStatus: '0',
@@ -309,6 +322,8 @@ export default {
       },
       dialogFormVisible: false,
       noStatus: false,
+      // submitStatus: false,
+      saveStatus: false,
       labelPosition: 'left',
       billOptions: [{
         billCode: '00000120',
@@ -341,10 +356,10 @@ export default {
       this.loading = true
       const res = await getStockReturnList(this.query).catch(() => { this.loading = false })
       console.log(res)
-      this.query.limit = res.limit
-      this.query.total = res.total
-      this.query.page = res.page
-      this.stockReturnTableData = res.row
+      this.query.limit = res.data.limit
+      this.query.total = res.data.total
+      this.query.page = res.data.page
+      this.stockReturnTableData = res.data.row
       console.log(this.query.limit, this.query.total, this.query.page)
       this.loading = false
     },
@@ -372,15 +387,28 @@ export default {
       })
     },
     async handleAdd () {
+      this.loading = true
+      // eslint-disable-next-line no-undef
+      // eslint-disable-next-line no-unused-vars
+      const res = await getNo().catch(() => { this.loading = false })
+      this.Stockreturn.no = res.data
+      console.log(this.Stockreturn.no)
+      this.loading = false
+    },
+    async getTableDataAll () {
+      this.query.startTime = null
+      this.query.endTime = null
+      this.no = null
+      this.getTableData()
     },
     async itemAdd (tableData) {
       this.loading = true
       tableData.push({
         'billCode': '',
         'billName': '',
-        'number': 5,
+        'number': 2,
         'billNo1': '0000000001',
-        'billNo2': '0000000005'
+        'billNo2': '0000000002'
       })
       this.loading = false
     },
@@ -388,6 +416,20 @@ export default {
       this.loading = true
       rows.splice(index, 1)
       this.loading = false
+    },
+    async handleSubmit1 (row) {
+      console.log(row)
+      this.loading = true
+      // eslint-disable-next-line no-unused-vars
+      this.Stockreturn = Object.assign(this.Stockreturn, row)
+      const submitS = await putSubmit(this.Stockreturn).catch(() => { this.loading = false })
+      if (submitS) {
+        this.$message.success('提交成功！')
+      } else {
+        this.$message.error('提交失败！')
+      }
+      this.loading = false
+      this.getTableData()
     },
     // 处理保存请求
     async handleSave () {
@@ -426,7 +468,8 @@ export default {
       this.Stockreturn = Object.assign(this.Stockreturn, row)
       const items = await getStockReturnItems(this.Stockreturn).catch(() => { this.loading = false })
       console.log(items)
-      this.Stockreturn.stockReturnItemVOList = items.stockReturnItemVOList
+      this.Stockreturn.stockReturnItemVOList = items.data.stockReturnItemVOList
+      console.log(this.Stockreturn.stockReturnItemVOList)
       this.billPrecodeChange(row)
       this.loading = false
     },

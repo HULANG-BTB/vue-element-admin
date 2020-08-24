@@ -1,6 +1,9 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://192.168.21.182:8080/out-change/'
+// const BASE_URL = 'http://192.168.21.182:8080/out-change/'
+// const BASE_URL = '/finan-stock-management/out-change/'
+const BASE_URL = 'finan-stock-management/'
+// const BASE_URL = 'http://120.27.3.74:8085/'
 
 /* 出库相关 */
 
@@ -10,7 +13,7 @@ const BASE_URL = 'http://192.168.21.182:8080/out-change/'
  */
 export function getAll (query) {
   return request({
-    url: BASE_URL + 'showAll',
+    url: BASE_URL + 'out-change/showAll',
     method: 'post',
     data: query
   })
@@ -21,7 +24,7 @@ export function getAll (query) {
  */
 export function deleteAll (query) {
   return request({
-    url: BASE_URL + 'deleteAll',
+    url: BASE_URL + 'out-change/deleteAll',
     method: 'put',
     data: query
   })

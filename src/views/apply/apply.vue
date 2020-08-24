@@ -39,11 +39,11 @@
               placeholder="选择结束日期">
             </el-date-picker>
           </div>
-            
+
 
         </el-form-item>
-        
-          
+
+
         <el-form-item label style="margin-left: 30px">
           <el-button
             type="primary"
@@ -92,9 +92,9 @@
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="状态" width="110"  sortable>
+      <el-table-column align="center" label="状态" width="110" sortable>
         <template slot-scope="scope">
-          <span v-text="displayStatus(scope.row.status)"></span>
+          <span v-text="displayStatus(scope.row.status)" />
         </template>
       </el-table-column>
       <el-table-column label="申领单号" width="160" align="center" sortable>
@@ -119,11 +119,11 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="操作" align="center">
         <template slot-scope="scope">
-          <el-dialog customClass="customWidth" :visible.sync="detailTableVisiable">
-              <adt style="text-align:left" :row="rowDetail" />
+          <el-dialog custom-class="customWidth" :visible.sync="detailTableVisiable">
+            <adt style="text-align:left" :row="rowDetail" />
           </el-dialog>
-          <el-button @click="openDetail(scope.row)" :type="scope.row.status | statusFilter">{{scope.row.status==0?"编辑":"查看"}}</el-button>
-          <el-button @click="onDelete(scope.row.id)" v-if="scope.row.status==0" :type="scope.row.status | statusFilter">{{scope.row.status==0?"删除":""}}</el-button>
+          <el-button :type="scope.row.status | statusFilter" @click="openDetail(scope.row)">{{ scope.row.status==0?"编辑":"查看" }}</el-button>
+          <el-button v-if="scope.row.status==0" :type="scope.row.status | statusFilter" @click="onDelete(scope.row.id)">{{ scope.row.status==0?"删除":"" }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -141,7 +141,7 @@
       @current-change="handleCurrentChange"
     />
   </div>
-  
+
 </template>
 
 <script>
@@ -149,10 +149,9 @@ import { getApplyList, getItemList, deleteApply, util , getMaxNo } from '@/api/a
 import adt from './applyDetail.vue'
 import act from './applyCreate.vue'
 
-
 export default {
   filters: {
-    statusFilter(status) {
+    statusFilter (status) {
       const statusMap = {
         published: 'success',
         draft: 'gray',
@@ -161,11 +160,11 @@ export default {
       return statusMap[status]
     }
   },
-  components:{
+  components: {
     adt,
     act
   },
-  data() {
+  data () {
     return {
       list: null,
       listLoading: true,
@@ -185,11 +184,11 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     this.fetchData()
   },
   methods: {
-    openCreate(){
+    openCreate () {
       this.rowCreate = {
         id: null,
         linkMan: null,
@@ -214,16 +213,16 @@ export default {
       )
       this.createTableVisiable = true;
     },
-    openDetail(row){
+    openDetail (row) {
       this.rowDetail = this.refreshRow(row)
-      this.detailTableVisiable = true;
+      this.detailTableVisiable = true
     },
   fetchData() {
       var that = this
-      getApplyList(this.query).then(res => { 
+      getApplyList(this.query).then(res => {
         that.list = res.data
         this.listLoading = false
-      })    
+      })
     },
     refreshRow(row){
       getItemList(row.id).then(res => {
@@ -249,7 +248,7 @@ export default {
         return "未提交"
       } 
     },
-    onDelete(applyId){
+    onDelete (applyId) {
       var that = this
       deleteApply(applyId).then(
         res => {
