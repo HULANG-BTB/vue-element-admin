@@ -14,6 +14,7 @@
             placeholder="请输入记录ID"
             clearable
             size="small"
+            class="query"
           />
         </el-form-item>
         <el-form-item label="票据号码:">
@@ -22,6 +23,7 @@
             placeholder="请输入票据号码"
             clearable
             size="small"
+            class="query"
           />
         </el-form-item>
 
@@ -86,7 +88,15 @@
           <template slot-scope="scope">{{ scope.row.billCode }}</template>
         </el-table-column>
         <el-table-column align="center" label="查验结果" width="165">
-          <template slot-scope="scope">{{ scope.row.result }}</template>
+          <template slot-scope="scope">
+            <el-tag
+              :key="scope.row.result ? '1' : '0'"
+              :type="scope.row.result ? 'success' : 'danger'"
+              effect="plain"
+            >
+              {{ scope.row.result ? 'TRUE' : 'FALSE' }}
+            </el-tag>
+          </template>
         </el-table-column>
         <el-table-column align="center" label="查验类型">
           <template slot-scope="scope">{{ scope.row.checkType }}</template>
@@ -293,4 +303,12 @@ export default {
     margin-bottom: 30px;
   }
 }
+  // 查验结果
+  ::v-deep .el-select .el-input {
+    width: 100px;
+  }
+  // id
+  ::v-deep .query .el-input__inner {
+    width: 150px;
+  }
 </style>
