@@ -44,7 +44,7 @@ export function queryAllIncomeSort () {
 
 export function add (data) {
   // 数据加密
-  data = getEncryptedJson(data)
+//   data = getEncryptedJson(data)
   return request({
     url: baseUrl + 'insert',
     method: 'post',
@@ -54,7 +54,7 @@ export function add (data) {
 
 export function update (data) {
 // 数据加密
-  data = getEncryptedJson(data)
+//   data = getEncryptedJson(data)
   return request({
     url: baseUrl + 'update',
     method: 'post',
