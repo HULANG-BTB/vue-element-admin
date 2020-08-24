@@ -1,9 +1,9 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://localhost:8080'
+const BASE_URL = ''
 
 /* apply相关 */
-export function getApplyList(query) {
+export function getApplyList (query) {
   return request({
     url: BASE_URL + '/fbeStockFinanceapply/getAll',
     method: 'get',
@@ -11,7 +11,7 @@ export function getApplyList(query) {
   })
 }
 
-export function deleteApply(applyId) {
+export function deleteApply (applyId) {
   return request({
     url: BASE_URL + '/fbeStockFinanceapply',
     method: 'delete',
@@ -19,7 +19,7 @@ export function deleteApply(applyId) {
   })
 }
 
-export function getItemList(rowId) {
+export function getItemList (rowId) {
   return request({
     url: BASE_URL + '/fbeStockFinanceapply/items',
     method: 'get',
@@ -27,7 +27,7 @@ export function getItemList(rowId) {
   })
 }
 
-export function deleteItemById(itemId) {
+export function deleteItemById (itemId) {
   return request({
     url: BASE_URL + '/fbeStockFinanceapplyItem',
     method: 'delete',
@@ -35,7 +35,7 @@ export function deleteItemById(itemId) {
   })
 }
 
-export function saveItem(item) {
+export function saveItem (item) {
   return request({
     url: BASE_URL + '/fbeStockFinanceapplyItem',
     method: 'post',
@@ -43,7 +43,7 @@ export function saveItem(item) {
   })
 }
 
-export function updateItem(item) {
+export function updateItem (item) {
   return request({
     url: BASE_URL + '/fbeStockFinanceapplyItem',
     method: 'put',
@@ -51,7 +51,7 @@ export function updateItem(item) {
   })
 }
 
-export function submitApply(apply) {
+export function submitApply (apply) {
   return request({
     url: BASE_URL + '/fbeStockFinanceapply/submit',
     method: 'put',
@@ -59,7 +59,7 @@ export function submitApply(apply) {
   })
 }
 
-export function createApply(apply) {
+export function createApply (apply) {
   return request({
     url: BASE_URL + '/fbeStockFinanceapply',
     method: 'post',
@@ -67,7 +67,7 @@ export function createApply(apply) {
   })
 }
 
-export function getApplyCheckList(query) {
+export function getApplyCheckList (query) {
   return request({
     url: BASE_URL + '/fbeStockFinanceapplyCheck/getAll',
     method: 'get',
@@ -75,7 +75,7 @@ export function getApplyCheckList(query) {
   })
 }
 
-export function passApply(applyId, changeSitu) {
+export function passApply (applyId, changeSitu) {
   return request({
     url: BASE_URL + '/fbeStockFinanceapplyCheck/pass',
     method: 'put',
@@ -86,7 +86,7 @@ export function passApply(applyId, changeSitu) {
   })
 }
 
-export function returnApply(applyId, changeSitu) {
+export function returnApply (applyId, changeSitu) {
   return request({
     url: BASE_URL + '/fbeStockFinanceapplyCheck/return',
     method: 'put',
@@ -97,10 +97,10 @@ export function returnApply(applyId, changeSitu) {
   })
 }
 
-export function getMaxNo() {
+export function getMaxNo () {
   return request({
     url: BASE_URL + '/fbeStockFinanceapply/maxNo',
-    method: 'get',
+    method: 'get'
   })
 }
 

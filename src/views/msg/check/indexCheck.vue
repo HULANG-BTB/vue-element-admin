@@ -37,7 +37,7 @@
                 </el-select>
               </el-input>
             </el-form-item>
-            <el-form-item prop="verifyCode">
+            <el-form-item prop="checkCode">
               <el-input v-model="query.checkCode" placeholder="请输入校验码" clearable style="width: 350px;" class="input-with-select">
                 <template slot="prepend">校验码</template>
               </el-input>
@@ -155,10 +155,18 @@ export default {
             trigger: ['blur', 'change']
           },
           {
-            pattern: /^[A-Za-z0-9]{6}$/,
+            pattern: /^[0-9]{10}$/,
             message: '无效票据号码'
           }
-        ]
+        ],
+        checkCode: [{
+          required: true,
+          message: '请输入校验码',
+          trigger: ['blur', 'change']
+        }, {
+          pattern: /^[0-9]{6}$/,
+          message: '无效校验码,6位数字'
+        }]
       }
     }
   },
