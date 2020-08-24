@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-18 16:23:24
+ * @lastTime: 2020-08-24 20:46:54
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -60,10 +60,10 @@
         </el-table-column>
         <el-table-column
           v-if="tableColumnData.operation && tableColumnData.operation.length > 0"
-          fixed="right"
           label="操作"
+          fixed="right"
+          :min-width="150"
           align="center"
-          :width="150"
         >
           <template slot-scope="scope" class="buttonColumn">
             <tipButton
