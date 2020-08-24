@@ -195,14 +195,14 @@ export default {
         linkMan: null,
         linkAddr: null,
         linkTel: null,
-        agenName: "单位名",
+        agenName: "博思软件股份有限公司",
         memo: null,
         summary: null,
         author: null,
         updateTime: null,
         no: null,
         rgnCode: 1,
-        agenIdCode: 1,
+        agenIdCode: 1314,
         kindName: "测试型单位",
         author: "测试作者",
         status: 0
@@ -243,7 +243,7 @@ export default {
         return "审核通过"
         break;
       case 3:
-        return "审核未通过"
+        return "审核退回"
         break;
      default:
         return "未提交"
