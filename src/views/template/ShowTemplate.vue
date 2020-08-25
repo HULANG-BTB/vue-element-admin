@@ -456,7 +456,6 @@ export default {
      * 批量删除模板文件
      */
     async handleDeleteBatch () {
-      console.log(this.selectedList)
       this.$confirm('是否删除选中的模板文件?', '提示', {
         confirmButtonText: '是',
         cancelButtonText: '否',
