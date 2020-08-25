@@ -22,9 +22,6 @@
         @tableButtonClick="tableButtonClick"
       />
     </div>
-
-
-
     <el-dialog :title="billName" :visible.sync="addDialogVisible" center>
       <div>
         <span><b>项目名称:</b></span>
@@ -72,30 +69,25 @@
         <el-row>
           <el-col :span="9">操作人:{{ showDetailData.operator }}</el-col>
           <el-col :span="9" class="rightCol">
-            项目id:{{showDetailData.itemId}}
+            项目id: {{ showDetailData.itemId }}
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="9" >
-            项目是否启用:{{showDetailData.itemIsEnabled}}
+          <el-col :span="9">
+            项目是否启用: {{ showDetailData.itemIsEnabled }}
           </el-col>
           <el-col :span="9" class="rightCol">
-             项目名称:{{showDetailData.itemName}}
+            项目名称: {{ showDetailData.itemName }}
           </el-col>
-
-
         </el-row>
         <el-row>
           <el-col :span="9">
             创建时间:{{ showDetailData.createTime }}
           </el-col>
-          <el-col :span="9" class="rightCol" >更新时间:{{ showDetailData.updateTime }}</el-col>
-        </el-row>
-        <el-row>
+          <el-col :span="9" class="rightCol">更新时间:{{ showDetailData.updateTime }}</el-col>
         </el-row>
       </div>
     </DialogBorder>
-
   </el-container>
 </template>
 <script>
@@ -543,6 +535,7 @@
 <style lang="scss" scoped>
   .detailClass{
     margin-left:15%;
+    margin-bottom: 5%;
     .el-row{
       margin-top:20px;
     }
