@@ -374,20 +374,20 @@ export default {
       billTypes: [
         {
           id: '1',
-          code: '00000001',
-          name: '基础票据',
+          code: '00000120',
+          name: '票据1',
           typecode: '1'
         },
         {
           id: '2',
-          code: '00000002',
-          name: '中级票据',
+          code: '00000121',
+          name: '票据2',
           typecode: '1'
         },
         {
           id: '3',
-          code: '00000003',
-          name: '高级票据',
+          code: '01160201',
+          name: '票据3',
           typecode: '1'
         }
       ],
@@ -397,6 +397,9 @@ export default {
         ],
         billCode: [
           { required: true, message: '请选择票据代码', trigger: 'blur' }
+        ],
+        number: [
+          { required: true, message: '请填写票据数', trigger: 'blur' }
         ]
       },
       dialogFormVisible: false,
