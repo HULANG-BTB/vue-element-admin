@@ -16,9 +16,9 @@ import '@/icons' // icon
 import '@/permission' // permission control
 
 import permission from '@/directive/permission/index.js'
-
+import Print from 'vue-print-nb'
 Vue.use(permission)
-
+Vue.use(Print)
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
