@@ -101,7 +101,6 @@ export default {
           ctx.fill()
         }
       }
-      console.log(verifyCode)
       this.$emit('input', verifyCode)
     }
   }

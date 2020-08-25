@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">用户登录</h3>
       </div>
 
       <el-form-item prop="username">
@@ -257,7 +257,7 @@ $light_gray: #eee;
     position: relative;
 
     .title {
-      font-size: 26px;
+      font-size: 23px;
       color: $light_gray;
       margin: 0px auto 40px auto;
       text-align: center;
@@ -278,7 +278,7 @@ $light_gray: #eee;
   .verify {
     position: absolute;
     right: 6px;
-    top: 5px;
+    top: 6px;
   }
 }
 </style>
