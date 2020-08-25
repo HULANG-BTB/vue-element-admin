@@ -156,6 +156,7 @@
         :model="UnitPlace"
         label-width="100px"
         label-position="right"
+        :rules="placeRules"
         style="padding-right:25px;"
       >
         <el-row :gutter="20">
@@ -236,7 +237,6 @@
 </template>
 
 <script>
-// import { listRole, addRole, updateRole } from '@/api/projectManager'
 import { addUnitPlace, getunitPlaceListByPage, updateUnitPlace, deleteUnitPlace, deleteUnitPlaceBatch } from '@/api/base/unitManager/unitPlaceManager'
 import { getByAgenCode } from '@/api/base/unitManager/unitManager'
 import { parseTime } from '@/utils/index'
@@ -294,24 +294,12 @@ export default {
         deptCode: '',
         findeptId: '',
         deptName: ''
+      },
+      placeRules: {
+        placeName: [
+          { required: true, message: '开票点名称不能为空', trigger: 'blur' }
+        ]
       }
-      // rules: {
-      //   itemCode: [
-      //     { required: true, message: '项目编码不能为空', trigger: 'blur' }
-      //   ],
-      //   itemName: [
-      //     { required: true, message: '项目名称不能为空', trigger: 'blur' }
-      //   ],
-      //   mnen: [
-      //     { required: true, message: '助记码不能为空', trigger: 'blur' }
-      //   ],
-      //   incomeSortCode: [
-      //     { required: true, message: '收入类别不能为空', trigger: 'blur' }
-      //   ],
-      //   fundsnatureCode: [
-      //     { required: true, message: '资金性质不能为空', trigger: 'blur' }
-      //   ]
-      // }
     }
   },
   created () {
