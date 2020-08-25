@@ -259,7 +259,7 @@ export default {
         ],
         code: [
           { required: true, message: '请输入编码', trigger: 'change' },
-          { pattern: /^(\d{1,3})$/, message: '编码为1或3位' }
+          { pattern: /^(\d{1,3})$/, message: '编码为1或3位数字' }
         ]
 
       },
