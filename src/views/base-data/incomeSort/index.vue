@@ -1,7 +1,7 @@
 <!--
  * @Author: Jianbinbing
  * @since: 2020-08-01 15:47:07
- * @lastTime: 2020-08-25 11:35:37
+ * @lastTime: 2020-08-25 17:34:34
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -291,7 +291,8 @@ export default {
           {
             name: '添加',
             type: 'primary',
-            icon: 'el-icon-plus'
+            icon: 'el-icon-plus',
+            permission: ['admin', 'financial_check']
           }
         ],
         bodyData: []
@@ -325,7 +326,6 @@ export default {
         ],
         operation: [
           {
-            permission: ['default'],
             type: 'primary',
             name: '查看详细信息',
             hideName: true,
@@ -333,7 +333,7 @@ export default {
             circle: true
           },
           {
-            permission: ['default'],
+            permission: ['admin', 'financial_check'],
             type: 'primary',
             name: '编辑',
             hideName: true,
@@ -341,7 +341,7 @@ export default {
             circle: true
           },
           {
-            permission: ['default'],
+            permission: ['admin', 'financial_check'],
             type: 'danger',
             name: '删除',
             hideName: true,

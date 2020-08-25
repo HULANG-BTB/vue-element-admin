@@ -1,7 +1,7 @@
 /*
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-25 09:18:24
+ * @lastTime: 2020-08-25 16:38:13
  * @LastEditors: Raiz
  * @Description:
  */
@@ -25,7 +25,7 @@ export default [
         meta: {
           title: '票据种类管理',
           icon: 'el-icon-folder',
-          roles: ['admin', 'financial'] }
+          roles: ['admin', 'financial_check', 'financial'] }
       },
       {
         path: 'finDept',
@@ -34,7 +34,7 @@ export default [
         meta: {
           title: '归口财政管理',
           icon: 'el-icon-coin',
-          roles: ['admin', 'financial']
+          roles: ['admin', 'financial_check', 'financial']
         }
       },
       {
@@ -44,7 +44,7 @@ export default [
         meta: {
           title: '收入类别管理',
           icon: 'el-icon-bank-card',
-          roles: ['admin', 'financial']
+          roles: ['admin', 'financial_check', 'financial']
         }
       },
       {
@@ -54,7 +54,7 @@ export default [
         meta: {
           title: '项目票据关系管理',
           icon: 'el-icon-document-copy',
-          roles: ['admin', 'financial']
+          roles: ['admin', 'financial_check', 'financial']
         }
       },
       {
@@ -64,7 +64,7 @@ export default [
         meta: {
           title: '区划管理',
           icon: 'el-icon-location-information',
-          roles: ['unit', 'admin']
+          roles: ['admin', 'financial_check', 'financial', 'unit']
         },
         children: [
           { path: 'list',

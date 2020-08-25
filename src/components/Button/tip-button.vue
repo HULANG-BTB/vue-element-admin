@@ -2,12 +2,16 @@
  * @Author: Raiz
  * @Date: 2019-08-01 08:46:23
  * @LastEditors: Raiz
- * @lastTime: 2020-08-07 16:53:48
+ * @lastTime: 2020-08-25 16:39:40
  * @description: 按钮组件
  -->
 <template>
   <el-tooltip placement="top" effect="dark" :content="buttonData.name">
-    <ByButton :button-data="buttonData" :button-show="buttonShow" @click="click" />
+    <ByButton
+      :button-data="buttonData"
+      :button-show="buttonShow"
+      @click="click"
+    />
   </el-tooltip>
 </template>
 

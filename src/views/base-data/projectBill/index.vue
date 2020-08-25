@@ -1,8 +1,8 @@
 <!--
 * @Author: wuliming
 * @since: 2020-08-11 8:59
-* @lastTime: 2020-08-11 23:51:00
-* @LastEditors: wuliming
+ * @lastTime: 2020-08-25 17:36:39
+ * @LastEditors: Raiz
 * @Description:
 -->
 
@@ -150,7 +150,8 @@
           headButtonData: [{
             name: '添加',
             type: 'primary',
-            icon: 'el-icon-plus'
+            icon: 'el-icon-plus',
+            permission: ['admin', 'financial_check']
           }],
           bodyData: []
         },
@@ -219,7 +220,7 @@
             }
           ],
           operation: [{
-            permission: ['default'],
+            permission: ['admin', 'financial_check'],
             type: 'danger',
             name: '删除',
             hideName: true,
