@@ -22,6 +22,9 @@
         @tableButtonClick="tableButtonClick"
       />
     </div>
+
+
+
     <el-dialog :title="billName" :visible.sync="addDialogVisible" center>
       <div>
         <span><b>项目名称:</b></span>
@@ -56,6 +59,46 @@
         />
       </div>
     </el-dialog>
+
+    <DialogBorder
+      v-model="detailVisible"
+      :dialog-data="dialogData"
+      @dialogOpen="dialogOpen"
+      @dialogClose="dialogClose"
+      @dialogBtnClick="dialogBtnClick"
+    >
+      <div class="detailClass">
+        <el-row>
+          <el-col :span="9">关系id:{{ showDetailData.id }}</el-col>
+          <el-col :span="11" class="rightCol">票据种类编码:{{ showDetailData.billCode }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="9">操作人:{{ showDetailData.operator }}</el-col>
+          <el-col :span="9" class="rightCol">
+            项目id:{{showDetailData.itemId}}
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="9" >
+            项目是否启用:{{showDetailData.itemIsEnabled}}
+          </el-col>
+          <el-col :span="9" class="rightCol">
+             项目名称:{{showDetailData.itemName}}
+          </el-col>
+
+
+        </el-row>
+        <el-row>
+          <el-col :span="9">
+            创建时间:{{ showDetailData.createTime }}
+          </el-col>
+          <el-col :span="9" class="rightCol" >更新时间:{{ showDetailData.updateTime }}</el-col>
+        </el-row>
+        <el-row>
+        </el-row>
+      </div>
+    </DialogBorder>
+
   </el-container>
 </template>
 <script>
@@ -79,6 +122,7 @@
     },
     data() {
       return {
+        detailVisible:false,
         addItemDisabled: true,
         noContactBillItem: 5,
         addItemTotal: 0,
@@ -87,10 +131,16 @@
         showDetailData: {},
         billName: '',
         billCode: '',
+        showDetailData:{},
         multipleSelection: [],
         addItemData: {
           billCode: '',
           itemIds: []
+        },
+        dialogData: {
+          headTitle: '关系详细信息',
+          name: 'realizeDetailDialog',
+
         },
         leftSideData: {
           showSearch: false,
@@ -191,34 +241,36 @@
               label: '票据种类编码'
             },
             {
-              prop: 'itemId',
-              label: '项目id',
-              width: 150
-            },
-            {
               prop: 'itemName',
               label: '项目名称',
               width: 150
             },
             {
-              prop: 'operator',
-              label: '操作人'
-            },
-            {
               prop: 'enabled',
-              label: '关系启用'
+              label: '关系启用',
+              width:80
             },
             {
               prop: 'itemIsEnabled',
               label: '项目启用',
-
+              width:80
             },
             {
               prop: 'updateTime',
               label: '更新时间',
+              width:140
             }
           ],
-          operation: [{
+          operation: [
+            {
+              permission: ['default'],
+              type: 'primary',
+              name: '查看详细信息',
+              hideName: true,
+              icon: 'el-icon-document',
+              circle: true
+            },
+            {
             permission: ['default'],
             type: 'danger',
             name: '删除',
@@ -384,9 +436,15 @@
       },
       tableButtonClick(name, row) {
         const btnDo = {
+           '查看详细信息': () => checkDetail.call(this),
           '删除': () => deleteItemBill.call(this)
         }
         btnDo[name]()
+
+        function checkDetail () {
+          this.detailVisible = true
+          this.showDetailData = row
+        }
 
         function deleteItemBill() {
           this.$confirm('此操作将删除关系?', '提示', {
@@ -486,6 +544,15 @@
   /* eslint-enable */
 </script>
 <style lang="scss" scoped>
+  .detailClass{
+    margin-left:15%;
+    .el-row{
+      margin-top:20px;
+    }
+    .rightCol{
+      margin-left: 15%;
+    }
+  }
   #addItemTable {
     margin-top: 10px;
   }
