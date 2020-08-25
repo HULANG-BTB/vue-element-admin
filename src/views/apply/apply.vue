@@ -198,7 +198,7 @@ export default {
         updateTime: null,
         no: null,
         rgnCode: 1,
-        agenIdCode: 1314,
+        agenIdCode: null,
         kindName: '测试型单位',
         author: '测试作者',
         status: 0

@@ -76,7 +76,6 @@
       </div>
     </el-form>
 
-    <el-button style="margin-bottom:10px" @click="openCreate">新增</el-button>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -175,27 +174,6 @@ export default {
     this.fetchData()
   },
   methods: {
-    openCreate () {
-      this.rowCreate = {
-        id: null,
-        linkMan: null,
-        linkAddr: null,
-        linkTel: null,
-        agenName: '单位名',
-        memo: null,
-        summary: null,
-        author: null,
-        updateTime: null,
-        no: 1,
-        rgnCode: 1,
-        agenIdCode: 1,
-        kindName: '测试型单位',
-        // eslint-disable-next-line no-dupe-keys
-        author: '测试作者',
-        status: 0
-      }
-      this.createTableVisiable = true
-    },
     openDetail (row) {
       this.rowDetail = this.refreshRow(row)
       this.detailTableVisiable = true
