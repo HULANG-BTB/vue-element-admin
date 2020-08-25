@@ -45,7 +45,7 @@
         <el-button
           type="success"
           size="small"
-          @click="getTableData"
+          @click="getTableDataAll()"
         >重载数据</el-button>
       </el-form-item>
     </el-form>
