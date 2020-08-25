@@ -254,7 +254,7 @@ export default {
           accountType: this.getArrayIndex(this.pay_mode_default),
           time: this.date_formatr()
         }).then((response) => {
-          if (response.code === 111150) {
+          if (response.code === 10000) {
             this.$router.push({ name: 'PaySuccess', params: {}})
           } else if (response.code === 111160) {
             this.msg = response.message
@@ -330,7 +330,7 @@ export default {
     // 获取二维码函数
     getPicture () {
       getQrCode().then((response) => {
-        if (response.code === 111130 && response.success === true) {
+        if (response.code === 10000 && response.success === true) {
           this.image = 'data:image/png;base64,' + response.data.image
           this.UUid = response.data.uuid
           this.Qrcode_NO3 = true
