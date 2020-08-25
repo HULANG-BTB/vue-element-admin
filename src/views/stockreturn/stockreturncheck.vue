@@ -45,7 +45,7 @@
         <el-button
           type="success"
           size="small"
-          @click="getTableData"
+          @click="getTableDataAll()"
         >重载数据</el-button>
       </el-form-item>
     </el-form>
@@ -384,6 +384,12 @@ export default {
       // this.tableData = res
       this.getTableData()
       this.loading = false
+    },
+    async getTableDataAll () {
+      this.query.startTime = null
+      this.query.endTime = null
+      this.no = null
+      this.getTableData()
     },
     async checkSave () {
       this.loading = true

@@ -1,8 +1,7 @@
 import request from '@/utils/request'
 
-const BASE_URL_FINAN = 'finan-stock-management'
 const BASE_URL_USM = 'nacos-service-usm'
-// const BASE_URL = 'http://120.27.3.74:8085'
+const BASE_URL_FINAN = 'finan-stock-management'
 /**
  * 查询所有数据
  * @param {*} query
