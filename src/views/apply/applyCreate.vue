@@ -22,7 +22,7 @@
       </el-form-item>
     </el-form>
     <div><span style="margin-right:8cm">编制人：{{ row.author }}</span>
-      <span style="margin-right:8cm">编制日期：{{ row.updateTime| dateFmt('YYYY-MM-DD') }}</span>
+      <span style="margin-right:8cm">编制日期：{{ row.updateTime }}</span>
       <el-button type="primary" @click="onCreate">创建</el-button></div>
   </div>
 </template>
