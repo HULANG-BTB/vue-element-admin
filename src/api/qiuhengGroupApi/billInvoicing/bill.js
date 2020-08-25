@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const BASE_URL = '/bill-invocing'
+const BASE_URL = 'http://localhost:9123'
 
 // 获取单位开票记录
 export function getBillListByPage (query) {
@@ -11,11 +11,11 @@ export function getBillListByPage (query) {
   })
 }
 // 查询单张票据
-export function getOneBill (billId) {
+export function getOneBill (billNo) {
   return request({
     url: BASE_URL + '/billInvoicing/getUneCbillById',
     method: 'get',
-    params: { billId }
+    params: { billNo }
   })
 }
 // 新增票据前验证

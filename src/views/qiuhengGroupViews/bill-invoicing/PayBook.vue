@@ -20,25 +20,38 @@
               </el-menu>
             </div>
             <el-card shadow>
-              <div style="height: 90px">
-                <div
-                  class="subject"
-                  size="small"
-                >
-                  <div>
-                    <el-input slot="prefix" v-model="unitName" style="outline:none;" type="text" disabled prefix="开票单位" size="small" />
-                  </div>
-                  <div>
-                    <el-input v-model="uneCbillDto.fBillId" style="outline:none;" disabled size="small" />
-                    <el-input v-model="uneCbillDto.fBillNo" style="outline:none;" disabled size="small" />
-                    <el-input v-model="uneCbillDto.checkCode" style="outline:none;" disabled size="small" />
-                  </div>
-                  <div>
-                    <el-input v-model="payerDto.fPayerName" style="outline:none;" disabled size="small" />
-                    <el-input v-model="payerDto.fPayerEmail" style="outline:none;" disabled size="small" />
-                    <el-input v-model="payerDto.fPayerTel" style="outline:none;" disabled size="small" />
-                  </div>
-                </div>
+              <div style="height: 80px">
+                <el-footer class="dialog-footer">
+                  <el-form label-width="80px" :data="payerDto">
+                    <el-row style="height: 15px">
+                      <el-col :span="20">
+                        <el-form-item label="开票单位: ">{{ unitName }} </el-form-item>
+                      </el-col>
+                    </el-row>
+                    <el-row style="height: 15px">
+                      <el-col :span="8">
+                        <el-form-item label="票据ID: "> {{ uneCbillDto.fBillId }} </el-form-item>
+                      </el-col>
+                      <el-col :span="8">
+                        <el-form-item label="票据号码: ">{{ uneCbillDto.fBillNo }} </el-form-item>
+                      </el-col>
+                      <el-col :span="8">
+                        <el-form-item label="票据类型: ">{{ uneCbillDto.fType }} </el-form-item>
+                      </el-col>
+                    </el-row>
+                    <el-row style="height: 15px">
+                      <el-col :span="8">
+                        <el-form-item prop="fPayerName" label="缴款人: ">{{ payerDto.fPayerName }} </el-form-item>
+                      </el-col>
+                      <el-col :span="8">
+                        <el-form-item prop="fPayerTel" label="电话: ">{{ payerDto.fPayerTel }} </el-form-item>
+                      </el-col>
+                      <el-col :span="8">
+                        <el-form-item prop="fPayerEmail" label="邮箱: ">{{ payerDto.fPayerEmail }} </el-form-item>
+                      </el-col>
+                    </el-row>
+                  </el-form>
+                </el-footer>
               </div>
               <el-divider content-position="left" />
               <el-table
@@ -69,16 +82,28 @@
                   label="金额"
                 />
               </el-table>
+              <el-form label-width="80px">
+                <el-row>
+                  <el-col :span="20" />
+                  <el-col :span="4">
+                    <el-form-item label="合计: ">{{ fAmt }}</el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
             </el-card>
-            <div class="foot" size="small">
-              <h7 style="font-family: PingFang SC">.</h7>
-              <h7 v-model="fAmt" style="font-family: PingFang SC">合计：{{ fAmt }}</h7>
-            </div>
+            <el-footer class="dialog-footer">
+              <el-form label-width="80px">
+                <el-row>
+                  <el-col :span="20">
+                    <el-form-item label="编制人: ">{{ fAuthor }}</el-form-item>
+                  </el-col>
+                  <el-col :span="4">
+                    <el-form-item label="编制日期: ">{{ dateTime }}</el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </el-footer>
           </el-card></div>
-        <div class="foot">
-          <i style="font-family: PingFang SC">编制人：{{ fAuthor }}</i>
-          <i style="font-family: PingFang SC">编制日期：{{ dateTime }}</i>
-        </div>
       </el-col>
     </el-row>
   </div>
@@ -88,31 +113,37 @@
 export default {
   components: {
   },
+  props: {
+    batchPojo: {
+      type: Object,
+      default () {
+        return {}
+      }
+    }
+  },
   data () {
     return {
-      unitName: '博思软件股份有限公司',
-      payerDto: {},
+      unitName: '',
+      payerDto: {
+        fPayerName: '',
+        fPayerEmail: '',
+        fPayerTel: '',
+        fPayerType: '',
+        fMemo: ''
+      },
       uneCbillDto: {},
       itemDtos: [],
-      fAmt: '1000',
+      fAmt: '',
       dateTime: '',
       fAuthor: 'admin'
     }
   },
   created () {
-    this.$root.eventBus.$on('batchPojo', (val) => {
-      console.log(val)
-      this.unitName = val.unitName
-      console.log(val.unitName)
-      this.payerDto = val.payerDto
-      console.log(val.payerDto)
-      this.fAmt = val.fAmt
-      console.log(val.fAmt)
-      this.uneCbillDto = val.uneCbillDto
-      console.log(val.itemDtos)
-      this.itemDtos = val.itemDtos
-      console.log(this.itemDtos)
-    })
+    this.unitName = this.batchPojo.unitName
+    this.payerDto = this.batchPojo.payerDto
+    this.fAmt = this.batchPojo.fAmt
+    this.uneCbillDto = this.batchPojo.uneCbillDto
+    this.itemDtos = this.batchPojo.itemDtos
     const date = new Date()
     this.dateTime = this.convertToDate(date)
   },
@@ -150,8 +181,10 @@ export default {
     display: flex;
     justify-content: space-between
 }
-.subject {
-  display: flex;
-  justify-content: center;
-}
+.el-row {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap
+  }
+
 </style>

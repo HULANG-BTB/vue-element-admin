@@ -35,12 +35,21 @@ export default [
         path: '/ticket',
         component: () => import('@/views/qiuhengGroupViews/bill-invoicing/Ticket.vue'),
         name: 'ticket',
-        title: '新增开票'
+        meta: {
+          title: '新增开票'
+        },
+        hidden: true
       },
       {
         path: '/paybook',
         component: () => import('@/views/qiuhengGroupViews/bill-invoicing/PayBook.vue'),
-        name: 'paybook'
+        name: 'paybook',
+        props: true,
+        meta: {
+          title: '缴款书',
+          roles: []
+        },
+        hidden: true
       }
     ]
   }
