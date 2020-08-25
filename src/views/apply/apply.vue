@@ -195,13 +195,11 @@ export default {
         agenName: '博思软件股份有限公司',
         memo: null,
         summary: null,
-        author: null,
         updateTime: null,
         no: null,
         rgnCode: 1,
         agenIdCode: 1314,
         kindName: '测试型单位',
-        // eslint-disable-next-line no-dupe-keys
         author: '测试作者',
         status: 0
       }
@@ -210,7 +208,7 @@ export default {
           this.rowCreate.no = res.data
         }
       )
-      this.createTableVisiable = true;
+      this.createTableVisiable = true
     },
     openDetail (row) {
       this.rowDetail = this.refreshRow(row)

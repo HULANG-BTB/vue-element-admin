@@ -24,8 +24,7 @@
     </el-form>
     <el-button :disabled="isDisabled(row.status)" @click="newItem()">新增</el-button>
     <el-table
-      v-loading="listLoading"
-      :data="this.row.items"
+      :data="row.items"
       element-loading-text="Loading"
       border
       fit
