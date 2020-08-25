@@ -3,7 +3,8 @@ import request from '@/utils/request'
 // 入库模块
 
 // const BASE_URL = 'http://120.27.3.74:8085'
-const BASE_URL = 'finan-stock-management/'
+const BASE_URL = 'finan-stock-management'
+// const BASE_URL = ''
 
 // 分页查询入库单
 export function getStockListPage (page) {
@@ -59,12 +60,12 @@ export function updateStockIn (stockIn) {
 
 // 赋码
 export function getCodeFunction (getCode) {
-  // return request({
-  //   url: BASE_URL + '/create/single'
-  //   method: 'post',
-  //   data: getCode
-  // })
-  return { 'beginCode': 2501, 'endCode': 3000 }
+  return request({
+    url: BASE_URL + '/encode/batch',
+    method: 'post',
+    data: getCode
+  })
+  // return { 'beginCode': 2501, 'endCode': 3000 }
 }
 
 // 审核入库单
