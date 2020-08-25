@@ -26,6 +26,23 @@
               >搜索</el-button>
             </el-form-item>
           </el-col>
+          <!-- 分页 -->
+          <el-col :span="1">
+            <el-form-item
+              label=""
+              label-width="120px"
+            >
+              <el-pagination
+                :current-page="page.currentPage"
+                :page-sizes="[5, 10, 15]"
+                :page-size="page.pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="tableData.length"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+              />
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="2">
@@ -68,7 +85,7 @@
     /> -->
 
     <el-table
-      :data="tableData"
+      :data="currentData"
       style="width: 100; margin-top:50px;"
       :default-sort="{prop: 'id'}"
       border
@@ -76,47 +93,56 @@
       <el-table-column
         type="selection"
         width="55"
+        align="center"
       />
       <el-table-column
-        prop="id"
-        type="index"
         label="序号"
         width="50"
-      />
+        align="center"
+      > <!-- 自动生成序号 -->
+        <template slot-scope="scope">
+          <span>{{ (page.currentPage-1) * page.pageSize + scope.$index + 1 }}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="fStatus"
         label="审核状态"
         sortable
         width="140"
+        align="center"
       />
       <el-table-column
         prop="fDestroyNo"
         label="申请单号"
         sortable
         width="180"
+        align="center"
       />
       <el-table-column
         prop="fApplyDate"
         label="申请日期"
         sortable
         width="180"
+        align="center"
       />
       <el-table-column
         prop="fDestroyType"
         label="销毁类型"
         sortable
-        width="180"
+        align="center"
       />
       <el-table-column
         prop="fApplyMan"
         label="申请人"
         sortable
         width="130"
+        align="center"
       />
       <el-table-column
         fixed="right"
         label="操作"
         width="280"
+        align="center"
       >
         <template slot-scope="scope">
           <el-button
@@ -172,7 +198,7 @@ export default {
       // 分页
       page: {
         currentPage: 1,
-        pageSize: 1,
+        pageSize: 10,
         total: 0,
         keyword: ''
       },
@@ -181,17 +207,19 @@ export default {
 
       ApplyDtoTable: [],
       ItemDtoList: [],
+      currentData: [],
       lookDestroyApplyDialogVisible: true
     }
   },
   created () {
-    this.refreshButton()
+    // this.setPageData()
     this.$root.eventBus.$on('dialogVisible1', (val) => {
       this.dialogVisible = val
     })
     this.$root.eventBus.$on('dialogVisibleCancel', (val) => {
       this.dialogVisible = val
     })
+    this.refreshButton()
   },
   methods: {
     lookApplyInfo (row) {
@@ -201,6 +229,19 @@ export default {
       this.$root.eventBus.$emit('lookDestroyApplyDate', row.fApplyDate)
       this.$root.eventBus.$emit('lookDestroyApplyType', row.fDestroyType)
       this.$root.eventBus.$emit('lookDestroyApplyStatus', row.fStatus)
+    },
+    handleSizeChange (val) {
+      this.page.pageSize = val
+      this.page.currentPage = 1
+      this.setPageData()
+    },
+
+    handleCurrentChange (val) {
+      this.page.currentPage = val
+      this.setPageData()
+    },
+    setPageData () {
+      this.currentData = this.tableData.slice((this.page.currentPage - 1) * this.page.pageSize, this.page.currentPage * this.page.pageSize)
     },
     async updateApplyInfo (row) {
       this.dialogVisible = true
@@ -216,10 +257,26 @@ export default {
       this.tableData1 = []
       const res = await getApplyInfoByDestroyNo(this.destroySearch.fDestroyNo)
       this.tableData1.push(res.data)
-      this.tableData = this.tableData1
+      this.currentData = this.tableData1
+      for (var i = 0; i < this.currentData.length; i++) {
+        if (this.currentData[i].fDestroyType) {
+          this.currentData[i].fDestroyType = '库存票据销毁'
+        } else {
+          this.currentData[i].fDestroyType = '核销票据销毁'
+        }
+      }
+      for (var k = 0; k < this.currentData.length; k++) {
+        if (this.currentData[k].fStatus === 0) {
+          this.currentData[k].fStatus = '未审核'
+        }
+        if (this.currentData[k].fStatus === 1) {
+          this.currentData[k].fStatus = '已审核但未通过'
+        }
+        if (this.currentData[k].fStatus === 2) {
+          this.currentData[k].fStatus = '已审核并通过'
+        }
+      }
     },
-    handleSizeChange () {},
-    handleCurrentChange () {},
     // 生成流水号
     randomNumber () {
       const now = new Date()
@@ -251,6 +308,8 @@ export default {
           this.tableData[k].fStatus = '已审核并通过'
         }
       }
+      this.handleSizeChange(this.page.pageSize)
+      // this.currentData = this.tableData.slice(0, 10)
     },
     // 新增票据销毁申请
     addApplyInfo (row) {
