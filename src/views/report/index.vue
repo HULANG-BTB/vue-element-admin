@@ -124,7 +124,6 @@ export default {
     },
     async getPayData () {
       const res = await getWeek()
-      console.log(res.data)
       this.stockpay = res.data
       this.drawPay('stockpayIndex')
     },
@@ -136,7 +135,6 @@ export default {
           for (let j = 0; j < 7; j++) {
             this.billsummary[j] = this.billsummary[j] + nums[j]
           }
-          console.log(this.billsummary)
           this.drawbillsummary('main6')
         }
       })
