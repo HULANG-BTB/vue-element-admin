@@ -371,8 +371,6 @@ export default {
       this.dialogVisible = true
       this.dialogType = 'edit'
       this.UnitPlace = Object.assign({}, rowData)
-      // const { data } = await getOtherItem(rowData.id) // 模态框中需要的其他接口
-      // this.project.roles = data
     },
     handleDisable (rowData) {
       this.$confirm('是否禁用开票点？', '提示', {

@@ -45,8 +45,6 @@
       <el-table-column align="center" label="单位分类" prop="sortCode" />
       <el-table-column align="center" label="操作" width="400">
         <template slot-scope="scope">
-          <!-- <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleProject(scope.row)">项目</el-button>
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleBill(scope.row)">票据</el-button> -->
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleLook(scope.row)">查看</el-button>
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">修改</el-button>
           <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
@@ -84,7 +82,29 @@
               </el-select>
             </el-form-item>
             <el-form-item label="所属行业" :label-width="formLabelWidth">
-              <el-input v-model="project.indCode" placeholder="所属行业" />
+              <el-select v-model="project.indCode" placeholder="请选择所属行业">
+                <el-option label=" 农、林、牧、渔业" value=" 农、林、牧、渔业" />
+                <el-option label="采矿业" value="采矿业" />
+                <el-option label="制造业" value="制造业" />
+                <el-option label="电力、热力、燃气及水的生产和供应业" value="电力、热力、燃气及水的生产和供应业" />
+                <el-option label="环境和公共设施管理业" value="环境和公共设施管理业" />
+                <el-option label="建筑业" value="建筑业" />
+                <el-option label="交通运输、仓储业和邮政业" value="交通运输、仓储业和邮政业" />
+                <el-option label="信息传输、计算机服务和软件业" value="信息传输、计算机服务和软件业" />
+                <el-option label="批发和零售业" value="批发和零售业" />
+                <el-option label="住宿、餐饮业" value="住宿、餐饮业" />
+                <el-option label="金融、保险业" value="金融、保险业" />
+                <el-option label="房地产业" value="房地产业" />
+                <el-option label="租赁和商务服务业" value="租赁和商务服务业" />
+                <el-option label="科学研究、技术服务和地质勘查业" value="科学研究、技术服务和地质勘查业" />
+                <el-option label="水利、环境和公共设施管理业" value="水利、环境和公共设施管理业" />
+                <el-option label="居民服务和其他服务业" value="居民服务和其他服务业" />
+                <el-option label="教育" value="教育" />
+                <el-option label="卫生、社会保障和社会服务业" value="卫生、社会保障和社会服务业" />
+                <el-option label="文化、体育、娱乐业" value="文化、体育、娱乐业" />
+                <el-option label="综合" value="综合" />
+                <el-option label="其它" value="其它" />
+              </el-select>
             </el-form-item>
             <el-form-item label="生效日期" :label-width="formLabelWidth" prop="effDate">
               <el-date-picker v-model="project.effDate" type="date" placeholder="选择日期" style="width: 100%;" />
@@ -110,10 +130,21 @@
               <el-input v-model="project.mnem" placeholder="助记码" />
             </el-form-item>
             <el-form-item label="归口财政部门" :label-width="formLabelWidth">
-              <el-input v-model="project.findeptId" placeholder="归口财政部门" />
+              <el-select v-model="project.findeptId" placeholder="归口财政部门">
+                <el-option v-for="item in finDept" :key="item.id" :label="item.findeptName" :value="item.findeptName" />
+              </el-select>
             </el-form-item>
             <el-form-item label="单位分类" :label-width="formLabelWidth">
-              <el-input v-model="project.sortCode" placeholder="单位分类" />
+              <el-select v-model="project.sortCode" placeholder="请选择单位类型">
+                <el-option label="国有企业" value="国有企业" />
+                <el-option label="国有控股企业" value="国有控股企业" />
+                <el-option label="外资企业" value="外资企业" />
+                <el-option label="合资企业" value="合资企业" />
+                <el-option label="私营企业" value="私营企业" />
+                <el-option label="事业单位" value="事业单位" />
+                <el-option label="国家行政机关" value="国家行政机关" />
+                <el-option label="政府" value="政府" />
+              </el-select>
             </el-form-item>
             <el-form-item label="失效日期" :label-width="formLabelWidth" prop="expDate">
               <el-date-picker v-model="project.expDate" type="date" placeholder="选择日期" style="width: 100%;" />
@@ -138,19 +169,6 @@
         <el-button type="primary" @click="confirmRole">确认</el-button>
       </div>
     </el-dialog>
-
-    <!-- <el-dialog :visible.sync="manageDialogVisible" :title="manageDialogType === 'projectTow' ? '项目管理' : '票据管理'">
-      <div v-loading="loading" style="text-align:center" class="transfer">
-        <el-transfer v-model="manageHasList" style="text-align: left; display: inline-block; margin-bottom: 1rem" :data="manageOriginList" :button-texts="['删除', '添加']" :titles="['未拥有列表', '已拥有列表']">
-          <span slot-scope="{ option }">{{ option.label }}</span>
-        </el-transfer>
-        <div style="text-align:right;">
-          <el-button type="danger" @click="cancel">取消</el-button>
-          <el-button type="primary" @click="confirmManage">确认</el-button>
-        </div>
-      </div>
-    </el-dialog> -->
-
   </div>
 </template>
 
@@ -164,15 +182,7 @@ import {
   getDapartListAll,
   getAgenCount
 } from '@/api/base/unitManager/unitManager'
-// import {
-//   getAgenBillType,
-//   getBillAllType,
-//   updateAgenBillBatch,
-//   getAgenItemList,
-//   getAllItemList,
-//   updateAgenItemBatch
-// } from '@/api/unitManager'
-
+import { getAllFinDept } from '@/api/finDept/finDept'
 const defaultUser = {
   note: '',
   finMgr: '',
@@ -224,7 +234,6 @@ export default {
         },
         page: 1,
         limit: 10
-        // total: 0
       },
       projectList: [],
       project: {
@@ -248,14 +257,11 @@ export default {
         deptName: ''
       },
       dialogVisible: false,
-      // manageDialogVisible: false,
-      // manageDialogType: 'projectTow',
-      // manageHasList: [],
-      // manageOriginList: [],
       dialogType: 'new',
       formLabelWidth: '120px',
       selectedList: [],
       deptManag: [],
+      finDept: [],
       rules: {
         agenCode: [
           { required: true, message: '', trigger: 'change' }
@@ -284,6 +290,7 @@ export default {
   created () {
     this.getTableData()
     this.getDapartName()
+    this.getFinDeptName()
   },
   methods: {
     // 获取资源列表
@@ -317,7 +324,12 @@ export default {
         })
       }
     },
-
+    // 获取财政部门
+    async getFinDeptName () {
+      const { data } = await getAllFinDept() // 无参查询部门列表
+      this.finDept = data
+      console.log(data)
+    },
     // 搜索
     handleQuery () {
       this.queryParams.page = 1
@@ -457,118 +469,6 @@ export default {
       this.queryParams.page = val
       this.getTableData()
     }
-    // 获取所有财政票据种类
-    // async getBillAllType () {
-    //   // Todo
-    //   const { data } = await getBillAllType()
-    //   if (!data) {
-    //     return
-    //   }
-    //   this.manageOriginList = data.map(item => {
-    //     return { ...item, disabled: false, key: item.code, label: item.name }
-    //   })
-    //   if (this.manageOriginList === undefined) {
-    //     this.manageOriginList = []
-    //   }
-    // },
-
-    // 获取单位具有的所有票据
-    // async getAgenBillAll (agenIdcode) {
-    //   const { data } = await getAgenBillType({ agenIdcode })
-    //   if (!data) {
-    //     return
-    //   }
-    //   this.manageHasList = data.map(item => item.code)
-    //   if (this.manageHasList === undefined) {
-    //     this.manageHasList = []
-    //   }
-    // },
-
-    // 获取所有财政项目列表
-    // async getAllItemList () {
-    //   // Todo
-    //   const { data } = await getAllItemList()
-    //   if (!data) {
-    //     return
-    //   }
-    //   this.manageOriginList = data.map(item => {
-    //     return {
-    //       ...item,
-    //       disabled: false,
-    //       key: item.itemId,
-    //       label: item.itemName
-    //     }
-    //   })
-    //   if (this.manageOriginList === undefined) {
-    //     this.manageOriginList = []
-    //   }
-    // },
-
-    // 查询单位具有的项目
-    // async getAgenItemList (agenIdcode) {
-    //   const { data } = await getAgenItemList({ agenIdcode })
-    //   if (!data) {
-    //     return
-    //   }
-    //   this.manageHasList = data.map(item => item.itemId)
-    //   if (this.manageHasList === undefined) {
-    //     this.manageHasList = []
-    //   }
-    // },
-
-    // 管理提交
-    // async confirmManage () {
-    //   const isBillManage = this.manageDialogType === 'bill'
-    //   let successFlag = false
-    //   if (isBillManage) {
-    //     const postData = this.manageHasList.map(item => {
-    //       return { agenIdcode: this.project.agenCode, typeCode: item }
-    //     })
-    //     await updateAgenBillBatch(postData).then(res => {
-    //       successFlag = true
-    //     })
-    //   } else {
-    //     const postData = this.manageHasList.map(item => {
-    //       return { agenIdcode: this.project.agenCode, itemCode: item }
-    //     })
-    //     await updateAgenItemBatch(postData).then(res => {
-    //       successFlag = true
-    //     })
-    //   }
-    //   if (successFlag) {
-    //     this.$message({
-    //       showClose: true,
-    //       message: '添加成功',
-    //       type: 'success'
-    //     })
-    //   }
-    //   this.manageDialogVisible = false
-    // },
-    // 项目管理按钮
-    // async handleProject (row) {
-    //   this.loading = true
-    //   this.manageOriginList = []
-    //   this.manageHasList = []
-    //   this.project = Object.assign({}, row)
-    //   this.manageDialogType = 'projectTow'
-    //   this.manageDialogVisible = true
-    //   await this.getAllItemList()
-    //   await this.getAgenItemList(row.agenCode)
-    //   this.loading = false
-    // },
-
-    // 票据管理按钮
-    // async handleBill (row) {
-    //   this.loading = true
-    //   this.manageOriginList = []
-    //   this.manageHasList = []
-    //   this.project = Object.assign({}, row)
-    //   this.manageDialogType = 'bill'
-    //   this.manageDialogVisible = true
-    //   await this.getBillAllType()
-    //   await this.getAgenBillAll(row.agenCode)
-    //   this.loading = false
-    // },
   }
 }
 </script>

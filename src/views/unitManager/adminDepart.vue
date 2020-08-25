@@ -120,12 +120,6 @@
             <el-form-item label="地址" :label-width="formLabelWidth">
               <el-input v-model="project.addr" placeholder="地址" />
             </el-form-item>
-            <el-form-item label="经办人" :label-width="formLabelWidth" prop="operator">
-              <el-input v-model="project.operator" placeholder="经办人" />
-            </el-form-item>
-            <el-form-item label="经办日期" :label-width="formLabelWidth" prop="createTime">
-              <el-date-picker v-model="project.createTime" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
             <el-form-item label="备注" :label-width="formLabelWidth">
               <el-input v-model="project.note" placeholder="备注" />
             </el-form-item>
@@ -149,7 +143,7 @@
 <script>
 import { getDapartListByPage, addDapart, updateDapart, deleteDapart, deleteDapartBatch, getRgnTree } from '@/api/base/unitManager/unitManager'
 import { parseTime } from '@/utils/index'
-import { validateDatePicker } from '@/utils/validate'
+// import { validateDatePicker } from '@/utils/validate'
 
 const defaultUser = {
   isenable: true,
@@ -157,9 +151,7 @@ const defaultUser = {
   deptName: '',
   linkMan: '',
   linkTel: '',
-  operator: '',
   updateTime: '',
-  createTime: '',
   note: '',
   rgnId: '12',
   logicDelete: false,
@@ -197,9 +189,7 @@ export default {
         deptName: '',
         linkMan: '',
         linkTel: '',
-        operator: '',
         updateTime: '',
-        createTime: '',
         isenable: true,
         note: '',
         rgnId: '',
@@ -217,14 +207,8 @@ export default {
         deptName: [
           { required: true, message: '部门名称不能为空', trigger: 'blur' }
         ],
-        operator: [
-          { required: true, message: '经办人不能为空', trigger: 'blur' }
-        ],
         operatorId: [
           { required: true, message: '经办人ID不能为空', trigger: 'blur' }
-        ],
-        createTime: [
-          { trigger: 'blur', validator: validateDatePicker }
         ],
         version: [
           { required: true, message: '版本不能为空', trigger: 'blur' }
@@ -350,13 +334,6 @@ export default {
                 message: '添加成功',
                 type: 'success'
               })
-              // } else {
-              //   this.$message({
-              //     showClose: true,
-              //     message: '添加失败',
-              //     type: 'error'
-              //   })
-              // }
             })
           } else { // 编辑
             await updateDapart(this.project).then(res => {

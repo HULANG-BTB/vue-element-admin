@@ -1,36 +1,5 @@
 <template>
   <div class="app-container">
-    <!-- <el-form
-      ref="queryForm"
-      :model="queryParams"
-      :inline="true"
-      size="small"
-      style="margin-top:10px;"
-    >
-      <el-form-item
-        label="可用票据名称"
-        prop="name"
-      >
-        <el-input
-          v-model="queryParams.keyword"
-          placeholder="请输入可用票据名称"
-          clearable
-          style="width: 150px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="primary"
-          icon="el-icon-search"
-          @click="handleQuery"
-        >搜索</el-button>
-        <el-button
-          icon="el-icon-refresh"
-          @click="resetQuery"
-        >重置</el-button>
-      </el-form-item>
-    </el-form> -->
     <el-table
       :data="unitBillList"
       style="width: 100%;margin-top:30px;"
