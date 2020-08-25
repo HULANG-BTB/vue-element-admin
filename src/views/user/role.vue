@@ -73,7 +73,7 @@
         </el-form-item>
       </el-form>
       <div style="text-align:right;">
-        <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
+        <el-button type="danger" @click="handleCancel">Cancel</el-button>
         <el-button type="primary" :loading="confirmLoading" @click="confirmRole">Confirm</el-button>
       </div>
     </el-dialog>
