@@ -12,13 +12,13 @@ export default [
     },
     children: [
       {
-        path: '/apply',
+        path: 'apply',
         component: () => import('@/views/apply/apply'),
         name: 'PageApply',
         meta: { title: '票据申领' }
       },
       {
-        path: '/check',
+        path: 'check',
         component: () => import('@/views/apply/check'),
         name: 'PageCheck',
         meta: { title: '申领审核' }

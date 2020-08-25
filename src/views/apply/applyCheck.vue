@@ -60,7 +60,7 @@
       <el-table-column class-name="status-col" label="操作" align="center" />
     </el-table>
     <div><span style="margin-right:18cm">编制人：{{ row.author }}</span>
-      <span>编制日期：{{ row.updateTime| dateFmt('YYYY-MM-DD') }}</span></div>
+      <span>编制日期：{{ row.updateTime }}</span></div>
     <div style="text-align:center">
       <el-button :disabled="isChecked(row.status)" type="primary" @click="onPass">审核通过</el-button>
       <el-button :disabled="isChecked(row.status)" type="danger" @click="onReturn">审核退回</el-button></div>
@@ -69,6 +69,7 @@
 
 <script>
 import { passApply, returnApply } from '@/api/apply'
+import { parseTime } from '@/utils'
 
 export default {
   name: 'ApplyDetail',
@@ -129,6 +130,9 @@ export default {
     },
     isChecked (status) {
       return status > 1
+    },
+    parseTime (time) {
+      return parseTime(new Date(time))
     }
   }
 }
