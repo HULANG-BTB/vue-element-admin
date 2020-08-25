@@ -395,9 +395,6 @@ export default {
       }, {
         value: '单位1',
         label: '单位1'
-      }, {
-        value: '单位2',
-        label: '单位2'
       }],
       // 出库项展示
       StockoutTableData: [],
@@ -416,12 +413,6 @@ export default {
         rgnCode: '00'
       }, {
         rgnCode: '01'
-      }, {
-        rgnCode: '02'
-      }, {
-        rgnCode: '10'
-      }, {
-        rgnCode: '11'
       }],
       // 票据类别选择
       billOptions: [{
