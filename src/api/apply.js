@@ -4,81 +4,81 @@ const BASE_URL = 'nacos-service-usm'
 const FINAN_URL = 'finan-stock-management'
 
 /* apply相关 */
-export function getApplyList(query) {
+export function getApplyList (query) {
   return request({
-    url: BASE_URL+'/ubeStockFinanceapply/getAll',
+    url: BASE_URL + '/ubeStockFinanceapply/getAll',
     method: 'get',
     params: query
   })
 }
 
-export function deleteApply(applyId) {
+export function deleteApply (applyId) {
   return request({
-    url: BASE_URL+'/ubeStockFinanceapply',
+    url: BASE_URL + '/ubeStockFinanceapply',
     method: 'delete',
     params: { id: applyId }
   })
 }
 
-export function getItemList(rowId) {
+export function getItemList (rowId) {
   return request({
-    url: BASE_URL+'/ubeStockFinanceapply/items',
+    url: BASE_URL + '/ubeStockFinanceapply/items',
     method: 'get',
     params: { id: rowId }
   })
 }
 
-export function deleteItemById(itemId) {
+export function deleteItemById (itemId) {
   return request({
-    url: BASE_URL+'/ubeStockFinanceapplyItem',
+    url: BASE_URL + '/ubeStockFinanceapplyItem',
     method: 'delete',
     params: { id: itemId }
   })
 }
 
-export function saveItem(item) {
+export function saveItem (item) {
   return request({
-    url: BASE_URL+'/ubeStockFinanceapplyItem',
+    url: BASE_URL + '/ubeStockFinanceapplyItem',
     method: 'post',
     params: item
   })
 }
 
-export function updateItem(item) {
+export function updateItem (item) {
   return request({
-    url: BASE_URL+'/ubeStockFinanceapplyItem',
+    url: BASE_URL + '/ubeStockFinanceapplyItem',
     method: 'put',
     params: item
   })
 }
 
-export function submitApply(apply) {
+export function submitApply (apply) {
   return request({
-    url: BASE_URL+'/ubeStockFinanceapply/submit',
+    url: BASE_URL + '/ubeStockFinanceapply/submit',
     method: 'put',
     params: apply
   })
 }
 
-export function createApply(apply) {
+export function createApply (apply) {
   return request({
-    url: BASE_URL+'/ubeStockFinanceapply',
+    url: BASE_URL + '/ubeStockFinanceapply',
     method: 'post',
     params: apply
   })
 }
 
-export function getApplyCheckList(query) {
+export function getApplyCheckList (query) {
   return request({
-    url: FINAN_URL+'/fbeStockFinanceapplyCheck/getAll',
+    url: FINAN_URL + '/fbeStockFinanceapplyCheck/getAll',
     method: 'get',
     params: query
   })
 }
 
-export function passApply(applyId, changeSitu) {
+export function passApply (applyId, changeSitu) {
   return request({
-    url: FINAN_URL+'/fbeStockFinanceapplyCheck/pass',
+    url: FINAN_URL + '/fbeStockFinanceapplyCheck/pass',
     method: 'put',
     params: {
       id: applyId,
@@ -87,9 +87,9 @@ export function passApply(applyId, changeSitu) {
   })
 }
 
-export function returnApply(applyId, changeSitu) {
+export function returnApply (applyId, changeSitu) {
   return request({
-    url: FINAN_URL+'/fbeStockFinanceapplyCheck/return',
+    url: FINAN_URL + '/fbeStockFinanceapplyCheck/return',
     method: 'put',
     params: {
       id: applyId,
@@ -98,22 +98,20 @@ export function returnApply(applyId, changeSitu) {
   })
 }
 
-export function getMaxNo() {
+export function getMaxNo () {
   return request({
-    url: BASE_URL+'/ubeStockFinanceapply/maxNo',
-    method: 'get',
+    url: BASE_URL + '/ubeStockFinanceapply/maxNo',
+    method: 'get'
   })
 }
 
-export function getCheckItemList(rowId) {
+export function getCheckItemList (rowId) {
   return request({
-    url: FINAN_URL+'/fbeStockFinanceapplyCheck/items',
+    url: FINAN_URL + '/fbeStockFinanceapplyCheck/items',
     method: 'get',
     params: { id: rowId }
   })
 }
-
-
 
 /* 统一方法 */
 export const util = {
