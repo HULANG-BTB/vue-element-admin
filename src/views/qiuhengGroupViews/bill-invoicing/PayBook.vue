@@ -135,7 +135,7 @@ export default {
       itemDtos: [],
       fAmt: '',
       dateTime: '',
-      fAuthor: 'admin'
+      fAuthor: '单位端'
     }
   },
   created () {
