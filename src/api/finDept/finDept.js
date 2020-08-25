@@ -24,6 +24,13 @@ export function queryRngCode () {
   })
 }
 
+export function getAllFinDept () {
+  return request({
+    url: '/base/fabFinDept/get',
+    method: 'post'
+  })
+}
+
 export function saveFinDept (data) {
   return request({
     url: baseUrl + 'save',

@@ -57,9 +57,6 @@
   </div>
 </template>
 <script>
-import {
-  getItemInfo
-} from '@/api/qiuhengGroupApi/billInvoicing/bill'
 export default {
   data () {
     return {
@@ -94,9 +91,8 @@ export default {
   methods: {
     // 获取单位收费项目
     async getItem () {
-      const unitName = '博思软件股份有限公司'
-      const res = await getItemInfo(unitName)
-      console.log(res)
+      // const unitName = '博思软件股份有限公司'
+      // const res = await getItemInfo(unitName)
     },
     handleClose (done) {
       this.$confirm('确认关闭？')

@@ -1,13 +1,13 @@
 <template>
   <div class="agen-archive">
     <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" label="单位编码" width="100px">
+      <el-table-column align="center" label="单位编码" width="120px">
         <template slot-scope="scope">
           <span>{{ scope.row.agenCode }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="单位名称" min-width="250px">
+      <el-table-column align="center" label="单位名称" min-width="230px">
         <template slot-scope="scope">
           <span>{{ scope.row.agenName }}</span>
         </template>
@@ -96,3 +96,8 @@ export default {
 }
 
 </script>
+<style>
+  .agen-archive {
+    margin: 30px;
+  }
+</style>
