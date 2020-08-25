@@ -58,7 +58,7 @@ export function deleteTemplateBatch (data) {
   return request({
     url: baseURL + `/printTemplate/removeBatch`,
     method: 'delete',
-    data: data
+    data
   })
 }
 
@@ -101,3 +101,5 @@ export function updateTemplate (data) {
     data
   })
 }
+
+

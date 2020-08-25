@@ -279,7 +279,7 @@ export default {
       memo: '',
       templateName: '',
       loading: false,
-      selectedList: '',
+      selectedList: [],
       dialogVisible: false,
       dialogAddFile: false,
       setDefault: true,
@@ -564,10 +564,15 @@ export default {
       document.getElementById('uploadTemplateFile').reset()
       this.addArr = []
       this.dialogAddFile = false
+      this.getTableData()
     },
 
     handleOnSelectChange (selection) {
-      this.selectedList = selection
+      this.selectedList = []
+      for (let i = 0; i < selection.length; i++) {
+        this.selectedList.push(selection[i].id)
+      }
+      console.log(this.selectedList)
     },
 
     // 每页数目改变
