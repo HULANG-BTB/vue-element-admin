@@ -102,7 +102,7 @@
           <template slot-scope="scope">{{ scope.row.checkType }}</template>
         </el-table-column>
         <el-table-column align="center" label="查验人">
-          <template slot-scope="scope">{{ scope.row.operator }}</template>
+          <template slot-scope="scope">{{ scope.row.operatorIp }}</template>
         </el-table-column>
         <el-table-column align="center" label="查验时间">
           <template slot-scope="scope">{{ scope.row.createTime }}</template>
@@ -144,7 +144,7 @@ export default {
         billCode: '',
         checkType: '',
         createTime: '',
-        operator: '',
+        operatorIp: '',
         result: ''
       },
       checkRecordTableData: [],
@@ -166,7 +166,7 @@ export default {
         billCode: null,
         checkType: null,
         period: null,
-        operator: null,
+        operatorIp: null,
         result: null
       },
       pickerOptions: {

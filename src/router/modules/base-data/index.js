@@ -81,8 +81,7 @@ export default [
         name: 'SubjectManagement',
         meta: {
           title: '预算科目管理',
-          roles: ['admin', 'financial', 'financial_check', 'unit'],
-          icon: 'edit'
+          roles: ['admin', 'financial', 'financial_check', 'unit']
         }
       }
     ]
