@@ -2,7 +2,7 @@
 <!--
  * @Author: Raiz
  * @since: 2020-07-31 14:47:07
- * @lastTime: 2020-08-24 20:56:03
+ * @lastTime: 2020-08-25 09:23:00
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -410,7 +410,7 @@ export default {
           {
             prop: 'natureCode',
             label: '票据性质',
-            width: 80
+            width: 120
           },
           {
             prop: 'effDate',
