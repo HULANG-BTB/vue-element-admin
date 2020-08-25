@@ -33,8 +33,8 @@
       <div id="addItemTable">
         <el-table id="addNoItem" ref="multipleTable" :data="tableItemData" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" />
-          <el-table-column property="id" label="id" width="150" />
-          <el-table-column property="itemId" label="项目编码" width="200" />
+          <el-table-column property="id" label="id" width="50" />
+          <el-table-column property="itemId" label="项目编码" width="100" />
           <el-table-column property="itemName" label="项目名称" />
           <el-table-column label="创建时间">
             <template slot-scope="scope">
