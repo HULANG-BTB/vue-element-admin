@@ -85,7 +85,7 @@ export function importExcel (data) {
 // 导出
 export function exportExcel (data) {
   return download({
-    url: '/item/export',
+    url: `${BASE_URL}/item/export`,
     method: 'post',
     data: data
   })

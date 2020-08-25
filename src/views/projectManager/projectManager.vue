@@ -2,13 +2,11 @@
   <div class="app-container">
     <el-row :gutter="20">
       <el-col :span="6">
-        <el-card class="box-card">
-          <el-tree ref="tree" :data="treeList" node-key="id" :props="defaultProps" style="font-size:10px;" @node-click="handleNodeClick">
-            <span slot-scope="{ node, data }" class="custom-tree-node">
-              <span>{{ data.code }} {{ node.label }}</span>
-            </span>
-          </el-tree>
-        </el-card>
+        <el-tree ref="tree" :data="treeList" node-key="id" :props="defaultProps" style="font-size:10px;" @node-click="handleNodeClick">
+          <span slot-scope="{ node, data }" class="custom-tree-node">
+            <span>{{ data.code }} {{ node.label }}</span>
+          </span>
+        </el-tree>
       </el-col>
       <el-col :span="18">
         <el-form ref="queryForm" :model="queryParams" :inline="true" size="small" style="margin-top:10px;">
