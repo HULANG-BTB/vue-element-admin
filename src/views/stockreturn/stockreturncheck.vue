@@ -385,6 +385,12 @@ export default {
       this.getTableData()
       this.loading = false
     },
+    async getTableDataAll () {
+      this.query.startTime = null
+      this.query.endTime = null
+      this.no = null
+      this.getTableData()
+    },
     async checkSave () {
       this.loading = true
       // this.Stockreturn = Object.assign(this.Stockreturn)
