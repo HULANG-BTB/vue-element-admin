@@ -63,9 +63,6 @@
     <DialogBorder
       v-model="detailVisible"
       :dialog-data="dialogData"
-      @dialogOpen="dialogOpen"
-      @dialogClose="dialogClose"
-      @dialogBtnClick="dialogBtnClick"
     >
       <div class="detailClass">
         <el-row>
