@@ -1,10 +1,10 @@
 import request from '@/utils/request'
 
-const baseURL = 'ecds-bill-pool/'
+const baseURL = '/ecds-bill-pool'
 
 export function setSource (data) {
   return request({
-    url: baseURL + 'pool/setSource',
+    url: baseURL + '/pool/setSource',
     method: 'post',
     data
   })
@@ -12,7 +12,7 @@ export function setSource (data) {
 
 export function addSource (data) {
   return request({
-    url: baseURL + 'pool/addSource',
+    url: baseURL + '/pool/addSource',
     method: 'post',
     data
   })
@@ -20,7 +20,7 @@ export function addSource (data) {
 
 export function deleteSource (data) {
   return request({
-    url: baseURL + 'pool/removeSource',
+    url: baseURL + '/pool/removeSource',
     method: 'post',
     data
   })
@@ -28,7 +28,7 @@ export function deleteSource (data) {
 
 export function querySource (billTypeCode) {
   return request({
-    url: baseURL + 'pool/retrieveSetByCode',
+    url: baseURL + '/pool/retrieveSetByCode',
     method: 'get',
     params: billTypeCode
   })
@@ -36,7 +36,7 @@ export function querySource (billTypeCode) {
 
 export function batchQuerySource () {
   return request({
-    url: baseURL + 'pool/retrieveSetList',
+    url: baseURL + '/pool/retrieveSetList',
     method: 'get'
   })
 }
