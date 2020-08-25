@@ -70,7 +70,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="createDialogVisible = false">取 消</el-button>
-        <el-button size="small" type="primary" :loading="createLoading" @click="createPool">创建</el-button>
+        <el-button size="small" type="primary" @click="createPool">创建</el-button>
       </div>
     </el-dialog>
 
@@ -306,8 +306,10 @@ export default {
             this.createDialogVisible = false
             this.createLoading = false
           })
+          this.query()
         }
       }).catch(() => {
+        this.createLoading = false
         this.$message({
           type: 'info',
           message: '已取消创建'
@@ -335,7 +337,11 @@ export default {
           const data = res.data
           this.poolData = []
           // this.poolData[0] = res.data
-          this.poolData[0] = data
+          if (res.success !== false) {
+            this.poolData[0] = data
+          } else {
+            this.billTypeCode = ''
+          }
         })
       }
       this.poolDataVisible = true

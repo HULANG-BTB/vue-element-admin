@@ -1,54 +1,52 @@
 <template>
   <div class="app-container">
-    <el-form
-      :model="query"
-      :inline="true"
-      class="demo-form-inline"
-      label-width="110px"
-      label-position="right"
-    >
-      <el-form-item label="查询模板文件:">
-        <el-input
-          v-model="template.billCode"
-          placeholder="输入票据代码(不含年度)"
-          clearable
-          size="small"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-input
-          v-model="template.name"
-          placeholder="输入模板名称"
-          clearable
-          size="small"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="primary"
-          icon="el-icon-search"
-          size="small"
-          @click="handleSearch"
-        >查询</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          icon="el-icon-refresh"
-          size="small"
-          @click="handleReset"
-        >重置</el-button>
-      </el-form-item>
-    </el-form>
-    <el-form :inline="true">
-      <el-form-item>
+    <el-card class="box-card">
+      <el-form
+        :model="query"
+        :inline="true"
+        class="demo-form-inline"
+        label-width="110px"
+        label-position="right"
+      >
+        <el-form-item label="查询模板文件:">
+          <el-input
+            v-model="template.billCode"
+            placeholder="输入票据代码(不含年度)"
+            clearable
+            size="small"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            v-model="template.name"
+            placeholder="输入模板名称"
+            clearable
+            size="small"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="small"
+            @click="handleSearch"
+          >查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            icon="el-icon-refresh"
+            size="small"
+            @click="handleReset"
+          >重置</el-button>
+        </el-form-item>
+      </el-form>
+      <el-row>
         <el-button
           type="primary"
           icon="el-icon-circle-plus-outline"
           size="small"
           @click="handleShowFile"
         >添加模板</el-button>
-      </el-form-item>
-      <el-form-item>
         <el-button
           type="danger"
           :disabled="deleteBatchDisable"
@@ -56,13 +54,15 @@
           size="small"
           @click="handleDeleteBatch"
         >批量删除</el-button>
-      </el-form-item>
-    </el-form>
-    <div>
+      </el-row>
+
+    </el-card>
+
+    <el-card class="box-card">
       <el-table
         v-loading.body="loading"
         :data="templateTableData"
-        style="width: 100%; margin-top: 30px;text-align: center"
+        style="width: 100%; text-align: center"
         border
         @selection-change="handleOnSelectChange"
       >
@@ -72,16 +72,16 @@
           width="60"
         />
         <el-table-column
-          align="left"
+          align="center"
           label="模板ID"
-          width="100"
+          width="70"
         >
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
         <el-table-column
           align="center"
-          label="票据代码（不含年度）"
-          width="290"
+          label="票据代码"
+          width="80"
         >
           <template slot-scope="scope">
             {{ scope.row.rgnCode + scope.row.typeId + scope.row.sortId }}
@@ -90,14 +90,12 @@
         <el-table-column
           align="center"
           label="模板名称"
-          width="300"
         >
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
         <el-table-column
           align="center"
           label="备注"
-          width="350"
         >
           <template slot-scope="scope">{{ scope.row.memo }}</template>
         </el-table-column>
@@ -105,7 +103,7 @@
           fixed="right"
           align="center"
           label="操作"
-          width="330"
+          width="220"
         >
           <template slot-scope="scope">
             <el-button
@@ -126,8 +124,9 @@
           </template>
         </el-table-column>
       </el-table>
-    </div>
+    </el-card>
 
+<<<<<<< HEAD
     <!-- 分页 -->
     <el-pagination
       layout="prev, pager, next, sizes, total, jumper"
@@ -140,6 +139,21 @@
       @current-change="handleCurrentChange"
     />
     <!-- 在页面下方显示具体模板内容 -->
+=======
+    <el-card class="box-card">
+      <el-pagination
+        layout="prev, pager, next, sizes, total, jumper"
+        align="right"
+        :page-size="query.pageSize"
+        :total="query.total"
+        :current-page="query.currentPage"
+        :page-sizes="[2, 5, 10, 20, 50, 100, 500, 1000]"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </el-card>
+
+>>>>>>> 5a0304584f918d42096b53ef98b7cb07e57b7c14
     <el-card>
       <div
         id="container"
