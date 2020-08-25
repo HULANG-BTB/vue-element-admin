@@ -52,7 +52,7 @@
       >查询缴费信息</el-button>
 
       <div class="tips">
-        <span style="margin-right:20px;">{{ responseMsg.msg }}</span>
+        <span style="margin-right:20px;color:red">{{ responseMsg.msg }}</span>
       </div>
 
     </el-form></div>
@@ -109,7 +109,7 @@ export default {
           this.loading = true
           console.log(this.paySearchForm)
           payLogin(this.paySearchForm).then(res => {
-            if (res.code === 11111 && res.success === true) {
+            if (res.code === 111110) {
               if (res.data.type === 0) {
                 this.$router.push({ name: this.redirect || 'PayInformation', params: { data: JSON.stringify(res.data) }})
                 this.loading = false
@@ -117,6 +117,9 @@ export default {
                 this.$router.push({ name: this.redirect || 'PayInformational', params: { data: JSON.stringify(res.data) }})
                 this.loading = false
               }
+            } else if (res.code === 111200) {
+              this.responseMsg.msg = res.message
+              this.loading = false
             } else {
               this.responseMsg.msg = '查询没有此缴款单,请检查手机号或验证码输入是否正确'
               this.loading = false
