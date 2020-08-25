@@ -18,7 +18,7 @@
       </el-form-item>
       <el-form-item>
         <el-button size="small" type="primary" @click="query">查询</el-button>
-        <el-button size="small" type="primary" @click="handleAdd">新增</el-button>
+        <el-button v-permission="['admin', 'financial_check']" size="small" type="primary" @click="handleAdd">新增</el-button>
         <el-button size="small" type="primary" @click="clearSearchForm">清空</el-button>
       </el-form-item>
     </el-form>
@@ -78,8 +78,13 @@
       <el-table-column :formatter="isEnable" label="是否启用" prop="isEnable" />
       <el-table-column fixed="right" label="操作" width="150px">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="open(scope.row)">删除</el-button>
+          <el-button
+            v-permission="['admin', 'financial_check']"
+            type="primary"
+            size="mini"
+            @click="handleEdit(scope.row)"
+          >编辑</el-button>
+          <el-button v-permission="['admin', 'financial_check']" type="danger" size="mini" @click="open(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

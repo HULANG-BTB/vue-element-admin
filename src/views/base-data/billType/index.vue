@@ -2,7 +2,7 @@
 <!--
  * @Author: Raiz
  * @since: 2020-07-31 14:47:07
- * @lastTime: 2020-08-25 16:42:00
+ * @lastTime: 2020-08-25 19:31:33
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -636,7 +636,6 @@ export default {
               })
             }
           } else {
-            console.log('error submit!!')
             return false
           }
         })

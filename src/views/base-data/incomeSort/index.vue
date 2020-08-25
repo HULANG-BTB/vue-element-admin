@@ -510,7 +510,6 @@ export default {
               })
             }
           } else {
-            console.log('error submit!!')
             return false
           }
         })
@@ -543,14 +542,12 @@ export default {
               })
             }
           } else {
-            console.log('error submit!!')
             return false
           }
         })
       }
     },
     tableHeadButtonClick (button) {
-      console.log(button)
       const btnDo = {
         '添加': () => add.call(this)
       }
@@ -560,7 +557,6 @@ export default {
       function add () {
         this.addDialog = true
         this.addDialogVisible = true
-        console.log('添加')
       }
     },
     dialogOpen () {
