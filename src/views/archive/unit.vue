@@ -18,7 +18,7 @@ export default {
     this.agenCode = this.$store.state.user.agenCode
     // 当单位代码为空时，使用默认值
     if (this.agenCode.length === 0) {
-      this.agenCode = '112233'
+      this.agenCode = '360101000001'
     }
   }
 }

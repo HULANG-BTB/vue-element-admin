@@ -16,37 +16,37 @@
 
     <div class="agen-archive-list">
       <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
-        <el-table-column align="center" label="单位编码" width="100px">
+        <el-table-column align="center" label="单位编码" width="120px">
           <template slot-scope="scope">
             <span>{{ scope.row.agenCode }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="单位名称" min-width="250px">
+        <el-table-column align="center" label="单位名称" min-width="230px">
           <template slot-scope="scope">
             <span>{{ scope.row.agenName }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column width="200px" align="center" label="领用数量">
+        <el-table-column width="190px" align="center" label="领用数量">
           <template slot-scope="scope">
             <span>{{ scope.row.applyNumber }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column width="200px" align="center" label="使用数量">
+        <el-table-column width="190px" align="center" label="使用数量">
           <template slot-scope="scope">
             <span>{{ scope.row.useNumber }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column width="200px" align="center" label="已审验">
+        <el-table-column width="190px" align="center" label="已审验">
           <template slot-scope="scope">
             <span>{{ scope.row.authorNumber }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column width="200px" align="center" label="未审验">
+        <el-table-column width="190px" align="center" label="未审验">
           <template slot-scope="scope">
             <span>{{ scope.row.unAuthorNumber }}</span>
           </template>

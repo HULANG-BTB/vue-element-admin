@@ -17,7 +17,7 @@ export default [
         component: () => import('@/views/archive/fina'),
         name: 'fina',
         meta: {
-          title: '财政',
+          title: '财政归档',
           roles: ['admin', 'financial', 'financial_check'],
           icon: 'el-icon-coordinate'
         }
@@ -27,7 +27,7 @@ export default [
         component: () => import('@/views/archive/unit'),
         name: 'unit',
         meta: {
-          title: '单位',
+          title: '单位归档',
           roles: ['admin', 'unit'],
           icon: 'el-icon-office-building'
         }
