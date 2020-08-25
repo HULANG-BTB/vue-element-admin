@@ -22,6 +22,16 @@
         </span>
       </el-form-item>
 
+      <el-form-item prop="verify">
+        <span class="svg-container">
+          <svg-icon icon-class="edit" />
+        </span>
+        <el-input v-model="loginForm.verifyCode" placeholder="验证码" name="verifycode" type="text" tabindex="1" auto-complete="off" />
+        <span class="verify">
+          <verify-code v-model="verifyCode" />
+        </span>
+      </el-form-item>
+
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
       <div class="tips">
@@ -39,9 +49,13 @@
 <script>
 import { getRSAPublicKey, addRSAPublicKey } from '@/utils/encryption'
 import { getToken } from '@/utils/auth'
+import VerifyCode from '@/components/VerifyCode'
 
 export default {
   name: 'Login',
+  components: {
+    VerifyCode
+  },
   data () {
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
@@ -53,7 +67,8 @@ export default {
     return {
       loginForm: {
         username: '',
-        password: '111111'
+        password: '111111',
+        verifyCode: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur' }],
@@ -64,7 +79,8 @@ export default {
       loading: false,
       passwordType: 'password',
       redirect: undefined,
-      otherQuery: {}
+      otherQuery: {},
+      verifyCode: ''
     }
   },
   watch: {
@@ -99,6 +115,11 @@ export default {
       })
     },
     handleLogin () {
+      if (this.verifyCode.toUpperCase() !== this.loginForm.verifyCode.toUpperCase()) {
+        this.$message.error('验证码错误！')
+        return
+      }
+
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.loading = true
@@ -252,6 +273,12 @@ $light_gray: #eee;
     color: $dark_gray;
     cursor: pointer;
     user-select: none;
+  }
+
+  .verify {
+    position: absolute;
+    right: 6px;
+    top: 5px;
   }
 }
 </style>
