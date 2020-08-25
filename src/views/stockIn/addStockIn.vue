@@ -222,7 +222,6 @@
         />
         <el-table-column
           label="票据编码"
-          width="130"
           align="center"
         >
           <template slot-scope="scope">
@@ -231,7 +230,6 @@
         </el-table-column>
         <el-table-column
           label="票据名称"
-          width="130"
           align="center"
         >
           <template slot-scope="scope">
@@ -240,7 +238,6 @@
         </el-table-column>
         <el-table-column
           label="数量"
-          width="100"
           align="center"
         >
           <template slot-scope="scope">
@@ -249,7 +246,6 @@
         </el-table-column>
         <el-table-column
           label="起始号"
-          width="150"
           align="center"
         >
           <template slot-scope="scope">
@@ -258,14 +254,13 @@
         </el-table-column>
         <el-table-column
           label="终止号"
-          width="150"
           align="center"
         >
           <template slot-scope="scope">
             {{ scope.row.billNo2 }}
           </template>
         </el-table-column>
-        <el-table-column width="180">
+        <el-table-column>
           <template slot="header">
             <el-button
               size="mini"

@@ -10,12 +10,12 @@ export default {
   components: { ArchiveBaseInfo },
   data () {
     return {
-      agenCode: '112233'
+      agenCode: ''
     }
   },
   // 获取当前登录的单位名
   created () {
-    // this.agenCode = '112233'
+    this.agenCode = this.$store.state.user.agenCode
   }
 }
 </script>

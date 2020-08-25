@@ -55,17 +55,11 @@ export default {
   props: {
     list: {
       type: Array,
-      required: true,
-      default () {
-        return []
-      }
+      required: true
     },
     agencode: {
       type: String,
-      required: true,
-      default () {
-        return ''
-      }
+      required: true
     }
   },
   data () {
@@ -88,14 +82,7 @@ export default {
     }
   },
   created () {
-    if (this.list.length !== 0) {
-      console.log(this.list)
-      console.log(this.list[0].agenCode)
-      this.query.agenCode = this.list[0].agenCode
-    } else {
-      console.log(this.agencode)
-      this.query.agenCode = this.agencode
-    }
+    this.query.agenCode = this.agencode
   },
   methods: {
     handleClick (tab, event) {
@@ -129,7 +116,6 @@ export default {
     },
     // 以分页的形式更新票据数据
     updatePageInfo () {
-      // this.total = 0
       switch (this.curTab) {
         case 'second':
           this.getBillAvailableInfo()
@@ -220,7 +206,7 @@ export default {
       this.listLoading = true
       // 按照时间升序排列
       // 需要传递给前端收据的数量
-      console.log(this.list[0].agenCode)
+      console.log(this.query)
       fetchBillPay(this.query).then(response => {
         this.billpay = response.data.items
         this.total = response.data.total

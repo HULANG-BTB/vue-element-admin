@@ -17,16 +17,19 @@
       <el-button v-waves size="small" class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-search" @click="handleGetAccount">
         待缴金额
       </el-button>
-      <el-button v-waves size="small" class="filter-item" style="margin-left: 10px;margin-right: 400px" type="primary" icon="el-icon-edit" @click="handleUpdateAccount">
+      <el-button v-waves size="small" class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleUpdateAccount">
         入账信息
       </el-button>
-      <el-input v-model="checkCode" size="small" placeholder="请输入校验码" style="width: 120px;margin: 10px;margin-left: 0px" class="filter-item" @keyup.enter.native="handleGetStatus" />
-      <el-button v-waves size="small" class="filter-item" style="margin-left: 0px;" type="primary" icon="el-icon-check" @click="handleGetStatus">
+      <el-input v-model="checkCode" size="small" placeholder="请输入校验码" style="width: 120px;margin-left: 10px" class="filter-item" @keyup.enter.native="handleGetStatus" />
+      <el-button v-waves size="small" class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-check" @click="handleGetStatus">
         入账状态
       </el-button>
       <el-button v-waves size="small" class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleUpdateBillInfo">
         票据信息
       </el-button>
+      <el-checkbox v-model="showAccountTime" class="filter-item" style="margin-left:10px;" @change="tableKey=tableKey+1">
+        入账时间
+      </el-checkbox>
     </div>
 
     <el-table
@@ -34,10 +37,10 @@
       v-loading="listLoading"
       :data="list"
       border
-      height="470px"
+      height="610px"
       fit
       highlight-current-row
-      style="width: 100%;"
+      style="width: 100%;margin-top:20px"
       @sort-change="sortChange"
       @selection-change="handleSelectionChange"
     >
@@ -123,7 +126,7 @@
         </template>
       </el-table-column>
       <!--入账时间-->
-      <el-table-column label="入账时间" width="160px" align="center">
+      <el-table-column v-if="showAccountTime" label="入账时间" width="160px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.time }}</span>
         </template>
@@ -362,10 +365,8 @@
 </template>
 
 <script>
-// import { listByPage, deleteById, update, updateStatus, insertAccount, getAccount, updateAccount, getStatus, updateBillInfo } from '@/api/cbillaccounting'
 import { listByPage, insertAccount, getAccount, updateAccount, getStatus, updateBillInfo } from '@/api/cbillaccounting'
 import waves from './directive/waves' // waves directive
-import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 const calendarTypeOptions = [
@@ -425,6 +426,7 @@ export default {
       voucherInput: false,
       closeForm: false,
       calendarTypeOptions,
+      showAccountTime: false,
       sortOptions: [{ label: '升序', key: '+id' }, { label: '降序', key: '-id' }],
       listOptions: [{ label: '直缴', key: 0 }, { label: '汇缴', key: 1 }],
       statusOptions: [{ label: '未入账', key: false }, { label: '入账', key: true }],
@@ -489,13 +491,13 @@ export default {
         billNo: [{ required: true, message: '必须填写票号', trigger: 'change' }],
         billBatchId: [{ required: true, message: '必须填写票据批次号', trigger: 'change' }],
         accountType: [{ required: true, message: '必须选择入账类型', trigger: 'change' }],
-        waitAccount: [{ required: true, message: '必须填写应缴金额', trigger: 'change' }],
+        waitAccount: [{ required: true, message: '必须填写应缴金额', trigger: 'blur' }, { pattern: /((^[1-9]\d*)|^0)(\.\d{0,2}){0,1}$/, message: '请输入合法金额', trigger: 'blur' }],
         agenTime: [{ required: true, message: '必须选择时间', trigger: 'change' }],
         type: [{ required: true, message: '必须选择入账方式', trigger: 'change' }],
         time: [{ required: true, message: '必须选择时间', trigger: 'change' }],
         accountStatus: [{ required: true, message: '必须选择入账状态', trigger: 'change' }],
-        account: [{ required: true, message: '必须填写入账金额', trigger: 'change' }],
-        payerTel: [{ required: true, message: '必须填写缴款人联系方式', trigger: 'change' }],
+        account: [{ required: true, message: '必须填写入账金额', trigger: 'blur' }, { pattern: /((^[1-9]\d*)|^0)(\.\d{0,2}){0,1}$/, message: '请输入合法金额', trigger: 'blur' }],
+        payerTel: [{ required: true, message: '必须填写缴款人联系方式', trigger: 'blur' }, { pattern: /^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/, message: '请输入合法手机号/电话号', trigger: 'blur' }],
         date: [{ required: true, message: '必须填写开票时间', trigger: 'change' }],
         checkCode: [{ required: true, message: '必须填写票据校验码', trigger: 'change' }],
         totalAmt: [{ required: true, message: '必须填写缴款金额', trigger: 'change' }]
@@ -659,15 +661,6 @@ export default {
         this.listQuery.sort = '-id'
       }
       this.handleFilter()
-    },
-    formatJson (filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'agenTime') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
     },
     getSortClass: function (key) {
       const sort = this.listQuery.sort

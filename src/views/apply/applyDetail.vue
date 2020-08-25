@@ -24,8 +24,7 @@
     </el-form>
     <el-button required :disabled="isDisabled(row.status)" @click="newItem()">新增</el-button>
     <el-table
-      v-loading="listLoading"
-      :data="this.row.items"
+      :data="row.items"
       element-loading-text="Loading"
       border
       fit
@@ -37,7 +36,7 @@
           <el-input v-model="scope.row.fSortNo" :disabled="isDisabled(row.status)" :value="scope.row.fSortNo" />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="票据名称" width="110" prop="fBillName">
+      <el-table-column align="center" label="票据名称" width="200" prop="fBillName">
         <template slot-scope="scope">
           <el-input v-model="scope.row.fBillName" :disabled="isDisabled(row.status)" :value="scope.row.fBillName" />
         </template>
@@ -65,13 +64,14 @@
       </el-table-column>
     </el-table>
     <div><span style="margin-right:8cm">编制人：{{ row.author }}</span>
-      <span style="margin-right:8cm">编制日期：{{ row.updateTime| dateFmt('YYYY-MM-DD') }}</span>
+      <span style="margin-right:8cm">编制日期：{{ row.updateTime }}</span>
       <el-button :disabled="isDisabled(row.status)" type="primary" @click="onSubmit">提交</el-button></div>
   </div>
 </template>
 
 <script>
 import { getItemList, deleteItemById, saveItem, updateItem, submitApply } from '@/api/apply'
+import { parseTime } from '@/utils'
 
 export default {
   name: 'ApplyDetail',
@@ -110,7 +110,7 @@ export default {
       getItemList(this.row.id).then(
         res => {
           that.row.items = res.data
-          }
+        }
       )
     },
     onSubmit () {
@@ -152,8 +152,8 @@ export default {
     },
     deleteItem (itemId) {
       var that = this
-    deleteItemById(itemId).then(
-      res => {
+      deleteItemById(itemId).then(
+        res => {
           that.$notify({
             message: '删除成功'
           })
@@ -165,14 +165,17 @@ export default {
       var items = this.row.items
       items.push({
         fSortNo: null,
-        fBillName: null,
-        fBillPrecode: null,
-        fUnit: null,
+        fBillName: '中央非税收入统一票据',
+        fBillPrecode: '01160201',
+        fUnit: '张',
         fNumber: null
       })
     },
     isDisabled (status) {
       return status > 0
+    },
+    parseTime (time) {
+      return parseTime(new Date(time))
     }
   }
 }

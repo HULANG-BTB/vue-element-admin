@@ -30,19 +30,16 @@
               v-model="query.preDate"
               type="date"
               size="small"
-              placeholder="选择开始日期">
-            </el-date-picker>
+              placeholder="选择开始日期"
+            />
             <el-date-picker
               v-model="query.lastDate"
               type="date"
               size="small"
-              placeholder="选择结束日期">
-            </el-date-picker>
+              placeholder="选择结束日期"
+            />
           </div>
-
-
         </el-form-item>
-
 
         <el-form-item label style="margin-left: 30px">
           <el-button
@@ -78,7 +75,7 @@
       </div>
     </el-form>
 
-    <el-button @click="openCreate" style="margin-bottom:10px">新增</el-button>
+    <el-button style="margin-bottom:10px" @click="openCreate">新增</el-button>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -104,7 +101,7 @@
       </el-table-column>
       <el-table-column label="申领日期" width="220" align="center" sortable>
         <template slot-scope="scope">
-          {{ scope.row.submitDate | dateFmt("YYYY-MM-DD HH:mm:SS") }}
+          {{ parseTime(scope.row.submitDate) }}
         </template>
       </el-table-column>
       <el-table-column label="领购人" width="160" align="center" sortable>
@@ -127,8 +124,8 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog customClass="customWidth" :visible.sync="createTableVisiable">
-      <act style="text-align:left" :visiable="createTableVisiable" :row="rowCreate"/>
+    <el-dialog custom-class="customWidth" :visible.sync="createTableVisiable">
+      <act style="text-align:left" :visiable="createTableVisiable" :row="rowCreate" />
     </el-dialog>
 
     <el-pagination
@@ -145,9 +142,10 @@
 </template>
 
 <script>
-import { getApplyList, getItemList, deleteApply, util , getMaxNo } from '@/api/apply'
+import { getApplyList, getItemList, deleteApply, getMaxNo } from '@/api/apply'
 import adt from './applyDetail.vue'
 import act from './applyCreate.vue'
+import { parseTime } from '@/utils'
 
 export default {
   filters: {
@@ -194,14 +192,13 @@ export default {
         linkMan: null,
         linkAddr: null,
         linkTel: null,
-        agenName: '单位名',
+        agenName: '博思软件股份有限公司',
         memo: null,
         summary: null,
-        author: null,
         updateTime: null,
         no: null,
         rgnCode: 1,
-        agenIdCode: 1,
+        agenIdCode: 1314,
         kindName: '测试型单位',
         author: '测试作者',
         status: 0
@@ -211,72 +208,70 @@ export default {
           this.rowCreate.no = res.data
         }
       )
-      this.createTableVisiable = true;
+      this.createTableVisiable = true
     },
     openDetail (row) {
       this.rowDetail = this.refreshRow(row)
       this.detailTableVisiable = true
     },
-  fetchData() {
+    fetchData () {
       var that = this
       getApplyList(this.query).then(res => {
         that.list = res.data
         this.listLoading = false
       })
     },
-    refreshRow(row){
+    refreshRow (row) {
       getItemList(row.id).then(res => {
-          row.items = res.data
-        })
+        row.items = res.data
+      })
       return row
     },
     displayStatus (status) {
       switch (status) {
         case 0:
           return '未提交'
-          break
         case 1:
           return '已提交'
-          break
         case 2:
           return '审核通过'
-          break
         case 3:
-          return '审核未通过'
-          break
+          return '审核退回'
         default:
           return '未提交'
       }
     },
     onDelete (applyId) {
-      var that = this
       deleteApply(applyId).then(
         res => {
           this.refreshQuery()
         }
       )
     },
-    handleSearch(){
+    handleSearch () {
       this.query.page = 1
       this.fetchData()
     },
-    handleSizeChange(val) {
-      this.query.limit = val
-      this.fetchData()
-    },
-    handleCurrentChange(val) {
-      this.query.page = val
-      this.fetchData()
-    },
-    refreshQuery(){
-      this.query.no = ""
-      this.query.author = ""
+    handleSizeChange (val) {
+      this.query.limit = val
+      this.fetchData()
+    },
+    handleCurrentChange (val) {
+      this.query.page = val
+      this.fetchData()
+    },
+    refreshQuery () {
+      this.query.no = ''
+      this.query.author = ''
       this.query.preDate = null
       this.query.lastDate = null
       this.fetchData()
     },
-    onGetMaxNo(){
+    onGetMaxNo () {
       return getMaxNo()
+    },
+    parseTime (time) {
+      return parseTime(new Date(time))
     }
   }
 }

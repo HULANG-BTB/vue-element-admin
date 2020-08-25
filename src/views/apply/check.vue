@@ -1,5 +1,81 @@
 <template>
   <div class="app-container">
+    <el-form
+      :model="query"
+      :inline="true"
+      class="demo-form-inline"
+      @keyup.enter.native="handleSearch"
+    >
+      <div class="my-form-item">
+        <el-form-item label="单号:">
+          <el-input
+            v-model="query.no"
+            placeholder="请输入业务单号"
+            clearable
+            size="small"
+          />
+        </el-form-item>
+        <el-form-item label="编制人:">
+          <el-input
+            v-model="query.author"
+            placeholder="请输入编制人"
+            clearable
+            size="small"
+          />
+        </el-form-item>
+
+        <el-form-item label="日期:">
+          <div class="block">
+            <el-date-picker
+              v-model="query.preDate"
+              type="date"
+              size="small"
+              placeholder="选择开始日期"
+            />
+
+            <el-date-picker
+              v-model="query.lastDate"
+              type="date"
+              size="small"
+              placeholder="选择结束日期"
+            />
+          </div>
+
+        </el-form-item>
+
+        <el-form-item label style="margin-left: 30px">
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="small"
+            @click="handleSearch"
+          >搜索</el-button>
+        </el-form-item>
+        <el-form-item label>
+          <el-button
+            type=""
+            icon="el-icon-refresh"
+            size="small"
+            @click="refreshQuery"
+          >重置</el-button>
+        </el-form-item>
+      </div>
+
+      <div>
+        <el-form-item label="审核状态">
+          <el-radio-group
+            v-model="query.changeState"
+            size="medium"
+            @change="handleSearch"
+          >
+            <el-radio-button label="1">待审核</el-radio-button>
+            <el-radio-button label="2">审核通过</el-radio-button>
+            <el-radio-button label="3">审核退回</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+      </div>
+    </el-form>
+
     <el-button style="margin-bottom:10px" @click="openCreate">新增</el-button>
     <el-table
       v-loading="listLoading"
@@ -26,7 +102,7 @@
       </el-table-column>
       <el-table-column label="申领日期" width="220" align="center" sortable>
         <template slot-scope="scope">
-          {{ scope.row.submitDate | dateFmt('YYYY-MM-DD HH:MM:SS') }}
+          {{ parseTime(scope.row.submitDate) }}
         </template>
       </el-table-column>
       <el-table-column label="领购人" width="160" align="center" sortable>
@@ -57,8 +133,9 @@
 </template>
 
 <script>
-import { getApplyCheckList, getItemList } from '@/api/apply'
+import { getApplyCheckList, getCheckItemList } from '@/api/apply'
 import act from './applyCheck.vue'
+import { parseTime } from '@/utils'
 
 export default {
   filters: {
@@ -81,7 +158,17 @@ export default {
       detailTableVisiable: false,
       createTableVisiable: false,
       rowDetail: null,
-      rowCreate: null
+      rowCreate: null,
+      query: {
+        page: 1,
+        limit: 10,
+        total: 0,
+        no: '',
+        author: '',
+        changeState: 1,
+        preDate: null,
+        lastDate: null
+      }
     }
   },
   created () {
@@ -103,6 +190,7 @@ export default {
         rgnCode: 1,
         agenIdCode: 1,
         kindName: '测试型单位',
+        // eslint-disable-next-line no-dupe-keys
         author: '测试作者',
         status: 0
       }
@@ -114,42 +202,50 @@ export default {
     },
     fetchData () {
       var that = this
-      getApplyCheckList().then(res => {
-          that.list = res.data
-        })
-      this.listLoading = false
+      getApplyCheckList(this.query).then(res => {
+        that.list = res.data
+        this.listLoading = false
+      })
     },
-    refreshRow(row){
-      getItemList(row.id).then(res =>{
-          row.items = res.data
-        })
+    refreshRow (row) {
+      getCheckItemList(row.id).then(res => {
+        row.items = res.data
+      })
       return row
     },
     displayStatus (status) {
       switch (status) {
         case 1:
           return '待审核'
-          break
         case 2:
           return '审核通过'
-          break
         case 3:
-          return '审核未通过'
-          break
+          return '审核退回'
         default:
           return '待审核'
       }
     },
-    onDelete (applyId) {
-      var that = this
-      deleteApply(applyId).then(
-        function(){
-          getApplyList().then(res =>{
-          that.list = res.data
-          })
-        }
-
-      )
+    handleSearch () {
+      this.query.page = 1
+      this.fetchData()
+    },
+    handleSizeChange (val) {
+      this.query.limit = val
+      this.fetchData()
+    },
+    handleCurrentChange (val) {
+      this.query.page = val
+      this.fetchData()
+    },
+    refreshQuery () {
+      this.query.no = ''
+      this.query.author = ''
+      this.query.preDate = null
+      this.query.lastDate = null
+      this.fetchData()
+    },
+    parseTime (time) {
+      return parseTime(new Date(time))
     }
   }
 }

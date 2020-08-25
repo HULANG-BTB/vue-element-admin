@@ -10,10 +10,12 @@
         <el-button
           type="primary"
           size="small"
+          @click="pass"
         >审验通过</el-button>
         <el-button
           type="primary"
           size="small"
+          @click="fail"
         >审验失败</el-button>
       </div>
     </div>
@@ -98,11 +100,16 @@
   </el-dialog>
 </template>
 <script>
+import {
+  sendMail,
+  sendSms,
+  updateState
+} from '@/api/qiuhengGroupApi/billInvoicing/bill'
 export default {
   data () {
     return {
       visible: false,
-      tableData: {},
+      verifyData: {},
       ruleForm: {
         date1: '',
         date2: '',
@@ -120,23 +127,49 @@ export default {
       imgUrl: ''
     }
   },
-  mounted () {},
   created () {
     this.$root.eventBus.$on('visible', (val) => {
       this.visible = val
     })
     this.$root.eventBus.$on('verifydata', (val) => {
-      this.tableData = val
+      this.verifyData = val
+    })
+    this.$root.eventBus.$on('imgurl', (val) => {
+      this.imgUrl = val
     })
   },
   methods: {
+    async pass () {
+      const billNo = this.verifyData.fbillNo
+      const mailRes = await sendMail(billNo)
+      console.log(mailRes)
+      const smsRes = await sendSms(billNo)
+      console.log(smsRes)
+      const state = 4
+      const res = await updateState(billNo, state)
+      if (res.success) {
+        this.$message('审核通过')
+        this.visible = false
+      }
+    },
+    async fail () {
+      const state = -1
+      const billNo = this.verifyData.fbillNo
+      const res = await updateState(billNo, state)
+      if (res.success) {
+        this.$message('审核未通过')
+        this.visible = false
+      }
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import "~@/assets/scss/home.scss";
-.img {
-  align-content: center;
+.image {
+  max-width: 100%;
+  max-height: 300px;
+  justify-content: center;
 }
 </style>
