@@ -100,9 +100,9 @@
         <el-table-column property="itemId" label="项目编码" align="center" />
         <el-table-column property="itemName" label="项目名称" align="center" />
         <el-table-column property="fundsnatureCode" label="资金性质" align="center" />
+        <el-table-column property="subjectName" label="预算科目" align="center" />
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="handProjectleLook(scope.row)">查看</el-button>
             <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleProjectDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -215,6 +215,7 @@ export default {
     async getProjectList (Data) {
       const res = await getItemList(Data)
       this.projectList = res.data
+      console.log(this.projectList)
     },
     async confirmRole () {
       this.group.agenCode = this.queryParams.agenCode
@@ -301,9 +302,6 @@ export default {
             console.error(err)
           })
       })
-    },
-    async handProjectleLook (rowData) {
-      console.log(rowData)
     },
     clearData () {
       this.group = {

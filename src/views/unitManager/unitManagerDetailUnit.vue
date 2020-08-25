@@ -139,7 +139,7 @@ import { getCrtByAgenCode } from '@/api/base/unitManager/purchLicense'
 export default {
   data () {
     return {
-      searchByAgenCode: this.$store.state.agenCode,
+      searchByAgenCode: this.$store.state.user.agenCode,
       // searchByAgenCode: '35018201',
       loading: true,
       dialogVisible: false,
@@ -260,8 +260,8 @@ export default {
       this.loading = false
     },
     // 查询单位具有的项目
-    async getAgenItemList (agenCode) {
-      const { data } = await getAgenItemList({ agenCode })
+    async getAgenItemList (agenIdcode) {
+      const { data } = await getAgenItemList({ agenIdcode })
       if (!data) {
         return
       }
@@ -322,7 +322,7 @@ export default {
         })
       } else {
         const postData = this.manageHasList.map(item => {
-          return { agenCode: this.project.agenCode, itemCode: item }
+          return { agenIdcode: this.project.agenCode, itemCode: item }
         })
         await updateAgenItemBatch(postData).then(res => {
           successFlag = true
