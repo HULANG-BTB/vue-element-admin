@@ -3,6 +3,7 @@
     title="财政端票据销毁审核"
     :visible.sync="visible"
     width="70%"
+    top="6vh"
   >
     <div class="verify">
       <span class="bill">票据销毁审核</span>
@@ -145,7 +146,7 @@
       </div>
     </el-form>
     <el-card shadow="always">
-      <div style="height: 230px">
+      <div style="height: 300px">
         <div
           class="subject"
           size="small"
@@ -202,7 +203,7 @@
 </template>
 <script>
 import {
-  getItemListByDestroyNo
+  getItemListByDestroyNo, destroyStockBill
 } from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
 import {
   updateApplyInfo
@@ -213,6 +214,13 @@ export default {
       visible: false,
       status: '',
       tableData: [],
+
+      fAgenIdCode: '',
+      fBillBatchCode: '',
+      fWarehouseId: '',
+      fBillNo1: '',
+      fBillNo2: '',
+
       ruleForm: {
         date1: '',
         date2: '',
@@ -243,7 +251,6 @@ export default {
       this.getData(val)
     })
     this.$root.eventBus.$on('visibleDestroyConfirm', (val) => {
-      console.log(this.visible)
       this.visible = val
     })
     this.$root.eventBus.$on('lookDestroyApplyMan', (val) => {
@@ -259,7 +266,6 @@ export default {
   methods: {
     async getData (val) {
       const res = await getItemListByDestroyNo(val)
-      // console.log(res)
       this.tableData = res.data
     },
     confirmOK () {
@@ -269,8 +275,15 @@ export default {
         type: 'warning'
       }).then(async () => {
         this.resultVo.fStatus = '已审核并通过'
+        for (var k = 0; k < this.tableData.length; k++) {
+          this.fAgenIdCode = '1314'
+          this.fBillBatchCode = this.tableData[k].fBillBatchCode
+          this.fWarehouseId = this.tableData[k].fWarehouseId
+          this.fBillNo1 = this.tableData[k].fBillNo1
+          this.fBillNo2 = this.tableData[k].fBillNo2
+          destroyStockBill(this.fAgenIdCode, this.fBillBatchCode, this.fWarehouseId, this.fBillNo1, this.fBillNo2)
+        }
         updateApplyInfo(this.resultVo)
-        console.log(this.resultVo)
         this.visible = false
         this.$router.push
         this.$message({

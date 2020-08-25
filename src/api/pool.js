@@ -1,45 +1,42 @@
 import request from '@/utils/request'
 
+const baseURL = 'ecds-bill-pool/'
+
 export function setSource (data) {
   return request({
-    url: 'pool/setSource',
+    url: baseURL + 'pool/setSource',
     method: 'post',
-    baseURL: 'http://localhost:8083',
     data
   })
 }
 
 export function addSource (data) {
   return request({
-    url: 'pool/addSource',
+    url: baseURL + 'pool/addSource',
     method: 'post',
-    baseURL: 'http://localhost:8083',
     data
   })
 }
 
 export function deleteSource (data) {
   return request({
-    url: 'pool/removeSource',
+    url: baseURL + 'pool/removeSource',
     method: 'post',
-    baseURL: 'http://localhost:8083',
     data
   })
 }
 
 export function querySource (billTypeCode) {
   return request({
-    url: 'pool/retrieveSetByCode',
+    url: baseURL + 'pool/retrieveSetByCode',
     method: 'get',
-    baseURL: 'http://localhost:8083',
     params: billTypeCode
   })
 }
 
 export function batchQuerySource () {
   return request({
-    url: 'pool/retrieveSetList',
-    method: 'get',
-    baseURL: 'http://localhost:8083'
+    url: baseURL + 'pool/retrieveSetList',
+    method: 'get'
   })
 }
