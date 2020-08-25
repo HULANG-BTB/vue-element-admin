@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://localhost:8081'
+const BASE_URL_FINAN = 'finan-stock-management'
+const BASE_URL_USM = 'nacos-service-usm'
 // const BASE_URL = 'http://120.27.3.74:8085'
 /**
  * 查询所有数据
@@ -8,7 +9,7 @@ const BASE_URL = 'http://localhost:8081'
  */
 export function getStockReturnList (query) {
   return request({
-    url: '/stock-return-po/getListStockReturnPage',
+    url: BASE_URL_USM + '/stock-return-po/getListStockReturnPage',
     method: 'post',
     data: query
   })
@@ -16,7 +17,7 @@ export function getStockReturnList (query) {
 
 export function getNo () {
   return request({
-    url: '/stock-return-po/getNo',
+    url: BASE_URL_USM + '/stock-return-po/getNo',
     method: 'get',
     data: null
   })
@@ -27,7 +28,7 @@ export function getNo () {
  */
 export function getListStockReturnByDateOrNo (query) {
   return request({
-    url: '/stock-return-po/getListStockReturnByDateOrNo1',
+    url: BASE_URL_USM + '/stock-return-po/getListStockReturnByDateOrNo1',
     method: 'post',
     // params: { no: query.no, startTime: query.startTime, endTime: query.endTime }
     // params: query
@@ -41,7 +42,7 @@ export function getListStockReturnByDateOrNo (query) {
  */
 export function addStockReturn (Stockreturn) {
   return request({
-    url: '/stock-return-po/addStockReturn',
+    url: BASE_URL_USM + '/stock-return-po/addStockReturn',
     method: 'post',
     // params: { no: query.no, startTime: query.startTime, endTime: query.endTime }
     // params: query
@@ -55,7 +56,7 @@ export function addStockReturn (Stockreturn) {
  */
 export function getStockReturnItems (Stockreturn) {
   return request({
-    url: '/stock-return-po/getStockReturnByNo',
+    url: BASE_URL_USM + '/stock-return-po/getStockReturnByNo',
     // url: '/mail/updateStatus',
     method: 'post',
     data: Stockreturn
@@ -68,7 +69,7 @@ export function getStockReturnItems (Stockreturn) {
  */
 export function deleteStockReturnByNo (Stockreturn) {
   return request({
-    url: '/stock-return-po/deleteByNo',
+    url: BASE_URL_USM + '/stock-return-po/deleteByNo',
     method: 'get',
     params: { no: Stockreturn.no }
   })
@@ -80,7 +81,7 @@ export function deleteStockReturnByNo (Stockreturn) {
  */
 export function updateByNo (Stockreturn) {
   return request({
-    url: '/stock-return-po/updateByNo',
+    url: BASE_URL_USM + '/stock-return-po/updateByNo',
     method: 'post',
     data: Stockreturn
   })
@@ -92,7 +93,7 @@ export function updateByNo (Stockreturn) {
  */
 export function putSubmit (Stockreturn) {
   return request({
-    url: '/stock-return-po/updateSubmitStatus',
+    url: BASE_URL_USM + '/stock-return-po/updateSubmitStatus',
     method: 'put',
     params: { no: Stockreturn.no }
   })
@@ -104,7 +105,7 @@ export function putSubmit (Stockreturn) {
  */
 export function getFinanStockReturnList (query) {
   return request({
-    url: BASE_URL + '/finan-stock-return-po/getListStockReturnByDate',
+    url: BASE_URL_FINAN + '/finan-stock-return-po/getListStockReturnByDate',
     method: 'post',
     data: query
   })
@@ -115,7 +116,7 @@ export function getFinanStockReturnList (query) {
  */
 export function getFinanStockReturnItems (query) {
   return request({
-    url: BASE_URL + '/finan-stock-return-po/getStockReturnByNo',
+    url: BASE_URL_FINAN + '/finan-stock-return-po/getStockReturnByNo',
     method: 'post',
     data: query
   })
@@ -126,7 +127,7 @@ export function getFinanStockReturnItems (query) {
  */
 export function getCheckStateByNo (query) {
   return request({
-    url: BASE_URL + '/finan-stock-return-po/CheckStatusByNo',
+    url: BASE_URL_FINAN + '/finan-stock-return-po/CheckStatusByNo',
     method: 'post',
     data: query
   })
