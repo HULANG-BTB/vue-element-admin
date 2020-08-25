@@ -2,7 +2,7 @@
 <!--
  * @Author: Raiz
  * @since: 2020-07-31 14:47:07
- * @lastTime: 2020-08-24 20:56:03
+ * @lastTime: 2020-08-25 19:31:33
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -376,7 +376,8 @@ export default {
           {
             name: '添加',
             type: 'primary',
-            icon: 'el-icon-plus'
+            icon: 'el-icon-plus',
+            permission: ['admin', 'financial_check']
           }
         ],
         bodyData: []
@@ -410,7 +411,7 @@ export default {
           {
             prop: 'natureCode',
             label: '票据性质',
-            width: 80
+            width: 120
           },
           {
             prop: 'effDate',
@@ -425,7 +426,6 @@ export default {
         ],
         operation: [
           {
-            permission: ['default'],
             type: 'primary',
             name: '查看详细信息',
             hideName: true,
@@ -433,7 +433,7 @@ export default {
             circle: true
           },
           {
-            permission: ['default'],
+            permission: ['admin', 'financial_check'],
             type: 'primary',
             name: '编辑',
             hideName: true,
@@ -441,7 +441,7 @@ export default {
             circle: true
           },
           {
-            permission: ['default'],
+            permission: ['admin', 'financial_check'],
             type: 'danger',
             name: '删除',
             hideName: true,
@@ -636,7 +636,6 @@ export default {
               })
             }
           } else {
-            console.log('error submit!!')
             return false
           }
         })
@@ -663,10 +662,8 @@ export default {
     addDialogOpen () {
       queryAllBillSort().then(response => {
         response.data.forEach(element => {
-          if (element.id !== this.billType.id) {
-            element.name = element.code + ' ' + element.name
-            element.id = parseInt(element.id)
-          }
+          element.name = element.code + ' ' + element.name
+          element.id = parseInt(element.id)
         })
         this.formOptions.billSortOptions = response.data
       })

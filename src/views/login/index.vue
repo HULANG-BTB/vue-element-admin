@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { getRSAPublicKey, addRSAPublicKey } from '@/utils/encryption'
+// import { getRSAPublicKey, addRSAPublicKey } from '@/utils/encryption'
 import { getToken } from '@/utils/auth'
 import VerifyCode from '@/components/VerifyCode'
 
