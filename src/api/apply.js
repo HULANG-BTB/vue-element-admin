@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 const BASE_URL = 'nacos-service-usm'
-const FINAN_URL = 'http://localhost:8085'
+const FINAN_URL = 'finan-stock-management'
 
 /* apply相关 */
 export function getApplyList(query) {
