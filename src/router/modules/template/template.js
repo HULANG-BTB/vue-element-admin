@@ -8,7 +8,8 @@ export default [{
   name: 'User',
   meta: {
     title: '模板管理',
-    icon: 'el-icon-tickets'
+    icon: 'el-icon-tickets',
+    roles: ['admin', 'financial']
   },
   children: [{
     path: 'image',
@@ -17,7 +18,7 @@ export default [{
     name: 'Image',
     meta: {
       title: '显示模板',
-      icon: 'el-icon-picture-outline'
+      roles: ['admin', 'financial']
     }
   },
   {
@@ -26,7 +27,7 @@ export default [{
     name: 'showTemplate',
     meta: {
       title: '管理模板',
-      icon: 'el-icon-edit-outline'
+      roles: ['admin', 'financial']
     }
   }
   ]
