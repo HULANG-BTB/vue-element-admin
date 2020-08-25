@@ -1,6 +1,83 @@
 <template>
   <div class="app-container">
-    <el-button style="margin-bottom:10px" @click="openCreate">新增</el-button>
+    <el-form
+      :model="query"
+      :inline="true"
+      class="demo-form-inline"
+      @keyup.enter.native="handleSearch"
+    >
+      <div class="my-form-item">
+        <el-form-item label="单号:">
+          <el-input
+            v-model="query.no"
+            placeholder="请输入业务单号"
+            clearable
+            size="small"
+          />
+        </el-form-item>
+        <el-form-item label="编制人:">
+          <el-input
+            v-model="query.author"
+            placeholder="请输入编制人"
+            clearable
+            size="small"
+          />
+        </el-form-item>
+
+        <el-form-item label="日期:">
+          <div class="block">
+            <el-date-picker
+              v-model="query.preDate"
+              type="date"
+              size="small"
+              placeholder="选择开始日期">
+            </el-date-picker>
+            <el-date-picker
+              v-model="query.lastDate"
+              type="date"
+              size="small"
+              placeholder="选择结束日期">
+            </el-date-picker>
+          </div>
+            
+
+        </el-form-item>
+        
+          
+        <el-form-item label style="margin-left: 30px">
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="small"
+            @click="handleSearch"
+          >搜索</el-button>
+        </el-form-item>
+        <el-form-item label>
+          <el-button
+            type=""
+            icon="el-icon-refresh"
+            size="small"
+            @click="refreshQuery"
+          >重置</el-button>
+        </el-form-item>
+      </div>
+
+      <div>
+        <el-form-item label="审核状态">
+          <el-radio-group
+            v-model="query.changeState"
+            size="medium"
+            @change="handleSearch"
+          >
+            <el-radio-button label="1">待审核</el-radio-button>
+            <el-radio-button label="2">审核通过</el-radio-button>
+            <el-radio-button label="3">审核退回</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+      </div>
+    </el-form>
+
+    <el-button @click="openCreate" style="margin-bottom:10px">新增</el-button>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -57,7 +134,7 @@
 </template>
 
 <script>
-import { getApplyCheckList, getItemList } from '@/api/apply'
+import { getApplyCheckList,getCheckItemList } from '@/api/apply'
 import act from './applyCheck.vue'
 
 export default {
@@ -81,7 +158,17 @@ export default {
       detailTableVisiable: false,
       createTableVisiable: false,
       rowDetail: null,
-      rowCreate: null
+      rowCreate: null,
+      query: {
+        page: 1,
+        limit: 10,
+        total: 0,
+        no: '',
+        author: '',
+        changeState: 1,
+        preDate: null,
+        lastDate: null
+      }
     }
   },
   created () {
@@ -114,42 +201,61 @@ export default {
     },
     fetchData () {
       var that = this
-      getApplyCheckList().then(res => {
-          that.list = res.data
-        })
-      this.listLoading = false
+      getApplyCheckList(this.query).then(res => { 
+        that.list = res.data
+        this.listLoading = false
+      })    
     },
     refreshRow(row){
-      getItemList(row.id).then(res =>{
+      getCheckItemList(row.id).then(res =>{
           row.items = res.data
         })
       return row
     },
-    displayStatus (status) {
-      switch (status) {
-        case 1:
-          return '待审核'
-          break
-        case 2:
-          return '审核通过'
-          break
-        case 3:
-          return '审核未通过'
-          break
-        default:
-          return '待审核'
-      }
+    displayStatus(status){
+      switch(status) {
+      case 1:
+        return "待审核"
+        break;
+      case 2:
+        return "审核通过"
+        break;
+      case 3:
+        return "审核退回"
+        break;
+     default:
+        return "待审核"
+      } 
     },
     onDelete (applyId) {
       var that = this
       deleteApply(applyId).then(
         function(){
-          getApplyList().then(res =>{
+          getApplyCheckList(this.query).then(res =>{
           that.list = res.data
           })
         }
 
       )
+    },
+    handleSearch(){
+      this.query.page = 1
+      this.fetchData()
+    },
+    handleSizeChange(val) {
+      this.query.limit = val
+      this.fetchData()
+    },
+    handleCurrentChange(val) {
+      this.query.page = val
+      this.fetchData()
+    },
+    refreshQuery(){
+      this.query.no = ""
+      this.query.author = ""
+      this.query.preDate = null
+      this.query.lastDate = null
+      this.fetchData()
     }
   }
 }

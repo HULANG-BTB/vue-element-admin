@@ -40,7 +40,7 @@
       <el-table-column align="center" label="单位编码" prop="agenCode" />
       <el-table-column align="center" label="单位名称" prop="agenName" :show-overflow-tooltip="true" />
       <el-table-column align="center" label="部门名称" prop="deptName" />
-      <el-table-column align="center" label="单位用途" prop="typeCode" />
+      <el-table-column align="center" label="所属行业" prop="indCode" />
       <el-table-column align="center" label="单位分类" prop="sortCode" />
       <el-table-column align="center" label="操作" width="220">
         <template slot-scope="scope">

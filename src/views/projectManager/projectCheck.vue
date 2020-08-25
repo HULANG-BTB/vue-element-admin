@@ -34,7 +34,7 @@
           <el-tag
             :type="scope.row.isenable ? 'success' : 'info'"
             disable-transitions
-          >{{ scope.row.isenable ? '已完成' : '待审核' }}
+          >{{ scope.row.isenable ? '已审核' : '待审核' }}
           </el-tag>
         </template>
       </el-table-column>
@@ -73,7 +73,7 @@
       @size-change="handleSizeChange"
     />
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType">
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType" @close="cancel">
       <el-form ref="project" :model="project" label-width="80px" label-position="right" style="padding-right:25px;">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import { getProjectListByPage, projectCheck, updateProject, getIncomSortName } from '@/api/base/projectManager/projectManager'
+import { getProjectListByPage, projectCheck, updateProject, getIncomeSortName } from '@/api/base/projectManager/projectManager'
 import { parseTime } from '@/utils/index'
 
 export default {
@@ -225,7 +225,7 @@ export default {
     // 项目审核
     async handleLook (rowData) {
       this.dialogVisible = true
-      const res = await getIncomSortName(rowData.incomSortCode)
+      const res = await getIncomeSortName(rowData.incomSortCode)
       this.project = Object.assign({}, rowData)
       this.project.incomSortCode = res.data.name
     },

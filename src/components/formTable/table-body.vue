@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-18 16:23:24
+ * @lastTime: 2020-08-24 21:08:08
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -32,7 +32,7 @@
           width="50"
           align="center"
         />
-        <el-table-column fixed="left" label="序号" width="50" type="index" align="center" />
+        <el-table-column label="序号" width="50" type="index" align="center" />
         <el-table-column
           v-for="item in tableColumnData.column"
           :key="item.prop"
@@ -60,10 +60,10 @@
         </el-table-column>
         <el-table-column
           v-if="tableColumnData.operation && tableColumnData.operation.length > 0"
-          fixed="right"
           label="操作"
+          fixed="right"
+          :min-width="150"
           align="center"
-          :width="150"
         >
           <template slot-scope="scope" class="buttonColumn">
             <tipButton
@@ -181,5 +181,11 @@ export default {
   position: absolute;
   bottom: 10px;
   right: 0;
+}
+</style>
+<style lang="scss" scoped>
+.el-table__row{
+  td:not(.is-hidden):last-child{
+  right:-1px;}
 }
 </style>
