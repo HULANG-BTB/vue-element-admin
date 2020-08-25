@@ -51,7 +51,7 @@
 
     <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="margin-top:20px;float:right;margin-right:20px;" :total="query.total" :current-page="query.page" :page-sizes="[10, 20, 50, 100, 500, 1000]" :page-size="query.limit" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑角色':'新建角色'">
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑角色':'新建角色'" @close="handleCancel">
       <el-form ref="roleForm" v-loading="dialogLoading || permissionList.length === 0" :model="role" label-width="80px" label-position="right" :rules="rules">
         <el-form-item label="Key" prop="role">
           <el-input v-model="role.role" placeholder="角色 Key" />
@@ -109,6 +109,7 @@ export default {
       permissionList: [],
       selectedList: [],
       loading: true,
+      timer: null,
       confirmLoading: false,
       dialogLoading: false,
       dialogVisible: false,
@@ -213,13 +214,18 @@ export default {
       this.role = deepClone(scope.row)
       const { data } = await getPermissionByRid(scope.row.id)
       // 保证权限加载完成
-      const timer = setInterval(() => {
+      this.timer = setInterval(() => {
         if (this.permissionList.length > 0) {
           this.$refs.tree.setCheckedNodes(data)
           this.dialogLoading = false
-          clearInterval(timer)
+          clearInterval(this.timer)
         }
       }, 500)
+    },
+
+    handleCancel () {
+      clearInterval(this.timer)
+      this.dialogVisible = false
     },
 
     handleDelete ({ $index, row }) {
