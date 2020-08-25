@@ -9,7 +9,8 @@ export default [
     name: 'Report',
     meta: {
       title: '财政报表',
-      icon: 'documentation'
+      icon: 'documentation',
+      roles: ['admin', 'financial']
     },
     children: [
       {
