@@ -210,7 +210,6 @@ export default {
     async addBill () {
       // 需要先验证单位是否欠缴/单位是否有可用票据/单位开票数是否已经达到最大限制
       await addBillVerify(this.unitName).then((res) => {
-        console.log(res)
         if (res.success) {
         // 打印预警信息
           this.$router.push({ name: 'ticket' })
