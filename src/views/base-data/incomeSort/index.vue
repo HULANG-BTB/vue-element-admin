@@ -1,8 +1,8 @@
 <!--
  * @Author: Jianbinbing
  * @since: 2020-08-01 15:47:07
- * @lastTime: 2020-08-11 16:21:06
- * @LastEditors: Jianbinbing
+ * @lastTime: 2020-08-25 17:34:34
+ * @LastEditors: Raiz
  * @Description:
 -->
 <template>
@@ -70,7 +70,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="上级" prop="parentId">
-              <el-select v-model="incomeSort.parentId">
+              <el-select v-model="incomeSort.parentId" style="width:100%;">
                 <el-option
                   v-for="item in formOptions.parentIncomeSorts"
                   :key="item.id"
@@ -129,7 +129,7 @@
           </el-col>
           <el-col :span="11" class="rightCol">
             <el-form-item label="是否底级" prop="leaf">
-              <el-select v-model="incomeSort.leaf">
+              <el-select v-model="incomeSort.leaf" style="width:100%;">
                 <el-option
                   v-for="item in formOptions.checkLeaf"
                   :key="item.value"
@@ -166,10 +166,10 @@
 import LeftTree from '@/components/leftTree'
 import FormTable from '@/components/formTable'
 import DialogBorder from '@/components/Dialog/dialog-border'
-import { getRSAKey } from '@/utils/jsEncrypt'
-import { Decrypt, Encrypt } from '@/utils/cryptoJS'
-import { getDecryptJson } from '@/utils/data'
-import { getIncomeTree, queryByCondition, queryAllIncomeSort, add, update, deleteIncomeSort, getRSAPublicKey } from '@/api/incomeSort/incomeSort'
+// import { getRSAKey } from '@/utils/jsEncrypt'
+// import { Decrypt, Encrypt } from '@/utils/cryptoJS'
+// import { getDecryptJson } from '@/utils/data'
+import { getIncomeTree, queryByCondition, queryAllIncomeSort, add, update, deleteIncomeSort } from '@/api/incomeSort/incomeSort'
 export default {
   components: {
     LeftTree,
@@ -251,10 +251,15 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入收入名称', trigger: 'blur' }
+          { required: true, message: '请输入收入名称', trigger: 'blur' },
+          { pattern: /^[\u4e00-\u9fa5]+$/, message: '只能输入中文' }
         ],
         leaf: [
           { required: true, message: '请选择是否是底级', trigger: 'change' }
+        ],
+        code: [
+          { required: true, message: '请输入编码', trigger: 'change' },
+          { pattern: /^(\d{1,3})$/, message: '编码为1或3位数字' }
         ]
 
       },
@@ -286,7 +291,8 @@ export default {
           {
             name: '添加',
             type: 'primary',
-            icon: 'el-icon-plus'
+            icon: 'el-icon-plus',
+            permission: ['admin', 'financial_check']
           }
         ],
         bodyData: []
@@ -320,7 +326,6 @@ export default {
         ],
         operation: [
           {
-            permission: ['default'],
             type: 'primary',
             name: '查看详细信息',
             hideName: true,
@@ -328,7 +333,7 @@ export default {
             circle: true
           },
           {
-            permission: ['default'],
+            permission: ['admin', 'financial_check'],
             type: 'primary',
             name: '编辑',
             hideName: true,
@@ -336,7 +341,7 @@ export default {
             circle: true
           },
           {
-            permission: ['default'],
+            permission: ['admin', 'financial_check'],
             type: 'danger',
             name: '删除',
             hideName: true,
@@ -411,7 +416,6 @@ export default {
     },
     getLeftTree () {
       getIncomeTree().then(response => {
-        
         response.data.list.forEach(tree => {
           tree.name = tree.code + ' ' + tree.name
           if (tree.incomeSortDTOList.length > 0) {
@@ -506,7 +510,6 @@ export default {
               })
             }
           } else {
-            console.log('error submit!!')
             return false
           }
         })
@@ -539,14 +542,12 @@ export default {
               })
             }
           } else {
-            console.log('error submit!!')
             return false
           }
         })
       }
     },
     tableHeadButtonClick (button) {
-      console.log(button)
       const btnDo = {
         '添加': () => add.call(this)
       }
@@ -556,7 +557,6 @@ export default {
       function add () {
         this.addDialog = true
         this.addDialogVisible = true
-        console.log('添加')
       }
     },
     dialogOpen () {
