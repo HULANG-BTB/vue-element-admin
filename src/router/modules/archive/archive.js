@@ -6,9 +6,10 @@ export default [
     path: '/archive',
     component: Layout,
     redirect: '/archive/fina',
+
     meta: {
       title: '归档管理',
-      roles: ['admin', 'financial', 'financial_check', 'unit'],
+      roles: ['admin', 'financial', 'unit'],
       icon: 'el-icon-folder'
     },
     children: [
@@ -18,7 +19,7 @@ export default [
         name: 'fina',
         meta: {
           title: '财政归档',
-          roles: ['admin', 'financial', 'financial_check'],
+          roles: ['admin', 'financial'],
           icon: 'el-icon-coordinate'
         }
       },
@@ -39,7 +40,7 @@ export default [
         hidden: true,
         meta: {
           title: '单位详细信息',
-          roles: ['admin', 'financial', 'financial_check', 'unit']
+          roles: ['admin', 'financial', 'unit']
         }
       }
     ]
