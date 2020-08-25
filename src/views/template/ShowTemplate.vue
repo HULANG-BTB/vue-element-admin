@@ -188,16 +188,16 @@
           <el-button
             type="primary"
             size="small"
-            @click="handleUpdateTemplate"
-          >修改</el-button>
+            :disabled="setDefault"
+            @click="handleSetDefaultTemplate"
+          >设为默认模板</el-button>
         </el-form-item>
         <el-form-item>
           <el-button
             type="primary"
             size="small"
-            :disabled="setDefault"
-            @click="handleSetDefaultTemplate"
-          >设为默认模板</el-button>
+            @click="handleUpdateTemplate"
+          >修改</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -456,6 +456,7 @@ export default {
      * 批量删除模板文件
      */
     async handleDeleteBatch () {
+      console.log(this.selectedList)
       this.$confirm('是否删除选中的模板文件?', '提示', {
         confirmButtonText: '是',
         cancelButtonText: '否',
