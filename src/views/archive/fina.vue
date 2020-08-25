@@ -7,7 +7,7 @@
       <el-button
         style="margin:0 0 20px 20px;"
         type="primary"
-        icon="el-icon-document"
+        icon="el-icon-search"
         @click="queryArchiveInfoByQuery()"
       >
         查询
@@ -15,7 +15,7 @@
     </div>
 
     <div class="agen-archive-list">
-      <el-table :data="list" border fit highlight-current-row style="width: 100%">
+      <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
         <el-table-column align="center" label="单位编码" width="100px">
           <template slot-scope="scope">
             <span>{{ scope.row.agenCode }}</span>
@@ -58,7 +58,7 @@
             <!-- 传递到子组件 传递整个对象  -->
             <router-link :to="{name:'info', query: {agenCode:scope.row.agenCode}}">
               <el-button type="primary" size="small" icon="el-icon-view">
-                show
+                查看详情
               </el-button>
             </router-link>
           </template>
@@ -91,7 +91,7 @@ export default {
   },
   data () {
     return {
-      list: [],
+      list: null,
       total: 0,
       // true 开启等待框
       listLoading: false,

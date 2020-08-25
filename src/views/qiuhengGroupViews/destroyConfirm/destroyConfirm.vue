@@ -10,7 +10,7 @@
           <el-col :span="7">
             <el-form-item label="业务单号：">
               <el-input
-                v-model="destroySearch.no"
+                v-model="destroySearch.fDestroyNo"
                 size="small"
                 placeholder="请输入需要查询的业务单号"
               />
@@ -22,7 +22,7 @@
                 icon="el-icon-search"
                 type="primary"
                 size="small"
-                @click="handleSearch"
+                @click="handleSearch()"
               >搜索</el-button>
             </el-form-item>
           </el-col>
@@ -124,6 +124,10 @@
 import {
   refresh
 } from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
+import {
+  getApplyInfoByDestroyNo
+} from '@/api/qiuhengGroupApi/destroy/destroyApply'
+
 import DestroyConfirmDialog from '@/views/qiuhengGroupViews/destroyConfirm/destroyConfirmDialog'
 
 export default {
@@ -144,10 +148,11 @@ export default {
       //   },
       // ],
       // dialogVisible: false,
+      tableData1: [],
       labelPosition: 'right',
 
       destroySearch: {
-        no: ''
+        fDestroyNo: ''
       },
       // 分页
       page: {
@@ -163,19 +168,13 @@ export default {
     this.refreshButton1()
   },
   methods: {
-    // eslint-disable-next-line vue/no-dupe-keys
     async refreshButton () {
       const res = await refresh()
-      // debugger
-      // console.log(res)
       this.tableData = res.data
     },
     async refreshButton1 () {
       const res = await refresh()
-      // debugger
-      // console.log(res);
       this.tableData = res.data
-      // console.log(this.tableData);
       for (var i = 0; i < this.tableData.length; i++) {
         if (this.tableData[i].fDestroyType) {
           this.tableData[i].fDestroyType = '库存票据销毁'
@@ -195,15 +194,17 @@ export default {
           this.tableData[i].fStatus = '已审核并通过'
         }
       }
-      // console.log(this.tableData)
     },
-    handleSearch () {},
+    async handleSearch () {
+      this.tableData1 = []
+      const res = await getApplyInfoByDestroyNo(this.destroySearch.fDestroyNo)
+      this.tableData1.push(res.data)
+      this.tableData = this.tableData1
+    },
     handleSizeChange () {},
     handleCurrentChange () {},
     handleClick (row) {
-    // console.log(row)
       this.$root.eventBus.$emit('fDestroyNoConfirm', row.fDestroyNo)
-      // console.log(this.visible)
       this.$root.eventBus.$emit('visibleDestroyConfirm', this.visible)
       this.$root.eventBus.$emit('lookDestroyApplyMan', row.fApplyMan)
       this.$root.eventBus.$emit('lookDestroyApplyDate', row.fApplyDate)
