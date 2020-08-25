@@ -116,25 +116,25 @@
       <!-- 从1开始，与数据库数据无关 -->
       <el-table-column type="index" align="center" label="序号" width="65" />
       <!-- 出库主键 -->
-      <el-table-column align="center" label="单号" width="130">
+      <el-table-column align="center" label="单号">
         <template slot-scope="scope">{{ scope.row.id.toString().padStart(9, 'S0000000') }}</template>
       </el-table-column>
-      <el-table-column align="center" label="仓库ID" width="85">
+      <el-table-column align="center" label="仓库ID">
         <template slot-scope="scope">{{ scope.row.warehouseId }}</template>
       </el-table-column>
-      <el-table-column align="center" label="领用人" width="155">
+      <el-table-column align="center" label="领用人">
         <template slot-scope="scope">{{ scope.row.useMan }}</template>
       </el-table-column>
-      <el-table-column align="center" label="申请日期" width="155">
+      <el-table-column align="center" label="申请日期">
         <template slot-scope="scope">{{ dateFormat(scope.row.date) }}</template>
       </el-table-column>
-      <el-table-column align="center" label="编制人" width="155">
+      <el-table-column align="center" label="编制人">
         <template slot-scope="scope">{{ scope.row.author }}</template>
       </el-table-column>
       <el-table-column align="center" label="摘要">
         <template slot-scope="scope">{{ scope.row.abstact }}</template>
       </el-table-column>
-      <el-table-column align="center" label="审核状态" width="85">
+      <el-table-column align="center" label="审核状态">
         <template slot-scope="scope">
           <!-- <el-tag v-if="scope.row.changeState==0" type="info" effect="dark">{{ showCheckStr(scope.row.changeState) }}</el-tag> -->
           <el-tag
@@ -146,7 +146,7 @@
         </template>
       </el-table-column>
       <!-- <el-table-column v-if="!query.changeState" align="center" label="操作"> -->
-      <el-table-column align="center" fixed="right" label="操作" width="165">
+      <el-table-column align="center" fixed="right" label="操作">
         <template slot-scope="scope">
           <el-button
             type="primary"
@@ -235,6 +235,46 @@
       <!--
         item的table----------------------------------
       -->
+      <el-table
+        v-loading.body="loading"
+        :data="outVo.outItemVos"
+        style="width: 100%; margin-top: 10px;"
+        border
+      >
+        <el-table-column type="selection" align="center" width="55" />
+        <!-- 从1开始，与数据库数据无关 -->
+        <el-table-column type="index" align="center" label="序号" width="55" />
+        <!-- 出库主键 -->
+        <el-table-column align="center" label="单号">
+          <template slot-scope="scope">{{ scope.row.id==0 ? '编制中...' : scope.row.id.toString().padStart(11, 'SI00000000') }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="票据代码">
+          <template slot-scope="scope">
+            {{ scope.row.billPrecode }}
+            <!-- {{ scope.row.billPrecode }} -->
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="票据名称">
+          <template slot-scope="scope">{{ scope.row.billName }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="数量" width="85">
+          <template slot-scope="scope">
+            {{ scope.row.number }}
+            <!-- {{ scope.row.number }} -->
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="单位">
+          <template> 张 </template>
+        </el-table-column>
+        <el-table-column align="center" label="起始号">
+          <template slot-scope="scope">{{ scope.row.billNo1 }}</template>
+        </el-table-column>
+        <el-table-column align="center" label="终止号">
+          <template slot-scope="scope">
+            {{ scope.row.billNo2 = (parseInt(scope.row.billNo1)+parseInt(scope.row.number)-1).toString().padStart(10, '000000000') }}
+          </template>
+        </el-table-column>
+      </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button
           v-if="!isSend"

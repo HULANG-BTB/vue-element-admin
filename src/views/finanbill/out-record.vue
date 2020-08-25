@@ -111,10 +111,10 @@
       <!-- 从1开始，与数据库数据无关 -->
       <el-table-column type="index" align="center" label="序号" width="65" />
       <!-- 出库主键 -->
-      <el-table-column align="center" label="业务号" width="130">
+      <el-table-column align="center" label="业务号">
         <template slot-scope="scope">{{ scope.row.pid.toString().padStart(9, 'R0000000') }}</template>
       </el-table-column>
-      <el-table-column align="center" label="审核状态" width="85">
+      <el-table-column align="center" label="审核状态">
         <template slot-scope="scope">
           <el-tag
             :type="showCheckStr(scope.row.changeState).type"
@@ -124,16 +124,16 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作人" width="155">
+      <el-table-column align="center" label="操作人">
         <template slot-scope="scope">{{ scope.row.operator }}</template>
       </el-table-column>
-      <el-table-column align="center" label="变更日期" width="155">
+      <el-table-column align="center" label="变更日期">
         <template slot-scope="scope">{{ dateFormat(scope.row.changeDate) }}</template>
       </el-table-column>
       <el-table-column align="center" label="变更情况">
         <template slot-scope="scope">{{ scope.row.changeSitu }}</template>
       </el-table-column>
-      <el-table-column align="center" label="变更状态" width="85">
+      <el-table-column align="center" label="变更状态">
         <template slot-scope="scope">
           <!-- <el-tag v-if="scope.row.changeState==0" type="info" effect="dark">{{ showCheckStr(scope.row.changeState) }}</el-tag> -->
           <el-tag
@@ -144,7 +144,7 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" fixed="right" label="操作" width="165">
+      <el-table-column align="center" fixed="right" label="操作">
         <template slot-scope="scope">
           <el-button
             type="primary"
