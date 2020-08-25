@@ -252,14 +252,14 @@ export default {
       rules: {
         name: [
           { required: true, message: '请输入收入名称', trigger: 'blur' },
-          { pattern: /[\u4e00-\u9fa5]/, message: '只能输入中文' }
+          { pattern: /^[\u4e00-\u9fa5]+$/, message: '只能输入中文' }
         ],
         leaf: [
           { required: true, message: '请选择是否是底级', trigger: 'change' }
         ],
         code: [
           { required: true, message: '请输入编码', trigger: 'change' },
-          { pattern: /^(\d{1,3})$/, message: '编码为1或3位' }
+          { pattern: /^(\d{1,3})$/, message: '编码为1或3位数字' }
         ]
 
       },
