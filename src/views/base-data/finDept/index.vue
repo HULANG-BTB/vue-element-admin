@@ -17,9 +17,9 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button  size="small" type="primary" @click="query">查询</el-button>
-        <el-button  size="small" type="primary" @click="handleAdd">新增</el-button>
-        <el-button  size="small" type="primary" @click="clearSearchForm">清空</el-button>
+        <el-button size="small" type="primary" @click="query">查询</el-button>
+        <el-button size="small" type="primary" @click="handleAdd">新增</el-button>
+        <el-button size="small" type="primary" @click="clearSearchForm">清空</el-button>
       </el-form-item>
     </el-form>
     <!-- 弹出框 -->
@@ -78,14 +78,14 @@
       <el-table-column :formatter="isEnable" label="是否启用" prop="isEnable" />
       <el-table-column fixed="right" label="操作" width="150px">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini"  @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button type="primary" size="mini" @click="handleEdit(scope.row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="open(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页插件 -->
     <!-- total:数据总量  page-sizes页容量 current-page当前页 -->
-    <el-pagination :total="total" :current-page="queryData.pageNumber" :page-sizes="[10, 20, 50, 100, 500, 1000]" :page-size="queryData.pageSize" @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="prev, pager, next, sizes, total, jumper" style="margin-top:20px;float:right;margin-right:20px;" />
+    <el-pagination :total="total" :current-page="queryData.pageNumber" :page-sizes="[10, 20, 50, 100, 500, 1000]" :page-size="queryData.pageSize" background layout="prev, pager, next, sizes, total, jumper" style="margin-top:20px;float:right;margin-right:20px;" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
   </div>
 </template>
 
@@ -231,10 +231,12 @@ export default {
     handleEdit (row) {
       this.formTitle = '编辑'
       this.dialogFormVisible = true
-      this.saveData = row
+      this.$nextTick(function () {
+        this.saveData = row
+      })
+      // this.saveData = row
     },
     handleAdd () {
-      // this.saveData = {};
       this.formTitle = '新增'
       this.dialogFormVisible = true
     },
@@ -247,7 +249,6 @@ export default {
     // 保存
     submitForm (formName) {
       const data = this.saveData
-
       this.$refs[formName]
         .validate()
         .then(() => {
@@ -258,6 +259,7 @@ export default {
                 type: 'success',
                 message: '保存成功!'
               })
+              console.log('保存成功')
               this.query()
             } else {
               this.popForm.innerVisible = true
