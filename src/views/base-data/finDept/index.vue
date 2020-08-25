@@ -231,10 +231,19 @@ export default {
     handleEdit (row) {
       this.formTitle = '编辑'
       this.dialogFormVisible = true
-      this.$nextTick(function () {
-        this.saveData = row
+      // const formData = {}
+      // Object.assign(formData, row)
+      this.$nextTick(() => {
+        this.saveData.id = row.id
+        this.saveData.findeptName = row.findeptName
+        this.saveData.findeptCode = row.findeptCode
+        this.saveData.linkTel = row.linkTel
+        this.saveData.linkman = row.linkman
+        this.saveData.rgnCode = row.rgnCode
+        this.saveData.rgnCodeArray = row.rgnCodeArray
+        this.saveData.isEnable = row.isEnable
+        this.saveData.addr = row.addr
       })
-      // this.saveData = row
     },
     handleAdd () {
       this.formTitle = '新增'
@@ -259,7 +268,6 @@ export default {
                 type: 'success',
                 message: '保存成功!'
               })
-              console.log('保存成功')
               this.query()
             } else {
               this.popForm.innerVisible = true
@@ -289,6 +297,7 @@ export default {
     // 对话框关闭事件
     handleClose () {
       this.$refs['popForm'].resetFields()
+      this.saveData.id = null
     },
     getRngCode () {
       queryRngCode().then((response) => {
