@@ -1,7 +1,7 @@
 /*
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-10 20:03:36
+ * @lastTime: 2020-08-25 09:18:24
  * @LastEditors: Raiz
  * @Description:
  */
@@ -22,14 +22,19 @@ export default [
         path: 'billType',
         component: () => import('@/views/base-data/billType/index'),
         name: 'billType',
-        meta: { title: '票据种类管理' }
+        meta: {
+          title: '票据种类管理',
+          icon: 'el-icon-folder',
+          roles: ['admin', 'financial'] }
       },
       {
         path: 'finDept',
         component: () => import('@/views/base-data/finDept/index'),
         name: 'finDept',
         meta: {
-          title: '归口财政管理'
+          title: '归口财政管理',
+          icon: 'el-icon-coin',
+          roles: ['admin', 'financial']
         }
       },
       {
@@ -37,7 +42,9 @@ export default [
         component: () => import('@/views/base-data/incomeSort/index'),
         name: 'incomeSort',
         meta: {
-          title: '收入类别管理'
+          title: '收入类别管理',
+          icon: 'el-icon-bank-card',
+          roles: ['admin', 'financial']
         }
       },
       {
@@ -45,7 +52,9 @@ export default [
         component: () => import('@/views/base-data/projectBill/index'),
         name: 'projectBill',
         meta: {
-          title: '项目票据关系管理'
+          title: '项目票据关系管理',
+          icon: 'el-icon-document-copy',
+          roles: ['admin', 'financial']
         }
       },
       {
@@ -54,6 +63,7 @@ export default [
         component: () => import('@/views/base-data/region/index'),
         meta: {
           title: '区划管理',
+          icon: 'el-icon-location-information',
           roles: ['unit', 'admin']
         },
         children: [

@@ -1,7 +1,7 @@
 <!--
  * @Author: Raiz
  * @since: Do not edit
- * @lastTime: 2020-08-24 20:46:54
+ * @lastTime: 2020-08-24 21:08:08
  * @LastEditors: Raiz
  * @Description:
 -->
@@ -32,7 +32,7 @@
           width="50"
           align="center"
         />
-        <el-table-column fixed="left" label="序号" width="50" type="index" align="center" />
+        <el-table-column label="序号" width="50" type="index" align="center" />
         <el-table-column
           v-for="item in tableColumnData.column"
           :key="item.prop"
@@ -181,5 +181,11 @@ export default {
   position: absolute;
   bottom: 10px;
   right: 0;
+}
+</style>
+<style lang="scss" scoped>
+.el-table__row{
+  td:not(.is-hidden):last-child{
+  right:-1px;}
 }
 </style>
