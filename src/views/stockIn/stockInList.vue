@@ -73,51 +73,44 @@
       style="width: 100%; margin-top: 30px;"
       border
     >
-      <el-table-column align="center" label="序号" width="90%">
+      <el-table-column align="center" label="序号" width="65">
         <template slot-scope="scope">{{ (stockInPageQuery.page - 1) * stockInPageQuery.limit + scope.$index + 1 }}</template>
       </el-table-column>
       <el-table-column
         align="center"
         prop="no"
         label="业务单号"
-        width="200%"
       />
       <el-table-column
         align="center"
         prop="date"
         label="创建时间"
-        width="200%"
       />
       <el-table-column
         align="center"
         prop="author"
         label="创建人"
-        width="100%"
       />
       <el-table-column
         align="center"
         prop="memo"
         label="备注"
-        width="100%"
       />
       <el-table-column
         align="center"
         label="审核状态"
-        width="100%"
       >
         <template slot-scope="scope">{{ getChangeStr(scope.row.changeState) }}</template>
       </el-table-column>
       <el-table-column
         align="center"
         label="入库状态"
-        width="100%"
       >
         <template slot-scope="scope">{{ getStatusStr(scope.row.status) }}</template>
       </el-table-column>
       <el-table-column
         align="center"
         label="操作"
-        width="250"
       >
         <template slot-scope="scope">
           <!-- 点击编辑按钮跳转到编辑页面 -->

@@ -222,7 +222,6 @@
         />
         <el-table-column
           label="票据编码"
-          width="130"
           align="center"
         >
           <template slot-scope="scope">
@@ -231,7 +230,6 @@
         </el-table-column>
         <el-table-column
           label="票据名称"
-          width="130"
           align="center"
         >
           <template slot-scope="scope">
@@ -240,7 +238,6 @@
         </el-table-column>
         <el-table-column
           label="数量"
-          width="100"
           align="center"
         >
           <template slot-scope="scope">
@@ -249,7 +246,6 @@
         </el-table-column>
         <el-table-column
           label="起始号"
-          width="150"
           align="center"
         >
           <template slot-scope="scope">
@@ -258,14 +254,13 @@
         </el-table-column>
         <el-table-column
           label="终止号"
-          width="150"
           align="center"
         >
           <template slot-scope="scope">
             {{ scope.row.billNo2 }}
           </template>
         </el-table-column>
-        <el-table-column width="180">
+        <el-table-column>
           <template slot="header">
             <el-button
               size="mini"
@@ -379,20 +374,20 @@ export default {
       billTypes: [
         {
           id: '1',
-          code: '00000001',
-          name: '基础票据',
+          code: '00000120',
+          name: '票据1',
           typecode: '1'
         },
         {
           id: '2',
-          code: '00000002',
-          name: '中级票据',
+          code: '00000121',
+          name: '票据2',
           typecode: '1'
         },
         {
           id: '3',
-          code: '00000003',
-          name: '高级票据',
+          code: '01160201',
+          name: '票据3',
           typecode: '1'
         }
       ],
@@ -402,6 +397,9 @@ export default {
         ],
         billCode: [
           { required: true, message: '请选择票据代码', trigger: 'blur' }
+        ],
+        number: [
+          { required: true, message: '请填写票据数', trigger: 'blur' }
         ]
       },
       dialogFormVisible: false,
