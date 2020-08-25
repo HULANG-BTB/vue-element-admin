@@ -137,7 +137,7 @@
       <el-table-column align="center" label="编制人" width="155">
         <template slot-scope="scope">{{ scope.row.author }}</template>
       </el-table-column>
-      <el-table-column align="center" label="摘要" width="200">
+      <el-table-column align="center" label="摘要">
         <template slot-scope="scope">{{ scope.row.abstact }}</template>
       </el-table-column>
       <el-table-column align="center" label="审核状态" width="85">
@@ -304,7 +304,7 @@
             <!-- {{ scope.row.billPrecode }} -->
           </template>
         </el-table-column>
-        <el-table-column align="center" label="票据名称" width="155">
+        <el-table-column align="center" label="票据名称">
           <template slot-scope="scope">{{ scope.row.billName }}</template>
         </el-table-column>
         <el-table-column align="center" label="数量" width="85">

@@ -130,7 +130,7 @@
       <el-table-column align="center" label="变更日期" width="155">
         <template slot-scope="scope">{{ dateFormat(scope.row.changeDate) }}</template>
       </el-table-column>
-      <el-table-column align="center" label="变更情况" width="200">
+      <el-table-column align="center" label="变更情况">
         <template slot-scope="scope">{{ scope.row.changeSitu }}</template>
       </el-table-column>
       <el-table-column align="center" label="变更状态" width="85">
