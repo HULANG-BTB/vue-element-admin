@@ -30,20 +30,19 @@
               v-model="query.preDate"
               type="date"
               size="small"
-              placeholder="选择开始日期">
-            </el-date-picker>
+              placeholder="选择开始日期"
+            />
+
             <el-date-picker
               v-model="query.lastDate"
               type="date"
               size="small"
-              placeholder="选择结束日期">
-            </el-date-picker>
+              placeholder="选择结束日期"
+            />
           </div>
-            
 
         </el-form-item>
-        
-          
+
         <el-form-item label style="margin-left: 30px">
           <el-button
             type="primary"
@@ -77,7 +76,7 @@
       </div>
     </el-form>
 
-    <el-button @click="openCreate" style="margin-bottom:10px">新增</el-button>
+    <el-button style="margin-bottom:10px" @click="openCreate">新增</el-button>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -103,7 +102,7 @@
       </el-table-column>
       <el-table-column label="申领日期" width="220" align="center" sortable>
         <template slot-scope="scope">
-          {{ scope.row.submitDate | dateFmt('YYYY-MM-DD HH:MM:SS') }}
+          {{ parseTime(scope.row.submitDate) }}
         </template>
       </el-table-column>
       <el-table-column label="领购人" width="160" align="center" sortable>
@@ -134,8 +133,9 @@
 </template>
 
 <script>
-import { getApplyCheckList,getCheckItemList } from '@/api/apply'
+import { getApplyCheckList, getCheckItemList } from '@/api/apply'
 import act from './applyCheck.vue'
+import { parseTime } from '@/utils'
 
 export default {
   filters: {
@@ -190,6 +190,7 @@ export default {
         rgnCode: 1,
         agenIdCode: 1,
         kindName: '测试型单位',
+        // eslint-disable-next-line no-dupe-keys
         author: '测试作者',
         status: 0
       }
@@ -201,61 +202,50 @@ export default {
     },
     fetchData () {
       var that = this
-      getApplyCheckList(this.query).then(res => { 
+      getApplyCheckList(this.query).then(res => {
         that.list = res.data
         this.listLoading = false
-      })    
+      })
     },
-    refreshRow(row){
-      getCheckItemList(row.id).then(res =>{
-          row.items = res.data
-        })
+    refreshRow (row) {
+      getCheckItemList(row.id).then(res => {
+        row.items = res.data
+      })
       return row
     },
-    displayStatus(status){
-      switch(status) {
-      case 1:
-        return "待审核"
-        break;
-      case 2:
-        return "审核通过"
-        break;
-      case 3:
-        return "审核退回"
-        break;
-     default:
-        return "待审核"
-      } 
+    displayStatus (status) {
+      switch (status) {
+        case 1:
+          return '待审核'
+        case 2:
+          return '审核通过'
+        case 3:
+          return '审核退回'
+        default:
+          return '待审核'
+      }
     },
-    onDelete (applyId) {
-      var that = this
-      deleteApply(applyId).then(
-        function(){
-          getApplyCheckList(this.query).then(res =>{
-          that.list = res.data
-          })
-        }
-
-      )
-    },
-    handleSearch(){
+    handleSearch () {
       this.query.page = 1
       this.fetchData()
     },
-    handleSizeChange(val) {
-      this.query.limit = val
-      this.fetchData()
-    },
-    handleCurrentChange(val) {
-      this.query.page = val
-      this.fetchData()
-    },
-    refreshQuery(){
-      this.query.no = ""
-      this.query.author = ""
+    handleSizeChange (val) {
+      this.query.limit = val
+      this.fetchData()
+    },
+    handleCurrentChange (val) {
+      this.query.page = val
+      this.fetchData()
+    },
+    refreshQuery () {
+      this.query.no = ''
+      this.query.author = ''
       this.query.preDate = null
       this.query.lastDate = null
       this.fetchData()
+    },
+    parseTime (time) {
+      return parseTime(new Date(time))
     }
   }
 }
