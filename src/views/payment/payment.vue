@@ -39,7 +39,7 @@
           <input v-model="code" maxlength="6" class="code-input-input" type="password" />
         </div>
         <div class="msg">
-          <span v-if="code_length" style="color:red">{{ msg }}</span>
+          <span v-cloak v-if="code_length" style="color:red">{{ msg }}</span>
         </div>
         <div style="text-align:center;">
           <el-button type="primary" size="small" @click="password_yes">确认支付</el-button>
@@ -241,6 +241,7 @@ export default {
         this.msg = '请输入6位支付密码'
         this.code_length = true
       } else if (!regex.test(this.code)) {
+        this.code_length = false
         this.msg = '请输入数字'
         this.code_length = true
       } else {
@@ -251,13 +252,26 @@ export default {
           payerTel: this.pay_phone,
           account: this.pay_money,
           accountType: this.getArrayIndex(this.pay_mode_default),
-          time: this.date_formatr(this.pay_date)
+          time: this.date_formatr()
         }).then((response) => {
-          if (response.code === 11115 && response.success === true) {
+          if (response.code === 111150) {
             this.$router.push({ name: 'PaySuccess', params: {}})
-          } else {
+          } else if (response.code === 111160) {
+            this.msg = response.message
             this.code_length = true
-            this.msg = '密码错误，请重试或联系工作人员'
+            this.loading = false
+          } else if (response.code === 111200) {
+            this.msg = response.message
+            this.code_length = true
+            this.loading = false
+          } else if (response.code === 111201) {
+            this.msg = response.message
+            this.code_length = true
+            this.loading = false
+          } else {
+            this.msg = '服务请求失败，请联系工作人员'
+            console.log(response.code)
+            this.code_length = true
             this.loading = false
           }
         })
@@ -278,13 +292,13 @@ export default {
       this.timer = setInterval(function () {
         _this.num--
         getUUid({ uuid: _this.UUid }).then((response) => {
-          if (response.message === 'Yes' && response.success === true) {
+          if (response.message === 'Yes') {
             addAccIntoInfoDto({
               billSerialId: _this.pay_checkcode,
               payerTel: _this.pay_phone,
               account: _this.pay_money,
               accountType: _this.getArrayIndex(_this.pay_mode_default),
-              time: _this.date_formatr(_this.pay_date)
+              time: _this.date_formatr()
             })
             clearInterval(_this.timer)
             _this.route()
@@ -316,7 +330,7 @@ export default {
     // 获取二维码函数
     getPicture () {
       getQrCode().then((response) => {
-        if (response.code === 11113 && response.success === true) {
+        if (response.code === 111130 && response.success === true) {
           this.image = 'data:image/png;base64,' + response.data.image
           this.UUid = response.data.uuid
           this.Qrcode_NO3 = true
@@ -359,7 +373,7 @@ export default {
     },
 
     // 日期格式化
-    date_formatr (val) {
+    date_formatr () {
       let str = ''
       str += this.setZero(this.pay_date.getFullYear()) + '-' // 获取年份
       str += this.setZero(this.pay_date.getMonth() + 1) + '-' // 获取月份
