@@ -126,20 +126,7 @@
       </el-table>
     </el-card>
 
-<<<<<<< HEAD
     <!-- 分页 -->
-    <el-pagination
-      layout="prev, pager, next, sizes, total, jumper"
-      style="text-align: right"
-      :page-size="query.pageSize"
-      :total="query.total"
-      :current-page="query.currentPage"
-      :page-sizes="[2, 5, 10, 20, 50, 100, 500, 1000]"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
-    <!-- 在页面下方显示具体模板内容 -->
-=======
     <el-card class="box-card">
       <el-pagination
         layout="prev, pager, next, sizes, total, jumper"
@@ -152,8 +139,7 @@
         @current-change="handleCurrentChange"
       />
     </el-card>
-
->>>>>>> 5a0304584f918d42096b53ef98b7cb07e57b7c14
+    <!-- 在页面下方显示具体模板内容 -->
     <el-card>
       <div
         id="container"
@@ -403,7 +389,7 @@ export default {
       const data = {
         'id': this.id,
         'memo': this.memo,
-        'templateName': this.templateName
+        'name': this.templateName
       }
       updateTemplate(data).then(res => {
         this.$message({
