@@ -98,7 +98,6 @@ export function updateTemplate (data) {
   return request({
     url: baseURL + `/printTemplate/update`,
     method: `put`,
-    params: data
+    data
   })
-
 }
