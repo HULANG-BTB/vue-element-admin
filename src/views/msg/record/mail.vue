@@ -1,11 +1,10 @@
 <template>
   <div class="app-container">
     <el-card>
-
       <el-form
         :model="query"
         :inline="true"
-        style="height: 40px;"
+        style="height: 40px;width:100%"
         class="demo-form-inline"
         @keyup.enter.native="handleSearch"
       >
@@ -61,20 +60,21 @@
         </el-form-item>
       </el-form>
 
-    </el-card>
-    <el-card style="margin-top:10px;height:755px">
-      <el-button
-        type="primary"
-        size="small"
-        @click="handleAdd"
-      >新建记录</el-button>
-      <el-button
-        :disabled="deleteBatchDisable"
-        type="danger"
-        size="small"
-        @click="handleDeleteBatch"
-      >批量删除</el-button>
-
+      <div style="margin-top:10px;margin-bottom:15px;">
+        <el-button
+          type="primary"
+          size="small"
+          @click="handleAdd"
+        >新建记录
+        </el-button>
+        <el-button
+          :disabled="deleteBatchDisable"
+          type="danger"
+          size="small"
+          @click="handleDeleteBatch"
+        >批量删除
+        </el-button>
+      </div>
       <el-table
         v-loading.body="loading"
         :data="mailTableData"
@@ -220,7 +220,6 @@
         </el-form>
       </el-dialog>
     </el-card>
-
   </div>
 </template>
 
@@ -268,7 +267,6 @@ export default {
         mailTo: null,
         isSent: true,
         period: null
-
       },
       pickerOptions: {
         shortcuts: [{

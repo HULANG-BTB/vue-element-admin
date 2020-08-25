@@ -45,22 +45,9 @@
         <el-button
           type="success"
           size="small"
-          @click="getTableDataAll()"
+          @click="getTableData"
         >重载数据</el-button>
       </el-form-item>
-      <div class="my-form-item">
-        <el-row>
-          <el-col :span="5">
-            <el-form-item label="操作">
-              <el-button
-                type="primary"
-                size="small"
-                @click="handleAdd(); dialogFormVisible = true; noStatus=false"
-              >新增</el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </div>
     </el-form>
     <el-table v-loading.body="loading" :data="stockReturnTableData" style="width: 100%">
       <el-table-column label="序号" width="90">
@@ -78,41 +65,39 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="业务单号" width="150">
+      <el-table-column label="业务单号" width="180">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.no }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="编制日期" width="150">
+      <el-table-column label="编制日期" width="180">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.date }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="退票原因" width="250" align="center">
+      <el-table-column label="退票原因" width="400" align="center">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.returnReason }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="退票人" width="150">
+      <el-table-column label="退票人" width="180">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.returner }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="审核意见" width="250">
+      <el-table-column label="审核意见" width="180">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.changeSitu }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="审核人" width="150">
+      <el-table-column label="审核人" width="180">
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.changeMan }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.row); dialogFormVisible=true; noStatus=true">编辑</el-button>
-          <el-button :disabled="scope.row.submitStatus==1" size="mini" @click="handleSubmit1(scope.row)">提交</el-button>
-          <el-button size="mini" type="danger" :disabled="scope.row.submitStatus==1" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" @click="handleCheck(scope.row); dialogFormVisible=true; noStatus=true">审核</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -146,7 +131,7 @@
           <el-col :span="2" />
           <el-col :span="11">
             <el-form-item label="业务单号">
-              <el-input v-model="Stockreturn.no" autocomplete="off" :disabled="true" placeholder="请输入业务单号：" />
+              <el-input v-model="Stockreturn.no" autocomplete="off" :disabled="noStatus" placeholder="请输入业务单号：" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -194,6 +179,7 @@
       <!--新增明细-->
       <el-button
         type="primary"
+        :disabled="true"
         @click="itemAdd(Stockreturn.stockReturnItemVOList, Stockreturn.no)"
       >新增</el-button>
       <el-table
@@ -211,15 +197,7 @@
         </el-table-column> -->
         <el-table-column align="center" label="票据代码" width="165">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.billCode" placeholder="请选择" @change="billPrecodeChange(scope.row)">
-              <el-option
-                v-for="item in billOptions"
-                :key="item.billCode"
-                :label="item.billCode"
-                :value="item.billCode"
-                :disabled="item.selected"
-              />
-            </el-select>
+            {{ scope.row.billCode }}
             <!-- {{ scope.row.billPrecode }} -->
           </template>
         </el-table-column>
@@ -241,29 +219,69 @@
         <el-table-column align="center" label="终止号" width="200">
           <template slot-scope="scope">{{ scope.row.billNo2 }}</template>
         </el-table-column>
-        <el-table-column align="center" label="操作" width="200">
-          <template slot-scope="scope">
-            <el-button
-              type="primary"
-              size="mini"
-              @click="itemDelete(scope.$index, Stockreturn.stockReturnItemVOList)"
-            >删除</el-button>
-          </template>
-        </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false;">取 消</el-button>
-        <el-button
-          type="primary"
-          :disabled="Stockreturn.submitStatus == 1"
-          @click="handleSave(); dialogFormVisible = false"
-        >保 存</el-button>
+        <el-button @click="dialogFormVisible = false; dialogFormVisibleForReturn = true">审 核</el-button>
       </div></el-dialog>
+    <!-- 审核弹出框 -->
+    <el-dialog
+      title="审核"
+      :visible.sync="dialogFormVisibleForReturn"
+      :width="'60%'"
+      @closed="initVo()"
+    >
+      <el-form
+        v-model="StockreturnCheck"
+        :inline="true"
+        :label-position="labelPosition"
+        label-width="100px"
+        class="demo-form-inline"
+      >
+        <el-row>
+          <el-col :span="2" />
+          <el-col :span="11">
+            <el-form-item label="审核意见">
+              <el-input v-model="StockreturnCheck.changeSitu" autocomplete="off" placeholder="请输入审核意见：" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="2" />
+          <el-col :span="11">
+            <el-form-item label="审核状态">
+              <template>
+                <el-select v-model="StockreturnCheck.changeState" placeholder="请选择">
+                  <el-option
+                    v-for="item in changeStateOptions"
+                    :key="item.changeState"
+                    :label="item.label"
+                    :value="item.changeState"
+                    :disabled="item.selected"
+                  />
+                </el-select>
+                <!-- {{ scope.row.billPrecode }} -->
+              </template>
+            </el-form-item>
+          </el-col>
+          <el-col :span="2" />
+          <el-col :span="11">
+            <el-form-item label="审核人">
+              <el-input v-model="StockreturnCheck.changeMan" autocomplete="off" placeholder="请输入审核人:" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <el-button
+        type="primary"
+        @click="checkSave(); dialogFormVisibleForReturn=false"
+      >提交审核</el-button>
+    </el-dialog>
   </div>
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getNo, getStockReturnList, getListStockReturnByDateOrNo, addStockReturn, getStockReturnItems, deleteStockReturnByNo, updateByNo, putSubmit } from '@/api/stockreturn.js'
+import { getFinanStockReturnList, getFinanStockReturnItems, getCheckStateByNo } from '@/api/stockreturn.js'
 
 export default {
   data () {
@@ -313,38 +331,32 @@ export default {
         agenIdCode: '',
         returner: '',
         author: 'defaultAuthor',
+        changeState: '0',
         changeMan: '',
         changeSitu: '',
-        changeState: '0',
         returnReason: '',
         submitStatus: '0',
         stockReturnItemVOList: []
       },
+      no: 0,
+      StockreturnCheck: {
+        no: '',
+        changeState: '0',
+        changeMan: '',
+        changeSitu: ''
+      },
       dialogFormVisible: false,
+      dialogFormVisibleForReturn: false,
       noStatus: false,
       // submitStatus: false,
       saveStatus: false,
       labelPosition: 'left',
-      billOptions: [{
-        billCode: '00000120',
-        billName: '票据1',
-        selected: false
+      changeStateOptions: [{
+        changeState: 1,
+        label: '审核通过'
       }, {
-        billCode: '00000121',
-        billName: '票据2',
-        selected: false
-      }, {
-        billCode: '00000210',
-        billName: '票据3',
-        selected: false
-      }, {
-        billCode: '01000120',
-        billName: '票据4',
-        selected: false
-      }, {
-        billCode: '02000120',
-        billName: '票据5',
-        selected: false
+        changeState: 2,
+        label: '审核未通过'
       }]
     }
   },
@@ -354,7 +366,7 @@ export default {
   methods: {
     async getTableData () {
       this.loading = true
-      const res = await getStockReturnList(this.query).catch(() => { this.loading = false })
+      const res = await getFinanStockReturnList(this.query).catch(() => { this.loading = false })
       console.log(res)
       this.query.limit = res.data.limit
       this.query.total = res.data.total
@@ -373,114 +385,20 @@ export default {
       this.getTableData()
       this.loading = false
     },
-    async billPrecodeChange (row) {
-      this.billOptions.forEach(e => {
-        e.selected = false
-        this.Stockreturn.stockReturnItemVOList.forEach(item => {
-          if (e.billCode === item.billCode) {
-            e.selected = true
-          }
-        })
-        if (e.billCode === row.billCode) {
-          row.billName = e.billName
-        }
-      })
-    },
-    async handleAdd () {
+    async checkSave () {
       this.loading = true
-      // eslint-disable-next-line no-undef
+      // this.Stockreturn = Object.assign(this.Stockreturn)
       // eslint-disable-next-line no-unused-vars
-      const res = await getNo().catch(() => { this.loading = false })
-      this.Stockreturn.no = res.data
-      console.log(this.Stockreturn.no)
+      this.StockreturnCheck.no = this.no
+      console.log(this.StockreturnCheck)
+      const save = await getCheckStateByNo(this.StockreturnCheck).catch(() => { this.loading = false })
+      console.log('save', save)
       this.loading = false
-    },
-    async getTableDataAll () {
-      this.query.startTime = null
-      this.query.endTime = null
-      this.no = null
-      this.getTableData()
-    },
-    async itemAdd (tableData) {
-      this.loading = true
-      tableData.push({
-        'billCode': '',
-        'billName': '',
-        'number': 2,
-        'billNo1': '0000000001',
-        'billNo2': '0000000002'
-      })
-      this.loading = false
-    },
-    async itemDelete (index, rows) {
-      this.loading = true
-      rows.splice(index, 1)
-      this.loading = false
-    },
-    async handleSubmit1 (row) {
-      console.log(row)
-      this.loading = true
-      // eslint-disable-next-line no-unused-vars
-      this.Stockreturn = Object.assign(this.Stockreturn, row)
-      const submitS = await putSubmit(this.Stockreturn).catch(() => { this.loading = false })
-      if (submitS) {
-        this.$message.success('提交成功！')
-      } else {
-        this.$message.error('提交失败！')
-      }
-      this.loading = false
-      this.getTableData()
-    },
-    // 处理保存请求
-    async handleSave () {
-      this.loading = true
-      // 判断为新增还是编辑明细页面
-      // eslint-disable-next-line eqeqeq
-      if (this.noStatus == true) {
-        const updateS = await updateByNo(this.Stockreturn).catch(() => { this.loading = false })
-        console.log(updateS)
-        if (updateS) {
-          this.$message.success('修改成功！')
-        } else {
-          this.$message.error('修改失败！')
-        }
-        this.loading = false
-      } else {
-        const subres = await addStockReturn(this.Stockreturn).catch(() => { this.loading = false })
-        console.log('StockReturn', this.Stockreturn)
-        console.log('提交结果：' + subres)
-        if (subres) {
-          this.$message.success('提交成功！')
-        } else {
-          this.$message.error('提交失败！')
-        }
-        this.loading = false
-      }
       this.getTableData()
     },
     async initVo () {
       Object.assign(this.$data.Stockreturn, this.$options.data().Stockreturn)
       // this.getTableData()
-    },
-    async handleEdit (row) {
-      console.log(row)
-      this.loading = true
-      this.Stockreturn = Object.assign(this.Stockreturn, row)
-      const items = await getStockReturnItems(this.Stockreturn).catch(() => { this.loading = false })
-      console.log(items)
-      this.Stockreturn.stockReturnItemVOList = items.data.stockReturnItemVOList
-      console.log(this.Stockreturn.stockReturnItemVOList)
-      this.billPrecodeChange(row)
-      this.loading = false
-    },
-    async handleDelete (index, row) {
-      console.log(index, row)
-      this.loading = true
-      this.Stockreturn = Object.assign(this.Stockreturn, row)
-      // 删除一项退票主表信息
-      // eslint-disable-next-line no-unused-vars
-      const deleteStockReturn = await deleteStockReturnByNo(this.Stockreturn).catch(() => { this.loading = false })
-      this.getTableData()
     },
     async handleSizeChange (val) {
       this.query.limit = val
@@ -489,6 +407,17 @@ export default {
     async handleCurrentChange (val) {
       this.query.page = val
       this.getTableData()
+    },
+    async handleCheck (row) {
+      this.no = row.no
+      console.log('row', row)
+      this.loading = true
+      this.Stockreturn = Object.assign(this.Stockreturn, row)
+      const items = await getFinanStockReturnItems(this.Stockreturn).catch(() => { this.loading = false })
+      console.log('items', items)
+      this.Stockreturn.stockReturnItemVOList = items.data.stockReturnItemVOList
+      console.log('list', this.Stockreturn.stockReturnItemVOList)
+      this.loading = false
     }
   }
 }

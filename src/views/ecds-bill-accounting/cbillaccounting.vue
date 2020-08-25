@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="filter-container" style="margin-bottom: 20px">
+    <div class="filter-container">
       <el-input v-model="listQuery.keyword" size="small" placeholder="模糊搜索框" style="width: 200px; argin-left: 10px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-select v-model="listQuery.accountType" size="small" placeholder="查询类别" clearable class="filter-item" style="width: 110px; margin-left: 10px;">
         <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
@@ -17,13 +17,7 @@
       <el-button v-waves size="small" class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-delete" :disabled="multiple" @click="handleBatchDelete">
         删除
       </el-button>
-      <el-button v-waves size="small" class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-upload" @click="handleUpload">
-        导入
-      </el-button>
-      <el-button v-waves style="margin-right: 400px" size="small" :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
-        导出
-      </el-button>
-      <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:5px;" @change="tableKey=tableKey+1">
+      <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:20px;" @change="tableKey=tableKey+1">
         操作人
       </el-checkbox>
       <el-checkbox v-model="showAccountId" class="filter-item" @change="tableKey=tableKey+2">
@@ -35,7 +29,7 @@
       <el-checkbox v-model="showAccountTime" class="filter-item" @change="tableKey=tableKey+4">
         入账时间
       </el-checkbox>
-      <el-button v-waves size="small" class="filter-item" style="margin-left: 20px; margin-top: 20px" type="primary" icon="el-icon-refresh" @click="handleFilter">
+      <el-button v-waves size="small" class="filter-item" style="margin-left: 20px;" type="primary" icon="el-icon-refresh" @click="handleFilter">
         刷新
       </el-button>
     </div>
@@ -46,9 +40,9 @@
       :data="list"
       border
       fit
-      height="455px"
+      height="600px"
       highlight-current-row
-      style="width: 100%; overflow: auto"
+      style="width: 100%; margin-top:20px"
       @sort-change="sortChange"
       @selection-change="handleSelectionChange"
     >
@@ -481,7 +475,6 @@
 <script>
 import { listByPage, deleteById, batchDelete, update, insert, updateStatus } from '@/api/cbillaccounting'
 import waves from './directive/waves' // waves directive
-import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 const calendarTypeOptions = [
@@ -526,7 +519,7 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 11,
+        limit: 10,
         keyword: undefined,
         accountType: undefined,
         sort: '+id'
@@ -602,13 +595,13 @@ export default {
         billNo: [{ required: true, message: '票号必须填写', trigger: 'change' }],
         billBatchId: [{ required: true, message: '票据批次号必须填写', trigger: 'change' }],
         accountType: [{ required: true, message: '必须选择入账类型', trigger: 'change' }],
-        waitAccount: [{ required: true, message: '应缴金额必须填写', trigger: 'change' }],
+        waitAccount: [{ required: true, message: '应缴金额必须填写', trigger: 'change' }, { pattern: /((^[1-9]\d*)|^0)(\.\d{0,2}){0,1}$/, message: '请输入合法金额', trigger: 'blur' }],
         agenTime: [{ required: true, message: '必须选择时间', trigger: 'change' }],
         type: [{ required: true, message: '必须选择入账方式', trigger: 'change' }],
         time: [{ required: true, message: '必须选择时间', trigger: 'change' }],
         accountStatus: [{ required: true, message: '必须选择入账状态', trigger: 'change' }],
-        account: [{ required: true, message: '必须填写入账金额', trigger: 'change' }],
-        payerTel: [{ required: true, message: '必须填写缴款人联系方式', trigger: 'change' }]
+        account: [{ required: true, message: '必须填写入账金额', trigger: 'change' }, { pattern: /((^[1-9]\d*)|^0)(\.\d{0,2}){0,1}$/, message: '请输入合法金额', trigger: 'blur' }],
+        payerTel: [{ required: true, message: '必须填写缴款人联系方式', trigger: 'change' }, { pattern: /^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/, message: '请输入合法手机号/电话号', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -687,25 +680,6 @@ export default {
         })
       }).catch(function () {})
     },
-    // 导入(批量插入)
-    handleUpload () {
-    },
-    // 导出(复选框)
-    // handleDownload () {
-    //   this.downloadLoading = true
-    //   import('@/vendor/Export2Excel').then(excel => {
-    //     const tHeader = ['ID', '入账凭证号', '票据号码', '票据批次号', '开票时间', '开票单位', '单位代码', '票据校验码', '开票点', '应缴金额', '入账类型', '入账金额', '入账方式', '入账时间', '入账状态', '操作人', '备注']
-    //     const filterVal = ['id', 'accountId', 'billNo', 'billBatchId', 'agenTime', 'agenName', 'agenIdcode', 'billSerialId', 'placeId', 'waitAccount', 'type', 'account', 'accountType', 'time', 'accountStatus', 'operator', 'note']
-    //     const data = this.formatJson(filterVal)
-    //     excel.export_json_to_excel({
-    //       header: tHeader,
-    //       data,
-    //       filename: 'table-list'
-    //     })
-    //     this.downloadLoading = false
-    //   })
-    // },
-    // 更改row的入账状态(不刷新页面即时更新)
     handleModifyStatus (row, accountStatus) {
       const id = { id: row.id }
       updateStatus(id).then(response => {
@@ -775,15 +749,6 @@ export default {
           })
         }
       })
-    },
-    formatJson (filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'agenTime') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
     },
     getSortClass: function (key) {
       const sort = this.listQuery.sort

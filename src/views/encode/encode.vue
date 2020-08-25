@@ -4,7 +4,7 @@
       type="primary"
       class="btn-create"
       icon="el-plus"
-      size="small"
+      size="mini"
       @click="dialogFormVisible = true"
     >创建</el-button>
 
@@ -12,7 +12,7 @@
       type="primary"
       class="btn-create"
       icon="el-plus"
-      size="small"
+      size="mini"
       @click="batchDialogFormVisible = true"
     >批量创建</el-button>
 

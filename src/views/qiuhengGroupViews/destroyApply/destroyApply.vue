@@ -10,7 +10,7 @@
           <el-col :span="7">
             <el-form-item label="业务单号：">
               <el-input
-                v-model="destroySearch.no"
+                v-model="destroySearch.fDestroyNo"
                 size="small"
                 placeholder="请输入需要查询的业务单号"
               />
@@ -22,7 +22,7 @@
                 icon="el-icon-search"
                 type="primary"
                 size="small"
-                @click="handleSearch"
+                @click="handleSearch()"
               >搜索</el-button>
             </el-form-item>
           </el-col>
@@ -48,7 +48,7 @@
       <el-dialog
         :visible.sync="dialogVisible"
         :show-close="true"
-        width="80%"
+        width="90%"
         top="6vh"
         title="票据销毁申请——新增"
       >
@@ -147,7 +147,7 @@
 </template>
 
 <script>
-import { getApplyListByAgenIdCode, deleteApplyInfoByDestroyNo, deleteItemInfoByDestroyNo } from '@/api/qiuhengGroupApi/destroy/destroyApply'
+import { getApplyListByAgenIdCode, deleteApplyInfoByDestroyNo, deleteItemInfoByDestroyNo, getApplyInfoByDestroyNo } from '@/api/qiuhengGroupApi/destroy/destroyApply'
 import { } from '@/api/qiuhengGroupApi/destroy/destroyConfirm'
 import lookDestroyApply from '@/views/qiuhengGroupViews/destroyApply/lookDestroyApply'
 
@@ -161,13 +161,14 @@ export default {
   data () {
     return {
       tableData: [],
+      tableData1: [],
 
+      destroySearch: {
+        fDestroyNo: ''
+      },
       dialogVisible: false,
       labelPosition: 'right',
 
-      destroySearch: {
-        no: ''
-      },
       // 分页
       page: {
         currentPage: 1,
@@ -187,7 +188,6 @@ export default {
     this.refreshButton()
     this.$root.eventBus.$on('dialogVisible1', (val) => {
       this.dialogVisible = val
-      // console.log(this.dialogVisible)
     })
     this.$root.eventBus.$on('dialogVisibleCancel', (val) => {
       this.dialogVisible = val
@@ -197,34 +197,27 @@ export default {
     lookApplyInfo (row) {
       this.$root.eventBus.$emit('lookDestroyApplyDialogVisible', this.lookDestroyApplyDialogVisible)
       this.$root.eventBus.$emit('lookDestroyApply', row.fDestroyNo)
-      // console.log(row)
       this.$root.eventBus.$emit('lookDestroyApplyMan', row.fApplyMan)
       this.$root.eventBus.$emit('lookDestroyApplyDate', row.fApplyDate)
       this.$root.eventBus.$emit('lookDestroyApplyType', row.fDestroyType)
       this.$root.eventBus.$emit('lookDestroyApplyStatus', row.fStatus)
-
-      // this.dialogVisible = true
-      // this.$root.eventBus.$emit('fDestroyNoUpdate', row.fDestroyNo)
-      // this.operateType = '查看票据销毁申请信息'
-      // this.$root.eventBus.$emit('operatetype', this.operateType)
     },
     async updateApplyInfo (row) {
-      // console.log(row)
       this.dialogVisible = true
       this.$root.eventBus.$emit('fDestroyNoUpdate', row.fDestroyNo)
       this.operateType = '修改票据销毁申请信息'
-      // this.$root.eventBus.$emit('operateType', this.operateType)
     },
     async addDestroyApply () {
       await this.randomNumber()
-      console.log(this.fDestroyNo)
       this.dialogVisible = true
       this.$root.eventBus.$emit('fDestroyNo', this.fDestroyNo)
-      // this.operateType = '新增票据销毁申请'
-      // this.$root.eventBus.$emit('operateType', this.operateType)
-      // console.log(this.operateType)
     },
-    handleSearch () {},
+    async handleSearch () {
+      this.tableData1 = []
+      const res = await getApplyInfoByDestroyNo(this.destroySearch.fDestroyNo)
+      this.tableData1.push(res.data)
+      this.tableData = this.tableData1
+    },
     handleSizeChange () {},
     handleCurrentChange () {},
     // 生成流水号
@@ -238,8 +231,7 @@ export default {
       this.fDestroyNo = now.getFullYear().toString() + month.toString() + day + hour + minutes + seconds + (Math.round(Math.random() * 23 + 100)).toString()
     },
     async refreshButton () {
-      const res = await getApplyListByAgenIdCode('1314')
-      console.log(res)
+      const res = await getApplyListByAgenIdCode(this.$store.state.user.agenCode)
       this.tableData = res.data
       for (var i = 0; i < this.tableData.length; i++) {
         if (this.tableData[i].fDestroyType) {
@@ -259,7 +251,6 @@ export default {
           this.tableData[k].fStatus = '已审核并通过'
         }
       }
-      // console.log(this.tableData);
     },
     // 新增票据销毁申请
     addApplyInfo (row) {
@@ -267,7 +258,6 @@ export default {
     },
     // 删除票据销毁申请
     async deleteApplyInfo (row) {
-      // console.log(row)
       await deleteApplyInfoByDestroyNo(row.fDestroyNo)
       await deleteItemInfoByDestroyNo(row.fDestroyNo)
       await this.refreshButton()

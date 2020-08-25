@@ -1,5 +1,5 @@
 <template>
-  <el-container style="height:670.4px">
+  <el-container>
     <left-tree
       :left-side-data="leftSideData"
       :year="object.year"
@@ -8,15 +8,15 @@
     <div id="right">
       <el-form :inline="true" :model="searchForm" class="demo-form-inline">
         <el-form-item label="科目名称">
-          <el-input v-model="searchForm.name" placeholder="请输入" />
+          <el-input v-model="searchForm.name" size="small" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="年份">
-          <el-input v-model="searchForm.year" placeholder="请输入" />
+          <el-input v-model="searchForm.year" size="small" placeholder="请输入" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
-          <el-button type="primary" icon="el-icon-edit" style="margin-left: 10px" @click="addCreate()">添加</el-button>
-          <el-button type="primary" icon="el-icon-edit" style="margin-left: 10px" @click="copyCreate">复制</el-button>
+          <el-button type="primary" size="small" icon="el-icon-search" @click="search">查询</el-button>
+          <el-button type="primary" size="small" icon="el-icon-edit" style="margin-left: 10px" @click="addCreate()">添加</el-button>
+          <el-button type="primary" size="small" icon="el-icon-edit" style="margin-left: 10px" @click="copyCreate">复制</el-button>
           <!-- <el-button :loading="downloadLoading" type="primary" icon="el-icon-download" @click="handleDownload">下载</el-button> -->
           <el-upload
             class="upload-demo"
@@ -28,56 +28,46 @@
             :show-file-list="false"
           >
             <!-- <el-button size="small" type="primary">点击上传</el-button> -->
-            <el-button type="primary" icon="el-icon-download" style="margin-left: 10px">导入</el-button>
+            <el-button type="primary" size="small" icon="el-icon-download" style="margin-left: 10px">导入</el-button>
           </el-upload>
           <!-- <el-button type="primary" icon="el-icon-download" @click="importData">导入</el-button> -->
-          <el-button type="primary" icon="el-icon-upload2" style="margin-left: 10px" @click="exportData">导出</el-button>
+          <el-button type="primary" size="small" icon="el-icon-upload2" style="margin-left: 10px" @click="exportData">导出</el-button>
         </el-form-item>
       </el-form>
       <el-table
         :data="tableData"
         style="width: 100%"
-        height="535px"
         border
       >
         <el-table-column
-          fixed
           prop="year"
           label="年度"
-          width="120"
         />
         <el-table-column
           prop="code"
           label="科目编码"
-          width="120"
         />
         <el-table-column
           prop="name"
           label="科目名称"
-          width="180"
         />
         <el-table-column
           prop="level"
           label="级次"
-          width="100"
         />
         <el-table-column
           prop="leaf"
           label="是否底级"
-          width="100"
         />
         <el-table-column
           prop="enable"
           label="是否启用"
-          width="100"
         />
         <el-table-column
           prop="remark"
           label="备注"
-          width="200"
         />
         <el-table-column
-          fixed="right"
           prop="operation"
           label="操作"
           width="150"
@@ -426,7 +416,7 @@ export default {
           return fmt
         }
 
-        const blob = new Blob([res.data], { type: 'application/vnd.ms-excel' })// 创建二进制流流接受对象
+        const blob = new Blob([res], { type: 'application/vnd.ms-excel' })// 创建二进制流流接受对象
         const date = new Date()
         const format = dateFormat('YYYY年mm月dd日HH时MM分SS秒', date)
         const fileName = this.parentName + format + '.xlsx'
@@ -550,7 +540,7 @@ export default {
 <style scoped>
 #right{
   height: 100%;
-  width: 1079px;
+  width: calc(100% - 250px);
 }
 
 .demo-form-inline{
@@ -560,8 +550,8 @@ export default {
 
 .el-pagination{
   /* margin-top: 40px; */
-  position: absolute;
-  right: 0;
+  position: relative;
+  float: right;
 }
 
 </style>
