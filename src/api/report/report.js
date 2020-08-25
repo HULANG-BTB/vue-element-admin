@@ -115,8 +115,6 @@ export function getNumIndexOut () {
   })
 }
 
-// +++++++++++++++++++++
-
 export function selectTodayBillSummary () {
   return request({
     url: '/ecds-report-analysis/report/todayBillSummary',
