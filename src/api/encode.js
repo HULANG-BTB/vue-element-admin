@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const baseURL = 'ecds-finan-stock-management/'
+const baseURL = 'finan-stock-management/'
 
 export function createCode (data) {
   return request({
