@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
-const BASE_URL = 'http://localhost:8888'
+const BASE_URL = '/writeoff-service'
+// const BASE_URL = 'http://123.56.247.54:7000/writeoff-service'
 
 export function receive (data) {
   return request({
@@ -42,18 +43,11 @@ export function setResult (data) {
   })
 }
 
-export function pass (data) {
+export function result (data) {
   return request({
-    url: BASE_URL + '/financial/pass',
+    url: BASE_URL + '/financial/result',
     method: 'post',
     data: data
   })
 }
 
-export function unPass (data) {
-  return request({
-    url: BASE_URL + '/financial/unPass',
-    method: 'post',
-    data: data
-  })
-}

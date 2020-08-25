@@ -31,10 +31,10 @@
         <el-button :disabled="addItemDisabled" type="primary" icon="el-icon-plus" size="mini" style="margin-left: 10px; float: right;" @click="addItem()">关联</el-button>
       </div>
       <div id="addItemTable">
-        <el-table ref="multipleTable" :data="tableItemData" @selection-change="handleSelectionChange">
+        <el-table id="addNoItem" ref="multipleTable" :data="tableItemData" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" />
-          <el-table-column property="id" label="id" width="150" />
-          <el-table-column property="itemId" label="项目编码" width="200" />
+          <el-table-column property="id" label="id" width="50" />
+          <el-table-column property="itemId" label="项目编码" width="100" />
           <el-table-column property="itemName" label="项目名称" />
           <el-table-column label="创建时间">
             <template slot-scope="scope">
@@ -67,7 +67,6 @@
     queryBillTypeTree,
     queryByCondition,
     turnenabled,
-    update,
     deleteItemBillRequest,
     queryItemByCondition,
     addBillItem
@@ -212,15 +211,11 @@
             {
               prop: 'itemIsEnabled',
               label: '项目启用',
-              width: 80
-            },
-            {
-              prop: 'createTime',
-              label: '创建时间'
+
             },
             {
               prop: 'updateTime',
-              label: '更新时间'
+              label: '更新时间',
             }
           ],
           operation: [{
@@ -481,7 +476,6 @@
 
       init() {
         this.freshTreeAndTable()
-        this.searchFormData[2].options = this.formOptions.natureCodeOptions
       },
       freshTreeAndTable() {
         this.getLeftTree()
@@ -495,4 +489,7 @@
   #addItemTable {
     margin-top: 10px;
   }
+#addNoItem{
+  width: 60vw;
+}
 </style>

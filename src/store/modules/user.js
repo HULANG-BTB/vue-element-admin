@@ -1,4 +1,4 @@
-import { getInfo, login, logout } from '@/api/user'
+import { getInfo, login, logout } from '@/api/userManager/user'
 import router, { resetRouter } from '@/router'
 import { getToken, removeToken, setToken } from '@/utils/auth'
 
@@ -29,6 +29,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_AGEN: (state, agenCode) => {
+    state.agenCode = agenCode
   }
 }
 
@@ -58,10 +61,11 @@ const actions = {
           return reject('Verification failed, please Login again.')
         }
 
-        const { roles, nickname } = data
+        const { roles, nickname, agenCode } = data
 
         commit('SET_ROLES', roles)
         commit('SET_NAME', nickname)
+        commit('SET_AGEN', agenCode)
         resolve(data)
       }).catch(error => {
         reject(error)

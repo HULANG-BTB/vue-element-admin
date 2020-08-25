@@ -7,7 +7,7 @@
  */
 import request from '@/utils/request'
 
-const baseUrl = '/fabFinDept/'
+const baseUrl = '/base/fabFinDept/'
 
 export function queryFinDept (data) {
   return request({
@@ -19,8 +19,15 @@ export function queryFinDept (data) {
 
 export function queryRngCode () {
   return request({
-    url: '/region/category',
+    url: '/base/region/category',
     method: 'get'
+  })
+}
+
+export function getAllFinDept () {
+  return request({
+    url: '/base/fabFinDept/get',
+    method: 'post'
   })
 }
 

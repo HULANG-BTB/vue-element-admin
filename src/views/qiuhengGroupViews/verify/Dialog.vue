@@ -10,10 +10,12 @@
         <el-button
           type="primary"
           size="small"
+          @click="pass"
         >审验通过</el-button>
         <el-button
           type="primary"
           size="small"
+          @click="fail"
         >审验失败</el-button>
       </div>
     </div>
@@ -98,21 +100,16 @@
   </el-dialog>
 </template>
 <script>
+import {
+  sendMail,
+  sendSms,
+  updateState
+} from '@/api/qiuhengGroupApi/billInvoicing/bill'
 export default {
   data () {
     return {
       visible: false,
-      tableData: [{
-        no: 1,
-        status: '未审验',
-        type: '手工审核',
-        danwei: '福州市boss软件',
-        time: '20160101-20160131',
-        bill_number: 100,
-        payment: '888888.00',
-        existWarn: '是'
-      }
-      ],
+      verifyData: {},
       ruleForm: {
         date1: '',
         date2: '',
@@ -127,24 +124,41 @@ export default {
           { type: 'date', required: true, message: '请选择时间', triggr: 'change' }
         ]
       },
-      imgUrl: 'https://gym-oss-test.oss-cn-shenzhen.aliyuncs.com/boss-bill/123456100.png?Expires=1597808962&OSSAccessKeyId=LTAI4G9QwvLCHMEmgYf2Jupe&Signature=qCgGFaaiTXHLTleEukBR9z8WPqE%3D'
+      imgUrl: ''
     }
   },
-  mounted () {},
   created () {
-    console.log(this.visible)
     this.$root.eventBus.$on('visible', (val) => {
       this.visible = val
     })
+    this.$root.eventBus.$on('verifydata', (val) => {
+      this.verifyData = val
+    })
+    this.$root.eventBus.$on('imgurl', (val) => {
+      this.imgUrl = val
+    })
   },
   methods: {
-    getData () {
-      var arr = this.multipleSelection
-      const multis = []
-      for (var i = 0; i < arr.length; i++) {
-        multis.push(arr[i])
-        this.$root.eventBus.$emit('data', multis)
-        this.dialogVisible = false
+    async pass () {
+      const billNo = this.verifyData.fbillNo
+      const mailRes = await sendMail(billNo)
+      console.log(mailRes)
+      const smsRes = await sendSms(billNo)
+      console.log(smsRes)
+      const state = 4
+      const res = await updateState(billNo, state)
+      if (res.success) {
+        this.$message('审核通过')
+        this.visible = false
+      }
+    },
+    async fail () {
+      const state = -1
+      const billNo = this.verifyData.fbillNo
+      const res = await updateState(billNo, state)
+      if (res.success) {
+        this.$message('审核未通过')
+        this.visible = false
       }
     }
   }
@@ -153,7 +167,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "~@/assets/scss/home.scss";
-.img {
-  align-content: center;
+.image {
+  max-width: 100%;
+  max-height: 300px;
+  justify-content: center;
 }
 </style>

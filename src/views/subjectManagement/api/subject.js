@@ -1,8 +1,10 @@
 import request from '@/utils/request'
 
+const baseUrl = '/base'
+
 export function getTableList (data) {
   return request({
-    url: '/subject/listPage',
+    url: baseUrl + '/subject/listPage',
     method: 'post',
     data
   })
@@ -10,7 +12,7 @@ export function getTableList (data) {
 
 export function edit (data) {
   return request({
-    url: '/subject/update',
+    url: baseUrl + '/subject/update',
     method: 'post',
     data
   })
@@ -18,7 +20,7 @@ export function edit (data) {
 
 export function del (data) {
   return request({
-    url: '/subject/delete',
+    url: baseUrl + '/subject/delete',
     method: 'post',
     data
   })
@@ -26,7 +28,7 @@ export function del (data) {
 
 export function add (data) {
   return request({
-    url: '/subject/add',
+    url: baseUrl + '/subject/add',
     method: 'post',
     data
   })
@@ -34,7 +36,7 @@ export function add (data) {
 
 export function upload (data) {
   return request({
-    url: '/subject/upload',
+    url: baseUrl + '/subject/upload',
     method: 'post',
     headers: { 'Content-Type': 'multipart/form-data' },
     data
@@ -43,7 +45,7 @@ export function upload (data) {
 
 export function copy (data) {
   return request({
-    url: '/subject/copy',
+    url: baseUrl + '/subject/copy',
     method: 'post',
     data
   })

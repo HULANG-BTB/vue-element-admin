@@ -6,11 +6,8 @@
  * @Description:
  */
 import request from '@/utils/request'
-import { Decrypt, Encrypt, GetKey } from '@/utils/cryptoJS'
-import { RSAencrypt, RSAdencrypt, getRSAKey } from '@/utils/jsEncrypt'
-import { getEncryptedJson } from '@/utils/data'
 
-const baseUrl = '/incomeSort/'
+const baseUrl = '/base/incomeSort/'
 
 export function getRSAPublicKey () {
   return request({
@@ -28,8 +25,6 @@ export function getIncomeTree (data) {
 }
 
 export function queryByCondition (data) {
-  // 数据加密
-  data = getEncryptedJson(data)
   return request({
     url: baseUrl + 'pageQueryById',
     method: 'post',
@@ -37,7 +32,7 @@ export function queryByCondition (data) {
   })
 }
 
-export function queryAllBillSort () {
+export function queryAllIncomeSort () {
   return request({
     url: baseUrl + 'getFirst',
     method: 'post'
@@ -46,7 +41,7 @@ export function queryAllBillSort () {
 
 export function add (data) {
   // 数据加密
-  data = getEncryptedJson(data)
+  // data = getEncryptedJson(data)
   return request({
     url: baseUrl + 'insert',
     method: 'post',
@@ -56,7 +51,7 @@ export function add (data) {
 
 export function update (data) {
 // 数据加密
-  data = getEncryptedJson(data)
+  // data = getEncryptedJson(data)  
   return request({
     url: baseUrl + 'update',
     method: 'post',
@@ -64,7 +59,7 @@ export function update (data) {
   })
 }
 
-export function deleteBillTypeRequest (data) {
+export function deleteIncomeSort (data) {
   return request({
     url: baseUrl + 'delete',
     method: 'post',

@@ -1,8 +1,10 @@
-import request from '../request/request2'
+import request from '@/utils/download'
+
+const baseUrl = '/base'
 
 export function download (data) {
   return request({
-    url: '/subject/download',
+    url: baseUrl + '/subject/download',
     method: 'post',
     // params: { 'id': data.id, 'limit': data.limit, 'page': data.page, 'year': data.year },
     data,
