@@ -126,6 +126,7 @@
       </el-table>
     </el-card>
 
+    <!-- 分页 -->
     <el-card class="box-card">
       <el-pagination
         layout="prev, pager, next, sizes, total, jumper"
@@ -138,7 +139,7 @@
         @current-change="handleCurrentChange"
       />
     </el-card>
-
+    <!-- 在页面下方显示具体模板内容 -->
     <el-card>
       <div
         id="container"
@@ -188,16 +189,15 @@
           <el-button
             type="primary"
             size="small"
-            :disabled="setDefault"
-            @click="handleSetDefaultTemplate"
-          >设为默认模板</el-button>
-        </el-form-item>
-        <el-form-item>
+            @click="handleUpdateTemplate"
+          >修改</el-button>
           <el-button
             type="primary"
             size="small"
-            @click="handleUpdateTemplate"
-          >修改</el-button>
+            :disabled="setDefault"
+            @click="handleSetDefaultTemplate"
+          >设为默认模板</el-button>
+
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -357,13 +357,11 @@ export default {
      * 在页面下方展示对应的模板
      */
     handleShowTemplate (id) {
-      this.dialogVisible = false
       getTemplate(id).then(res => {
         const blob = new Blob([res])
         const reader = new FileReader()
         reader.onload = function (event) {
-          const contents = reader.result
-          document.getElementById('container').innerHTML = contents
+          document.getElementById('container').innerHTML = reader.result
         }
         reader.readAsText(blob)
       })
@@ -392,14 +390,15 @@ export default {
       const data = {
         'id': this.id,
         'memo': this.memo,
-        'templateName': this.templateName
+        'name': this.templateName
       }
-      console.log(data)
       updateTemplate(data).then(res => {
         this.$message({
           type: 'success',
           message: '修改成功！'
         })
+        this.dialogVisible = false
+        this.getTableData()
       })
     },
 
@@ -413,7 +412,7 @@ export default {
           type: 'success',
           message: '成功设为默认模板'
         })
-        console.log(res)
+        this.setDefault = true
       })
     },
 
@@ -431,7 +430,7 @@ export default {
     /**
      * 删除单个模板文件
      */
-    handleDelete ({ $index, row }) {
+    handleDelete (row) {
       this.$confirm('是否删除该模板文件', '提示', {
         confirmButtonText: '是',
         cancelButtonText: '否',
@@ -443,11 +442,12 @@ export default {
             message: '删除成功!'
           })
           this.getTableData()
-        }).catch(() => {
+        }).catch(err => {
           this.$message({
             type: 'error',
             message: '删除失败!'
           })
+          console.log(err)
         })
       })
     },
@@ -466,7 +466,6 @@ export default {
             type: 'success',
             message: '删除成功!'
           })
-          console.log(res)
           this.getTableData()
         }).catch((err) => {
           this.$message({
