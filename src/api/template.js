@@ -77,3 +77,28 @@ export function uploadExcel (data) {
     data
   })
 }
+
+export function setDefaultTemplate (data) {
+  return request({
+    url: baseURL + `/printTemplate/setDefault`,
+    method: `post`,
+    params: data
+  })
+}
+
+export function isDefault (data) {
+  return request({
+    url: baseURL + `/printTemplate/isDefault`,
+    method: `get`,
+    params: data
+  })
+}
+
+export function updateTemplate (data) {
+  return request({
+    url: baseURL + `/printTemplate/update`,
+    method: `put`,
+    params: data
+  })
+
+}

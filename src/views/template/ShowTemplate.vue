@@ -83,28 +83,36 @@
           label="票据代码（不含年度）"
           width="290"
         >
-          <template slot-scope="scope">{{ scope.row.rgnCode + scope.row.typeId + scope.row.sortId }}</template>
+          <template slot-scope="scope">
+            {{ scope.row.rgnCode + scope.row.typeId + scope.row.sortId }}
+          </template>
         </el-table-column>
         <el-table-column
           align="center"
           label="模板名称"
-          width="290"
+          width="300"
         >
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
         <el-table-column
           align="center"
           label="备注"
-          width="290"
+          width="350"
         >
           <template slot-scope="scope">{{ scope.row.memo }}</template>
         </el-table-column>
         <el-table-column
+          fixed="right"
           align="center"
           label="操作"
-          width="200"
+          width="330"
         >
           <template slot-scope="scope">
+            <el-button
+              type="primary"
+              size="small"
+              @click="handleUpdateTemplateDialog(scope.row)"
+            >编辑</el-button>
             <el-button
               type="primary"
               size="small"
@@ -139,9 +147,60 @@
     </el-card>
     <!-- 显示模板信息 -->
     <el-dialog
+      title="编辑模板信息"
       :visible.sync="dialogVisible"
-      :data="templateTableData"
-    />
+      :before-close="handleUpdateDialogClose"
+      width="500px"
+    >
+      <el-form
+        id="editTemplate"
+        label-width="150px"
+      >
+        <el-form-item label="票据代码:">
+          <el-input
+            v-model="billCode"
+            placeholder="例:011602"
+            clearable
+            :disabled="true"
+            size="small"
+            class="input-width"
+          />
+        </el-form-item>
+        <el-form-item label="备注:">
+          <el-input
+            v-model="memo"
+            placeholder="备注"
+            clearable
+            size="small"
+            class="input-width"
+          />
+        </el-form-item>
+        <el-form-item label="模板名称:">
+          <el-input
+            v-model="templateName"
+            placeholder="非税票据"
+            clearable
+            size="small"
+            class="input-width"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            size="small"
+            @click="handleUpdateTemplate"
+          >修改</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            size="small"
+            :disabled="setDefault"
+            @click="handleSetDefaultTemplate"
+          >设为默认模板</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <!-- 上传模板文件 -->
     <el-dialog
       title="添加模板文件"
@@ -155,7 +214,7 @@
         <el-form-item label="票据代码:">
           <el-input
             v-model="billCode"
-            placeholder="011602"
+            placeholder="例:011602"
             clearable
             size="small"
             class="input-width"
@@ -206,13 +265,17 @@ import {
   deleteTemplate,
   deleteTemplateBatch,
   uploadTemplate,
-  uploadExcel
+  uploadExcel,
+  setDefaultTemplate,
+  isDefault,
+  updateTemplate
 } from '@/api/template'
 
 export default {
   name: 'ShowTemplate',
   data () {
     return {
+      id: '',
       billCode: '',
       memo: '',
       templateName: '',
@@ -220,6 +283,7 @@ export default {
       selectedList: '',
       dialogVisible: false,
       dialogAddFile: false,
+      setDefault: true,
       templateTableData: '',
       addArr: [],
       contents: '',
@@ -290,7 +354,7 @@ export default {
     },
 
     /**
-     * template显示框可视化，并展示对应template
+     * 在页面下方展示对应的模板
      */
     handleShowTemplate (id) {
       this.dialogVisible = false
@@ -303,6 +367,64 @@ export default {
         }
         reader.readAsText(blob)
       })
+    },
+
+    /**
+     * 弹出编辑模板信息框，并显示相关信息
+     */
+    handleUpdateTemplateDialog (row) {
+      this.dialogVisible = true
+      this.id = row.id
+      this.billCode = row.rgnCode + row.typeId + row.sortId
+      this.memo = row.memo
+      this.templateName = row.name
+      const data = { 'id': row.id }
+      isDefault(data).then(res => {
+        this.setDefault = res.data
+      })
+    },
+
+    /**
+     * 修改模板信息
+     */
+    handleUpdateTemplate () {
+      const data = {
+        'id': this.id,
+        'memo': this.memo,
+        'templateName': this.templateName
+      }
+      console.log(data)
+      updateTemplate(data).then(res => {
+        this.$message({
+          type: 'success',
+          message: '修改成功！'
+        })
+      })
+    },
+
+    /**
+     * 将模板设为默认模板
+     */
+    handleSetDefaultTemplate () {
+      const data = { 'id': this.id }
+      setDefaultTemplate(data).then(res => {
+        this.$message({
+          type: 'success',
+          message: '成功设为默认模板'
+        })
+        console.log(res)
+      })
+    },
+
+    /**
+     * 关闭模板前清空模板信息
+     */
+    handleUpdateDialogClose () {
+      this.id = ''
+      this.billCode = ''
+      this.templateName = ''
+      this.memo = ''
+      this.dialogVisible = false
     },
 
     /**
