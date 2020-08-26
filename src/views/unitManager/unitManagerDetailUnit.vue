@@ -72,12 +72,12 @@
       <el-col :span="1.5">
         <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(project)">准购证</el-button>
       </el-col>
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleProject(project)">挂接项目</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleBill(project)">挂接票据</el-button>
-      </el-col>
+      </el-col> -->
     </el-row>
 
     <el-dialog :visible.sync="dialogVisibleTow" title="准购证信息">
