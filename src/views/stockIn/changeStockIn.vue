@@ -2,12 +2,13 @@
   <div class="app-container">
     <el-form :inline="true" :model="stockInPageQuery" class="demo-form-inline">
       <el-form-item label="业务单号">
-        <el-input v-model="stockInPageQuery.no" placeholder="单号" />
+        <el-input v-model="stockInPageQuery.no" size="small" placeholder="单号" />
       </el-form-item>
       <el-form-item label="时间">
         <el-date-picker
           v-model="date"
           type="daterange"
+          size="small"
           unlink-panels
           range-separator="至"
           start-placeholder="开始日期"
@@ -16,7 +17,20 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">查询</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="small"
+          @click="onSubmit"
+        >查询</el-button>
+      </el-form-item>
+      <el-form-item label>
+        <el-button
+          type=""
+          icon="el-icon-refresh"
+          size="small"
+          @click="getTableData"
+        >重置</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -32,13 +46,11 @@
         align="center"
         prop="no"
         label="业务单号"
-        width="180"
       />
       <el-table-column
         align="center"
         prop="date"
         label="创建时间"
-        width="180"
       />
       <el-table-column
         align="center"
@@ -92,12 +104,10 @@
         >
           <el-table-column
             type="index"
-            width="50px"
             align="center"
           />
           <el-table-column
             label="票据编码"
-            width="150%"
             align="center"
           >
             <template slot-scope="scope">
@@ -106,7 +116,6 @@
           </el-table-column>
           <el-table-column
             label="票据名称"
-            width="150px"
             align="center"
           >
             <template slot-scope="scope">
@@ -115,7 +124,6 @@
           </el-table-column>
           <el-table-column
             label="数量"
-            width="100px"
             align="center"
           >
             <template slot-scope="scope">
@@ -124,7 +132,6 @@
           </el-table-column>
           <el-table-column
             label="起始号"
-            width="180px"
             align="center"
           >
             <template slot-scope="scope">
@@ -133,7 +140,6 @@
           </el-table-column>
           <el-table-column
             label="终止号"
-            width="180px"
             align="center"
           >
             <template slot-scope="scope">

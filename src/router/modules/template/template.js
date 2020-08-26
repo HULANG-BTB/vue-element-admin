@@ -5,7 +5,7 @@ export default [{
   path: '/template',
   component: Layout,
   redirect: '/template/template',
-  name: 'User',
+  name: 'Template',
   meta: {
     title: '模板管理',
     icon: 'el-icon-tickets'

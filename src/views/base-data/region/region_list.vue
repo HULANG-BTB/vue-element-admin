@@ -16,7 +16,7 @@
             <el-button type="primary" size="mini" icon="el-icon-search" @click="query">查询</el-button>
             <el-button type="primary" size="mini" @click="reset">重置</el-button>
           </el-form-item><br />
-          <el-button type="primary" size="mini" icon="el-icon-plus" @click="add">新增</el-button>
+          <el-button v-permission="['admin', 'financial_check']" type="primary" size="mini" icon="el-icon-plus" @click="add">新增</el-button>
         </el-form>
 
         <el-table :data="regionData" style="width: 100%">
@@ -54,10 +54,10 @@
                 <el-button size="mini" type="success" @click="look(scope.row)"><i style="font-size:10px" class="el-icon-tickets" /></el-button>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="修改" placement="top">
-                <el-button size="mini" type="primary" @click="edit(scope.row)"><i style="font-size:10px" class="el-icon-edit" /></el-button>
+                <el-button v-permission="['admin', 'financial_check']" size="mini" type="primary" @click="edit(scope.row)"><i style="font-size:10px" class="el-icon-edit" /></el-button>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                <el-button type="danger" size="mini" @click="del(scope.row.id)"><i style="font-size:10px" class="el-icon-delete" /></el-button>
+                <el-button v-permission="['admin', 'financial_check']" type="danger" size="mini" @click="del(scope.row.id)"><i style="font-size:10px" class="el-icon-delete" /></el-button>
               </el-tooltip>
             </template>
           </el-table-column>

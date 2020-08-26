@@ -188,9 +188,7 @@ export default {
   mounted () {},
   created () {
     this.$root.eventBus.$on('lookDestroyApplyDialogVisible', (val) => {
-      // console.log(this.visible)
       this.lookDestroyApplyDialogVisible = val
-      console.log(this.lookDestroyApplyDialogVisible)
     })
     this.$root.eventBus.$on('lookDestroyApply', (val) => {
       this.getData(val)
@@ -212,7 +210,6 @@ export default {
   methods: {
     async getData (val) {
       const res = await getItemListByDestroyNo(val)
-      // console.log(res)
       this.tableData = res.data
     }
   }

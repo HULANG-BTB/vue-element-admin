@@ -9,7 +9,8 @@ export default [
     name: 'Report',
     meta: {
       title: '财政报表',
-      icon: 'documentation'
+      icon: 'documentation',
+      roles: ['admin', 'financial']
     },
     children: [
       {
@@ -70,6 +71,22 @@ export default [
         meta: {
           title: '生命周期'
         }
+      },
+      {
+        path: 'billsummary',
+        component: () => import('@/views/report/billsummary'),
+        name: 'PageBillSummary',
+        hidden: true,
+        meta: {
+          title: '开票汇总'
+        }
+      },
+      {
+        path: 'stockpay',
+        component: () => import('@/views/report/stockpay'),
+        name: 'Stockpay',
+        hidden: true,
+        meta: { title: '缴款明细表详细' }
       }
     ]
   }

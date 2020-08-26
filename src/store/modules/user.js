@@ -8,7 +8,7 @@ const getDefaultState = () => {
     nickname: '',
     avatar: '/assets/images/avator.jpg',
     roles: [],
-    agenCode: '112233'
+    agenCode: ''
   }
 }
 

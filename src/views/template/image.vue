@@ -150,9 +150,20 @@
             size="small"
             type="primary"
             @click="onSubmit"
-          >立即创建</el-button>
+          >生成图片</el-button>
           <el-button
             size="small"
+            type="success"
+            @click="genStampedImg"
+          >生成盖章图片</el-button>
+          <el-button
+            size="small"
+            type="danger"
+            @click="genPDF"
+          >生成PDF</el-button>
+          <el-button
+            size="small"
+            icon="el-icon-plus"
             :disabled="addButtonAvailable"
             @click="addItem"
           >新增收费项目</el-button>
@@ -164,7 +175,7 @@
 
 <script>
 
-import { getImageTemplate, generateImage } from '@/api/image-template'
+import { getImageTemplate, generateImage, genStampedImage, getPDFAddress } from '@/api/image-template'
 
 export default {
   name: 'Image',
@@ -226,6 +237,18 @@ export default {
     onSubmit () {
       generateImage(this.nontaxBill).then(res => {
         this.setImage(res)
+      })
+    },
+    genStampedImg () {
+      genStampedImage(this.nontaxBill).then(res => {
+        this.setImage(res)
+      })
+    },
+    genPDF () {
+      getPDFAddress(this.nontaxBill).then(res => {
+        const url = res.data
+        window.open(url, '_blank')
+        // console.log(url)
       })
     },
     addItem () {
