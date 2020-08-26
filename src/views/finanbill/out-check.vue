@@ -75,12 +75,14 @@
           <el-col :span="5">
             <el-form-item label="操作">
               <el-button
+                v-if="query.changeState <= 2"
                 type="primary"
                 size="small"
                 :disabled="isCheckBoxChecked"
                 @click="checkAll(checkResult.pass)"
               >通过</el-button>
               <el-button
+                v-if="query.changeState <= 2"
                 :disabled="isCheckBoxChecked"
                 type="danger"
                 size="small"
