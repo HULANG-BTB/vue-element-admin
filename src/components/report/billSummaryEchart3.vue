@@ -71,7 +71,7 @@ export default {
         },
         yAxis: {
           type: 'category',
-          data: ['-6', '-5', '-4', '-3', '-2', '-1', '今日']
+          data: ['今日', '-1', '-2', '-3', '-4', '-5', '-6']
         },
         series: chart3seriesdata
       }

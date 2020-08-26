@@ -101,14 +101,14 @@ export default {
   methods: {
     async getTableData () {
       const res = await getReportBill()
-      this.tableData = res
+      this.tableData = res.data
     },
     current_change (currentPage) {
       this.currentPage = currentPage
     },
     async query () {
       const res = await selectSearch(this.search)
-      this.tableData = res
+      this.tableData = res.data
     }
   }
 }
