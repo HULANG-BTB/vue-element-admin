@@ -329,7 +329,6 @@ export default {
     },
     async addGroup () {
       const data = { 'groupCode': this.group.groupCode, 'itemCode': this.unitItem.itemId }
-      console.log(data)
       await addItemGroup(data)
         .then((res) => {
           this.groupList = false

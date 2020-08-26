@@ -215,7 +215,6 @@ export default {
     async getProjectList (Data) {
       const res = await getItemList(Data)
       this.projectList = res.data
-      console.log(this.projectList)
     },
     async confirmRole () {
       this.group.agenCode = this.queryParams.agenCode

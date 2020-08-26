@@ -379,7 +379,6 @@ export default {
     async confirmCrt () {
       this.$refs['crt'].validate(async (valid) => {
         if (valid) {
-          console.log(this.crt)
           if (this.dialogType !== 'edit') { // 新增
             await addCrt(this.crt).then(res => {
               this.$set(this.crt, {})
