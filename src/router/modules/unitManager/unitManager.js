@@ -22,7 +22,7 @@ const unitManager = {
         id: route.params.id
       }),
       hidden: true,
-      meta: { title: '单位管理详情(财政端)' }
+      meta: { title: '单位信息' }
     },
     {
       path: 'unitManagerDetailUnit',
