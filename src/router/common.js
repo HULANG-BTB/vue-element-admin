@@ -47,5 +47,41 @@ export default [
       title: '主页查验',
       icon: 'el-icon-message'
     }
+  },
+
+  {
+    path: '/payInformational',
+    component: () => import('@/views/payment/payInformational'),
+    hidden: true
+  },
+
+  {
+    path: '/pay',
+    component: () => import('@/views/payment/index'),
+    hidden: true
+  },
+
+  {
+    path: '/payInformation',
+    component: () => import('@/views/payment/payInformational'),
+    hidden: true
+  },
+
+  {
+    path: '/payment',
+    component: () => import('@/views/payment/payment'),
+    hidden: true
+  },
+
+  {
+    path: '/paySuccess',
+    component: () => import('@/views/payment/paySuccess'),
+    hidden: true
+  },
+
+  {
+    path: '/paySuccessPhone',
+    component: () => import('@/views/payment/paySuccessPhone'),
+    hidden: true
   }
 ]
