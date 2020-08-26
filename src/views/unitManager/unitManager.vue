@@ -328,7 +328,6 @@ export default {
     async getFinDeptName () {
       const { data } = await getAllFinDept() // 无参查询部门列表
       this.finDept = data
-      console.log(data)
     },
     // 搜索
     handleQuery () {

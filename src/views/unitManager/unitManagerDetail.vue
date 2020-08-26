@@ -213,7 +213,6 @@ export default {
       this.dialogVisibleTow = true
       await getCrtByAgenCode({ agenCode: rowData.agenCode }).then(res => {
         this.crt = res.data[0]
-        console.log(this.crt)
       })
     },
     // 准购证模态框提交
