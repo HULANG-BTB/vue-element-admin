@@ -290,7 +290,6 @@ export default {
     },
     // 分页
     handleCurrentChange (cpage) {
-      // userList.slice((currpage - 1) * pagesize, currpage * pagesize)
       this.currpage = cpage
     },
     handleSizeChange (psize) {

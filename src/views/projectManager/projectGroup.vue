@@ -64,10 +64,7 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="分组编码" :label-width="formLabelWidth" prop="groupCode">
-              <el-input v-model="group.groupCode" placeholder="分组编码" />
-            </el-form-item>
-            <el-form-item label="经办人编码" :label-width="formLabelWidth" prop="operatorId">
-              <el-input v-model="group.operatorId" placeholder="经办人编码" />
+              <el-input v-model="group.groupCode" placeholder="分组编码" readonly />
             </el-form-item>
             <el-form-item label="备注" :label-width="formLabelWidth" prop="note">
               <el-input v-model="group.note" placeholder="备注" />
@@ -77,11 +74,7 @@
             <el-form-item label="分组名称" :label-width="formLabelWidth" prop="groupName">
               <el-input v-model="group.groupName" placeholder="分组名称" />
             </el-form-item>
-            <el-form-item label="经办人" :label-width="formLabelWidth" prop="operator">
-              <el-input v-model="group.operator" placeholder="经办人" />
-            </el-form-item>
-          </el-col>
-        </el-row>
+          </el-col></el-row>
       </el-form>
       <div style="text-align:right;">
         <el-button type="danger" @click="cancel">取消</el-button>
@@ -107,9 +100,9 @@
         <el-table-column property="itemId" label="项目编码" align="center" />
         <el-table-column property="itemName" label="项目名称" align="center" />
         <el-table-column property="fundsnatureCode" label="资金性质" align="center" />
+        <el-table-column property="subjectName" label="预算科目" align="center" />
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="handProjectleLook(scope.row)">查看</el-button>
             <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleProjectDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -133,7 +126,7 @@ export default {
         page: 1,
         limit: 10,
         total: 0,
-        agenCode: '',
+        agenCode: this.$store.state.user.agenCode,
         groupName: ''
       },
       groupList: [],
@@ -142,8 +135,6 @@ export default {
       group: {
         groupCode: '',
         groupName: '',
-        operator: '',
-        operatorId: '',
         note: ''
       },
       groupDetail: {
@@ -182,7 +173,6 @@ export default {
     }
   },
   created () {
-    this.queryParams.agenCode = this.$store.state.user.agenCode
     this.getTableData()
   },
   methods: {
@@ -225,8 +215,10 @@ export default {
     async getProjectList (Data) {
       const res = await getItemList(Data)
       this.projectList = res.data
+      console.log(this.projectList)
     },
     async confirmRole () {
+      this.group.agenCode = this.queryParams.agenCode
       await addGroup(this.group).then(res => {
         this.$set(this.group, {})
         this.dialogVisible = false
@@ -256,6 +248,8 @@ export default {
     // 新增按钮
     handleAdd () {
       this.dialogVisible = true
+      const val = parseInt(this.queryParams.total) + 1
+      this.group.groupCode = this.$store.state.user.agenCode + val
     },
     // 删除按钮
     handleDelete (deleData) {
@@ -308,9 +302,6 @@ export default {
             console.error(err)
           })
       })
-    },
-    async handProjectleLook (rowData) {
-      console.log(rowData)
     },
     clearData () {
       this.group = {

@@ -20,12 +20,12 @@
         />
       </el-form-item>
       <el-form-item label="所属单位" prop="keyword.agenName">
-        <el-select v-model="queryParams.keyword.agenName" placeholder="请选择项目用途" style="width: 150px">
+        <el-select v-model="queryParams.keyword.agenName" placeholder="请选择所属单位" style="width: 150px">
           <el-option v-for="(item,index) in agenNameList" :key="index" :label="item.agenName" :value="item.agenName" />
         </el-select>
       </el-form-item>
       <el-form-item label="准购证状态">
-        <el-select v-model="queryParams.keyword.isenable" placeholder="请选择项目状态" style="width: 150px">
+        <el-select v-model="queryParams.keyword.isenable" placeholder="请选择准购证状态" style="width: 150px">
           <el-option label="待审核" value="false" />
           <el-option label="已完成" value="true" />
         </el-select>
@@ -331,8 +331,6 @@ export default {
       this.dialogVisible = true
       this.dialogType = 'edit'
       this.crt = Object.assign({}, rowData)
-      // const { data } = await getOtherItem(rowData.id) // 模态框中需要的其他接口
-      // this.project.roles = data
     },
     // 删除按钮
     handleDelete (deleData) {

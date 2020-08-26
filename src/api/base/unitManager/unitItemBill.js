@@ -20,7 +20,7 @@ export function getunitBillListByPage (data) {
 
 export function getGroupByCode (data) {
   return request({
-    url: '/group/getGroupByCode',
+    url: `${BASE_URL}/group/getGroupByCode`,
     method: 'post',
     data: data
   })
@@ -28,7 +28,7 @@ export function getGroupByCode (data) {
 
 export function addItemGroup (data) {
   return request({
-    url: '/groupItem/save',
+    url: `${BASE_URL}/groupItem/save`,
     method: 'post',
     data: data
   })

@@ -45,8 +45,6 @@
       <el-table-column align="center" label="单位分类" prop="sortCode" />
       <el-table-column align="center" label="操作" width="400">
         <template slot-scope="scope">
-          <!-- <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleProject(scope.row)">项目</el-button>
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleBill(scope.row)">票据</el-button> -->
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleLook(scope.row)">查看</el-button>
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">修改</el-button>
           <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
@@ -133,7 +131,7 @@
             </el-form-item>
             <el-form-item label="归口财政部门" :label-width="formLabelWidth">
               <el-select v-model="project.findeptId" placeholder="归口财政部门">
-                <el-option v-for="item in finDept" :key="item.id" :label="item.findeptName+item.findeptCode" :value="item.findeptCode" />
+                <el-option v-for="item in finDept" :key="item.id" :label="item.findeptName" :value="item.findeptName" />
               </el-select>
             </el-form-item>
             <el-form-item label="单位分类" :label-width="formLabelWidth">

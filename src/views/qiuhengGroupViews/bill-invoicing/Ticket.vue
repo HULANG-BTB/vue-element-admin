@@ -270,7 +270,7 @@ export default {
       // 项目组模块
       itemDtos: [],
       // 单位名称
-      unitName: '',
+      unitName: '博思软件股份有限公司',
       // 总金额
       amt: 0,
       tableData: [
@@ -321,7 +321,7 @@ export default {
       if (res.msg === 'OK') {
         this.$message('已提交开票请求')
       }
-      this.$router.push({ name: 'paybook' })
+      this.$router.push({ name: 'paybook', params: { batchPojo }})
     },
     // 移除项目
     deleteRow (index, rows) {

@@ -276,7 +276,7 @@ export default {
       }).then(async () => {
         this.resultVo.fStatus = '已审核并通过'
         for (var k = 0; k < this.tableData.length; k++) {
-          this.fAgenIdCode = '1314'
+          this.fAgenIdCode = '360102000000'
           this.fBillBatchCode = this.tableData[k].fBillBatchCode
           this.fWarehouseId = this.tableData[k].fWarehouseId
           this.fBillNo1 = this.tableData[k].fBillNo1

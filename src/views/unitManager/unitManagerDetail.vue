@@ -4,62 +4,62 @@
       <el-row :gutter="20">
         <el-col :span="8">
           <el-form-item label="单位编码" :label-width="formLabelWidth">
-            <el-input v-model="project.agenCode" placeholder="单位编码" />
+            <el-input v-model="project.agenCode" placeholder="单位编码" disabled="true" />
           </el-form-item>
           <el-form-item label="部门编码" :label-width="formLabelWidth">
-            <el-input v-model="project.deptCode" placeholder="部门编码" />
+            <el-input v-model="project.deptCode" placeholder="部门编码" disabled="true" />
           </el-form-item>
           <el-form-item label="部门名称" :label-width="formLabelWidth">
-            <el-input v-model="project.deptName" placeholder="部门编码" />
+            <el-input v-model="project.deptName" placeholder="部门编码" disabled="true" />
           </el-form-item>
           <el-form-item label="所属行业" :label-width="formLabelWidth">
-            <el-input v-model="project.indCode" placeholder="所属行业" />
+            <el-input v-model="project.indCode" placeholder="所属行业" disabled="true" />
           </el-form-item>
           <el-form-item label="单位负责人" :label-width="formLabelWidth">
-            <el-input v-model="project.linkMan" placeholder="单位负责人" />
+            <el-input v-model="project.linkMan" placeholder="单位负责人" disabled="true" />
           </el-form-item>
           <el-form-item label="单位联系人电话" :label-width="formLabelWidth">
-            <el-input v-model="project.linkTel" placeholder="单位联系人电话" />
+            <el-input v-model="project.linkTel" placeholder="单位联系人电话" disabled="true" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="单位名称" :label-width="formLabelWidth">
-            <el-input v-model="project.agenName" placeholder="单位名称" />
+            <el-input v-model="project.agenName" placeholder="单位名称" disabled="true" />
           </el-form-item>
           <el-form-item label="助记码" :label-width="formLabelWidth">
-            <el-input v-model="project.mnem" placeholder="助记码" />
+            <el-input v-model="project.mnem" placeholder="助记码" disabled="true" />
           </el-form-item>
           <el-form-item label="归口财政部门" :label-width="formLabelWidth">
-            <el-input v-model="project.findeptId" placeholder="归口财政部门" />
+            <el-input v-model="project.findeptId" placeholder="归口财政部门" disabled="true" />
           </el-form-item>
           <el-form-item label="单位分类" :label-width="formLabelWidth">
-            <el-input v-model="project.sortCode" placeholder="单位分类" />
+            <el-input v-model="project.sortCode" placeholder="单位分类" disabled="true" />
           </el-form-item>
           <el-form-item label="生效日期" :label-width="formLabelWidth">
-            <el-date-picker v-model="project.effDate" type="date" placeholder="选择日期" style="width: 100%;" />
+            <el-date-picker v-model="project.effDate" type="date" placeholder="选择日期" style="width: 100%;" disabled="true" />
           </el-form-item>
           <el-form-item label="失效日期" :label-width="formLabelWidth">
-            <el-date-picker v-model="project.expDate" type="date" placeholder="选择日期" style="width: 100%;" />
+            <el-date-picker v-model="project.expDate" type="date" placeholder="选择日期" style="width: 100%;" disabled="true" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="级次" :label-width="formLabelWidth">
-            <el-input v-model="project.level" placeholder="级次" />
+            <el-input v-model="project.level" placeholder="级次" disabled="true" />
           </el-form-item>
           <el-form-item label="财务负责人" :label-width="formLabelWidth">
-            <el-input v-model="project.finMgr" placeholder="财务负责人" />
+            <el-input v-model="project.finMgr" placeholder="财务负责人" disabled="true" />
           </el-form-item>
           <el-form-item label="财务负责人电话" :label-width="formLabelWidth">
-            <el-input v-model="project.finMgrTel" placeholder="财务负责人电话" />
+            <el-input v-model="project.finMgrTel" placeholder="财务负责人电话" disabled="true" />
           </el-form-item>
           <el-form-item label="邮政编码" :label-width="formLabelWidth">
-            <el-input v-model="project.zip" placeholder="邮政编码" />
+            <el-input v-model="project.zip" placeholder="邮政编码" disabled="true" />
           </el-form-item>
           <el-form-item label="联系地址" :label-width="formLabelWidth">
-            <el-input v-model="project.addr" placeholder="联系地址" />
+            <el-input v-model="project.addr" placeholder="联系地址" disabled="true" />
           </el-form-item>
           <el-form-item label="备注" :label-width="formLabelWidth">
-            <el-input v-model="project.note" placeholder="备注" />
+            <el-input v-model="project.note" placeholder="备注" disabled="true" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -75,12 +75,6 @@
       <el-col :span="1.5">
         <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleBill(project)">挂接票据</el-button>
       </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleAbleItem(project)">可用项目</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleAbleBill(project)">可用票据</el-button>
-      </el-col> -->
     </el-row>
 
     <el-dialog :visible.sync="dialogVisibleTow" title="准购证信息">
@@ -152,7 +146,6 @@ export default {
   data () {
     return {
       searchById: { id: this.id },
-      // searchByAgenCode: this.$store.state.agenCode,
       loading: true,
       dialogVisible: false,
       dialogVisibleTow: false,
@@ -272,8 +265,8 @@ export default {
       this.loading = false
     },
     // 查询单位具有的项目
-    async getAgenItemList (agenCode) {
-      const { data } = await getAgenItemList({ agenCode })
+    async getAgenItemList (agenIdcode) {
+      const { data } = await getAgenItemList({ agenIdcode })
       if (!data) {
         return
       }
@@ -334,7 +327,7 @@ export default {
         })
       } else {
         const postData = this.manageHasList.map(item => {
-          return { agenCode: this.project.agenCode, itemCode: item }
+          return { agenIdcode: this.project.agenCode, itemCode: item }
         })
         await updateAgenItemBatch(postData).then(res => {
           successFlag = true
@@ -349,18 +342,6 @@ export default {
       }
       this.manageDialogVisible = false
     }
-    // 可用项目按钮
-    // handleAbleItem (rowData) {
-    //   this.$router.push({
-    //     path: '/unitManager/unitItemManager/'
-    //   })
-    // },
-    // 可用票据按钮
-    // handleAbleBill (rowData) {
-    //   this.$router.push({
-    //     path: '/unitManager/unitBillManager/'
-    //   })
-    // }
   }
 }
 </script>

@@ -18,11 +18,6 @@
       />
       <el-table-column
         align="center"
-        label="分类编码"
-        prop="itemSortId"
-      />
-      <el-table-column
-        align="center"
         label="生效日期"
         prop="itemEffdate"
       >
@@ -104,12 +99,12 @@
               />
             </el-form-item>
             <el-form-item
-              label="项目分类编码"
+              label="预算科目"
               :label-width="formLabelWidth"
-              prop="itemSortId"
             >
               <el-input
-                v-model="unitItem.itemSortId"
+                v-model="unitItem.subjectName"
+                placeholder="预算科目"
                 readonly
               />
             </el-form-item>
@@ -159,10 +154,10 @@
             <el-form-item
               label="收入类别"
               :label-width="formLabelWidth"
-              prop="incomSortCode"
+              prop="name"
             >
               <el-input
-                v-model="unitItem.incomSortCode"
+                v-model="incomeSort.name"
                 readonly
               />
             </el-form-item>
@@ -224,6 +219,7 @@
 </template>
 
 <script>
+import { getIncomeSortName } from '@/api/base/projectManager/projectManager'
 import { getunitItemListByPage, getGroupByCode, addItemGroup } from '@/api/base/unitManager/unitItemBill'
 import { parseTime } from '@/utils/index'
 export default {
@@ -231,13 +227,13 @@ export default {
     return {
     //   loading: true,
       queryParams: { // 查询参数
-        keyword: '22222222222',
+        keyword: this.$store.state.user.agenCode,
         page: 1,
         limit: 10,
         total: 0
       },
       groupParams: {
-        agenCode: '22222222222',
+        agenCode: this.$store.state.user.agenCode,
         page: 1,
         limit: 10,
         total: 0
@@ -247,6 +243,10 @@ export default {
         groupCode: ''
       },
       groupList: [],
+      incomeSort: {
+        code: '',
+        name: ''
+      },
       checksort: '是',
       nochecksort: '否',
       unitItem: {
@@ -306,9 +306,11 @@ export default {
       // this.resetForm('queryParams')
       this.queryParams = {}
     },
-    handleLook (rowData) {
+    async handleLook (rowData) {
       this.dialogVisible = true
       this.unitItem = Object.assign({}, rowData)
+      const res2 = await getIncomeSortName(this.unitItem.incomSortCode)
+      this.incomeSort = res2.data
     },
     handleAddGroup (rowData) {
       this.groupVisible = true
@@ -336,6 +338,7 @@ export default {
             message: '添加成功!'
           })
           this.getTableData()
+          this.dialogVisible = false
         })
         .catch((err) => {
           console.error(err)
