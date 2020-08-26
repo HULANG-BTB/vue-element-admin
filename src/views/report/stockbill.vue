@@ -24,7 +24,7 @@
         <el-main>
           <el-form>
             <el-form-item label="年份">
-              <el-select v-model="pieyear" placeholder="请选择" style="width:100px" @change="updateyear">
+              <el-select v-model="pieyear" placeholder="请选择" style="width:100px" >
                 <el-option v-for="item in nearyear" :key="item" :label="item" :value="item" />
               </el-select>
             </el-form-item>
@@ -275,8 +275,6 @@ export default {
     updateyear (index) {
       this.year = index
       this.getnearmonth()
-      this.getAllMonthData()
-      // this.drawLine('line', this.nearmonth)
     }
   }
 }
