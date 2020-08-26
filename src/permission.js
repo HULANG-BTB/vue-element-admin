@@ -11,7 +11,12 @@ import store from './store'
 const whiteList = [
   '/login',
   '/indexCheck',
-  '/pay'
+  '/pay',
+  '/payInformational',
+  '/payInformation',
+  '/payment',
+  '/paySuccess',
+  '/paySuccessPhone'
 ] // no redirect whitelist
 
 router.beforeEach(async (to, from, next) => {

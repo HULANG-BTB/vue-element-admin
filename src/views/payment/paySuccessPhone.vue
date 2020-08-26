@@ -24,7 +24,7 @@ export default {
   methods: {
     getUUid () {
       Axios({
-        url: 'http://192.168.22.14:8002/pay/setUUid',//'http://47.97.155.84/prod-api/pay/setUUid',
+        url: 'http://47.97.155.84/prod-api/pay/setUUid',
         params: {
           UUid: this.$route.query.UUid
         }
@@ -32,7 +32,7 @@ export default {
         if (response.data.code === 10000) {
           this.msg = response.data.data
           console.log(response)
-        } else if (response.data.code === 111200){
+        } else if (response.data.code === 111200) {
           this.msg = response.data.message
         } else {
           this.msg = response.data.data
