@@ -9,14 +9,18 @@ export default [
     name: 'pool',
     meta: {
       title: '票据池',
-      icon: 'pool'
+      icon: 'pool',
+      roles: ['admin', 'financial']
     },
     children: [
       {
         path: 'setting',
         component: () => import('@/views/bill-pool/setting'),
         name: 'setting',
-        meta: { title: '票据池管理' }
+        meta: {
+          title: '票据池管理',
+          roles: ['admin', 'financial']
+        }
       }]
   }
 ]
