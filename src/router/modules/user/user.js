@@ -6,6 +6,7 @@ export default [{
   component: Layout,
   redirect: '/user/user',
   name: 'User',
+  alwaysShow: true,
   meta: {
     title: '用户管理',
     roles: ['admin', 'financial', 'financial_ckeck']
