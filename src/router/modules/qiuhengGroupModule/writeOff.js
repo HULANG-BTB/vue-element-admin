@@ -8,16 +8,20 @@ export default [
     redirect: '/writeoff/verificationUnit',
     name: 'VerificationOfBill',
     meta: {
-      title: '票据核销管理',
-      icon: 'el-icon-document'
+      title: '票据核销',
+      icon: 'el-icon-document',
+      roles: ['unit', 'financial']
+
     },
+    alwaysShow: true,
     children: [
       {
         path: 'verificationUnit',
         component: () => import('@/views/qiuhengGroupViews/writeOff/verificationUnit'),
         name: 'PageVerificationUnit',
         meta: {
-          title: '票据核销(单位端)'
+          title: '票据核销申请',
+          roles: ['unit']
           // roles: ['role_manager', 'admin']
         }
       },
@@ -26,7 +30,8 @@ export default [
         component: () => import('@/views/qiuhengGroupViews/writeOff/index'),
         name: 'MainOfVerification',
         meta: {
-          title: '票据核销(财政端)'
+          title: '票据核销审核',
+          roles: ['financial']
           // roles: ['role_manager', 'admin']
         }
       }

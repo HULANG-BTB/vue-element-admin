@@ -4,9 +4,6 @@
       <el-card shadow="hover">
         <div>
           <el-form :inline="true" :model="formInline" class="demo-form-inline" size="small">
-            <el-form-item label="业务单号">
-              <el-input v-model="formInline.f_no" placeholder="业务单号" />
-            </el-form-item>
             <el-form-item label="单位名称">
               <el-input v-model="formInline.f_agen_id_code" placeholder="单位名称" />
             </el-form-item>
@@ -23,16 +20,21 @@
             <el-form-item>
               <!--分页区域-->
               <div class="block">
-                <el-pagination
-                  :current-page="page.currentPage"
-                  :total="page.total"
-                  layout="total, sizes, prev, pager, next, jumper"
-                  :page-size="page.pageSize"
-                  :page-sizes="[10, 20, 30]"
-                  size="small"
-                  @size-change="handleSizeChange"
-                  @current-change="handleCurrentChange"
-                />
+                <el-form-item>
+                  <!--分页区域-->
+                  <div class="block">
+                    <el-pagination
+                      :current-page="page.currentPage"
+                      :total="page.total"
+                      layout="total, sizes, prev, pager, next, jumper"
+                      :page-size="page.pageSize"
+                      :page-sizes="[5, 10, 20]"
+                      size="small"
+                      @size-change="handleSizeChange"
+                      @current-change="handleCurrentChange"
+                    />
+                  </div>
+                </el-form-item>
               </div>
             </el-form-item>
           </el-form>
@@ -100,7 +102,7 @@ export default {
       // 分页
       page: {
         currentPage: 1,
-        pageSize: 1,
+        pageSize: 5,
         total: 0,
         keyword: ''
       },
@@ -120,20 +122,23 @@ export default {
       const res = await getPassBillList(this.query)
       this.tableData = res.data.records
       // 通过slice方法获取数组中的一段
-      console.log(res.data.total)
+      this.tableData = this.tableData.slice((this.page.currentPage - 1) * this.page.pageSize, this.page.currentPage * this.page.pageSize)
       this.page.total = res.data.total
     },
     // 提交查询条件
     onSubmit () {
-      console.log()
     },
     // 调整每页显示条数
     handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
+      this.page.pageSize = val
+      this.tableData = this.tableData.slice((this.page.currentPage - 1) * this.page.pageSize, this.page.currentPage * this.page.pageSize)
+      this.getTableData()
     },
     // 修改当前页数
     handleCurrentChange (val) {
-      console.log(`每页 ${val} 条`)
+      this.page.currentPage = val
+      this.tableData = this.tableData.slice((this.page.currentPage - 1) * this.page.pageSize, this.page.currentPage * this.page.pageSize)
+      this.getTableData()
     },
     // 点击查看详情
     async handleClick (row) {
@@ -156,7 +161,6 @@ export default {
     // 获取票据模板img的url
     async getUrl (billId, billNo) {
       const res = await getImageUrl(billId, billNo)
-      console.log(res)
       if (res.success) {
         this.imgUrl = res.data
         this.$root.eventBus.$emit('imgurl', this.imgUrl)

@@ -278,12 +278,12 @@ export default {
         }
       },
       // 编制人
-      author: '',
+      author: '单位端',
       // 编制日期
       date: '',
       fDate: null,
       // 单位代码
-      unitCode: '090293092616',
+      unitCode: '360102000000',
       // 单位名
       unitName: '',
       // 备注
@@ -343,15 +343,15 @@ export default {
     },
     // 初始化数据
     initData () {
-      this.author = '杨乐乐'
+      this.author = '单位端'
       this.date = new Date().toLocaleDateString()
       this.fDate = new Date()
-      this.unitName = '北京市海淀区交警大队'
+      this.unitName = '博思软件股份有限公司'
       this.memo = this.row.fMemo
       if (this.row.fEndDate !== '') {
         this.endDate = this.row.fEndDate
       }
-      if (this.row.fauthor !== '') {
+      if (this.row.fAuthor !== '') {
         this.author = this.row.fAuthor
       }
       if (this.row.fDate !== '') {

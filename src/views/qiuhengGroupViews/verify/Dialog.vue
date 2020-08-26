@@ -142,9 +142,9 @@ export default {
     async pass () {
       const billNo = this.verifyData.fbillNo
       const mailRes = await sendMail(billNo)
-      console.log(mailRes)
+      this.$message(mailRes.message)
       const smsRes = await sendSms(billNo)
-      console.log(smsRes)
+      this.$message(smsRes.message)
       const state = 4
       const res = await updateState(billNo, state)
       if (res.success) {
@@ -170,6 +170,6 @@ export default {
 .image {
   max-width: 100%;
   max-height: 300px;
-  justify-content: center;
+  align-content: center;
 }
 </style>
