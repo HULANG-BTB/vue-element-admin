@@ -51,36 +51,42 @@ export default [
 
   {
     path: '/payInformational',
+    name: 'PayInformational',
     component: () => import('@/views/payment/payInformational'),
     hidden: true
   },
 
   {
     path: '/pay',
+    name: 'PayIndex',
     component: () => import('@/views/payment/index'),
     hidden: true
   },
 
   {
     path: '/payInformation',
+    name: 'PayInformation',
     component: () => import('@/views/payment/payInformational'),
     hidden: true
   },
 
   {
     path: '/payment',
+    name: 'Payment',
     component: () => import('@/views/payment/payment'),
     hidden: true
   },
 
   {
     path: '/paySuccess',
+    name: 'PaySuccess',
     component: () => import('@/views/payment/paySuccess'),
     hidden: true
   },
 
   {
     path: '/paySuccessPhone',
+    name: 'PaySuccessPhone',
     component: () => import('@/views/payment/paySuccessPhone'),
     hidden: true
   }

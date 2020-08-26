@@ -292,7 +292,7 @@ export default {
       this.timer = setInterval(function () {
         _this.num--
         getUUid({ uuid: _this.UUid }).then((response) => {
-          if (response.data === 'Yes') {
+          if (response.data === 'YES') {
             addAccIntoInfoDto({
               billSerialId: _this.pay_checkcode,
               payerTel: _this.pay_phone,
