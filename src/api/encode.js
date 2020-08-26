@@ -1,8 +1,10 @@
 import request from '@/utils/request'
 
+const baseURL = 'finan-stock-management/'
+
 export function createCode (data) {
   return request({
-    url: 'create/single',
+    url: baseURL + 'create/single',
     method: 'post',
     data
   })
@@ -10,7 +12,7 @@ export function createCode (data) {
 
 export function createBatchCode (batchCode) {
   return request({
-    url: 'create/batch',
+    url: baseURL + 'create/batch',
     method: 'post',
     data: batchCode
   })

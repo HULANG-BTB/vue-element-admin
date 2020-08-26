@@ -122,7 +122,7 @@
 </template>
 
 <script>
-import { getGroupListByPage, addGroup, deleteGroup, getItemList, deleteItemFromGroup } from '@/api/projectManager'
+import { getGroupListByPage, addGroup, deleteGroup, getItemList, deleteItemFromGroup } from '@/api/base/projectManager/projectManager'
 import { parseTime } from '@/utils/index'
 
 export default {

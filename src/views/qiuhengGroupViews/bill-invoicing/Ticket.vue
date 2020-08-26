@@ -121,7 +121,10 @@
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item label="手机号" style="width: 400px">
+              <el-form-item
+                label="手机号"
+                style="width: 400px"
+              >
                 <el-input
                   v-model="payerDto.fPayerTel"
                   placeholder="15200006666"
@@ -233,7 +236,8 @@
 </template>
 <script>
 import {
-  addBill
+  addBill,
+  getAvaBill
 } from '@/api/qiuhengGroupApi/billInvoicing/bill'
 import projectDialog from '@/views/qiuhengGroupViews/bill-invoicing/ProjectDialog.vue'
 export default {
@@ -245,7 +249,7 @@ export default {
       ticketType: [
         {
           value: 0,
-          lable: '福州市非税收入票据（电子)'
+          lable: '中央非税收入统一票据'
         }
       ],
       // 缴款人模块
@@ -258,9 +262,9 @@ export default {
       },
       // 票据模块
       uneCbillDto: {
-        fBillId: '201700000001',
-        fBillNo: 'NO.6666666',
-        fType: '福州市非税收入票据（电子）',
+        fBillId: '01160201',
+        fBillNo: '0000000019',
+        fType: '中央非税收入统一票据',
         checkCode: ''
       },
       // 项目组模块
@@ -271,11 +275,11 @@ export default {
       amt: 0,
       tableData: [
         {
-          fItemCode: '20001',
-          fItemName: '学费',
+          fItemCode: '1030102',
+          fItemName: '中央网贷收入',
           fUnits: '元',
           fNumber: 1,
-          fAmt: 8888.00
+          fAmt: 3333.00
         }
       ],
       value: '',
@@ -289,10 +293,16 @@ export default {
     })
     this.$root.eventBus.$on('amt', (val) => {
       this.amt = val
-      console.log(this.amt)
     })
+    this.getBill()
   },
   methods: {
+    // 获取可用票据
+    async getBill () {
+      const res = await getAvaBill()
+      this.uneCbillDto = res.data
+    },
+    // 新增开票
     async insertBill () {
       const batchPojo = {
         unitName: '',
@@ -306,8 +316,6 @@ export default {
       batchPojo.uneCbillDto = this.uneCbillDto
       batchPojo.itemDtos = this.itemDtos
       batchPojo.fAmt = this.amt
-      console.log(batchPojo.fAmt)
-      console.log(batchPojo.itemDtos)
       this.$root.eventBus.$emit('batchPojo', batchPojo)
       const res = await addBill(batchPojo)
       if (res.msg === 'OK') {
@@ -318,11 +326,9 @@ export default {
     // 移除项目
     deleteRow (index, rows) {
       rows.splice(index, 1)
-      console.log(this.tableData)
     },
     // 打开弹窗
     getDialog () {
-      console.log(this.dialogVisible)
       this.$root.eventBus.$emit('dialogvisible', this.dialogVisible)
     },
     // 验证

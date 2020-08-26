@@ -1,13 +1,13 @@
 <template>
   <div class="agen-archive">
     <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" label="单位编码" width="100px">
+      <el-table-column align="center" label="单位编码" width="120px">
         <template slot-scope="scope">
           <span>{{ scope.row.agenCode }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="单位名称" min-width="250px">
+      <el-table-column align="center" label="单位名称" min-width="230px">
         <template slot-scope="scope">
           <span>{{ scope.row.agenName }}</span>
         </template>
@@ -56,19 +56,29 @@ export default {
   components: {
     ArchiveTabs
   },
+  props: {
+    agencode: {
+      type: String,
+      required: true
+    }
+  },
   data () {
     return {
       list: [],
       // 查询对象
       query: {
-        agenCode: null,
-        agenName: null
+        agenCode: '',
+        agenName: ''
       }
     }
   },
   // 获取财政主界面的详细信息
   created () {
-    this.query.agenCode = this.$route.query.agenCode
+    if (this.agencode !== undefined && this.agencode !== '' && this.agencode !== null) {
+      this.query.agenCode = this.agencode
+    } else if (this.$route !== undefined && this.$route !== '' && this.$route !== null) {
+      this.query.agenCode = this.$route.query.agenCode
+    }
     this.getAgenDetail()
     this.tempRoute = Object.assign({}, this.$route)
   },
@@ -78,7 +88,6 @@ export default {
       this.listLoading = true
       fetchAgenArchiveDetail(this.query).then(response => {
         this.list.push(response.data)
-        console.log(this.list)
         this.listLoading = false
       })
     }
@@ -87,3 +96,8 @@ export default {
 }
 
 </script>
+<style>
+  .agen-archive {
+    margin: 30px;
+  }
+</style>

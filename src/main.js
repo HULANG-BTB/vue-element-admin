@@ -25,10 +25,10 @@ Vue.use(permission)
  * please remove it before going online ! ! !
  */
 
-if (process.env.NODE_ENV !== 'production') {
-  const { mockXHR } = require('../mock')
-  mockXHR()
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   const { mockXHR } = require('../mock')
+//   mockXHR()
+// }
 
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale: zhLocale })
@@ -43,6 +43,11 @@ Object.keys(filters).forEach(key => {
 
 new Vue({
   el: '#app',
+  data () {
+    return {
+      eventBus: new Vue()
+    }
+  },
   router,
   store,
   render: h => h(App)

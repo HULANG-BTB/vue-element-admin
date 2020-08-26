@@ -78,13 +78,13 @@
                 type="primary"
                 size="small"
                 :disabled="isCheckBoxChecked"
-                @click="submitAll()"
+                @click="checkAll(checkResult.pass)"
               >通过</el-button>
               <el-button
                 :disabled="isCheckBoxChecked"
                 type="danger"
                 size="small"
-                @click="deleteAll()"
+                @click="checkAll(checkResult.fail)"
               >退回</el-button>
             </el-form-item>
           </el-col>
@@ -216,7 +216,7 @@
           </el-col>
         </el-row>
         <el-row type="flex" align="bottom">
-          <el-col :span="21" offset="3">
+          <el-col :span="21" :offset="3">
             <el-form-item label="摘要">
               <el-input
                 v-model="outVo.abstact"
@@ -235,41 +235,12 @@
       <!--
         item的table----------------------------------
       -->
-      <el-table
-        v-loading.body="loading"
-        :data="outVo.outItemVos"
-        style="width: 100%; margin-top: 10px;"
-        border
-      >
-        <el-table-column type="selection" align="center" width="55" />
-        <!-- 从1开始，与数据库数据无关 -->
-        <el-table-column type="index" align="center" label="序号" width="55" />
-        <!-- 出库主键 -->
-        <el-table-column align="center" label="单号" width="130">
-          <template slot-scope="scope">{{ scope.row.id.toString().padStart(11, 'SI00000000') }}</template>
-        </el-table-column>
-        <el-table-column align="center" label="票据代码" width="160">
-          <template slot-scope="scope">{{ scope.row.billPrecode }}</template>
-        </el-table-column>
-        <el-table-column align="center" label="票据名称" width="155">
-          <template slot-scope="scope">{{ scope.row.billName }}</template>
-        </el-table-column>
-        <el-table-column align="center" label="数量" width="85">
-          <template slot-scope="scope">{{ scope.row.number }}</template>
-        </el-table-column>
-        <el-table-column align="center" label="单位" width="55">
-          <template> 张 </template>
-        </el-table-column>
-        <el-table-column align="center" label="起始号" width="130">
-          <template slot-scope="scope">{{ scope.row.billNo1 }}</template>
-        </el-table-column>
-        <el-table-column align="center" label="终止号" width="130">
-          <template slot-scope="scope">
-            {{ scope.row.billNo2 }}
-          </template>
-        </el-table-column>
-      </el-table>
       <div slot="footer" class="dialog-footer">
+        <el-button
+          v-if="!isSend"
+          type="warning"
+          @click="handleCheck(checkResult.fail); dialogFormVisible = false"
+        >退 回</el-button>
         <el-button
           v-if="!isSend"
           type="danger"
@@ -277,9 +248,9 @@
         >取 消</el-button>
         <el-button
           v-if="!isSend"
-          type="primary"
-          @click="handleSave(); dialogFormVisible = false"
-        >保 存</el-button>
+          type="success"
+          @click="handleCheck(checkResult.pass); dialogFormVisible = false"
+        >通 过</el-button>
         <el-button
           v-if="isSend"
           type="info"
@@ -290,7 +261,7 @@
   </div>
 </template>
 <script>
-import { getAll, getItem, check, checkAll, util } from '@/api/finanbill.js'
+import { getAll, getItem, check, checkAll, util } from '@/api/finanbill/stock-out.js'
 
 export default {
   name: 'OutApp',
@@ -321,6 +292,11 @@ export default {
       isSend: false,
       // 提交多选按钮是否可用
       isCheckBoxChecked: true,
+      // 审核结果，3通过，4退回
+      checkResult: {
+        pass: '3',
+        fail: '4'
+      },
       // 多选的项
       selectedList: [],
       // loading转圈图标可视控制
@@ -342,8 +318,9 @@ export default {
         id: '',
         author: '',
         changeState: '2',
-        period: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 365), new Date()]
-
+        period: [
+          new Date(new Date().getTime() - 3600 * 1000 * 24 * 365),
+          new Date(new Date().getTime() + 3600 * 1000 * 24 * 1)]
       },
       pickerOptions: {
         shortcuts: [{
@@ -394,7 +371,7 @@ export default {
       this.query.page = res.data.page
       this.selectedList = []
       // 确定明细项是否可改变
-      if (this.query.changeState === '1') {
+      if (this.query.changeState <= '2') {
         this.isSend = false
       } else {
         this.isSend = true
@@ -405,6 +382,7 @@ export default {
     // 初始化数据，退出详情界面时强制要求调用
     async initVo () {
       Object.assign(this.$data.outVo, this.$options.data().outVo)
+      console.log('初始化完成.')
       // this.getTableData()
     },
 
@@ -416,8 +394,6 @@ export default {
       const items = await getItem(this.outVo.id).catch(() => { this.loading = false })
       this.outVo.outItemVos = items.data
       this.outVo.altercode = 2
-      // 处理票据代码选择时的选项
-      this.billPrecodeChange(scope)
       this.loading = false
 
       // this.loading = true
@@ -433,13 +409,14 @@ export default {
      */
     async handleCheck (val) {
       this.loading = true
+      console.log('val:' + val)
       this.outVo.changeState = val
       const chkres = await check(this.outVo).catch(() => { this.loading = false })
-      console.log('提交结果：' + chkres.data)
-      if (chkres.data) {
-        this.$message.success('提交成功！')
+      console.log('提交结果：' + chkres)
+      if (chkres) {
+        this.$message.success('审核成功！')
       } else {
-        this.$message.error('提交失败！')
+        this.$message.error('审核失败！')
       }
       this.loading = false
       this.getTableData()
@@ -448,6 +425,9 @@ export default {
     async checkAll (val) {
       this.loading = true
       this.outVo.changeState = val
+      this.selectedList.forEach(vo => {
+        vo.changeState = val
+      })
       const subAllres = await checkAll(this.selectedList).catch(() => { this.loading = false })
       console.log('提交结果：' + subAllres.data)
       if (subAllres.data) {

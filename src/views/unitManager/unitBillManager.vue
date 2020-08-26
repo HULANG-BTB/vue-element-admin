@@ -220,7 +220,7 @@
 </template>
 
 <script>
-import { getunitBillListByPage } from '@/api/unitItemBill'
+import { getunitBillListByPage } from '@/api/base/unitManager/unitItemBill'
 import { parseTime } from '@/utils/index'
 export default {
   data () {

@@ -12,7 +12,7 @@
       </el-form-item>
       <el-form-item label="状态">
         <el-select v-model="queryParams.keyword.isenable" placeholder="请选择标准状态" style="width: 150px">
-          <el-option label="已完成" value="1" />
+          <el-option label="已审核" value="1" />
           <el-option label="待审核" value="0" />
           <el-option label="全部" value="" />
         </el-select>
@@ -51,7 +51,7 @@
           <el-tag
             :type="scope.row.isenable ? 'success' : 'info'"
             disable-transitions
-          >{{ scope.row.isenable ? '已完成' : '待审核' }}
+          >{{ scope.row.isenable ? '已审核' : '待审核' }}
           </el-tag>
         </template>
       </el-table-column>
@@ -93,7 +93,7 @@
       @size-change="handleSizeChange"
     />
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType">
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType" @close="cancel">
       <el-form ref="standard" :model="standard" :rules="rules" label-width="80px" label-position="right" style="padding-right:25px;">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -126,7 +126,7 @@
             <el-form-item label="失效日期" :label-width="formLabelWidth" prop="itemstdExpdate">
               <el-date-picker v-model="standard.itemstdExpdate" type="date" placeholder="选择日期" style="width: 100%;" />
             </el-form-item>
-            <el-form-item label="标准金额" :label-width="formLabelWidth">
+            <el-form-item label="标准金额" :label-width="formLabelWidth" prop="charge">
               <el-input v-model="standard.charge" placeholder="标准金额" />
             </el-form-item>
           </el-col>
@@ -141,11 +141,22 @@
 </template>
 
 <script>
-import { getStdListByPage, updateStd, deleteStd, deleteStdBatch, projectStdCheck } from '@/api/projectManager'
+import { getStdListByPage, updateStd, deleteStd, deleteStdBatch, projectStdCheck } from '@/api/base/projectManager/projectManager'
 import { parseTime } from '@/utils/index'
 
 export default {
   data () {
+    const chargeMethod = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('金额不能为空'))
+      } else if (value > this.standard.maxCharge) {
+        callback(new Error('金额必须低于标准上限'))
+      } else if (value < this.standard.minCharge) {
+        callback(new Error('金额必须高于标准下限'))
+      } else {
+        callback()
+      }
+    }
     const validateDatePicker = (rule, value, callback, source, option, other) => {
       const thisZero = new Date().setHours(0, 0, 0, 0)
       const input = new Date(value).setHours(0, 0, 0, 0)
@@ -198,6 +209,9 @@ export default {
       formLabelWidth: '120px',
       selectedList: [],
       rules: {
+        charge: [
+          { required: true, validator: chargeMethod, trigger: 'blur' }
+        ],
         itemstdCode: [
           { required: true, message: '标准编码不能为空', trigger: 'blur' }
         ],
@@ -214,16 +228,16 @@ export default {
           { required: true, message: '计量单位不能为空', trigger: 'blur' }
         ],
         itemstdEffdate: [
-          { trigger: 'blur', validator: validateDatePicker }
+          { required: true, trigger: 'blur', validator: validateDatePicker }
         ],
         itemstdExpdate: [
-          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemstdEffdate') }
+          { required: true, trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'itemstdEffdate') }
         ],
         createTime: [
-          { trigger: 'blur', validator: validateDatePicker }
+          { required: true, trigger: 'blur', validator: validateDatePicker }
         ],
         updateTime: [
-          { trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'createTime') }
+          { required: true, trigger: 'blur', validator: (rule, value, callback, source, option, other) => validateDatePicker(rule, value, callback, source, option, 'createTime') }
         ],
         itemCode: [
           { required: true, message: '项目编码不能为空', trigger: 'blur' }

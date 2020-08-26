@@ -109,7 +109,7 @@ export default {
           this.loading = true
           console.log(this.paySearchForm)
           payLogin(this.paySearchForm).then(res => {
-            if (res.code === 111110) {
+            if (res.code === 10000) {
               if (res.data.type === 0) {
                 this.$router.push({ name: this.redirect || 'PayInformation', params: { data: JSON.stringify(res.data) }})
                 this.loading = false

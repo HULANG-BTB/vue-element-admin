@@ -104,7 +104,7 @@ import {
   removePermissionBatch,
   getPermissionListByPage,
   getPermissionList
-} from '@/api/permission'
+} from '@/api/userManager/permission'
 
 const defaultPermission = {
   id: null,

@@ -28,7 +28,7 @@
                 <el-form-item>
                   <el-button
                     type="primary"
-                    @click="onSubmit"
+                    @click="onSubmit()"
                   >查询</el-button>
                 </el-form-item>
               </div>
@@ -59,14 +59,14 @@
           <!--开票记录列表-->
           <div class="bill-header">
             <div>
-              <span>本单位开票记录</span>
-            </div>
-            <div>
               <el-button
                 type="primary"
                 @click="addBill"
               >新增开票
               </el-button>
+            </div>
+            <div>
+              <span>本单位开票记录</span>
             </div>
           </div>
 
@@ -142,7 +142,7 @@ export default {
   },
   data () {
     return {
-      unitName: '福州市boss软件',
+      unitName: '博思软件股份有限公司',
       // 票据列表
       billList: [],
       // dialog显示
@@ -174,9 +174,9 @@ export default {
       this.query.currentPage = this.page.currentPage
       this.query.pageSize = this.page.pageSize
       const res = await getBillListByPage(this.query)
-      this.billList = res.records
+      this.billList = res.data.records
       // 通过slice方法获取数组中的一段
-      this.page.total = res.total
+      this.page.total = res.data.total
     },
     getData () {
       if (this.page.keyword === '') {
@@ -193,7 +193,6 @@ export default {
         }
         newBillList.list.push(res.data)
         this.billList = newBillList.list
-        console.log(this.billList)
       }
     },
     // 调整每页显示条数
@@ -204,12 +203,6 @@ export default {
     handleCurrentChange (val) {
       this.page.currentPage = val
     },
-    // 点击查看详情
-    handleClick (row) {
-      if (row.status === '未审验') {
-        this.$root.eventBus.$emit('visible', this.visible)
-      }
-    },
     // ok
     handleSelectionChange () {
 
@@ -217,7 +210,7 @@ export default {
     async addBill () {
       // 需要先验证单位是否欠缴/单位是否有可用票据/单位开票数是否已经达到最大限制
       await addBillVerify(this.unitName).then((res) => {
-        if (res.status === 200) {
+        if (res.success) {
         // 打印预警信息
           this.$router.push({ name: 'ticket' })
         } else {
@@ -227,9 +220,7 @@ export default {
     },
     // 获取状态
     getStep (row) {
-      console.log(row.fstate)
       this.active = row.fstate
-      debugger
     }
   }
 }
