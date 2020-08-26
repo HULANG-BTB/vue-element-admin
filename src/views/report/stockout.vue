@@ -3,14 +3,14 @@
     <el-tab-pane label="柱状图">
       <el-container>
         <el-main style="padding: 10px">
-          <div id="echarts" style="width: 800px;height:480px;" />
+          <div id="echarts" style="width: 1000px;height:480px;" />
         </el-main>
       </el-container>
     </el-tab-pane>
     <el-tab-pane label="饼状图">
       <el-container>
         <el-main style="padding: 0">
-          <div id="pie" style="width: 800px;height:500px;" />
+          <div id="pie" style="width: 1000px;height:500px;" />
         </el-main>
       </el-container>
     </el-tab-pane>
@@ -205,7 +205,6 @@ export default {
       myPie.setOption(option)
     },
     setPie (list) {
-      console.log(list)
       for (let i = 0; i < list.length; i++) {
         // legendData是种类名称的字符串数组
         this.data.legendData[i] = list[i].fbillName
