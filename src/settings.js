@@ -1,6 +1,6 @@
 module.exports = {
   // 模板标题
-  title: 'Vue Admin Template',
+  title: '票据电子信息化管理系统',
 
   // 固定头部
   fixedHeader: true,

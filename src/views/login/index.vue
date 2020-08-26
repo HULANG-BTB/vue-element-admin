@@ -34,14 +34,6 @@
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
-      <div class="tips">
-
-        <div style="margin-right:20px;">管理员: admin</div>
-        <div style="margin-right:20px;">财政端: financial</div>
-        <div style="margin-right:20px;">财政端审核: financial_check</div>
-        <div style="margin-right:20px;">单位端: unit</div>
-        <div>密码: any</div>
-      </div>
     </el-form>
   </div>
 </template>
@@ -67,7 +59,7 @@ export default {
     return {
       loginForm: {
         username: '',
-        password: '111111',
+        password: '',
         verifyCode: ''
       },
       loginRules: {
