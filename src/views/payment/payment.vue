@@ -292,7 +292,7 @@ export default {
       this.timer = setInterval(function () {
         _this.num--
         getUUid({ uuid: _this.UUid }).then((response) => {
-          if (response.message === 'Yes') {
+          if (response.data === 'Yes') {
             addAccIntoInfoDto({
               billSerialId: _this.pay_checkcode,
               payerTel: _this.pay_phone,
@@ -303,7 +303,7 @@ export default {
             clearInterval(_this.timer)
             _this.route()
           } else {
-            console.log(response.message)
+            console.log(response.data)
           }
         })
         if (_this.num === 0) {
@@ -330,7 +330,7 @@ export default {
     // 获取二维码函数
     getPicture () {
       getQrCode().then((response) => {
-        if (response.code === 10000 && response.success === true) {
+        if (response.code === 10000) {
           this.image = 'data:image/png;base64,' + response.data.image
           this.UUid = response.data.uuid
           this.Qrcode_NO3 = true
