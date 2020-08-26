@@ -29,7 +29,7 @@ export default {
           UUid: this.$route.query.UUid
         }
       }).then((response) => {
-        if (response.code === 11115 && response.success === true) {
+        if (response.code === 10000) {
           this.msg = response.data.message
           console.log(response)
         } else {

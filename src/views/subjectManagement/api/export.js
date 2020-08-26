@@ -1,4 +1,4 @@
-import request from '../request/request2'
+import request from '@/utils/download'
 
 const baseUrl = '/base'
 

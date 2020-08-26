@@ -1,6 +1,11 @@
 import request from '@/utils/request'
 
-const BASE_URL = '/finan-stock-management/stock-out/'
+// const BASE_URL = 'http://192.168.21.182:8080/stock-out/'
+// const BASE_URL = 'http://47.97.155.84/prod-api/stock-out/'
+// 120.27.3.74
+// const BASE_URL = 'http://192.168.110.195:8080/'
+const BASE_URL = 'finan-stock-management/'
+// const BASE_URL = 'http://120.27.3.74:8085/'
 
 /* 出库相关 */
 
@@ -8,9 +13,9 @@ const BASE_URL = '/finan-stock-management/stock-out/'
  * 获得出库列表
  * @param {*} query 出库vo，包含编制人，审核状态等信息
  */
-export function getAll(query) {
+export function getAll (query) {
   return request({
-    url: BASE_URL + 'showAll',
+    url: BASE_URL + 'stock-out/showAll',
     method: 'post',
     data: query
   })
@@ -20,9 +25,9 @@ export function getAll(query) {
  * 获得出库中的明细
  * @param {pid} pid 父id，即出库id
  */
-export function getItem(pid) {
+export function getItem (pid) {
   return request({
-    url: BASE_URL + 'getItem',
+    url: BASE_URL + 'stock-out/getItem',
     // url: '/mail/updateStatus',
     method: 'get',
     params: { pid: pid }
@@ -33,9 +38,9 @@ export function getItem(pid) {
  * 新增出库记录
  * @param {*} author 编制人
  */
-export function addOut(author) {
+export function addOut (author) {
   return request({
-    url: BASE_URL + 'add',
+    url: BASE_URL + 'stock-out/add',
     method: 'get',
     params: { author: author }
   })
@@ -45,9 +50,9 @@ export function addOut(author) {
  * 提交保存请求
  * @param {*} query 出库即其明细
  */
-export function save(query) {
+export function save (query) {
   return request({
-    url: BASE_URL + 'save',
+    url: BASE_URL + 'stock-out/save',
     method: 'post',
     data: query
   })
@@ -57,9 +62,9 @@ export function save(query) {
  * 提交请求，即：将保存状态变更为待审核状态checkState
  * @param {*} id 提交id
  */
-export function submit(id) {
+export function submit (id) {
   return request({
-    url: BASE_URL + 'submit',
+    url: BASE_URL + 'stock-out/submit',
     method: 'put',
     params: { id: id }
   })
@@ -69,9 +74,9 @@ export function submit(id) {
  * 提交请求，即：将保存状态变更为待审核状态checkState
  * @param {*} query 提交id
  */
-export function submitAll(query) {
+export function submitAll (query) {
   return request({
-    url: BASE_URL + 'submitAll',
+    url: BASE_URL + 'stock-out/submitAll',
     method: 'put',
     data: query
   })
@@ -80,9 +85,9 @@ export function submitAll(query) {
 /**
  * 删除多选
  */
-export function deleteAll(query) {
+export function deleteAll (query) {
   return request({
-    url: BASE_URL + 'deleteAll',
+    url: BASE_URL + 'stock-out/deleteAll',
     method: 'put',
     data: query
   })
@@ -92,9 +97,9 @@ export function deleteAll(query) {
  * 审核出库
  * @param {*} query 要审核的出库vo
  */
-export function check(query) {
+export function check (query) {
   return request({
-    url: BASE_URL + 'check',
+    url: BASE_URL + 'stock-out/check',
     method: 'post',
     data: query
   })
@@ -104,11 +109,27 @@ export function check(query) {
  * 批量审核出库
  * @param {*} query 被审核的vo的list
  */
-export function checkAll(query) {
+export function checkAll (query) {
   return request({
-    url: BASE_URL + 'checkAll',
+    url: BASE_URL + 'stock-out/checkAll',
     method: 'post',
     data: query
+  })
+}
+
+export function createCode (data) {
+  return request({
+    url: BASE_URL + 'create/single',
+    method: 'post',
+    data
+  })
+}
+
+export function createBatchCode (batchCode) {
+  return request({
+    url: BASE_URL + 'create/batch',
+    method: 'post',
+    data: batchCode
   })
 }
 

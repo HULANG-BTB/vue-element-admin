@@ -4,62 +4,62 @@
       <el-row :gutter="20">
         <el-col :span="8">
           <el-form-item label="单位编码" :label-width="formLabelWidth">
-            <el-input v-model="project.agenCode" placeholder="单位编码" />
+            <el-input v-model="project.agenCode" placeholder="单位编码" disabled="true" />
           </el-form-item>
           <el-form-item label="部门编码" :label-width="formLabelWidth">
-            <el-input v-model="project.deptCode" placeholder="部门编码" />
+            <el-input v-model="project.deptCode" placeholder="部门编码" disabled="true" />
           </el-form-item>
           <el-form-item label="部门名称" :label-width="formLabelWidth">
-            <el-input v-model="project.deptName" placeholder="部门编码" />
+            <el-input v-model="project.deptName" placeholder="部门编码" disabled="true" />
           </el-form-item>
           <el-form-item label="所属行业" :label-width="formLabelWidth">
-            <el-input v-model="project.indCode" placeholder="所属行业" />
+            <el-input v-model="project.indCode" placeholder="所属行业" disabled="true" />
           </el-form-item>
           <el-form-item label="单位负责人" :label-width="formLabelWidth">
-            <el-input v-model="project.linkMan" placeholder="单位负责人" />
+            <el-input v-model="project.linkMan" placeholder="单位负责人" disabled="true" />
           </el-form-item>
           <el-form-item label="单位联系人电话" :label-width="formLabelWidth">
-            <el-input v-model="project.linkTel" placeholder="单位联系人电话" />
+            <el-input v-model="project.linkTel" placeholder="单位联系人电话" disabled="true" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="单位名称" :label-width="formLabelWidth">
-            <el-input v-model="project.agenName" placeholder="单位名称" />
+            <el-input v-model="project.agenName" placeholder="单位名称" disabled="true" />
           </el-form-item>
           <el-form-item label="助记码" :label-width="formLabelWidth">
-            <el-input v-model="project.mnem" placeholder="助记码" />
+            <el-input v-model="project.mnem" placeholder="助记码" disabled="true" />
           </el-form-item>
           <el-form-item label="归口财政部门" :label-width="formLabelWidth">
-            <el-input v-model="project.findeptId" placeholder="归口财政部门" />
+            <el-input v-model="project.findeptId" placeholder="归口财政部门" disabled="true" />
           </el-form-item>
           <el-form-item label="单位分类" :label-width="formLabelWidth">
-            <el-input v-model="project.sortCode" placeholder="单位分类" />
+            <el-input v-model="project.sortCode" placeholder="单位分类" disabled="true" />
           </el-form-item>
           <el-form-item label="生效日期" :label-width="formLabelWidth">
-            <el-date-picker v-model="project.effDate" type="date" placeholder="选择日期" style="width: 100%;" />
+            <el-date-picker v-model="project.effDate" type="date" placeholder="选择日期" style="width: 100%;" disabled="true" />
           </el-form-item>
           <el-form-item label="失效日期" :label-width="formLabelWidth">
-            <el-date-picker v-model="project.expDate" type="date" placeholder="选择日期" style="width: 100%;" />
+            <el-date-picker v-model="project.expDate" type="date" placeholder="选择日期" style="width: 100%;" disabled="true" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="级次" :label-width="formLabelWidth">
-            <el-input v-model="project.level" placeholder="级次" />
+            <el-input v-model="project.level" placeholder="级次" disabled="true" />
           </el-form-item>
           <el-form-item label="财务负责人" :label-width="formLabelWidth">
-            <el-input v-model="project.finMgr" placeholder="财务负责人" />
+            <el-input v-model="project.finMgr" placeholder="财务负责人" disabled="true" />
           </el-form-item>
           <el-form-item label="财务负责人电话" :label-width="formLabelWidth">
-            <el-input v-model="project.finMgrTel" placeholder="财务负责人电话" />
+            <el-input v-model="project.finMgrTel" placeholder="财务负责人电话" disabled="true" />
           </el-form-item>
           <el-form-item label="邮政编码" :label-width="formLabelWidth">
-            <el-input v-model="project.zip" placeholder="邮政编码" />
+            <el-input v-model="project.zip" placeholder="邮政编码" disabled="true" />
           </el-form-item>
           <el-form-item label="联系地址" :label-width="formLabelWidth">
-            <el-input v-model="project.addr" placeholder="联系地址" />
+            <el-input v-model="project.addr" placeholder="联系地址" disabled="true" />
           </el-form-item>
           <el-form-item label="备注" :label-width="formLabelWidth">
-            <el-input v-model="project.note" placeholder="备注" />
+            <el-input v-model="project.note" placeholder="备注" disabled="true" />
           </el-form-item>
         </el-col>
       </el-row>

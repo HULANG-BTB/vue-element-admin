@@ -17,9 +17,9 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button plain size="small" type="primary" @click="query">查询</el-button>
-        <el-button plain size="small" type="primary" @click="handleAdd">新增</el-button>
-        <el-button plain size="small" type="primary" @click="clearSearchForm">清空</el-button>
+        <el-button size="small" type="primary" @click="query">查询</el-button>
+        <el-button v-permission="['admin', 'financial_check']" size="small" type="primary" @click="handleAdd">新增</el-button>
+        <el-button size="small" type="primary" @click="clearSearchForm">清空</el-button>
       </el-form-item>
     </el-form>
     <!-- 弹出框 -->
@@ -78,14 +78,19 @@
       <el-table-column :formatter="isEnable" label="是否启用" prop="isEnable" />
       <el-table-column fixed="right" label="操作" width="150px">
         <template slot-scope="scope">
-          <el-button size="small" type="text" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button size="small" type="text" @click="open(scope.row)">删除</el-button>
+          <el-button
+            v-permission="['admin', 'financial_check']"
+            type="primary"
+            size="mini"
+            @click="handleEdit(scope.row)"
+          >编辑</el-button>
+          <el-button v-permission="['admin', 'financial_check']" type="danger" size="mini" @click="open(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页插件 -->
     <!-- total:数据总量  page-sizes页容量 current-page当前页 -->
-    <el-pagination :total="total" layout="prev, pager, next" />
+    <el-pagination :total="total" :current-page="queryData.pageNumber" :page-sizes="[10, 20, 50, 100, 500, 1000]" :page-size="queryData.pageSize" background layout="prev, pager, next, sizes, total, jumper" style="margin-top:20px;float:right;margin-right:20px;" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
   </div>
 </template>
 
@@ -97,12 +102,6 @@ export default {
     return {
       // 列表显示数据
       tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          enable: '1'
-        }
       ],
       // 级联框数据配置
       cascader: {
@@ -216,6 +215,17 @@ export default {
         this.total = response.data.total
       })
     },
+    // 每页数目改变
+    handleSizeChange (val) {
+      this.query.pageSize = val
+      this.query()
+    },
+
+    // 当前页码改变
+    handleCurrentChange (val) {
+      this.query.pageNumber = val
+      this.query()
+    },
     transferRgnArrayToCode (item) {
       let codeArray = []
       codeArray = item.rgnCode.split(',')
@@ -226,10 +236,21 @@ export default {
     handleEdit (row) {
       this.formTitle = '编辑'
       this.dialogFormVisible = true
-      this.saveData = row
+      // const formData = {}
+      // Object.assign(formData, row)
+      this.$nextTick(() => {
+        this.saveData.id = row.id
+        this.saveData.findeptName = row.findeptName
+        this.saveData.findeptCode = row.findeptCode
+        this.saveData.linkTel = row.linkTel
+        this.saveData.linkman = row.linkman
+        this.saveData.rgnCode = row.rgnCode
+        this.saveData.rgnCodeArray = row.rgnCodeArray
+        this.saveData.isEnable = row.isEnable
+        this.saveData.addr = row.addr
+      })
     },
     handleAdd () {
-      // this.saveData = {};
       this.formTitle = '新增'
       this.dialogFormVisible = true
     },
@@ -242,7 +263,6 @@ export default {
     // 保存
     submitForm (formName) {
       const data = this.saveData
-
       this.$refs[formName]
         .validate()
         .then(() => {
@@ -282,6 +302,7 @@ export default {
     // 对话框关闭事件
     handleClose () {
       this.$refs['popForm'].resetFields()
+      this.saveData.id = null
     },
     getRngCode () {
       queryRngCode().then((response) => {

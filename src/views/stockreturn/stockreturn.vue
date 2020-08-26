@@ -45,7 +45,7 @@
         <el-button
           type="success"
           size="small"
-          @click="getTableData"
+          @click="getTableDataAll()"
         >重载数据</el-button>
       </el-form-item>
       <div class="my-form-item">
@@ -146,7 +146,7 @@
           <el-col :span="2" />
           <el-col :span="11">
             <el-form-item label="业务单号">
-              <el-input v-model="Stockreturn.no" autocomplete="off" :disabled="noStatus" placeholder="请输入业务单号：" />
+              <el-input v-model="Stockreturn.no" autocomplete="off" :disabled="true" placeholder="请输入业务单号：" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -263,7 +263,7 @@
 </template>
 <script>
 // eslint-disable-next-line no-unused-vars
-import { getStockReturnList, getListStockReturnByDateOrNo, addStockReturn, getStockReturnItems, deleteStockReturnByNo, updateByNo, putSubmit } from '@/api/stockreturn.js'
+import { getNo, getStockReturnList, getListStockReturnByDateOrNo, addStockReturn, getStockReturnItems, deleteStockReturnByNo, updateByNo, putSubmit } from '@/api/stockreturn.js'
 
 export default {
   data () {
@@ -387,6 +387,19 @@ export default {
       })
     },
     async handleAdd () {
+      this.loading = true
+      // eslint-disable-next-line no-undef
+      // eslint-disable-next-line no-unused-vars
+      const res = await getNo().catch(() => { this.loading = false })
+      this.Stockreturn.no = res.data
+      console.log(this.Stockreturn.no)
+      this.loading = false
+    },
+    async getTableDataAll () {
+      this.query.startTime = null
+      this.query.endTime = null
+      this.no = null
+      this.getTableData()
     },
     async itemAdd (tableData) {
       this.loading = true

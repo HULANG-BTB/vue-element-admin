@@ -19,59 +19,91 @@
                 >打印缴款书</el-menu-item>
               </el-menu>
             </div>
-            <div>
-              <h1>{{ unitName }}</h1>
-              <h1>{{ fAmt }}</h1>
-            </div>
             <el-card shadow>
-              <div style="height: 230px">
-                <div
-                  class="subject"
-                  size="small"
-                >
-                  <span>票据明细</span>
-                </div>
-                <el-divider content-position="left" />
-                <el-table
-                  :data="itemDtos"
-                  stripe
-                  style="width: 100%"
-                  size="small"
-                >
-                  <el-table-column
-                    prop="fItemCode"
-                    label="项目编码"
-                    width="180"
-                  />
-                  <el-table-column
-                    prop="fItemName"
-                    label="项目名称"
-                  />
-                  <el-table-column
-                    prop="fUnits"
-                    label="计量单位"
-                  />
-                  <el-table-column
-                    prop="fNumber"
-                    label="数量"
-                  />
-                  <el-table-column
-                    prop="fAmt"
-                    label="金额"
-                  />
-                </el-table>
+              <div style="height: 80px">
+                <el-footer class="dialog-footer">
+                  <el-form label-width="80px" :data="payerDto">
+                    <el-row style="height: 15px">
+                      <el-col :span="20">
+                        <el-form-item label="开票单位: ">{{ unitName }} </el-form-item>
+                      </el-col>
+                    </el-row>
+                    <el-row style="height: 15px">
+                      <el-col :span="8">
+                        <el-form-item label="票据ID: "> {{ uneCbillDto.fBillId }} </el-form-item>
+                      </el-col>
+                      <el-col :span="8">
+                        <el-form-item label="票据号码: ">{{ uneCbillDto.fBillNo }} </el-form-item>
+                      </el-col>
+                      <el-col :span="8">
+                        <el-form-item label="票据类型: ">{{ uneCbillDto.fType }} </el-form-item>
+                      </el-col>
+                    </el-row>
+                    <el-row style="height: 15px">
+                      <el-col :span="8">
+                        <el-form-item prop="fPayerName" label="缴款人: ">{{ payerDto.fPayerName }} </el-form-item>
+                      </el-col>
+                      <el-col :span="8">
+                        <el-form-item prop="fPayerTel" label="电话: ">{{ payerDto.fPayerTel }} </el-form-item>
+                      </el-col>
+                      <el-col :span="8">
+                        <el-form-item prop="fPayerEmail" label="邮箱: ">{{ payerDto.fPayerEmail }} </el-form-item>
+                      </el-col>
+                    </el-row>
+                  </el-form>
+                </el-footer>
               </div>
-              <div class="foot" size="small">
-                <i style="font-family: PingFang SC">.</i>
-                <i style="font-family: PingFang SC">合计：{{ fAmt }}</i>
-              </div>
+              <el-divider content-position="left" />
+              <el-table
+                :data="itemDtos"
+                stripe
+                style="width: 100%"
+                size="small"
+              >
+                <el-table-column
+                  prop="fItemCode"
+                  label="项目编码"
+                  width="180"
+                />
+                <el-table-column
+                  prop="fItemName"
+                  label="项目名称"
+                />
+                <el-table-column
+                  prop="fUnits"
+                  label="计量单位"
+                />
+                <el-table-column
+                  prop="fNumber"
+                  label="数量"
+                />
+                <el-table-column
+                  prop="fAmt"
+                  label="金额"
+                />
+              </el-table>
+              <el-form label-width="80px">
+                <el-row>
+                  <el-col :span="20" />
+                  <el-col :span="4">
+                    <el-form-item label="合计: ">{{ fAmt }}</el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
             </el-card>
-            <div class="foot">
-              <i style="font-family: PingFang SC">编制人：samuel</i>
-              <i style="font-family: PingFang SC">编制日期：{{ dateTime }}</i>
-            </div>
-          </el-card>
-        </div>
+            <el-footer class="dialog-footer">
+              <el-form label-width="80px">
+                <el-row>
+                  <el-col :span="20">
+                    <el-form-item label="编制人: ">{{ fAuthor }}</el-form-item>
+                  </el-col>
+                  <el-col :span="4">
+                    <el-form-item label="编制日期: ">{{ dateTime }}</el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </el-footer>
+          </el-card></div>
       </el-col>
     </el-row>
   </div>
@@ -81,32 +113,37 @@
 export default {
   components: {
   },
+  props: {
+    batchPojo: {
+      type: Object,
+      default () {
+        return {}
+      }
+    }
+  },
   data () {
     return {
       unitName: '',
-      payerDto: {},
+      payerDto: {
+        fPayerName: '',
+        fPayerEmail: '',
+        fPayerTel: '',
+        fPayerType: '',
+        fMemo: ''
+      },
       uneCbillDto: {},
-      itemDtos: [{
-        fItemCode: '20001',
-        fItemName: '学费',
-        fUnits: '元',
-        fNumber: 1,
-        fAmt: 8888.00
-      }],
+      itemDtos: [],
       fAmt: '',
-      dateTime: ''
+      dateTime: '',
+      fAuthor: '单位端'
     }
   },
   created () {
-    this.$root.eventBus.$on('batchPojo', (val) => {
-      console.log(val)
-      this.unitName = val.unitName
-      this.payerDto = val.payerDto
-      this.fAmt = val.fAmt
-      this.uneCbillDto = val.uneCbillDto
-      this.itemDtos = val.itemDtos
-      console.log(this.itemDtos)
-    })
+    this.unitName = this.batchPojo.unitName
+    this.payerDto = this.batchPojo.payerDto
+    this.fAmt = this.batchPojo.fAmt
+    this.uneCbillDto = this.batchPojo.uneCbillDto
+    this.itemDtos = this.batchPojo.itemDtos
     const date = new Date()
     this.dateTime = this.convertToDate(date)
   },
@@ -144,4 +181,10 @@ export default {
     display: flex;
     justify-content: space-between
 }
+.el-row {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap
+  }
+
 </style>

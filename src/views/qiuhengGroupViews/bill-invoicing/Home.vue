@@ -28,7 +28,7 @@
                 <el-form-item>
                   <el-button
                     type="primary"
-                    @click="onSubmit"
+                    @click="search"
                   >查询</el-button>
                 </el-form-item>
               </div>
@@ -41,7 +41,7 @@
                       :total="page.total"
                       layout="total, sizes, prev, pager, next, jumper"
                       :page-size="page.pageSize"
-                      :page-sizes="[10, 20, 30]"
+                      :page-sizes="[10, 15, 20]"
                       size="small"
                       @size-change="handleSizeChange"
                       @current-change="handleCurrentChange"
@@ -61,6 +61,7 @@
             <div>
               <el-button
                 type="primary"
+                size="small"
                 @click="addBill"
               >新增开票
               </el-button>
@@ -71,6 +72,7 @@
           </div>
 
           <el-table
+            v-loading="loading"
             :data="billList"
             style="width: 100%"
             border
@@ -132,7 +134,6 @@
 <script>
 import {
   getBillListByPage,
-  getOneBill,
   addBillVerify
 } from '@/api/qiuhengGroupApi/billInvoicing/bill'
 import VerifyDialog from '@/views/qiuhengGroupViews/verify/Dialog'
@@ -142,15 +143,17 @@ export default {
   },
   data () {
     return {
-      unitName: '福州市boss软件',
+      unitName: '博思软件股份有限公司',
       // 票据列表
       billList: [],
+      billOne: [],
       // dialog显示
       visible: true,
+      loading: false,
       // 分页
       page: {
         currentPage: 1,
-        pageSize: 1,
+        pageSize: 10,
         total: 0,
         keyword: ''
       },
@@ -174,9 +177,10 @@ export default {
       this.query.currentPage = this.page.currentPage
       this.query.pageSize = this.page.pageSize
       const res = await getBillListByPage(this.query)
-      this.billList = res.records
+      this.billList = res.data.records
       // 通过slice方法获取数组中的一段
-      this.page.total = res.total
+      this.billList = this.billList.slice((this.page.currentPage - 1) * this.page.pageSize, this.page.currentPage * this.page.pageSize)
+      this.page.total = res.data.total
     },
     getData () {
       if (this.page.keyword === '') {
@@ -184,25 +188,27 @@ export default {
       }
     },
     // 提交查询条件
-    async onSubmit () {
-      const billId = this.page.keyword
-      const res = await getOneBill(billId)
-      if (res != null) {
-        const newBillList = {
-          list: []
+    async search () {
+      const billNo = this.page.keyword
+      const bill = []
+      for (let i = 0; i < this.billList.length; i++) {
+        if (this.billList[i].fbillNo === billNo) {
+          bill.push(this.billList[i])
         }
-        newBillList.list.push(res.data)
-        this.billList = newBillList.list
-        console.log(this.billList)
       }
+      this.billList = bill
     },
     // 调整每页显示条数
     handleSizeChange (val) {
       this.page.pageSize = val
+      this.billList = this.billList.slice((this.page.currentPage - 1) * this.page.pageSize, this.page.currentPage * this.page.pageSize)
+      this.getTableData()
     },
     // 修改当前页数
     handleCurrentChange (val) {
       this.page.currentPage = val
+      this.billList = this.billList.slice((this.page.currentPage - 1) * this.page.pageSize, this.page.currentPage * this.page.pageSize)
+      this.getTableData()
     },
     // ok
     handleSelectionChange () {
@@ -211,7 +217,7 @@ export default {
     async addBill () {
       // 需要先验证单位是否欠缴/单位是否有可用票据/单位开票数是否已经达到最大限制
       await addBillVerify(this.unitName).then((res) => {
-        if (res.status === 200) {
+        if (res.success) {
         // 打印预警信息
           this.$router.push({ name: 'ticket' })
         } else {
@@ -221,7 +227,6 @@ export default {
     },
     // 获取状态
     getStep (row) {
-      console.log(row.fstate)
       this.active = row.fstate
     }
   }

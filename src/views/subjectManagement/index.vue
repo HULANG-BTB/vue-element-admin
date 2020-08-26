@@ -416,7 +416,7 @@ export default {
           return fmt
         }
 
-        const blob = new Blob([res.data], { type: 'application/vnd.ms-excel' })// 创建二进制流流接受对象
+        const blob = new Blob([res], { type: 'application/vnd.ms-excel' })// 创建二进制流流接受对象
         const date = new Date()
         const format = dateFormat('YYYY年mm月dd日HH时MM分SS秒', date)
         const fileName = this.parentName + format + '.xlsx'
