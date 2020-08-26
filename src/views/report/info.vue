@@ -107,9 +107,7 @@ export default {
       this.currentPage = currentPage
     },
     async query () {
-      console.log(this.search)
       const res = await selectSearch(this.search)
-      console.log(res)
       this.tableData = res
     }
   }
