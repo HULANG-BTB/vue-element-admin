@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 const BASE_URL = '/bill-destroy'
-// const BASE_URL = 'http://localhost:9538'
+// const BASE_URL = 'http://49.234.214.122:9538'
 
 export function refresh () {
   return request({

@@ -3,7 +3,8 @@ import request from '@/utils/request'
 // const BASE_URL = 'http://192.168.21.182:8080/stock-out/'
 // const BASE_URL = 'http://47.97.155.84/prod-api/stock-out/'
 // 120.27.3.74
-const BASE_URL = 'finan-bill/'
+const BASE_URL = 'finan-stock-management/'
+// const BASE_URL = 'http://120.27.3.74:8085/'
 
 /* 票据相关 */
 
@@ -13,7 +14,7 @@ const BASE_URL = 'finan-bill/'
  */
 export function getValid (billPrecode) {
   return request({
-    url: BASE_URL + 'getValid',
+    url: BASE_URL + 'finan-bill/getValid',
     method: 'get',
     params: { billPrecode: billPrecode }
   })

@@ -6,7 +6,7 @@ export default [
     path: '/stockIn',
     component: Layout,
     redirect: '/stockIn/stockInList',
-    name: 'User',
+    name: 'stockIn',
     meta: {
       title: '票据入库',
       icon: 'user',

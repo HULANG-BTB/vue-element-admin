@@ -2,7 +2,7 @@
  * @Author: Raiz
  * @Date: 2019-08-01 08:46:23
  * @LastEditors: Raiz
- * @lastTime: 2020-08-10 14:48:39
+ * @lastTime: 2020-08-25 17:28:04
  * @description: 按钮组件
  -->
 <template>
@@ -10,6 +10,7 @@
   <span v-if="!buttonData.hideButton">
     <el-button
       :ref="buttonData.name"
+      v-permission="buttonData.permission ? buttonData.permission : ['admin', 'financial', 'financial_check', 'unit']"
       :type="buttonData.type"
       :circle="buttonData.circle"
       size="mini"

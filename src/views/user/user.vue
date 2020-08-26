@@ -36,7 +36,7 @@
         <template slot-scope="scope">{{ scope.row.nickname }}</template>
       </el-table-column>
       <el-table-column align="header-center" label="单位">
-        <template slot-scope="scope">{{ scope.row.agenCode }}</template>
+        <template slot-scope="scope">{{ computedUnit(scope.row.agenCode) }}</template>
       </el-table-column>
       <el-table-column align="header-center" label="电话">
         <template slot-scope="scope">{{ scope.row.phone }}</template>
@@ -68,7 +68,7 @@
         </el-form-item>
         <el-form-item label="单位" prop="unit">
           <el-select v-model="user.agenCode" placeholder="请选择" style="width: 100%">
-            <el-option v-for="(item, index) in unitList" :key="index" :label="item.deptName" :value="item.agenCode" />
+            <el-option v-for="item in unitList" :key="item.agenCode" :label="item.agenName" :value="item.agenCode" />
           </el-select>
         </el-form-item>
         <el-form-item label="电话" prop="phone">
@@ -76,7 +76,7 @@
         </el-form-item>
         <el-form-item label="Role" prop="role">
           <el-select v-model="user.roles" multiple value-key="id" placeholder="Please select" size="medium" style="width: 100%;">
-            <el-option v-for="(item, index) in roleList" :key="index" :label="item.name" :value="item" />
+            <el-option v-for="item in roleList" :key="item.name" :label="item.name" :value="item" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -161,7 +161,7 @@ export default {
       rules: {
         username: [
           { required: true, message: '用户名不能为空!', trigger: 'blur' },
-          { min: 5, max: 20, message: '用户名长度在5-20之间', trigger: 'blur' }
+          { min: 4, max: 20, message: '用户名长度在5-20之间', trigger: 'blur' }
         ],
         nickname: [
           { require: true, message: '用户昵称不能为空!', trigger: 'blur' },
@@ -206,9 +206,6 @@ export default {
 
     tableData () {
       const data = deepClone(this.userList)
-      data.forEach((element) => {
-        element.agenCode = this.computedUnit(element.agenCode)
-      })
       return data
     }
   },
@@ -251,7 +248,7 @@ export default {
       if (unit === undefined || unit.length === 0) {
         return ''
       }
-      return unit[0].deptName
+      return unit[0].agenName
     },
 
     handleSearch () {
@@ -396,6 +393,7 @@ export default {
     parseTime (time) {
       return parseTime(new Date())
     }
+
   }
 }
 </script>

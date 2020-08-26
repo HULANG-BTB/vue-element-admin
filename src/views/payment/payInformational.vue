@@ -79,9 +79,9 @@ export default {
     },
 
     router () {
-      this.$router.push({ name: 'PayIndex', params: {}})
       this.time = 10
       clearInterval(this.timer)
+      this.$router.push({ name: 'PayIndex', params: {}})
     },
 
     destroyed () {

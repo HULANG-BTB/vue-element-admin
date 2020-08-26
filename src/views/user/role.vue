@@ -51,8 +51,8 @@
 
     <el-pagination background layout="prev, pager, next, sizes, total, jumper" style="margin-top:20px;float:right;margin-right:20px;" :total="query.total" :current-page="query.page" :page-sizes="[10, 20, 50, 100, 500, 1000]" :page-size="query.limit" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑角色':'新建角色'">
-      <el-form ref="roleForm" v-loading="dialogLoading" :model="role" label-width="80px" label-position="right" :rules="rules">
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑角色':'新建角色'" @close="handleCancel">
+      <el-form ref="roleForm" v-loading="dialogLoading || permissionList.length === 0" :model="role" label-width="80px" label-position="right" :rules="rules">
         <el-form-item label="Key" prop="role">
           <el-input v-model="role.role" placeholder="角色 Key" />
         </el-form-item>
@@ -73,7 +73,7 @@
         </el-form-item>
       </el-form>
       <div style="text-align:right;">
-        <el-button type="danger" @click="dialogVisible=false">Cancel</el-button>
+        <el-button type="danger" @click="handleCancel">Cancel</el-button>
         <el-button type="primary" :loading="confirmLoading" @click="confirmRole">Confirm</el-button>
       </div>
     </el-dialog>
@@ -109,6 +109,7 @@ export default {
       permissionList: [],
       selectedList: [],
       loading: true,
+      timer: null,
       confirmLoading: false,
       dialogLoading: false,
       dialogVisible: false,
@@ -205,15 +206,28 @@ export default {
       this.dialogType = 'new'
       this.dialogVisible = true
     },
+
     async handleEdit (scope) {
       this.dialogType = 'edit'
       this.dialogVisible = true
       this.dialogLoading = true
       this.role = deepClone(scope.row)
       const { data } = await getPermissionByRid(scope.row.id)
-      this.$refs.tree.setCheckedNodes(data)
-      this.dialogLoading = false
+      // 保证权限加载完成
+      this.timer = setInterval(() => {
+        if (this.permissionList.length > 0) {
+          this.$refs.tree.setCheckedNodes(data)
+          this.dialogLoading = false
+          clearInterval(this.timer)
+        }
+      }, 500)
     },
+
+    handleCancel () {
+      clearInterval(this.timer)
+      this.dialogVisible = false
+    },
+
     handleDelete ({ $index, row }) {
       this.$confirm('Confirm to remove the role?', 'Warning', {
         confirmButtonText: 'Confirm',

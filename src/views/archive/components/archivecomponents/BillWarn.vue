@@ -21,7 +21,9 @@
 
       <el-table-column align="center" label="处理状态" width="150px">
         <template slot-scope="scope">
-          <span>{{ scope.row.isHndl }}</span>
+          <span v-if="scope.row.isHndl === 1">已处理</span>
+          <span v-else style="color: red;">未处理</span>
+          <!-- <span>{{ scope.row.isHndl }}</span> -->
         </template>
       </el-table-column>
 
