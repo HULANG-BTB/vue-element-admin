@@ -11,11 +11,11 @@ export function getBillListByPage (query) {
   })
 }
 // 查询单张票据
-export function getOneBill (billId) {
+export function getOneBill (billNo) {
   return request({
     url: BASE_URL + '/billInvoicing/getUneCbillById',
     method: 'get',
-    params: { billId }
+    params: { billNo }
   })
 }
 // 新增票据前验证
