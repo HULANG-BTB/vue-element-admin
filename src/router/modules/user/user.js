@@ -9,6 +9,7 @@ export default [{
   alwaysShow: true,
   meta: {
     title: '用户管理',
+    icon: 'user',
     roles: ['admin', 'financial', 'financial_ckeck']
   },
   children: [
