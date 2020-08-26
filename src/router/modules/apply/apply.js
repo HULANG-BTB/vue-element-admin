@@ -8,20 +8,21 @@ export default [
     redirect: '/mail/list',
     meta: {
       title: '票据申领入库',
-      icon: 'user'
+      icon: 'user',
+      roles: ['admin', 'unit', 'financial_check']
     },
     children: [
       {
         path: 'apply',
         component: () => import('@/views/apply/apply'),
         name: 'PageApply',
-        meta: { title: '票据申领' }
+        meta: { title: '票据申领', roles: ['admin', 'unit'] }
       },
       {
         path: 'check',
         component: () => import('@/views/apply/check'),
         name: 'PageCheck',
-        meta: { title: '申领审核' }
+        meta: { title: '申领审核', roles: ['admin', 'financial_check'] }
       }
     ]
   }

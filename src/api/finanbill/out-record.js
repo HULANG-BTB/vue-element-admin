@@ -2,7 +2,8 @@ import request from '@/utils/request'
 
 // const BASE_URL = 'http://192.168.21.182:8080/out-change/'
 // const BASE_URL = '/finan-stock-management/out-change/'
-const BASE_URL = 'finan-stock-management/'
+// const BASE_URL = 'finan-stock-management/'
+const BASE_URL = 'http://192.168.110.196:8084/'
 // const BASE_URL = 'http://120.27.3.74:8085/'
 
 /* 出库相关 */
