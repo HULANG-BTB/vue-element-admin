@@ -29,7 +29,7 @@ export default [
         path: '/out-record',
         component: () => import('@/views/finanbill/out-record'),
         name: 'OutRecord',
-        meta: { title: '变动记录', roles: ['admin', 'financial'] }
+        meta: { title: '变动记录', roles: ['admin', 'financial', 'financial_check'] }
       }
     ]
   }
