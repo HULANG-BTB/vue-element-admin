@@ -108,7 +108,7 @@ export default {
     },
     async query () {
       const res = await selectSearch(this.search)
-      this.tableData = res
+      this.tableData = res.data
     }
   }
 }
