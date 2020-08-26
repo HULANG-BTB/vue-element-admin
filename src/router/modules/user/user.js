@@ -8,14 +8,16 @@ export default [{
   name: 'User',
   meta: {
     title: '用户管理',
-    icon: 'user'
+    roles: ['admin', 'financial', 'financial_ckeck']
   },
   children: [
     {
       path: 'user',
       component: () => import('@/views/user/user'),
       name: 'UserManage',
-      meta: { title: '用户管理', icon: 'el-icon-user' }
+      meta: {
+        title: '用户管理',
+        roles: ['admin', 'user_manager'] }
     },
     {
       path: 'role',
@@ -23,7 +25,6 @@ export default [{
       name: 'RoleManage',
       meta: {
         title: '角色管理',
-        icon: 'el-icon-wallet',
         roles: ['role_manager', 'admin']
       }
     },
@@ -33,7 +34,6 @@ export default [{
       name: 'PermissionManage',
       meta: {
         title: '权限管理',
-        icon: 'el-icon-link',
         roles: ['permission_manager', 'admin']
       }
     }
