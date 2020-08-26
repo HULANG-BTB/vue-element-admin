@@ -53,30 +53,6 @@
           @click="handleMultDelete"
         >批量删除</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <!-- <el-button
-          type="warning"
-          icon="el-icon-check"
-          size="small"
-        >导入</el-button> -->
-        <el-upload
-          ref="upload"
-          class="upload-demo"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :file-list="fileList"
-        >
-          <el-button slot="trigger" size="small" type="warning" icon="el-icon-check" @click="submitUpload">导入</el-button>
-        </el-upload>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-message"
-          size="small"
-        >导出</el-button>
-      </el-col>
     </el-row>
     <el-table :data="crtList" style="width: 100%;margin-top:30px;" border @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
