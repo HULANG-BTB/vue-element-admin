@@ -19,7 +19,7 @@ export default [{
       name: 'UserManage',
       meta: {
         title: '用户管理',
-        roles: ['admin', 'user_manager'] }
+        roles: ['admin', 'financial', 'user_manager'] }
     },
     {
       path: 'role',
@@ -27,7 +27,7 @@ export default [{
       name: 'RoleManage',
       meta: {
         title: '角色管理',
-        roles: ['role_manager', 'admin']
+        roles: ['role_manager', 'admin', 'financial']
       }
     },
     {
@@ -36,7 +36,7 @@ export default [{
       name: 'PermissionManage',
       meta: {
         title: '权限管理',
-        roles: ['permission_manager', 'admin']
+        roles: ['permission_manager', 'admin', 'financial']
       }
     }
   ]
