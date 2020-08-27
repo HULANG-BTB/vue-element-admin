@@ -4,8 +4,8 @@ import request from '@/utils/request'
 // const BASE_URL = 'http://47.97.155.84/prod-api/stock-out/'
 // 120.27.3.74
 // const BASE_URL = 'http://192.168.110.195:8080/'
-// const BASE_URL = 'finan-stock-management/'
-const BASE_URL = 'http://192.168.110.196:8084/'
+const BASE_URL = 'finan-stock-management/'
+// const BASE_URL = 'http://192.168.110.196:8084/'
 // const BASE_URL = 'http://120.27.3.74:8085/'
 
 /* 出库相关 */
