@@ -218,7 +218,7 @@ const users = {
 module.exports = [
   // user login
   {
-    url: process.env.VUE_APP_BASE_API + '/user/login',
+    url: '/user/login',
     type: 'post',
     response: config => {
       const { username } = config.body
@@ -247,10 +247,10 @@ module.exports = [
 
   // get user info
   {
-    url: process.env.VUE_APP_BASE_API + '/user/info\.*',
+    url: '/base/user/info\.*',
     type: 'get',
     response: config => {
-      const { token } = config.query
+      const token = config.get("Authorization").split(' ')[1]
       let info = {}
 
       for (const key in users) {
@@ -277,7 +277,7 @@ module.exports = [
 
   // user logout
   {
-    url: process.env.VUE_APP_BASE_API + '/user/logout',
+    url: '/user/logout',
     type: 'post',
     response: _ => {
       return {
